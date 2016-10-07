@@ -1,0 +1,217 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+Add	asm.ml	/^  | Add of Id.t * id_or_imm$/;"	C	type:exp
+Add	kNormal.ml	/^  | Add of Id.t * Id.t$/;"	C	type:t
+Add	kNormal.mli	/^  | Add of Id.t * Id.t$/;"	C	type:t
+Add	syntax.ml	/^  | Add of t * t$/;"	C	type:t
+Ans	asm.ml	/^  | Ans of exp$/;"	C	type:t
+App	kNormal.ml	/^  | App of Id.t * Id.t list$/;"	C	type:t
+App	kNormal.mli	/^  | App of Id.t * Id.t list$/;"	C	type:t
+App	syntax.ml	/^  | App of t * t list$/;"	C	type:t
+Array	syntax.ml	/^  | Array of t * t$/;"	C	type:t
+Array	type.ml	/^  | Array of t$/;"	C	type:t
+Asm	asm.ml	1;"	M
+Bool	syntax.ml	/^  | Bool of bool$/;"	C	type:t
+Bool	type.ml	/^  | Bool$/;"	C	type:t
+C	asm.ml	/^type id_or_imm = V of Id.t | C of int$/;"	C	type:id_or_imm
+CallCls	asm.ml	/^  | CallCls of Id.t * Id.t list * Id.t list$/;"	C	type:exp
+CallDir	asm.ml	/^  | CallDir of Id.l * Id.t list * Id.t list$/;"	C	type:exp
+Comment	asm.ml	/^  | Comment of string$/;"	C	type:exp
+Emit	emit.ml	1;"	M
+Eq	syntax.ml	/^  | Eq of t * t$/;"	C	type:t
+Error	typing.ml	/^exception Error of t * Type.t * Type.t$/;"	e
+Error	typing.mli	/^exception Error of Syntax.t * Type.t * Type.t$/;"	e
+Example	example.ml	1;"	M
+ExtArray	kNormal.ml	/^  | ExtArray of Id.t$/;"	C	type:t
+ExtArray	kNormal.mli	/^  | ExtArray of Id.t$/;"	C	type:t
+ExtFunApp	kNormal.ml	/^  | ExtFunApp of Id.t * Id.t list$/;"	C	type:t
+ExtFunApp	kNormal.mli	/^  | ExtFunApp of Id.t * Id.t list$/;"	C	type:t
+FAdd	kNormal.ml	/^  | FAdd of Id.t * Id.t$/;"	C	type:t
+FAdd	kNormal.mli	/^  | FAdd of Id.t * Id.t$/;"	C	type:t
+FAdd	syntax.ml	/^  | FAdd of t * t$/;"	C	type:t
+FAddD	asm.ml	/^  | FAddD of Id.t * Id.t$/;"	C	type:exp
+FDiv	kNormal.ml	/^  | FDiv of Id.t * Id.t$/;"	C	type:t
+FDiv	kNormal.mli	/^  | FDiv of Id.t * Id.t$/;"	C	type:t
+FDiv	syntax.ml	/^  | FDiv of t * t$/;"	C	type:t
+FDivD	asm.ml	/^  | FDivD of Id.t * Id.t$/;"	C	type:exp
+FMovD	asm.ml	/^  | FMovD of Id.t$/;"	C	type:exp
+FMul	kNormal.ml	/^  | FMul of Id.t * Id.t$/;"	C	type:t
+FMul	kNormal.mli	/^  | FMul of Id.t * Id.t$/;"	C	type:t
+FMul	syntax.ml	/^  | FMul of t * t$/;"	C	type:t
+FMulD	asm.ml	/^  | FMulD of Id.t * Id.t$/;"	C	type:exp
+FNeg	kNormal.ml	/^  | FNeg of Id.t$/;"	C	type:t
+FNeg	kNormal.mli	/^  | FNeg of Id.t$/;"	C	type:t
+FNeg	syntax.ml	/^  | FNeg of t$/;"	C	type:t
+FNegD	asm.ml	/^  | FNegD of Id.t$/;"	C	type:exp
+FSub	kNormal.ml	/^  | FSub of Id.t * Id.t$/;"	C	type:t
+FSub	kNormal.mli	/^  | FSub of Id.t * Id.t$/;"	C	type:t
+FSub	syntax.ml	/^  | FSub of t * t$/;"	C	type:t
+FSubD	asm.ml	/^  | FSubD of Id.t * Id.t$/;"	C	type:exp
+Float	kNormal.ml	/^  | Float of float$/;"	C	type:t
+Float	kNormal.mli	/^  | Float of float$/;"	C	type:t
+Float	syntax.ml	/^  | Float of float$/;"	C	type:t
+Float	type.ml	/^  | Float$/;"	C	type:t
+Fun	type.ml	/^  | Fun of t list * t (* arguments are uncurried *)$/;"	C	type:t
+Get	kNormal.ml	/^  | Get of Id.t * Id.t$/;"	C	type:t
+Get	kNormal.mli	/^  | Get of Id.t * Id.t$/;"	C	type:t
+Get	syntax.ml	/^  | Get of t * t$/;"	C	type:t
+If	syntax.ml	/^  | If of t * t * t$/;"	C	type:t
+IfEq	asm.ml	/^  | IfEq of Id.t * id_or_imm * t * t$/;"	C	type:exp
+IfEq	kNormal.ml	/^  | IfEq of Id.t * Id.t * t * t (* 比較 + 分岐 (caml2html: knormal_branch) *)$/;"	C	type:t
+IfEq	kNormal.mli	/^  | IfEq of Id.t * Id.t * t * t$/;"	C	type:t
+IfFEq	asm.ml	/^  | IfFEq of Id.t * Id.t * t * t$/;"	C	type:exp
+IfFLE	asm.ml	/^  | IfFLE of Id.t * Id.t * t * t$/;"	C	type:exp
+IfGE	asm.ml	/^  | IfGE of Id.t * id_or_imm * t * t (* 左右対称ではないので必要 *)$/;"	C	type:exp
+IfLE	asm.ml	/^  | IfLE of Id.t * id_or_imm * t * t$/;"	C	type:exp
+IfLE	kNormal.ml	/^  | IfLE of Id.t * Id.t * t * t (* 比較 + 分岐 *)$/;"	C	type:t
+IfLE	kNormal.mli	/^  | IfLE of Id.t * Id.t * t * t$/;"	C	type:t
+Int	kNormal.ml	/^  | Int of int$/;"	C	type:t
+Int	kNormal.mli	/^  | Int of int$/;"	C	type:t
+Int	syntax.ml	/^  | Int of int$/;"	C	type:t
+Int	type.ml	/^  | Int$/;"	C	type:t
+KNormal	kNormal.ml	1;"	M
+KNormal	kNormal.mli	1;"	M
+LE	syntax.ml	/^  | LE of t * t$/;"	C	type:t
+Ld	asm.ml	/^  | Ld of Id.t * id_or_imm * int$/;"	C	type:exp
+LdDF	asm.ml	/^  | LdDF of Id.t * id_or_imm * int$/;"	C	type:exp
+Let	asm.ml	/^  | Let of (Id.t * Type.t) * exp * t$/;"	C	type:t
+Let	kNormal.ml	/^  | Let of (Id.t * Type.t) * t * t$/;"	C	type:t
+Let	kNormal.mli	/^  | Let of (Id.t * Type.t) * t * t$/;"	C	type:t
+Let	syntax.ml	/^  | Let of (Id.t * Type.t) * t * t$/;"	C	type:t
+LetRec	kNormal.ml	/^  | LetRec of fundef * t$/;"	C	type:t
+LetRec	kNormal.mli	/^  | LetRec of fundef * t$/;"	C	type:t
+LetRec	syntax.ml	/^  | LetRec of fundef * t$/;"	C	type:t
+LetTuple	kNormal.ml	/^  | LetTuple of (Id.t * Type.t) list * Id.t * t$/;"	C	type:t
+LetTuple	kNormal.mli	/^  | LetTuple of (Id.t * Type.t) list * Id.t * t$/;"	C	type:t
+LetTuple	syntax.ml	/^  | LetTuple of (Id.t * Type.t) list * t * t$/;"	C	type:t
+Mov	asm.ml	/^  | Mov of Id.t$/;"	C	type:exp
+Neg	asm.ml	/^  | Neg of Id.t$/;"	C	type:exp
+Neg	kNormal.ml	/^  | Neg of Id.t$/;"	C	type:t
+Neg	kNormal.mli	/^  | Neg of Id.t$/;"	C	type:t
+Neg	syntax.ml	/^  | Neg of t$/;"	C	type:t
+NonTail	emit.ml	/^type dest = Tail | NonTail of Id.t (* 末尾かどうかを表すデータ型 (caml2html: emit_dest) *)$/;"	C	type:dest
+Nop	asm.ml	/^  | Nop$/;"	C	type:exp
+Not	syntax.ml	/^  | Not of t$/;"	C	type:t
+Prog	asm.ml	/^type prog = Prog of (Id.l * float) list * fundef list * t$/;"	C	type:prog
+Put	kNormal.ml	/^  | Put of Id.t * Id.t * Id.t$/;"	C	type:t
+Put	kNormal.mli	/^  | Put of Id.t * Id.t * Id.t$/;"	C	type:t
+Put	syntax.ml	/^  | Put of t * t * t$/;"	C	type:t
+Restore	asm.ml	/^  | Restore of Id.t (* スタック変数から値を復元 (caml2html: sparcasm_restore) *)$/;"	C	type:exp
+Save	asm.ml	/^  | Save of Id.t * Id.t (* レジスタ変数の値をスタック変数へ保存 (caml2html: sparcasm_save) *)$/;"	C	type:exp
+Set	asm.ml	/^  | Set of int$/;"	C	type:exp
+SetL	asm.ml	/^  | SetL of Id.l$/;"	C	type:exp
+St	asm.ml	/^  | St of Id.t * Id.t * id_or_imm * int$/;"	C	type:exp
+StDF	asm.ml	/^  | StDF of Id.t * Id.t * id_or_imm * int$/;"	C	type:exp
+Sub	asm.ml	/^  | Sub of Id.t * id_or_imm$/;"	C	type:exp
+Sub	kNormal.ml	/^  | Sub of Id.t * Id.t$/;"	C	type:t
+Sub	kNormal.mli	/^  | Sub of Id.t * Id.t$/;"	C	type:t
+Sub	syntax.ml	/^  | Sub of t * t$/;"	C	type:t
+Syntax	syntax.ml	1;"	M
+Tail	emit.ml	/^type dest = Tail | NonTail of Id.t (* 末尾かどうかを表すデータ型 (caml2html: emit_dest) *)$/;"	C	type:dest
+Tuple	kNormal.ml	/^  | Tuple of Id.t list$/;"	C	type:t
+Tuple	kNormal.mli	/^  | Tuple of Id.t list$/;"	C	type:t
+Tuple	syntax.ml	/^  | Tuple of t list$/;"	C	type:t
+Tuple	type.ml	/^  | Tuple of t list$/;"	C	type:t
+Type	type.ml	1;"	M
+Typing	typing.ml	1;"	M
+Typing	typing.mli	1;"	M
+Unify	typing.ml	/^exception Unify of Type.t * Type.t$/;"	e
+Unit	kNormal.ml	/^  | Unit$/;"	C	type:t
+Unit	kNormal.mli	/^  | Unit$/;"	C	type:t
+Unit	syntax.ml	/^  | Unit$/;"	C	type:t
+Unit	type.ml	/^  | Unit$/;"	C	type:t
+V	asm.ml	/^type id_or_imm = V of Id.t | C of int$/;"	C	type:id_or_imm
+Var	kNormal.ml	/^  | Var of Id.t$/;"	C	type:t
+Var	kNormal.mli	/^  | Var of Id.t$/;"	C	type:t
+Var	syntax.ml	/^  | Var of Id.t$/;"	C	type:t
+Var	type.ml	/^  | Var of t option ref$/;"	C	type:t
+align	asm.ml	/^let align i = (if i mod 8 = 0 then i else i + 4)$/;"	v
+args	asm.ml	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
+args	kNormal.ml	/^and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }$/;"	r	type:fundef
+args	kNormal.mli	/^and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }$/;"	r	type:fundef
+args	syntax.ml	/^and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }$/;"	r	type:fundef
+body	asm.ml	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
+body	kNormal.ml	/^and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }$/;"	r	type:fundef
+body	kNormal.mli	/^and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }$/;"	r	type:fundef
+body	syntax.ml	/^and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }$/;"	r	type:fundef
+concat	asm.ml	/^let rec concat e1 xt e2 =$/;"	v
+deref_id_typ	typing.ml	/^let rec deref_id_typ (x, t) = (x, deref_typ t)$/;"	v
+deref_term	typing.ml	/^let rec deref_term lno = function$/;"	v
+deref_typ	typing.ml	/^let rec deref_typ = function (* 型変数を中身でおきかえる関数 (caml2html: typing_deref) *)$/;"	v
+dest	emit.ml	/^type dest = Tail | NonTail of Id.t (* 末尾かどうかを表すデータ型 (caml2html: emit_dest) *)$/;"	t
+e'	kNormal.ml	/^      let e', t', info' = k x in$/;"	v
+env	typing.ml	/^	let env = M.add x t env in$/;"	v
+exp	asm.ml	/^and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *)$/;"	t
+extenv	typing.ml	/^let extenv = ref M.empty$/;"	v
+extenv	typing.mli	/^val extenv : Type.t M.t ref$/;"	v
+f	kNormal.mli	/^val f : Syntax.t * Syntax.info -> t * Syntax.info$/;"	v
+f	typing.ml	/^let f e =$/;"	v
+f	typing.mli	/^val f : Syntax.t * Syntax.info -> Syntax.t * Syntax.info$/;"	v
+fargs	asm.ml	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
+fib	example.ml	/^let rec fib n =$/;"	v
+fletd	asm.ml	/^let fletd(x, e1, e2) = Let((x, Type.Float), e1, e2)$/;"	v
+fregs	asm.ml	/^let fregs = Array.init 8 (fun i -> Printf.sprintf "%%xmm%d" i)$/;"	v
+fundef	asm.ml	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	t
+fundef	kNormal.ml	/^and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }$/;"	t
+fundef	kNormal.mli	/^and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }$/;"	t
+fundef	syntax.ml	/^and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }$/;"	t
+fv	asm.ml	/^let fv e = remove_and_uniq S.empty (fv e)$/;"	v
+fv	kNormal.ml	/^let rec fv = function (* 式に出現する（自由な）変数 (caml2html: knormal_fv) *)$/;"	v
+fv	kNormal.mli	/^val fv : t -> S.t$/;"	v
+fv_exp	asm.ml	/^let rec fv_exp = function$/;"	v
+g	emit.ml	/^let rec g oc = function (* 命令列のアセンブリ生成 (caml2html: emit_g) *)$/;"	v
+g	kNormal.ml	/^let rec g env info = function (* K正規化ルーチン本体 (caml2html: knormal_g) *)$/;"	v
+g	typing.ml	/^let rec g env e = (* 型推論ルーチン (caml2html: typing_g) *)$/;"	v
+g'_tail_if	emit.ml	/^and g'_tail_if oc e1 e2 b bn =$/;"	v
+gentyp	type.ml	/^let gentyp () = Var(ref None) (* 新しい型変数を作る *)$/;"	v
+id_or_imm	asm.ml	/^type id_or_imm = V of Id.t | C of int$/;"	t
+info	syntax.ml	/^type info = int$/;"	t
+insert_let	kNormal.ml	/^let insert_let (e, t, info) k = (* letを挿入する補助関数 (caml2html: knormal_insert) *)$/;"	v
+locate	emit.ml	/^let locate x =$/;"	v
+name	asm.ml	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
+name	kNormal.ml	/^and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }$/;"	r	type:fundef
+name	kNormal.mli	/^and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }$/;"	r	type:fundef
+name	syntax.ml	/^and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }$/;"	r	type:fundef
+occur	typing.ml	/^let rec occur r1 = function (* occur check (caml2html: typing_occur) *)$/;"	v
+offset	emit.ml	/^let offset x = 4 * List.hd (locate x)$/;"	v
+pp_id_or_imm	emit.ml	/^let pp_id_or_imm = function$/;"	v
+prog	asm.ml	/^type prog = Prog of (Id.l * float) list * fundef list * t$/;"	t
+regs	asm.ml	/^let regs = (* Array.init 16 (fun i -> Printf.sprintf "%%r%d" i) *)$/;"	v
+ret	asm.ml	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
+save	emit.ml	/^let save x =$/;"	v
+savef	emit.ml	/^let savef x =$/;"	v
+seq	asm.ml	/^let seq(e1, e2) = Let((Id.gentmp Type.Unit, Type.Unit), e1, e2)$/;"	v
+ss	emit.ml	/^	let ss = stacksize () in$/;"	v
+ss	emit.ml	/^      let ss = stacksize () in$/;"	v
+stackmap	emit.ml	/^let stackmap = ref [] (* Saveされた変数の、スタックにおける位置 (caml2html: emit_stackmap) *)$/;"	v
+stackset	emit.ml	/^let stackset = ref S.empty (* すでにSaveされた変数の集合 (caml2html: emit_stackset) *)$/;"	v
+stacksize	emit.ml	/^let stacksize () = align (List.length !stackmap * 4)$/;"	v
+t	asm.ml	/^type t = (* 命令の列 (caml2html: sparcasm_t) *)$/;"	t
+t	kNormal.ml	/^type t = (* K正規化後の式 (caml2html: knormal_t) *)$/;"	t
+t	kNormal.mli	/^type t =$/;"	t
+t	syntax.ml	/^type t = (* MinCamlの構文を表現するデータ型 (caml2html: syntax_t) *)$/;"	t
+t	type.ml	/^type t = (* MinCamlの型を表現するデータ型 (caml2html: type_t) *)$/;"	t
+t	typing.ml	/^	let t = Type.gentyp () in$/;"	v
+t	typing.ml	/^	let t = g env e3 in$/;"	v
+t2	typing.ml	/^	let t2 = g env e2 in$/;"	v
+t3	typing.ml	/^	let t3 = g env e3 in$/;"	v
+t_info	syntax.ml	/^type t_info = t * info$/;"	t
+to_string	kNormal.ml	/^let to_string x =$/;"	v
+to_string	syntax.ml	/^let to_string (x: t) =$/;"	v
+to_string_pre	type.ml	/^let rec to_string_pre pre typ =$/;"	v
+unify	typing.ml	/^let rec unify t1 t2 = (* 型が合うように、型変数への代入をする (caml2html: typing_unify) *)$/;"	v
+x	kNormal.ml	/^      let x = Id.gentmp t in$/;"	v
+x1	example.ml	/^let x1 = 3.$/;"	v
+x10	example.ml	/^let x10 =$/;"	v
+x2	example.ml	/^let x2 = 3 + 2$/;"	v
+x3	example.ml	/^let x3 = 3.0 +. 1.2$/;"	v
+x4	example.ml	/^let x4 = 3 - 2$/;"	v
+x5	example.ml	/^let x5 = 3.2 -. 1.2$/;"	v
+x6	example.ml	/^let x6 = -. x3$/;"	v
+x7	example.ml	/^let x7 = 1.2 *. 2.3$/;"	v
+x8	example.ml	/^let x8 = 1.2 \/. 2.2$/;"	v
+x9	example.ml	/^let x9 = (2, 3, 4)$/;"	v

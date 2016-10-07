@@ -5,12 +5,15 @@ open Type
 }
 
 (* 正規表現の略記 *)
-let space = [' ' '\t' '\n' '\r']
+let space = [' ' '\t' '\r' ]
+let newline = ['\n']
 let digit = ['0'-'9']
 let lower = ['a'-'z']
 let upper = ['A'-'Z']
 
 rule token = parse
+| newline
+    {Lexing.new_line lexbuf; token lexbuf}
 | space+
     { token lexbuf }
 | "(*"
@@ -84,16 +87,23 @@ rule token = parse
     { IDENT(Lexing.lexeme lexbuf) }
 | _
     { failwith
-	(Printf.sprintf "unknown token %s near characters %d-%d"
+	(Printf.sprintf "unknown token %s near characters %d-%d, i.e. %d:%d to %d:%d (line:column format)"
 	   (Lexing.lexeme lexbuf)
 	   (Lexing.lexeme_start lexbuf)
-	   (Lexing.lexeme_end lexbuf)) }
+	   (Lexing.lexeme_end lexbuf)
+       (Lexing.lexeme_start_p lexbuf).pos_lnum
+       ((Lexing.lexeme_start_p lexbuf).pos_cnum - (Lexing.lexeme_start_p lexbuf).pos_bol + 1)
+       (Lexing.lexeme_end_p lexbuf).pos_lnum
+       ((Lexing.lexeme_end_p lexbuf).pos_cnum - (Lexing.lexeme_end_p lexbuf).pos_bol + 1)
+       ) }
 and comment = parse
 | "*)"
     { () }
 | "(*"
     { comment lexbuf;
       comment lexbuf }
+| newline
+    {Lexing.new_line lexbuf; comment lexbuf}
 | eof
     { Format.eprintf "warning: unterminated comment@." }
 | _

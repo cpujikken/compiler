@@ -26,6 +26,50 @@ type t = (* K正規化後の式 (caml2html: knormal_t) *)
   | ExtFunApp of Id.t * Id.t list
 and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }
 
+let to_string x =
+    let rec to_string_pre pre k =
+        let npre = pre ^ " "
+        in
+        match k with
+        | Unit -> pre ^ "Unit"
+        | Int i -> Printf.sprintf "%sINT %d" pre i
+        | Float f -> Printf.sprintf "%sFLOAT %f" pre f
+        | Neg t -> Printf.sprintf "%sNEG\n%s" pre (Id.to_string_pre npre t)
+        | Add (x, y) -> Printf.sprintf "%sADD\n%s\n%s" pre (Id.to_string_pre npre x) (Id.to_string_pre npre y)
+        | Sub (x, y) -> Printf.sprintf "%sSUB\n%s\n%s" pre (Id.to_string_pre npre x) (Id.to_string_pre npre y)
+        | FNeg t -> Printf.sprintf "%sFNEG\n%s" pre (Id.to_string_pre npre t)
+        | FAdd (x, y) -> Printf.sprintf "%sFADD\n%s\n%s" pre (Id.to_string_pre npre x) (Id.to_string_pre npre y)
+        | FSub (x, y) -> Printf.sprintf "%sFSUB\n%s\n%s" pre (Id.to_string_pre npre x) (Id.to_string_pre npre y)
+        | FMul (x, y) -> Printf.sprintf "%sFMUL\n%s\n%s" pre (Id.to_string_pre npre x) (Id.to_string_pre npre y)
+        | FDiv (x, y) -> Printf.sprintf "%sFDIV\n%s\n%s" pre (Id.to_string_pre npre x) (Id.to_string_pre npre y)
+        | IfEq (idx, idy, z, u) -> Printf.sprintf "%sIF_EQ\n%s\n%s\n%s\n%s" pre (Id.to_string_pre npre idx) (Id.to_string_pre npre idy) (to_string_pre npre z) (to_string_pre npre u)
+        | IfLE (idx, idy, z, u) -> Printf.sprintf "%sIF_LE\n%s\n%s\n%s\n%s" pre (Id.to_string_pre npre idx) (Id.to_string_pre npre idy) (to_string_pre npre z) (to_string_pre npre u)
+        | Let ((id, typ), x, y) -> Printf.sprintf "%sLET\n%s\n%s\n%s\n%s" pre (Id.to_string_pre npre id) (Type.to_string_pre npre typ) (to_string_pre npre x) (to_string_pre npre y)
+        | Var id -> Printf.sprintf "%sVAR\n%s" pre (Id.to_string_pre npre id)
+        | LetRec (f, t) -> Printf.sprintf "%sLET_REC\n%s\n%s" pre (to_string_let_rec npre f) (to_string_pre npre t)
+        | App (x, xlist) -> Printf.sprintf "%sAPP\n%s%s" pre (Id.to_string_pre npre x) (to_string_idlist npre xlist)
+        | Tuple idlist -> Printf.sprintf "%sTUPLE%s" pre (to_string_idlist npre idlist)
+        | LetTuple (idtype_list, id, x) -> Printf.sprintf "%sLET_TUPLE\n%s\n%s\n%s" pre (to_string_idtype_list npre idtype_list) (Id.to_string_pre npre id) (to_string_pre npre x)
+        | Get (x, y) -> Printf.sprintf "%sGET\n%s\n%s" pre (Id.to_string_pre npre x) (Id.to_string_pre npre y)
+        | Put (x, y, z) -> Printf.sprintf "%sPUT\n%s\n%s\n%s" pre (Id.to_string_pre npre x) (Id.to_string_pre npre y) (Id.to_string_pre npre z)
+        | ExtArray x -> Printf.sprintf "%sEXT_ARRAY\n%s" pre (Id.to_string_pre npre x)
+        | ExtFunApp (x, xlist) -> Printf.sprintf "%sEXT_FUN_APP\n%s%s" pre (Id.to_string_pre npre x) (to_string_idlist npre xlist)
+    and to_string_idlist pre = function
+        | [] -> ""
+        | id :: idlist -> Printf.sprintf "\n%s%s" (Id.to_string_pre pre id) (to_string_idlist pre idlist)
+    and to_string_let_rec pre f =
+        let npre = pre ^ " "
+        in
+        let nid, ntype = f.name
+        in
+        Printf.sprintf "%sNAME\n%s\n%sTYPE\n%s\n%sARG%s\n%sBODY\n%s" pre (Id.to_string_pre npre nid) pre (Type.to_string_pre npre ntype) pre (to_string_args npre f.args) pre (to_string_pre npre f.body)
+    and to_string_args pre = function
+        | [] -> ""
+        | (id, typ) :: args -> Printf.sprintf "\n%s\n%s%s" (Id.to_string_pre pre id) (Type.to_string_pre pre typ) (to_string_args pre args)
+    and to_string_idtype_list pre x = to_string_args pre x
+    in
+    to_string_pre "" x
+
 let rec fv = function (* 式に出現する（自由な）変数 (caml2html: knormal_fv) *)
   | Unit | Int(_) | Float(_) | ExtArray(_) -> S.empty
   | Neg(x) | FNeg(x) -> S.singleton x
@@ -41,139 +85,143 @@ let rec fv = function (* 式に出現する（自由な）変数 (caml2html: knormal_fv) *)
   | Put(x, y, z) -> S.of_list [x; y; z]
   | LetTuple(xs, y, e) -> S.add y (S.diff (fv e) (S.of_list (List.map fst xs)))
 
-let insert_let (e, t) k = (* letを挿入する補助関数 (caml2html: knormal_insert) *)
+let insert_let (e, t, info) k = (* letを挿入する補助関数 (caml2html: knormal_insert) *)
   match e with
   | Var(x) -> k x
   | _ ->
       let x = Id.gentmp t in
-      let e', t' = k x in
-      Let((x, t), e, e'), t'
+      let e', t', info' = k x in
+      Let((x, t), e, e'), t', info'
 
-let rec g env = function (* K正規化ルーチン本体 (caml2html: knormal_g) *)
-  | Syntax.Unit -> Unit, Type.Unit
-  | Syntax.Bool(b) -> Int(if b then 1 else 0), Type.Int (* 論理値true, falseを整数1, 0に変換 (caml2html: knormal_bool) *)
-  | Syntax.Int(i) -> Int(i), Type.Int
-  | Syntax.Float(d) -> Float(d), Type.Float
-  | Syntax.Not(e) -> g env (Syntax.If(e, Syntax.Bool(false), Syntax.Bool(true)))
+let rec g env info = function (* K正規化ルーチン本体 (caml2html: knormal_g) *)
+  | Syntax.Unit -> Unit, Type.Unit, info
+  | Syntax.Bool(b) -> Int(if b then 1 else 0), Type.Int, info (* 論理値true, falseを整数1, 0に変換 (caml2html: knormal_bool) *)
+  | Syntax.Int(i) -> Int(i), Type.Int, info
+  | Syntax.Float(d) -> Float(d), Type.Float, info
+  | Syntax.Not(e) -> g env info (Syntax.If(e, Syntax.Bool(false), Syntax.Bool(true)))
   | Syntax.Neg(e) ->
-      insert_let (g env e)
-	(fun x -> Neg(x), Type.Int)
+      insert_let (g env info e)
+	(fun x -> Neg(x), Type.Int, info)
   | Syntax.Add(e1, e2) -> (* 足し算のK正規化 (caml2html: knormal_add) *)
-      insert_let (g env e1)
-	(fun x -> insert_let (g env e2)
-	    (fun y -> Add(x, y), Type.Int))
+      insert_let (g env info e1)
+	(fun x -> insert_let (g env info e2)
+	    (fun y -> Add(x, y), Type.Int, info))
   | Syntax.Sub(e1, e2) ->
-      insert_let (g env e1)
-	(fun x -> insert_let (g env e2)
-	    (fun y -> Sub(x, y), Type.Int))
+      insert_let (g env info e1)
+	(fun x -> insert_let (g env info e2)
+	    (fun y -> Sub(x, y), Type.Int, info))
   | Syntax.FNeg(e) ->
-      insert_let (g env e)
-	(fun x -> FNeg(x), Type.Float)
+      insert_let (g env info e)
+	(fun x -> FNeg(x), Type.Float, info)
   | Syntax.FAdd(e1, e2) ->
-      insert_let (g env e1)
-	(fun x -> insert_let (g env e2)
-	    (fun y -> FAdd(x, y), Type.Float))
+      insert_let (g env info e1)
+	(fun x -> insert_let (g env info e2)
+	    (fun y -> FAdd(x, y), Type.Float, info))
   | Syntax.FSub(e1, e2) ->
-      insert_let (g env e1)
-	(fun x -> insert_let (g env e2)
-	    (fun y -> FSub(x, y), Type.Float))
+      insert_let (g env info e1)
+	(fun x -> insert_let (g env info e2)
+	    (fun y -> FSub(x, y), Type.Float, info))
   | Syntax.FMul(e1, e2) ->
-      insert_let (g env e1)
-	(fun x -> insert_let (g env e2)
-	    (fun y -> FMul(x, y), Type.Float))
+      insert_let (g env info e1)
+	(fun x -> insert_let (g env info e2)
+	    (fun y -> FMul(x, y), Type.Float, info))
   | Syntax.FDiv(e1, e2) ->
-      insert_let (g env e1)
-	(fun x -> insert_let (g env e2)
-	    (fun y -> FDiv(x, y), Type.Float))
+      insert_let (g env info e1)
+	(fun x -> insert_let (g env info e2)
+	    (fun y -> FDiv(x, y), Type.Float, info))
   | Syntax.Eq _ | Syntax.LE _ as cmp ->
-      g env (Syntax.If(cmp, Syntax.Bool(true), Syntax.Bool(false)))
-  | Syntax.If(Syntax.Not(e1), e2, e3) -> g env (Syntax.If(e1, e3, e2)) (* notによる分岐を変換 (caml2html: knormal_not) *)
+      g env info (Syntax.If(cmp, Syntax.Bool(true), Syntax.Bool(false)))
+  | Syntax.If(Syntax.Not(e1), e2, e3) -> g env info (Syntax.If(e1, e3, e2)) (* notによる分岐を変換 (caml2html: knormal_not) *)
   | Syntax.If(Syntax.Eq(e1, e2), e3, e4) ->
-      insert_let (g env e1)
-	(fun x -> insert_let (g env e2)
+      insert_let (g env info e1)
+	(fun x -> insert_let (g env info e2)
 	    (fun y ->
-	      let e3', t3 = g env e3 in
-	      let e4', t4 = g env e4 in
-	      IfEq(x, y, e3', e4'), t3))
+	      let e3', t3, _ = g env info e3 in
+	      let e4', t4, _ = g env info e4 in
+	      IfEq(x, y, e3', e4'), t3, info))
   | Syntax.If(Syntax.LE(e1, e2), e3, e4) ->
-      insert_let (g env e1)
-	(fun x -> insert_let (g env e2)
+      insert_let (g env info e1)
+	(fun x -> insert_let (g env info e2)
 	    (fun y ->
-	      let e3', t3 = g env e3 in
-	      let e4', t4 = g env e4 in
-	      IfLE(x, y, e3', e4'), t3))
-  | Syntax.If(e1, e2, e3) -> g env (Syntax.If(Syntax.Eq(e1, Syntax.Bool(false)), e3, e2)) (* 比較のない分岐を変換 (caml2html: knormal_if) *)
+	      let e3', t3, _ = g env info e3 in
+	      let e4', t4, _ = g env info e4 in
+	      IfLE(x, y, e3', e4'), t3, info))
+  | Syntax.If(e1, e2, e3) -> g info env (Syntax.If(Syntax.Eq(e1, Syntax.Bool(false)), e3, e2)) (* 比較のない分岐を変換 (caml2html: knormal_if) *)
   | Syntax.Let((x, t), e1, e2) ->
-      let e1', t1 = g env e1 in
-      let e2', t2 = g (M.add x t env) e2 in
-      Let((x, t), e1', e2'), t2
-  | Syntax.Var(x) when M.mem x env -> Var(x), M.find x env
+      let e1', t1, _ = g env info e1 in
+      let e2', t2, _ = g (M.add x t env) info e2 in
+      Let((x, t), e1', e2'), t2, info
+  | Syntax.Var(x) when M.mem x env -> Var(x), M.find x env, info
   | Syntax.Var(x) -> (* 外部配列の参照 (caml2html: knormal_extarray) *)
       (match M.find x !Typing.extenv with
-      | Type.Array(_) as t -> ExtArray x, t
+      | Type.Array(_) as t -> ExtArray x, t, info
       | _ -> failwith (Printf.sprintf "external variable %s does not have an array type" x))
   | Syntax.LetRec({ Syntax.name = (x, t); Syntax.args = yts; Syntax.body = e1 }, e2) ->
       let env' = M.add x t env in
-      let e2', t2 = g env' e2 in
-      let e1', t1 = g (M.add_list yts env') e1 in
-      LetRec({ name = (x, t); args = yts; body = e1' }, e2'), t2
+      let e2', t2, _ = g env' info e2 in
+      let e1', t1, _ = g (M.add_list yts env') info e1 in
+      LetRec({ name = (x, t); args = yts; body = e1' }, e2'), t2, info
   | Syntax.App(Syntax.Var(f), e2s) when not (M.mem f env) -> (* 外部関数の呼び出し (caml2html: knormal_extfunapp) *)
       (match M.find f !Typing.extenv with
       | Type.Fun(_, t) ->
-	  let rec bind xs = function (* "xs" are identifiers for the arguments *)
-	    | [] -> ExtFunApp(f, xs), t
+	  let rec bind xs i = function (* "xs" are identifiers for the arguments *)
+	    | [] -> ExtFunApp(f, xs), t, info
 	    | e2 :: e2s ->
-		insert_let (g env e2)
-		  (fun x -> bind (xs @ [x]) e2s) in
-	  bind [] e2s (* left-to-right evaluation *)
+		insert_let (g env info e2)
+		  (fun x -> bind (xs @ [x]) info e2s) in
+	  bind [] info e2s (* left-to-right evaluation *)
       | _ -> assert false)
   | Syntax.App(e1, e2s) ->
-      (match g env e1 with
-      | _, Type.Fun(_, t) as g_e1 ->
+      (match g env info e1 with
+      | _, Type.Fun(_, t), _ as g_e1 ->
 	  insert_let g_e1
 	    (fun f ->
-	      let rec bind xs = function (* "xs" are identifiers for the arguments *)
-		| [] -> App(f, xs), t
+	      let rec bind xs i = function (* "xs" are identifiers for the arguments *)
+		| [] -> App(f, xs), t, info
 		| e2 :: e2s ->
-		    insert_let (g env e2)
-		      (fun x -> bind (xs @ [x]) e2s) in
-	      bind [] e2s) (* left-to-right evaluation *)
+		    insert_let (g env info e2)
+		      (fun x -> bind (xs @ [x]) info e2s) in
+	      bind [] info e2s) (* left-to-right evaluation *)
       | _ -> assert false)
   | Syntax.Tuple(es) ->
-      let rec bind xs ts = function (* "xs" and "ts" are identifiers and types for the elements *)
-	| [] -> Tuple(xs), Type.Tuple(ts)
+      let rec bind xs ts info = function (* "xs" and "ts" are identifiers and types for the elements *)
+	| [] -> Tuple(xs), Type.Tuple(ts), info
 	| e :: es ->
-	    let _, t as g_e = g env e in
+	    let _, t, _ as g_e = g env info e in
 	    insert_let g_e
-	      (fun x -> bind (xs @ [x]) (ts @ [t]) es) in
-      bind [] [] es
+	      (fun x -> bind (xs @ [x]) (ts @ [t]) info es) in
+      bind [] [] info es
   | Syntax.LetTuple(xts, e1, e2) ->
-      insert_let (g env e1)
+      insert_let (g env info e1)
 	(fun y ->
-	  let e2', t2 = g (M.add_list xts env) e2 in
-	  LetTuple(xts, y, e2'), t2)
+	  let e2', t2, _ = g (M.add_list xts env) info e2 in
+	  LetTuple(xts, y, e2'), t2, info)
   | Syntax.Array(e1, e2) ->
-      insert_let (g env e1)
+      insert_let (g env info e1)
 	(fun x ->
-	  let _, t2 as g_e2 = g env e2 in
+	  let _, t2, _ as g_e2 = g env info e2 in
 	  insert_let g_e2
 	    (fun y ->
 	      let l =
 		match t2 with
 		| Type.Float -> "create_float_array"
 		| _ -> "create_array" in
-	      ExtFunApp(l, [x; y]), Type.Array(t2)))
+	      ExtFunApp(l, [x; y]), Type.Array(t2), info))
   | Syntax.Get(e1, e2) ->
-      (match g env e1 with
-      |	_, Type.Array(t) as g_e1 ->
+      (match g env info e1 with
+      |	_, Type.Array(t), _ as g_e1 ->
 	  insert_let g_e1
-	    (fun x -> insert_let (g env e2)
-		(fun y -> Get(x, y), t))
+	    (fun x -> insert_let (g env info e2)
+		(fun y -> Get(x, y), t, info))
       | _ -> assert false)
   | Syntax.Put(e1, e2, e3) ->
-      insert_let (g env e1)
-	(fun x -> insert_let (g env e2)
-	    (fun y -> insert_let (g env e3)
-		(fun z -> Put(x, y, z), Type.Unit)))
+      insert_let (g env info e1)
+	(fun x -> insert_let (g env info e2)
+	    (fun y -> insert_let (g env info e3)
+		(fun z -> Put(x, y, z), Type.Unit, info)))
 
-let f e = fst (g M.empty e)
+let f e =
+    Printf.printf "%s" (Syntax.to_string (fst e));
+    let x, _, y = g M.empty (snd e) (fst e)
+    in
+    x, y

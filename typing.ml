@@ -22,32 +22,32 @@ let rec deref_typ = function (* 型変数を中身でおきかえる関数 (caml2html: typing_
       t'
   | t -> t
 let rec deref_id_typ (x, t) = (x, deref_typ t)
-let rec deref_term = function
-  | Not(e) -> Not(deref_term e)
-  | Neg(e) -> Neg(deref_term e)
-  | Add(e1, e2) -> Add(deref_term e1, deref_term e2)
-  | Sub(e1, e2) -> Sub(deref_term e1, deref_term e2)
-  | Eq(e1, e2) -> Eq(deref_term e1, deref_term e2)
-  | LE(e1, e2) -> LE(deref_term e1, deref_term e2)
-  | FNeg(e) -> FNeg(deref_term e)
-  | FAdd(e1, e2) -> FAdd(deref_term e1, deref_term e2)
-  | FSub(e1, e2) -> FSub(deref_term e1, deref_term e2)
-  | FMul(e1, e2) -> FMul(deref_term e1, deref_term e2)
-  | FDiv(e1, e2) -> FDiv(deref_term e1, deref_term e2)
-  | If(e1, e2, e3) -> If(deref_term e1, deref_term e2, deref_term e3)
-  | Let(xt, e1, e2) -> Let(deref_id_typ xt, deref_term e1, deref_term e2)
+let rec deref_term lno = function
+  | Not(e) -> Not(fst (deref_term lno e)), lno
+  | Neg(e) -> Neg(fst (deref_term lno e)), lno
+  | Add(e1, e2) -> Add(fst (deref_term lno e1), fst (deref_term lno e2)), lno
+  | Sub(e1, e2) -> Sub(fst (deref_term lno e1), fst (deref_term lno e2)), lno
+  | Eq(e1, e2) -> Eq(fst (deref_term lno e1), fst (deref_term lno e2)), lno
+  | LE(e1, e2) -> LE(fst (deref_term lno e1), fst (deref_term lno e2)), lno
+  | FNeg(e) -> FNeg(fst (deref_term lno e)), lno
+  | FAdd(e1, e2) -> FAdd(fst (deref_term lno e1), fst (deref_term lno e2)), lno
+  | FSub(e1, e2) -> FSub(fst (deref_term lno e1), fst (deref_term lno e2)), lno
+  | FMul(e1, e2) -> FMul(fst (deref_term lno e1), fst (deref_term lno e2)), lno
+  | FDiv(e1, e2) -> FDiv(fst (deref_term lno e1), fst (deref_term lno e2)), lno
+  | If(e1, e2, e3) -> If(fst (deref_term lno e1), fst (deref_term lno e2), fst (deref_term lno e3)), lno
+  | Let(xt, e1, e2) -> Let(deref_id_typ xt, fst (deref_term lno e1), fst (deref_term lno e2)), lno
   | LetRec({ name = xt; args = yts; body = e1 }, e2) ->
       LetRec({ name = deref_id_typ xt;
 	       args = List.map deref_id_typ yts;
-	       body = deref_term e1 },
-	     deref_term e2)
-  | App(e, es) -> App(deref_term e, List.map deref_term es)
-  | Tuple(es) -> Tuple(List.map deref_term es)
-  | LetTuple(xts, e1, e2) -> LetTuple(List.map deref_id_typ xts, deref_term e1, deref_term e2)
-  | Array(e1, e2) -> Array(deref_term e1, deref_term e2)
-  | Get(e1, e2) -> Get(deref_term e1, deref_term e2)
-  | Put(e1, e2, e3) -> Put(deref_term e1, deref_term e2, deref_term e3)
-  | e -> e
+	       body = fst (deref_term lno e1) },
+	     fst (deref_term lno e2)), lno
+  | App(e, es) -> App(fst (deref_term lno e), List.map fst (List.map (deref_term lno) es)), lno
+  | Tuple(es) -> Tuple(List.map fst (List.map (deref_term lno) es)), lno
+  | LetTuple(xts, e1, e2) -> LetTuple(List.map deref_id_typ xts, fst (deref_term lno e1), fst (deref_term lno e2)), lno
+  | Array(e1, e2) -> Array(fst (deref_term lno e1), fst (deref_term lno e2)), lno
+  | Get(e1, e2) -> Get(fst (deref_term lno e1), fst (deref_term lno e2)), lno
+  | Put(e1, e2, e3) -> Put(fst (deref_term lno e1), fst (deref_term lno e2), fst (deref_term lno e3)), lno
+  | e -> e, lno
 
 let rec occur r1 = function (* occur check (caml2html: typing_occur) *)
   | Type.Fun(t2s, t2) -> List.exists (occur r1) t2s || occur r1 t2
@@ -148,7 +148,7 @@ let rec g env e = (* 型推論ルーチン (caml2html: typing_g) *)
 	unify (Type.Array(t)) (g env e1);
 	unify Type.Int (g env e2);
 	Type.Unit
-  with Unify(t1, t2) -> raise (Error(deref_term e, deref_typ t1, deref_typ t2))
+  with Unify(t1, t2) -> raise (Error(fst (deref_term 0 e), deref_typ t1, deref_typ t2))
 
 let f e =
   extenv := M.empty;
@@ -157,7 +157,7 @@ let f e =
   | Type.Unit -> ()
   | _ -> Format.eprintf "warning: final result does not have type unit@.");
 *)
-  (try unify Type.Unit (g M.empty e)
+  (try unify Type.Unit (g M.empty (fst e))
   with Unify _ -> failwith "top level does not have type unit");
   extenv := M.map deref_typ !extenv;
-  deref_term e
+  deref_term (snd e) (fst e)
