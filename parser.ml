@@ -510,35 +510,35 @@ let yyact = [|
 ; (fun __caml_parser_env ->
     Obj.repr(
 # 63 "parser.mly"
-    ( Unit (Syntax.get_info())  )
+    ( Unit (Info.get())  )
 # 515 "parser.ml"
                : 'simple_exp))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : bool) in
     Obj.repr(
 # 65 "parser.mly"
-    ( Bool(_1, (Syntax.get_info())) )
+    ( Bool(_1, (Info.get())) )
 # 522 "parser.ml"
                : 'simple_exp))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : int) in
     Obj.repr(
 # 67 "parser.mly"
-    ( Int(_1, (Syntax.get_info())  ))
+    ( Int(_1, (Info.get())  ))
 # 529 "parser.ml"
                : 'simple_exp))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : float) in
     Obj.repr(
 # 69 "parser.mly"
-    ( Float(_1, (Syntax.get_info()))  )
+    ( Float(_1, (Info.get()))  )
 # 536 "parser.ml"
                : 'simple_exp))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : Id.t) in
     Obj.repr(
 # 71 "parser.mly"
-    ( Var(_1, (Syntax.get_info()) ) )
+    ( Var(_1, (Info.get()) ) )
 # 543 "parser.ml"
                : 'simple_exp))
 ; (fun __caml_parser_env ->
@@ -546,7 +546,7 @@ let yyact = [|
     let _4 = (Parsing.peek_val __caml_parser_env 1 : Syntax.t) in
     Obj.repr(
 # 73 "parser.mly"
-    ( Get(_1, _4, (Syntax.get_info()) ) )
+    ( Get(_1, _4, (Info.get()) ) )
 # 551 "parser.ml"
                : 'simple_exp))
 ; (fun __caml_parser_env ->
@@ -560,7 +560,7 @@ let yyact = [|
     let _2 = (Parsing.peek_val __caml_parser_env 0 : Syntax.t) in
     Obj.repr(
 # 80 "parser.mly"
-    ( Not(_2, (Syntax.get_info())  ))
+    ( Not(_2, (Info.get())  ))
 # 565 "parser.ml"
                : Syntax.t))
 ; (fun __caml_parser_env ->
@@ -568,8 +568,8 @@ let yyact = [|
     Obj.repr(
 # 83 "parser.mly"
     ( match _2 with
-    | Float(f, info) -> Float(-.f, (Syntax.get_info()))  (* -1.23などは型エラーではないので別扱い *)
-    | e -> Neg(e, (Syntax.get_info()) ) )
+    | Float(f, info) -> Float(-.f, (Info.get()))  (* -1.23などは型エラーではないので別扱い *)
+    | e -> Neg(e, (Info.get()) ) )
 # 574 "parser.ml"
                : Syntax.t))
 ; (fun __caml_parser_env ->
@@ -577,7 +577,7 @@ let yyact = [|
     let _3 = (Parsing.peek_val __caml_parser_env 0 : Syntax.t) in
     Obj.repr(
 # 87 "parser.mly"
-    ( Add(_1,_3, (Syntax.get_info()))  )
+    ( Add(_1,_3, (Info.get()))  )
 # 582 "parser.ml"
                : Syntax.t))
 ; (fun __caml_parser_env ->
@@ -585,7 +585,7 @@ let yyact = [|
     let _3 = (Parsing.peek_val __caml_parser_env 0 : Syntax.t) in
     Obj.repr(
 # 89 "parser.mly"
-    ( Sub(_1, _3, (Syntax.get_info())  ))
+    ( Sub(_1, _3, (Info.get())  ))
 # 590 "parser.ml"
                : Syntax.t))
 ; (fun __caml_parser_env ->
@@ -593,7 +593,7 @@ let yyact = [|
     let _3 = (Parsing.peek_val __caml_parser_env 0 : Syntax.t) in
     Obj.repr(
 # 91 "parser.mly"
-    ( Eq(_1, _3, (Syntax.get_info())  ))
+    ( Eq(_1, _3, (Info.get())  ))
 # 598 "parser.ml"
                : Syntax.t))
 ; (fun __caml_parser_env ->
@@ -601,7 +601,7 @@ let yyact = [|
     let _3 = (Parsing.peek_val __caml_parser_env 0 : Syntax.t) in
     Obj.repr(
 # 93 "parser.mly"
-    ( Not(Eq(_1, _3, (Syntax.get_info())), (Syntax.get_info())  ))
+    ( Not(Eq(_1, _3, (Info.get())), (Info.get())  ))
 # 606 "parser.ml"
                : Syntax.t))
 ; (fun __caml_parser_env ->
@@ -609,7 +609,7 @@ let yyact = [|
     let _3 = (Parsing.peek_val __caml_parser_env 0 : Syntax.t) in
     Obj.repr(
 # 95 "parser.mly"
-    ( Not(LE(_3, _1, (Syntax.get_info())  ), (Syntax.get_info())  ))
+    ( Not(LE(_3, _1, (Info.get())  ), (Info.get())  ))
 # 614 "parser.ml"
                : Syntax.t))
 ; (fun __caml_parser_env ->
@@ -617,7 +617,7 @@ let yyact = [|
     let _3 = (Parsing.peek_val __caml_parser_env 0 : Syntax.t) in
     Obj.repr(
 # 97 "parser.mly"
-    ( Not(LE(_1, _3, (Syntax.get_info())  ), (Syntax.get_info())  ))
+    ( Not(LE(_1, _3, (Info.get())  ), (Info.get())  ))
 # 622 "parser.ml"
                : Syntax.t))
 ; (fun __caml_parser_env ->
@@ -625,7 +625,7 @@ let yyact = [|
     let _3 = (Parsing.peek_val __caml_parser_env 0 : Syntax.t) in
     Obj.repr(
 # 99 "parser.mly"
-    ( LE(_1, _3, (Syntax.get_info())  ))
+    ( LE(_1, _3, (Info.get())  ))
 # 630 "parser.ml"
                : Syntax.t))
 ; (fun __caml_parser_env ->
@@ -633,7 +633,7 @@ let yyact = [|
     let _3 = (Parsing.peek_val __caml_parser_env 0 : Syntax.t) in
     Obj.repr(
 # 101 "parser.mly"
-    ( LE(_3, _1, (Syntax.get_info())  ))
+    ( LE(_3, _1, (Info.get())  ))
 # 638 "parser.ml"
                : Syntax.t))
 ; (fun __caml_parser_env ->
@@ -642,14 +642,14 @@ let yyact = [|
     let _6 = (Parsing.peek_val __caml_parser_env 0 : Syntax.t) in
     Obj.repr(
 # 104 "parser.mly"
-    ( If(_2, _4, _6, (Syntax.get_info())  ))
+    ( If(_2, _4, _6, (Info.get())  ))
 # 647 "parser.ml"
                : Syntax.t))
 ; (fun __caml_parser_env ->
     let _2 = (Parsing.peek_val __caml_parser_env 0 : Syntax.t) in
     Obj.repr(
 # 107 "parser.mly"
-    ( FNeg(_2, (Syntax.get_info())  ))
+    ( FNeg(_2, (Info.get())  ))
 # 654 "parser.ml"
                : Syntax.t))
 ; (fun __caml_parser_env ->
@@ -657,7 +657,7 @@ let yyact = [|
     let _3 = (Parsing.peek_val __caml_parser_env 0 : Syntax.t) in
     Obj.repr(
 # 109 "parser.mly"
-    ( FAdd(_1, _3, (Syntax.get_info())  ))
+    ( FAdd(_1, _3, (Info.get())  ))
 # 662 "parser.ml"
                : Syntax.t))
 ; (fun __caml_parser_env ->
@@ -665,7 +665,7 @@ let yyact = [|
     let _3 = (Parsing.peek_val __caml_parser_env 0 : Syntax.t) in
     Obj.repr(
 # 111 "parser.mly"
-    ( FSub(_1, _3, (Syntax.get_info())  ))
+    ( FSub(_1, _3, (Info.get())  ))
 # 670 "parser.ml"
                : Syntax.t))
 ; (fun __caml_parser_env ->
@@ -673,7 +673,7 @@ let yyact = [|
     let _3 = (Parsing.peek_val __caml_parser_env 0 : Syntax.t) in
     Obj.repr(
 # 113 "parser.mly"
-    ( FMul(_1, _3, (Syntax.get_info())  ))
+    ( FMul(_1, _3, (Info.get())  ))
 # 678 "parser.ml"
                : Syntax.t))
 ; (fun __caml_parser_env ->
@@ -681,7 +681,7 @@ let yyact = [|
     let _3 = (Parsing.peek_val __caml_parser_env 0 : Syntax.t) in
     Obj.repr(
 # 115 "parser.mly"
-    ( FDiv(_1, _3, (Syntax.get_info())  ))
+    ( FDiv(_1, _3, (Info.get())  ))
 # 686 "parser.ml"
                : Syntax.t))
 ; (fun __caml_parser_env ->
@@ -690,7 +690,7 @@ let yyact = [|
     let _6 = (Parsing.peek_val __caml_parser_env 0 : Syntax.t) in
     Obj.repr(
 # 118 "parser.mly"
-    ( Let(addtyp _2, _4, _6, (Syntax.get_info())  ))
+    ( Let(addtyp _2, _4, _6, (Info.get())  ))
 # 695 "parser.ml"
                : Syntax.t))
 ; (fun __caml_parser_env ->
@@ -698,7 +698,7 @@ let yyact = [|
     let _5 = (Parsing.peek_val __caml_parser_env 0 : Syntax.t) in
     Obj.repr(
 # 121 "parser.mly"
-    ( LetRec(_3, _5, (Syntax.get_info())  ))
+    ( LetRec(_3, _5, (Info.get())  ))
 # 703 "parser.ml"
                : Syntax.t))
 ; (fun __caml_parser_env ->
@@ -706,14 +706,14 @@ let yyact = [|
     let _2 = (Parsing.peek_val __caml_parser_env 0 : 'actual_args) in
     Obj.repr(
 # 124 "parser.mly"
-    ( App(_1, _2, (Syntax.get_info())  ))
+    ( App(_1, _2, (Info.get())  ))
 # 711 "parser.ml"
                : Syntax.t))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : 'elems) in
     Obj.repr(
 # 126 "parser.mly"
-    ( Tuple(_1, (Syntax.get_info())  ))
+    ( Tuple(_1, (Info.get())  ))
 # 718 "parser.ml"
                : Syntax.t))
 ; (fun __caml_parser_env ->
@@ -722,7 +722,7 @@ let yyact = [|
     let _8 = (Parsing.peek_val __caml_parser_env 0 : Syntax.t) in
     Obj.repr(
 # 128 "parser.mly"
-    ( LetTuple(_3, _6, _8, (Syntax.get_info())  ))
+    ( LetTuple(_3, _6, _8, (Info.get())  ))
 # 727 "parser.ml"
                : Syntax.t))
 ; (fun __caml_parser_env ->
@@ -731,7 +731,7 @@ let yyact = [|
     let _7 = (Parsing.peek_val __caml_parser_env 0 : Syntax.t) in
     Obj.repr(
 # 130 "parser.mly"
-    ( Put(_1, _4, _7, (Syntax.get_info())  ))
+    ( Put(_1, _4, _7, (Info.get())  ))
 # 736 "parser.ml"
                : Syntax.t))
 ; (fun __caml_parser_env ->
@@ -739,7 +739,7 @@ let yyact = [|
     let _3 = (Parsing.peek_val __caml_parser_env 0 : Syntax.t) in
     Obj.repr(
 # 132 "parser.mly"
-    ( Let((Id.gentmp Type.Unit, Type.Unit), _1, _3, (Syntax.get_info())  ))
+    ( Let((Id.gentmp Type.Unit, Type.Unit), _1, _3, (Info.get())  ))
 # 744 "parser.ml"
                : Syntax.t))
 ; (fun __caml_parser_env ->
@@ -747,7 +747,7 @@ let yyact = [|
     let _3 = (Parsing.peek_val __caml_parser_env 0 : 'simple_exp) in
     Obj.repr(
 # 135 "parser.mly"
-    ( Array(_2, _3, (Syntax.get_info())  ))
+    ( Array(_2, _3, (Info.get())  ))
 # 752 "parser.ml"
                : Syntax.t))
 ; (fun __caml_parser_env ->

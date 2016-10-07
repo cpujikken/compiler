@@ -1,1 +1,1 @@
-kNormal.cmi : type.cmo syntax.cmo s.cmo id.cmo
+kNormal.cmi : type.cmo syntax.cmo s.cmo info.cmo id.cmo

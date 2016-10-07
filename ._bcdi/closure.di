@@ -1,1 +1,1 @@
-closure.cmi : type.cmo syntax.cmo s.cmo kNormal.cmi id.cmo
+closure.cmi : type.cmo s.cmo kNormal.cmi info.cmo id.cmo

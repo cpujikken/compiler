@@ -24,4 +24,4 @@ let gentmp typ =
   incr counter;
   Printf.sprintf "T%s%d" (id_of_typ typ) !counter
 
-let to_string_pre pre ((id, info): t) = Printf.sprintf "%sID%s\t#%s" pre id (Syntax.info_show info)
+let to_string_pre pre ((id, info): t) = Printf.sprintf "%sID%s\t#%s" pre id (Info.to_string info)

@@ -1,2 +1,2 @@
-emit.cmo : type.cmo syntax.cmo s.cmo id.cmo asm.cmi emit.cmi
-emit.cmx : type.cmx syntax.cmx s.cmx id.cmx asm.cmx emit.cmi
+emit.cmo : type.cmo s.cmo info.cmo id.cmo asm.cmi emit.cmi
+emit.cmx : type.cmx s.cmx info.cmx id.cmx asm.cmx emit.cmi

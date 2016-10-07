@@ -1,1 +1,1 @@
-asm.cmi : type.cmo syntax.cmo id.cmo
+asm.cmi : type.cmo info.cmo id.cmo

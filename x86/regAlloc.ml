@@ -96,7 +96,7 @@ let add x r regenv =
   M.add x r regenv
 
 (* auxiliary functions for g' *)
-exception NoReg of Id.t * Type.t * Syntax.info
+exception NoReg of Id.t * Type.t * Info.t
 let find x t regenv info =
   if is_reg x then x else
   try M.find x regenv

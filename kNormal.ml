@@ -1,29 +1,29 @@
 (* give names to intermediate values (K-normalization) *)
 
 type t = (* KÀµµ¬²½¸å¤Î¼° (caml2html: knormal_t) *)
-  | Unit of Syntax.info
-  | Int of int * Syntax.info
-  | Float of float * Syntax.info
-  | Neg of Id.t * Syntax.info
-  | Add of Id.t * Id.t * Syntax.info
-  | Sub of Id.t * Id.t * Syntax.info
-  | FNeg of Id.t * Syntax.info
-  | FAdd of Id.t * Id.t * Syntax.info
-  | FSub of Id.t * Id.t * Syntax.info
-  | FMul of Id.t * Id.t * Syntax.info
-  | FDiv of Id.t * Id.t * Syntax.info
-  | IfEq of Id.t * Id.t * t * t * Syntax.info (* Èæ³Ó + Ê¬´ô (caml2html: knormal_branch) *)
-  | IfLE of Id.t * Id.t * t * t * Syntax.info (* Èæ³Ó + Ê¬´ô *)
-  | Let of (Id.t * Type.t) * t * t * Syntax.info
-  | Var of Id.t * Syntax.info
-  | LetRec of fundef * t * Syntax.info
-  | App of Id.t * Id.t list * Syntax.info
-  | Tuple of Id.t list * Syntax.info
-  | LetTuple of (Id.t * Type.t) list * Id.t * t * Syntax.info
-  | Get of Id.t * Id.t * Syntax.info
-  | Put of Id.t * Id.t * Id.t * Syntax.info
-  | ExtArray of Id.t * Syntax.info
-  | ExtFunApp of Id.t * Id.t list * Syntax.info
+  | Unit of Info.t
+  | Int of int * Info.t
+  | Float of float * Info.t
+  | Neg of Id.t * Info.t
+  | Add of Id.t * Id.t * Info.t
+  | Sub of Id.t * Id.t * Info.t
+  | FNeg of Id.t * Info.t
+  | FAdd of Id.t * Id.t * Info.t
+  | FSub of Id.t * Id.t * Info.t
+  | FMul of Id.t * Id.t * Info.t
+  | FDiv of Id.t * Id.t * Info.t
+  | IfEq of Id.t * Id.t * t * t * Info.t (* Èæ³Ó + Ê¬´ô (caml2html: knormal_branch) *)
+  | IfLE of Id.t * Id.t * t * t * Info.t (* Èæ³Ó + Ê¬´ô *)
+  | Let of (Id.t * Type.t) * t * t * Info.t
+  | Var of Id.t * Info.t
+  | LetRec of fundef * t * Info.t
+  | App of Id.t * Id.t list * Info.t
+  | Tuple of Id.t list * Info.t
+  | LetTuple of (Id.t * Type.t) list * Id.t * t * Info.t
+  | Get of Id.t * Id.t * Info.t
+  | Put of Id.t * Id.t * Id.t * Info.t
+  | ExtArray of Id.t * Info.t
+  | ExtFunApp of Id.t * Id.t list * Info.t
 and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }
 
 let to_string x =
@@ -31,29 +31,29 @@ let to_string x =
         let npre = pre ^ " "
         in
         match k with
-        | Unit info -> Printf.sprintf "%sUnit%s" pre (Syntax.info_show info)
-        | Int(i, info) -> Printf.sprintf "%sINT %d%s" pre i (Syntax.info_show info)
-        | Float( f , info)-> Printf.sprintf "%sFLOAT %f%s" pre f (Syntax.info_show info)
-        | Neg(t, info) -> Printf.sprintf "%sNEG%s\n%s" pre (Syntax.info_show info) (Id.to_string_pre npre t)
-        | Add (x, y, info) -> Printf.sprintf "%sADD%s\n%s\n%s" pre (Syntax.info_show info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
-        | Sub (x, y, info) -> Printf.sprintf "%sSUB%s\n%s\n%s" pre (Syntax.info_show info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
-        | FNeg( t , info)-> Printf.sprintf "%sFNEG%s\n%s" pre  (Syntax.info_show info) (Id.to_string_pre npre t)
-        | FAdd (x, y, info) -> Printf.sprintf "%sFADD%s\n%s\n%s" pre (Syntax.info_show info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
-        | FSub (x, y, info) -> Printf.sprintf "%sFSUB%s\n%s\n%s" pre (Syntax.info_show info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
-        | FMul (x, y, info) -> Printf.sprintf "%sFMUL%s\n%s\n%s" pre (Syntax.info_show info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
-        | FDiv (x, y, info) -> Printf.sprintf "%sFDIV%s\n%s\n%s" pre (Syntax.info_show info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
-        | IfEq (idx, idy, z, u, info) -> Printf.sprintf "%sIF_EQ%s\n%s\n%s\n%s\n%s" pre (Syntax.info_show info) (Id.to_string_pre npre idx) (Id.to_string_pre npre idy) (to_string_pre npre z) (to_string_pre npre u)
-        | IfLE (idx, idy, z, u, info) -> Printf.sprintf "%sIF_LE%s\n%s\n%s\n%s\n%s" pre (Syntax.info_show info) (Id.to_string_pre npre idx) (Id.to_string_pre npre idy) (to_string_pre npre z) (to_string_pre npre u)
-        | Let ((id, typ), x, y, info) -> Printf.sprintf "%sLET%s\n%s\n%s\n%s\n%s" pre (Syntax.info_show info) (Id.to_string_pre npre id) (Type.to_string_pre npre typ) (to_string_pre npre x) (to_string_pre npre y)
-        | Var( id , info)-> Printf.sprintf "%sVAR%s\n%s" pre (Syntax.info_show info) (Id.to_string_pre npre id)
-        | LetRec (f, t, info) -> Printf.sprintf "%sLET_REC%s\n%s\n%s" pre (Syntax.info_show info) (to_string_let_rec npre f) (to_string_pre npre t)
-        | App (x, xlist, info) -> Printf.sprintf "%sAPP%s\n%s%s" pre (Syntax.info_show info) (Id.to_string_pre npre x) (to_string_idlist npre xlist)
-        | Tuple(idlist, info) -> Printf.sprintf "%sTUPLE%s%s" pre (Syntax.info_show info) (to_string_idlist npre idlist)
-        | LetTuple (idtype_list, id, x, info) -> Printf.sprintf "%sLET_TUPLE%s\n%s\n%s\n%s" pre (Syntax.info_show info) (to_string_idtype_list npre idtype_list) (Id.to_string_pre npre id) (to_string_pre npre x)
-        | Get (x, y, info) -> Printf.sprintf "%sGET%s\n%s\n%s" pre (Syntax.info_show info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
-        | Put (x, y, z, info) -> Printf.sprintf "%sPUT%s\n%s\n%s\n%s" pre (Syntax.info_show info) (Id.to_string_pre npre x) (Id.to_string_pre npre y) (Id.to_string_pre npre z)
-        | ExtArray(x, info) -> Printf.sprintf "%sEXT_ARRAY%s\n%s" pre (Syntax.info_show info) (Id.to_string_pre npre x)
-        | ExtFunApp (x, xlist, info) -> Printf.sprintf "%sEXT_FUN_APP%s\n%s%s" pre (Syntax.info_show info) (Id.to_string_pre npre x) (to_string_idlist npre xlist)
+        | Unit info -> Printf.sprintf "%sUnit%s" pre (Info.to_string info)
+        | Int(i, info) -> Printf.sprintf "%sINT %d%s" pre i (Info.to_string info)
+        | Float( f , info)-> Printf.sprintf "%sFLOAT %f%s" pre f (Info.to_string info)
+        | Neg(t, info) -> Printf.sprintf "%sNEG%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre t)
+        | Add (x, y, info) -> Printf.sprintf "%sADD%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
+        | Sub (x, y, info) -> Printf.sprintf "%sSUB%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
+        | FNeg( t , info)-> Printf.sprintf "%sFNEG%s\n%s" pre  (Info.to_string info) (Id.to_string_pre npre t)
+        | FAdd (x, y, info) -> Printf.sprintf "%sFADD%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
+        | FSub (x, y, info) -> Printf.sprintf "%sFSUB%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
+        | FMul (x, y, info) -> Printf.sprintf "%sFMUL%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
+        | FDiv (x, y, info) -> Printf.sprintf "%sFDIV%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
+        | IfEq (idx, idy, z, u, info) -> Printf.sprintf "%sIF_EQ%s\n%s\n%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre idx) (Id.to_string_pre npre idy) (to_string_pre npre z) (to_string_pre npre u)
+        | IfLE (idx, idy, z, u, info) -> Printf.sprintf "%sIF_LE%s\n%s\n%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre idx) (Id.to_string_pre npre idy) (to_string_pre npre z) (to_string_pre npre u)
+        | Let ((id, typ), x, y, info) -> Printf.sprintf "%sLET%s\n%s\n%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre id) (Type.to_string_pre npre typ) (to_string_pre npre x) (to_string_pre npre y)
+        | Var( id , info)-> Printf.sprintf "%sVAR%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre id)
+        | LetRec (f, t, info) -> Printf.sprintf "%sLET_REC%s\n%s\n%s" pre (Info.to_string info) (to_string_let_rec npre f) (to_string_pre npre t)
+        | App (x, xlist, info) -> Printf.sprintf "%sAPP%s\n%s%s" pre (Info.to_string info) (Id.to_string_pre npre x) (to_string_idlist npre xlist)
+        | Tuple(idlist, info) -> Printf.sprintf "%sTUPLE%s%s" pre (Info.to_string info) (to_string_idlist npre idlist)
+        | LetTuple (idtype_list, id, x, info) -> Printf.sprintf "%sLET_TUPLE%s\n%s\n%s\n%s" pre (Info.to_string info) (to_string_idtype_list npre idtype_list) (Id.to_string_pre npre id) (to_string_pre npre x)
+        | Get (x, y, info) -> Printf.sprintf "%sGET%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
+        | Put (x, y, z, info) -> Printf.sprintf "%sPUT%s\n%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y) (Id.to_string_pre npre z)
+        | ExtArray(x, info) -> Printf.sprintf "%sEXT_ARRAY%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x)
+        | ExtFunApp (x, xlist, info) -> Printf.sprintf "%sEXT_FUN_APP%s\n%s%s" pre (Info.to_string info) (Id.to_string_pre npre x) (to_string_idlist npre xlist)
     and to_string_idlist pre = function
         | [] -> ""
         | id :: idlist -> Printf.sprintf "\n%s%s" (Id.to_string_pre pre id) (to_string_idlist pre idlist)

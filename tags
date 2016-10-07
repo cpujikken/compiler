@@ -5,23 +5,23 @@
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
 Add	asm.ml	/^  | Add of Id.t * id_or_imm * Info.t$/;"	C	type:exp
-Add	asm.mli	/^  | Add of Id.t * id_or_imm * Syntax.info$/;"	C	type:exp
-Add	closure.ml	/^  | Add of Id.t * Id.t * Syntax.info$/;"	C	type:t
-Add	closure.mli	/^  | Add of Id.t * Id.t * Syntax.info$/;"	C	type:t
-Add	kNormal.ml	/^  | Add of Id.t * Id.t * Syntax.info$/;"	C	type:t
-Add	kNormal.mli	/^  | Add of Id.t * Id.t * Syntax.info$/;"	C	type:t
+Add	asm.mli	/^  | Add of Id.t * id_or_imm * Info.t$/;"	C	type:exp
+Add	closure.ml	/^  | Add of Id.t * Id.t * Info.t$/;"	C	type:t
+Add	closure.mli	/^  | Add of Id.t * Id.t * Info.t$/;"	C	type:t
+Add	kNormal.ml	/^  | Add of Id.t * Id.t * Info.t$/;"	C	type:t
+Add	kNormal.mli	/^  | Add of Id.t * Id.t * Info.t$/;"	C	type:t
 Add	syntax.ml	/^  | Add of t * t * Info.t$/;"	C	type:t
 Alloc	regAlloc.ml	/^  | Alloc of Id.t (* allocated register *)$/;"	C	type:alloc_result
 Alpha	alpha.ml	1;"	M
 Ans	asm.ml	/^  | Ans of exp * Info.t$/;"	C	type:t
-Ans	asm.mli	/^  | Ans of exp * Syntax.info$/;"	C	type:t
-App	kNormal.ml	/^  | App of Id.t * Id.t list * Syntax.info$/;"	C	type:t
-App	kNormal.mli	/^  | App of Id.t * Id.t list * Syntax.info$/;"	C	type:t
+Ans	asm.mli	/^  | Ans of exp * Info.t$/;"	C	type:t
+App	kNormal.ml	/^  | App of Id.t * Id.t list * Info.t$/;"	C	type:t
+App	kNormal.mli	/^  | App of Id.t * Id.t list * Info.t$/;"	C	type:t
 App	syntax.ml	/^  | App of t * t list * Info.t$/;"	C	type:t
-AppCls	closure.ml	/^  | AppCls of Id.t * Id.t list * Syntax.info$/;"	C	type:t
-AppCls	closure.mli	/^  | AppCls of Id.t * Id.t list * Syntax.info$/;"	C	type:t
-AppDir	closure.ml	/^  | AppDir of Id.l * Id.t list * Syntax.info$/;"	C	type:t
-AppDir	closure.mli	/^  | AppDir of Id.l * Id.t list * Syntax.info$/;"	C	type:t
+AppCls	closure.ml	/^  | AppCls of Id.t * Id.t list * Info.t$/;"	C	type:t
+AppCls	closure.mli	/^  | AppCls of Id.t * Id.t list * Info.t$/;"	C	type:t
+AppDir	closure.ml	/^  | AppDir of Id.l * Id.t list * Info.t$/;"	C	type:t
+AppDir	closure.mli	/^  | AppDir of Id.l * Id.t list * Info.t$/;"	C	type:t
 Array	syntax.ml	/^  | Array of t * t * Info.t$/;"	C	type:t
 Array	type.ml	/^  | Array of t * Info.t$/;"	C	type:t
 Asm	asm.ml	1;"	M
@@ -33,13 +33,13 @@ Bool	type.ml	/^  | Bool of Info.t$/;"	C	type:t
 C	asm.ml	/^type id_or_imm = V of Id.t | C of int$/;"	C	type:id_or_imm
 C	asm.mli	/^type id_or_imm = V of Id.t | C of int$/;"	C	type:id_or_imm
 CallCls	asm.ml	/^  | CallCls of Id.t * Id.t list * Id.t list * Info.t$/;"	C	type:exp
-CallCls	asm.mli	/^  | CallCls of Id.t * Id.t list * Id.t list * Syntax.info$/;"	C	type:exp
+CallCls	asm.mli	/^  | CallCls of Id.t * Id.t list * Id.t list * Info.t$/;"	C	type:exp
 CallDir	asm.ml	/^  | CallDir of Id.l * Id.t list * Id.t list * Info.t$/;"	C	type:exp
-CallDir	asm.mli	/^  | CallDir of Id.l * Id.t list * Id.t list * Syntax.info$/;"	C	type:exp
+CallDir	asm.mli	/^  | CallDir of Id.l * Id.t list * Id.t list * Info.t$/;"	C	type:exp
 Closure	closure.ml	1;"	M
 Closure	closure.mli	1;"	M
 Comment	asm.ml	/^  | Comment of string * Info.t$/;"	C	type:exp
-Comment	asm.mli	/^  | Comment of string * Syntax.info$/;"	C	type:exp
+Comment	asm.mli	/^  | Comment of string * Info.t$/;"	C	type:exp
 ConstFold	constFold.ml	1;"	M
 Elim	elim.ml	1;"	M
 Emit	emit.ml	1;"	M
@@ -47,87 +47,87 @@ Eq	syntax.ml	/^  | Eq of t * t * Info.t$/;"	C	type:t
 Error	typing.ml	/^exception Error of t * Type.t * Type.t$/;"	e
 Error	typing.mli	/^exception Error of Syntax.t * Type.t * Type.t$/;"	e
 Example	example.ml	1;"	M
-ExtArray	closure.ml	/^  | ExtArray of Id.l * Syntax.info$/;"	C	type:t
-ExtArray	closure.mli	/^  | ExtArray of Id.l * Syntax.info$/;"	C	type:t
-ExtArray	kNormal.ml	/^  | ExtArray of Id.t * Syntax.info$/;"	C	type:t
-ExtArray	kNormal.mli	/^  | ExtArray of Id.t * Syntax.info$/;"	C	type:t
-ExtFunApp	kNormal.ml	/^  | ExtFunApp of Id.t * Id.t list * Syntax.info$/;"	C	type:t
-ExtFunApp	kNormal.mli	/^  | ExtFunApp of Id.t * Id.t list * Syntax.info$/;"	C	type:t
-FAdd	closure.ml	/^  | FAdd of Id.t * Id.t * Syntax.info$/;"	C	type:t
-FAdd	closure.mli	/^  | FAdd of Id.t * Id.t * Syntax.info$/;"	C	type:t
-FAdd	kNormal.ml	/^  | FAdd of Id.t * Id.t * Syntax.info$/;"	C	type:t
-FAdd	kNormal.mli	/^  | FAdd of Id.t * Id.t * Syntax.info$/;"	C	type:t
+ExtArray	closure.ml	/^  | ExtArray of Id.l * Info.t$/;"	C	type:t
+ExtArray	closure.mli	/^  | ExtArray of Id.l * Info.t$/;"	C	type:t
+ExtArray	kNormal.ml	/^  | ExtArray of Id.t * Info.t$/;"	C	type:t
+ExtArray	kNormal.mli	/^  | ExtArray of Id.t * Info.t$/;"	C	type:t
+ExtFunApp	kNormal.ml	/^  | ExtFunApp of Id.t * Id.t list * Info.t$/;"	C	type:t
+ExtFunApp	kNormal.mli	/^  | ExtFunApp of Id.t * Id.t list * Info.t$/;"	C	type:t
+FAdd	closure.ml	/^  | FAdd of Id.t * Id.t * Info.t$/;"	C	type:t
+FAdd	closure.mli	/^  | FAdd of Id.t * Id.t * Info.t$/;"	C	type:t
+FAdd	kNormal.ml	/^  | FAdd of Id.t * Id.t * Info.t$/;"	C	type:t
+FAdd	kNormal.mli	/^  | FAdd of Id.t * Id.t * Info.t$/;"	C	type:t
 FAdd	syntax.ml	/^  | FAdd of t * t * Info.t$/;"	C	type:t
 FAddD	asm.ml	/^  | FAddD of Id.t * Id.t * Info.t$/;"	C	type:exp
-FAddD	asm.mli	/^  | FAddD of Id.t * Id.t * Syntax.info$/;"	C	type:exp
-FDiv	closure.ml	/^  | FDiv of Id.t * Id.t * Syntax.info$/;"	C	type:t
-FDiv	closure.mli	/^  | FDiv of Id.t * Id.t * Syntax.info$/;"	C	type:t
-FDiv	kNormal.ml	/^  | FDiv of Id.t * Id.t * Syntax.info$/;"	C	type:t
-FDiv	kNormal.mli	/^  | FDiv of Id.t * Id.t * Syntax.info$/;"	C	type:t
+FAddD	asm.mli	/^  | FAddD of Id.t * Id.t * Info.t$/;"	C	type:exp
+FDiv	closure.ml	/^  | FDiv of Id.t * Id.t * Info.t$/;"	C	type:t
+FDiv	closure.mli	/^  | FDiv of Id.t * Id.t * Info.t$/;"	C	type:t
+FDiv	kNormal.ml	/^  | FDiv of Id.t * Id.t * Info.t$/;"	C	type:t
+FDiv	kNormal.mli	/^  | FDiv of Id.t * Id.t * Info.t$/;"	C	type:t
 FDiv	syntax.ml	/^  | FDiv of t * t * Info.t$/;"	C	type:t
 FDivD	asm.ml	/^  | FDivD of Id.t * Id.t * Info.t$/;"	C	type:exp
-FDivD	asm.mli	/^  | FDivD of Id.t * Id.t * Syntax.info$/;"	C	type:exp
+FDivD	asm.mli	/^  | FDivD of Id.t * Id.t * Info.t$/;"	C	type:exp
 FMovD	asm.ml	/^  | FMovD of Id.t * Info.t$/;"	C	type:exp
-FMovD	asm.mli	/^  | FMovD of Id.t * Syntax.info$/;"	C	type:exp
-FMul	closure.ml	/^  | FMul of Id.t * Id.t * Syntax.info$/;"	C	type:t
-FMul	closure.mli	/^  | FMul of Id.t * Id.t * Syntax.info$/;"	C	type:t
-FMul	kNormal.ml	/^  | FMul of Id.t * Id.t * Syntax.info$/;"	C	type:t
-FMul	kNormal.mli	/^  | FMul of Id.t * Id.t * Syntax.info$/;"	C	type:t
+FMovD	asm.mli	/^  | FMovD of Id.t * Info.t$/;"	C	type:exp
+FMul	closure.ml	/^  | FMul of Id.t * Id.t * Info.t$/;"	C	type:t
+FMul	closure.mli	/^  | FMul of Id.t * Id.t * Info.t$/;"	C	type:t
+FMul	kNormal.ml	/^  | FMul of Id.t * Id.t * Info.t$/;"	C	type:t
+FMul	kNormal.mli	/^  | FMul of Id.t * Id.t * Info.t$/;"	C	type:t
 FMul	syntax.ml	/^  | FMul of t * t * Info.t$/;"	C	type:t
 FMulD	asm.ml	/^  | FMulD of Id.t * Id.t * Info.t$/;"	C	type:exp
-FMulD	asm.mli	/^  | FMulD of Id.t * Id.t * Syntax.info$/;"	C	type:exp
-FNeg	closure.ml	/^  | FNeg of Id.t * Syntax.info$/;"	C	type:t
-FNeg	closure.mli	/^  | FNeg of Id.t * Syntax.info$/;"	C	type:t
-FNeg	kNormal.ml	/^  | FNeg of Id.t * Syntax.info$/;"	C	type:t
-FNeg	kNormal.mli	/^  | FNeg of Id.t * Syntax.info$/;"	C	type:t
+FMulD	asm.mli	/^  | FMulD of Id.t * Id.t * Info.t$/;"	C	type:exp
+FNeg	closure.ml	/^  | FNeg of Id.t * Info.t$/;"	C	type:t
+FNeg	closure.mli	/^  | FNeg of Id.t * Info.t$/;"	C	type:t
+FNeg	kNormal.ml	/^  | FNeg of Id.t * Info.t$/;"	C	type:t
+FNeg	kNormal.mli	/^  | FNeg of Id.t * Info.t$/;"	C	type:t
 FNeg	syntax.ml	/^  | FNeg of t * Info.t$/;"	C	type:t
 FNegD	asm.ml	/^  | FNegD of Id.t * Info.t$/;"	C	type:exp
-FNegD	asm.mli	/^  | FNegD of Id.t * Syntax.info$/;"	C	type:exp
-FSub	closure.ml	/^  | FSub of Id.t * Id.t * Syntax.info$/;"	C	type:t
-FSub	closure.mli	/^  | FSub of Id.t * Id.t * Syntax.info$/;"	C	type:t
-FSub	kNormal.ml	/^  | FSub of Id.t * Id.t * Syntax.info$/;"	C	type:t
-FSub	kNormal.mli	/^  | FSub of Id.t * Id.t * Syntax.info$/;"	C	type:t
+FNegD	asm.mli	/^  | FNegD of Id.t * Info.t$/;"	C	type:exp
+FSub	closure.ml	/^  | FSub of Id.t * Id.t * Info.t$/;"	C	type:t
+FSub	closure.mli	/^  | FSub of Id.t * Id.t * Info.t$/;"	C	type:t
+FSub	kNormal.ml	/^  | FSub of Id.t * Id.t * Info.t$/;"	C	type:t
+FSub	kNormal.mli	/^  | FSub of Id.t * Id.t * Info.t$/;"	C	type:t
 FSub	syntax.ml	/^  | FSub of t * t * Info.t$/;"	C	type:t
 FSubD	asm.ml	/^  | FSubD of Id.t * Id.t * Info.t$/;"	C	type:exp
-FSubD	asm.mli	/^  | FSubD of Id.t * Id.t * Syntax.info$/;"	C	type:exp
-Float	closure.ml	/^  | Float of float * Syntax.info$/;"	C	type:t
-Float	closure.mli	/^  | Float of float * Syntax.info$/;"	C	type:t
-Float	kNormal.ml	/^  | Float of float * Syntax.info$/;"	C	type:t
-Float	kNormal.mli	/^  | Float of float * Syntax.info$/;"	C	type:t
+FSubD	asm.mli	/^  | FSubD of Id.t * Id.t * Info.t$/;"	C	type:exp
+Float	closure.ml	/^  | Float of float * Info.t$/;"	C	type:t
+Float	closure.mli	/^  | Float of float * Info.t$/;"	C	type:t
+Float	kNormal.ml	/^  | Float of float * Info.t$/;"	C	type:t
+Float	kNormal.mli	/^  | Float of float * Info.t$/;"	C	type:t
 Float	syntax.ml	/^  | Float of float * Info.t$/;"	C	type:t
 Float	type.ml	/^  | Float of Info.t$/;"	C	type:t
 Fun	type.ml	/^  | Fun of t list * t * Info.t (* arguments are uncurried *)$/;"	C	type:t
-Get	closure.ml	/^  | Get of Id.t * Id.t * Syntax.info$/;"	C	type:t
-Get	closure.mli	/^  | Get of Id.t * Id.t * Syntax.info$/;"	C	type:t
-Get	kNormal.ml	/^  | Get of Id.t * Id.t * Syntax.info$/;"	C	type:t
-Get	kNormal.mli	/^  | Get of Id.t * Id.t * Syntax.info$/;"	C	type:t
+Get	closure.ml	/^  | Get of Id.t * Id.t * Info.t$/;"	C	type:t
+Get	closure.mli	/^  | Get of Id.t * Id.t * Info.t$/;"	C	type:t
+Get	kNormal.ml	/^  | Get of Id.t * Id.t * Info.t$/;"	C	type:t
+Get	kNormal.mli	/^  | Get of Id.t * Id.t * Info.t$/;"	C	type:t
 Get	syntax.ml	/^  | Get of t * t * Info.t$/;"	C	type:t
 Id	id.ml	1;"	M
 If	syntax.ml	/^  | If of t * t * t * Info.t$/;"	C	type:t
 IfEq	asm.ml	/^  | IfEq of Id.t * id_or_imm * t * t * Info.t$/;"	C	type:exp
-IfEq	asm.mli	/^  | IfEq of Id.t * id_or_imm * t * t * Syntax.info$/;"	C	type:exp
-IfEq	closure.ml	/^  | IfEq of Id.t * Id.t * t * t * Syntax.info$/;"	C	type:t
-IfEq	closure.mli	/^  | IfEq of Id.t * Id.t * t * t * Syntax.info$/;"	C	type:t
-IfEq	kNormal.ml	/^  | IfEq of Id.t * Id.t * t * t * Syntax.info (* 比較 + 分岐 (caml2html: knormal_branch) *)$/;"	C	type:t
-IfEq	kNormal.mli	/^  | IfEq of Id.t * Id.t * t * t * Syntax.info$/;"	C	type:t
+IfEq	asm.mli	/^  | IfEq of Id.t * id_or_imm * t * t * Info.t$/;"	C	type:exp
+IfEq	closure.ml	/^  | IfEq of Id.t * Id.t * t * t * Info.t$/;"	C	type:t
+IfEq	closure.mli	/^  | IfEq of Id.t * Id.t * t * t * Info.t$/;"	C	type:t
+IfEq	kNormal.ml	/^  | IfEq of Id.t * Id.t * t * t * Info.t (* 比較 + 分岐 (caml2html: knormal_branch) *)$/;"	C	type:t
+IfEq	kNormal.mli	/^  | IfEq of Id.t * Id.t * t * t * Info.t$/;"	C	type:t
 IfFEq	asm.ml	/^  | IfFEq of Id.t * Id.t * t * t * Info.t$/;"	C	type:exp
-IfFEq	asm.mli	/^  | IfFEq of Id.t * Id.t * t * t * Syntax.info$/;"	C	type:exp
+IfFEq	asm.mli	/^  | IfFEq of Id.t * Id.t * t * t * Info.t$/;"	C	type:exp
 IfFLE	asm.ml	/^  | IfFLE of Id.t * Id.t * t * t * Info.t$/;"	C	type:exp
-IfFLE	asm.mli	/^  | IfFLE of Id.t * Id.t * t * t * Syntax.info$/;"	C	type:exp
+IfFLE	asm.mli	/^  | IfFLE of Id.t * Id.t * t * t * Info.t$/;"	C	type:exp
 IfGE	asm.ml	/^  | IfGE of Id.t * id_or_imm * t * t * Info.t (* 左右対称ではないので必要 *)$/;"	C	type:exp
-IfGE	asm.mli	/^  | IfGE of Id.t * id_or_imm * t * t * Syntax.info$/;"	C	type:exp
+IfGE	asm.mli	/^  | IfGE of Id.t * id_or_imm * t * t * Info.t$/;"	C	type:exp
 IfLE	asm.ml	/^  | IfLE of Id.t * id_or_imm * t * t * Info.t$/;"	C	type:exp
-IfLE	asm.mli	/^  | IfLE of Id.t * id_or_imm * t * t * Syntax.info$/;"	C	type:exp
-IfLE	closure.ml	/^  | IfLE of Id.t * Id.t * t * t * Syntax.info$/;"	C	type:t
-IfLE	closure.mli	/^  | IfLE of Id.t * Id.t * t * t * Syntax.info$/;"	C	type:t
-IfLE	kNormal.ml	/^  | IfLE of Id.t * Id.t * t * t * Syntax.info (* 比較 + 分岐 *)$/;"	C	type:t
-IfLE	kNormal.mli	/^  | IfLE of Id.t * Id.t * t * t * Syntax.info$/;"	C	type:t
+IfLE	asm.mli	/^  | IfLE of Id.t * id_or_imm * t * t * Info.t$/;"	C	type:exp
+IfLE	closure.ml	/^  | IfLE of Id.t * Id.t * t * t * Info.t$/;"	C	type:t
+IfLE	closure.mli	/^  | IfLE of Id.t * Id.t * t * t * Info.t$/;"	C	type:t
+IfLE	kNormal.ml	/^  | IfLE of Id.t * Id.t * t * t * Info.t (* 比較 + 分岐 *)$/;"	C	type:t
+IfLE	kNormal.mli	/^  | IfLE of Id.t * Id.t * t * t * Info.t$/;"	C	type:t
 Info	info.ml	1;"	M
 Inline	inline.ml	1;"	M
-Int	closure.ml	/^  | Int of int * Syntax.info$/;"	C	type:t
-Int	closure.mli	/^  | Int of int * Syntax.info$/;"	C	type:t
-Int	kNormal.ml	/^  | Int of int * Syntax.info$/;"	C	type:t
-Int	kNormal.mli	/^  | Int of int * Syntax.info$/;"	C	type:t
+Int	closure.ml	/^  | Int of int * Info.t$/;"	C	type:t
+Int	closure.mli	/^  | Int of int * Info.t$/;"	C	type:t
+Int	kNormal.ml	/^  | Int of int * Info.t$/;"	C	type:t
+Int	kNormal.mli	/^  | Int of int * Info.t$/;"	C	type:t
 Int	syntax.ml	/^  | Int of int * Info.t$/;"	C	type:t
 Int	type.ml	/^  | Int of Info.t$/;"	C	type:t
 KNormal	kNormal.ml	1;"	M
@@ -135,96 +135,96 @@ KNormal	kNormal.mli	1;"	M
 L	id.ml	/^type l = L of string (* トップレベル関数やグローバル配列のラベル (caml2html: id_l) *)$/;"	C	type:l
 LE	syntax.ml	/^  | LE of t * t * Info.t$/;"	C	type:t
 Ld	asm.ml	/^  | Ld of Id.t * id_or_imm * int * Info.t$/;"	C	type:exp
-Ld	asm.mli	/^  | Ld of Id.t * id_or_imm * int * Syntax.info$/;"	C	type:exp
+Ld	asm.mli	/^  | Ld of Id.t * id_or_imm * int * Info.t$/;"	C	type:exp
 LdDF	asm.ml	/^  | LdDF of Id.t * id_or_imm * int * Info.t$/;"	C	type:exp
-LdDF	asm.mli	/^  | LdDF of Id.t * id_or_imm * int * Syntax.info$/;"	C	type:exp
+LdDF	asm.mli	/^  | LdDF of Id.t * id_or_imm * int * Info.t$/;"	C	type:exp
 Let	asm.ml	/^  | Let of (Id.t * Type.t) * exp * t * Info.t$/;"	C	type:t
-Let	asm.mli	/^  | Let of (Id.t * Type.t) * exp * t * Syntax.info$/;"	C	type:t
-Let	closure.ml	/^  | Let of (Id.t * Type.t) * t * t * Syntax.info$/;"	C	type:t
-Let	closure.mli	/^  | Let of (Id.t * Type.t) * t * t * Syntax.info$/;"	C	type:t
-Let	kNormal.ml	/^  | Let of (Id.t * Type.t) * t * t * Syntax.info$/;"	C	type:t
-Let	kNormal.mli	/^  | Let of (Id.t * Type.t) * t * t * Syntax.info$/;"	C	type:t
+Let	asm.mli	/^  | Let of (Id.t * Type.t) * exp * t * Info.t$/;"	C	type:t
+Let	closure.ml	/^  | Let of (Id.t * Type.t) * t * t * Info.t$/;"	C	type:t
+Let	closure.mli	/^  | Let of (Id.t * Type.t) * t * t * Info.t$/;"	C	type:t
+Let	kNormal.ml	/^  | Let of (Id.t * Type.t) * t * t * Info.t$/;"	C	type:t
+Let	kNormal.mli	/^  | Let of (Id.t * Type.t) * t * t * Info.t$/;"	C	type:t
 Let	syntax.ml	/^  | Let of (Id.t * Type.t) * t * t * Info.t$/;"	C	type:t
-LetRec	kNormal.ml	/^  | LetRec of fundef * t * Syntax.info$/;"	C	type:t
-LetRec	kNormal.mli	/^  | LetRec of fundef * t * Syntax.info$/;"	C	type:t
+LetRec	kNormal.ml	/^  | LetRec of fundef * t * Info.t$/;"	C	type:t
+LetRec	kNormal.mli	/^  | LetRec of fundef * t * Info.t$/;"	C	type:t
 LetRec	syntax.ml	/^  | LetRec of fundef * t * Info.t$/;"	C	type:t
-LetTuple	closure.ml	/^  | LetTuple of (Id.t * Type.t) list * Id.t * t * Syntax.info$/;"	C	type:t
-LetTuple	closure.mli	/^  | LetTuple of (Id.t * Type.t) list * Id.t * t * Syntax.info$/;"	C	type:t
-LetTuple	kNormal.ml	/^  | LetTuple of (Id.t * Type.t) list * Id.t * t * Syntax.info$/;"	C	type:t
-LetTuple	kNormal.mli	/^  | LetTuple of (Id.t * Type.t) list * Id.t * t * Syntax.info$/;"	C	type:t
+LetTuple	closure.ml	/^  | LetTuple of (Id.t * Type.t) list * Id.t * t * Info.t$/;"	C	type:t
+LetTuple	closure.mli	/^  | LetTuple of (Id.t * Type.t) list * Id.t * t * Info.t$/;"	C	type:t
+LetTuple	kNormal.ml	/^  | LetTuple of (Id.t * Type.t) list * Id.t * t * Info.t$/;"	C	type:t
+LetTuple	kNormal.mli	/^  | LetTuple of (Id.t * Type.t) list * Id.t * t * Info.t$/;"	C	type:t
 LetTuple	syntax.ml	/^  | LetTuple of (Id.t * Type.t) list * t * t * Info.t$/;"	C	type:t
 Main	main.ml	1;"	M
-MakeCls	closure.ml	/^  | MakeCls of (Id.t * Type.t) * closure * t * Syntax.info$/;"	C	type:t
-MakeCls	closure.mli	/^  | MakeCls of (Id.t * Type.t) * closure * t * Syntax.info$/;"	C	type:t
+MakeCls	closure.ml	/^  | MakeCls of (Id.t * Type.t) * closure * t * Info.t$/;"	C	type:t
+MakeCls	closure.mli	/^  | MakeCls of (Id.t * Type.t) * closure * t * Info.t$/;"	C	type:t
 Mov	asm.ml	/^  | Mov of Id.t * Info.t$/;"	C	type:exp
-Mov	asm.mli	/^  | Mov of Id.t * Syntax.info$/;"	C	type:exp
+Mov	asm.mli	/^  | Mov of Id.t * Info.t$/;"	C	type:exp
 Neg	asm.ml	/^  | Neg of Id.t * Info.t$/;"	C	type:exp
-Neg	asm.mli	/^  | Neg of Id.t * Syntax.info$/;"	C	type:exp
-Neg	closure.ml	/^  | Neg of Id.t * Syntax.info$/;"	C	type:t
-Neg	closure.mli	/^  | Neg of Id.t * Syntax.info$/;"	C	type:t
-Neg	kNormal.ml	/^  | Neg of Id.t * Syntax.info$/;"	C	type:t
-Neg	kNormal.mli	/^  | Neg of Id.t * Syntax.info$/;"	C	type:t
+Neg	asm.mli	/^  | Neg of Id.t * Info.t$/;"	C	type:exp
+Neg	closure.ml	/^  | Neg of Id.t * Info.t$/;"	C	type:t
+Neg	closure.mli	/^  | Neg of Id.t * Info.t$/;"	C	type:t
+Neg	kNormal.ml	/^  | Neg of Id.t * Info.t$/;"	C	type:t
+Neg	kNormal.mli	/^  | Neg of Id.t * Info.t$/;"	C	type:t
 Neg	syntax.ml	/^  | Neg of t * Info.t$/;"	C	type:t
-NoReg	regAlloc.ml	/^exception NoReg of Id.t * Type.t * Syntax.info$/;"	e
+NoReg	regAlloc.ml	/^exception NoReg of Id.t * Type.t * Info.t$/;"	e
 NonTail	emit.ml	/^type dest = Tail | NonTail of Id.t (* 末尾かどうかを表すデータ型 (caml2html: emit_dest) *)$/;"	C	type:dest
 Nop	asm.ml	/^  | Nop of Info.t$/;"	C	type:exp
-Nop	asm.mli	/^  | Nop of Syntax.info$/;"	C	type:exp
+Nop	asm.mli	/^  | Nop of Info.t$/;"	C	type:exp
 Not	syntax.ml	/^  | Not of t * Info.t$/;"	C	type:t
 Prog	asm.ml	/^type prog = Prog of (Id.l * float) list * fundef list * t$/;"	C	type:prog
 Prog	asm.mli	/^type prog = Prog of (Id.l * float) list * fundef list * t$/;"	C	type:prog
 Prog	closure.ml	/^type prog = Prog of fundef list * t$/;"	C	type:prog
 Prog	closure.mli	/^type prog = Prog of fundef list * t$/;"	C	type:prog
-Put	closure.ml	/^  | Put of Id.t * Id.t * Id.t * Syntax.info$/;"	C	type:t
-Put	closure.mli	/^  | Put of Id.t * Id.t * Id.t * Syntax.info$/;"	C	type:t
-Put	kNormal.ml	/^  | Put of Id.t * Id.t * Id.t * Syntax.info$/;"	C	type:t
-Put	kNormal.mli	/^  | Put of Id.t * Id.t * Id.t * Syntax.info$/;"	C	type:t
+Put	closure.ml	/^  | Put of Id.t * Id.t * Id.t * Info.t$/;"	C	type:t
+Put	closure.mli	/^  | Put of Id.t * Id.t * Id.t * Info.t$/;"	C	type:t
+Put	kNormal.ml	/^  | Put of Id.t * Id.t * Id.t * Info.t$/;"	C	type:t
+Put	kNormal.mli	/^  | Put of Id.t * Id.t * Id.t * Info.t$/;"	C	type:t
 Put	syntax.ml	/^  | Put of t * t * t * Info.t$/;"	C	type:t
 RegAlloc	regAlloc.ml	1;"	M
 Restore	asm.ml	/^  | Restore of Id.t * Info.t (* スタック変数から値を復元 (caml2html: sparcasm_restore) *)$/;"	C	type:exp
-Restore	asm.mli	/^  | Restore of Id.t * Syntax.info  (* スタック変数から値を復元 *)$/;"	C	type:exp
+Restore	asm.mli	/^  | Restore of Id.t * Info.t  (* スタック変数から値を復元 *)$/;"	C	type:exp
 Save	asm.ml	/^  | Save of Id.t * Id.t * Info.t (* レジスタ変数の値をスタック変数へ保存 (caml2html: sparcasm_save) *)$/;"	C	type:exp
-Save	asm.mli	/^  | Save of Id.t * Id.t  * Syntax.info (* レジスタ変数の値をスタック変数へ保存 *)$/;"	C	type:exp
+Save	asm.mli	/^  | Save of Id.t * Id.t  * Info.t (* レジスタ変数の値をスタック変数へ保存 *)$/;"	C	type:exp
 Set	asm.ml	/^  | Set of int * Info.t$/;"	C	type:exp
-Set	asm.mli	/^  | Set of int * Syntax.info$/;"	C	type:exp
+Set	asm.mli	/^  | Set of int * Info.t$/;"	C	type:exp
 SetL	asm.ml	/^  | SetL of Id.l * Info.t$/;"	C	type:exp
-SetL	asm.mli	/^  | SetL of Id.l * Syntax.info$/;"	C	type:exp
+SetL	asm.mli	/^  | SetL of Id.l * Info.t$/;"	C	type:exp
 Simm	simm.ml	1;"	M
 Spill	regAlloc.ml	/^  | Spill of Id.t (* spilled variable *)$/;"	C	type:alloc_result
 St	asm.ml	/^  | St of Id.t * Id.t * id_or_imm * int * Info.t$/;"	C	type:exp
-St	asm.mli	/^  | St of Id.t * Id.t * id_or_imm * int * Syntax.info$/;"	C	type:exp
+St	asm.mli	/^  | St of Id.t * Id.t * id_or_imm * int * Info.t$/;"	C	type:exp
 StDF	asm.ml	/^  | StDF of Id.t * Id.t * id_or_imm * int * Info.t$/;"	C	type:exp
-StDF	asm.mli	/^  | StDF of Id.t * Id.t * id_or_imm * int * Syntax.info$/;"	C	type:exp
+StDF	asm.mli	/^  | StDF of Id.t * Id.t * id_or_imm * int * Info.t$/;"	C	type:exp
 Sub	asm.ml	/^  | Sub of Id.t * id_or_imm * Info.t$/;"	C	type:exp
-Sub	asm.mli	/^  | Sub of Id.t * id_or_imm * Syntax.info$/;"	C	type:exp
-Sub	closure.ml	/^  | Sub of Id.t * Id.t * Syntax.info$/;"	C	type:t
-Sub	closure.mli	/^  | Sub of Id.t * Id.t * Syntax.info$/;"	C	type:t
-Sub	kNormal.ml	/^  | Sub of Id.t * Id.t * Syntax.info$/;"	C	type:t
-Sub	kNormal.mli	/^  | Sub of Id.t * Id.t * Syntax.info$/;"	C	type:t
+Sub	asm.mli	/^  | Sub of Id.t * id_or_imm * Info.t$/;"	C	type:exp
+Sub	closure.ml	/^  | Sub of Id.t * Id.t * Info.t$/;"	C	type:t
+Sub	closure.mli	/^  | Sub of Id.t * Id.t * Info.t$/;"	C	type:t
+Sub	kNormal.ml	/^  | Sub of Id.t * Id.t * Info.t$/;"	C	type:t
+Sub	kNormal.mli	/^  | Sub of Id.t * Id.t * Info.t$/;"	C	type:t
 Sub	syntax.ml	/^  | Sub of t * t * Info.t$/;"	C	type:t
 Syntax	syntax.ml	1;"	M
 Tail	emit.ml	/^type dest = Tail | NonTail of Id.t (* 末尾かどうかを表すデータ型 (caml2html: emit_dest) *)$/;"	C	type:dest
-Tuple	closure.ml	/^  | Tuple of Id.t list * Syntax.info$/;"	C	type:t
-Tuple	closure.mli	/^  | Tuple of Id.t list * Syntax.info$/;"	C	type:t
-Tuple	kNormal.ml	/^  | Tuple of Id.t list * Syntax.info$/;"	C	type:t
-Tuple	kNormal.mli	/^  | Tuple of Id.t list * Syntax.info$/;"	C	type:t
+Tuple	closure.ml	/^  | Tuple of Id.t list * Info.t$/;"	C	type:t
+Tuple	closure.mli	/^  | Tuple of Id.t list * Info.t$/;"	C	type:t
+Tuple	kNormal.ml	/^  | Tuple of Id.t list * Info.t$/;"	C	type:t
+Tuple	kNormal.mli	/^  | Tuple of Id.t list * Info.t$/;"	C	type:t
 Tuple	syntax.ml	/^  | Tuple of t list * Info.t$/;"	C	type:t
 Tuple	type.ml	/^  | Tuple of t list * Info.t$/;"	C	type:t
 Type	type.ml	1;"	M
 Typing	typing.ml	1;"	M
 Typing	typing.mli	1;"	M
 Unify	typing.ml	/^exception Unify of Type.t * Type.t$/;"	e
-Unit	closure.ml	/^  | Unit of Syntax.info$/;"	C	type:t
-Unit	closure.mli	/^  | Unit of Syntax.info$/;"	C	type:t
-Unit	kNormal.ml	/^  | Unit of Syntax.info$/;"	C	type:t
-Unit	kNormal.mli	/^  | Unit of Syntax.info$/;"	C	type:t
+Unit	closure.ml	/^  | Unit of Info.t$/;"	C	type:t
+Unit	closure.mli	/^  | Unit of Info.t$/;"	C	type:t
+Unit	kNormal.ml	/^  | Unit of Info.t$/;"	C	type:t
+Unit	kNormal.mli	/^  | Unit of Info.t$/;"	C	type:t
 Unit	syntax.ml	/^  | Unit of Info.t$/;"	C	type:t
 Unit	type.ml	/^  | Unit of Info.t$/;"	C	type:t
 V	asm.ml	/^type id_or_imm = V of Id.t | C of int$/;"	C	type:id_or_imm
 V	asm.mli	/^type id_or_imm = V of Id.t | C of int$/;"	C	type:id_or_imm
-Var	closure.ml	/^  | Var of Id.t * Syntax.info$/;"	C	type:t
-Var	closure.mli	/^  | Var of Id.t * Syntax.info$/;"	C	type:t
-Var	kNormal.ml	/^  | Var of Id.t * Syntax.info$/;"	C	type:t
-Var	kNormal.mli	/^  | Var of Id.t * Syntax.info$/;"	C	type:t
+Var	closure.ml	/^  | Var of Id.t * Info.t$/;"	C	type:t
+Var	closure.mli	/^  | Var of Id.t * Info.t$/;"	C	type:t
+Var	kNormal.ml	/^  | Var of Id.t * Info.t$/;"	C	type:t
+Var	kNormal.mli	/^  | Var of Id.t * Info.t$/;"	C	type:t
 Var	syntax.ml	/^  | Var of Id.t * Info.t$/;"	C	type:t
 Var	type.ml	/^  | Var of t option ref * Info.t$/;"	C	type:t
 Virtual	virtual.ml	1;"	M
@@ -315,7 +315,7 @@ find	regAlloc.ml	/^let find x t regenv info =$/;"	v
 find'	regAlloc.ml	/^let find' x' regenv info=$/;"	v
 findi	constFold.ml	/^let findi x env = (match M.find x env with Int(i, info) -> i | _ -> raise Not_found)$/;"	v
 fletd	asm.ml	/^let fletd(x, e1, e2, info) = Let((x, Type.Float), e1, e2, info)$/;"	v
-fletd	asm.mli	/^val fletd : Id.t * exp * t * Syntax.info -> t (* shorthand of Let for float *)$/;"	v
+fletd	asm.mli	/^val fletd : Id.t * exp * t * Info.t -> t (* shorthand of Let for float *)$/;"	v
 formal_fv	closure.ml	/^		formal_fv : (Id.t * Type.t) list;$/;"	r	type:fundef
 formal_fv	closure.mli	/^		formal_fv : (Id.t * Type.t) list;$/;"	r	type:fundef
 free	regAlloc.ml	/^  let free = fv cont in$/;"	v
@@ -351,9 +351,10 @@ gcd	example.ml	/^let rec gcd m n =$/;"	v
 genid	id.ml	/^let genid s =$/;"	v
 gentmp	id.ml	/^let gentmp typ =$/;"	v
 gentyp	type.ml	/^let gentyp () = Var(ref None) (* 新しい型変数を作る *)$/;"	v
+get	info.ml	/^let get () =$/;"	v
 get_info_exp	asm.ml	/^let get_info_exp = function$/;"	v
-get_info_exp	asm.mli	/^val get_info_exp: exp -> Syntax.info$/;"	v
-get_info_t	asm.mli	/^val get_info_t: t -> Syntax.info$/;"	v
+get_info_exp	asm.mli	/^val get_info_exp: exp -> Info.t$/;"	v
+get_info_t	asm.mli	/^val get_info_t: t -> Info.t$/;"	v
 h	regAlloc.ml	/^let h { name = Id.L(x); args = ys; fargs = zs; body = e; ret = t } = (* 関数のレジスタ割り当て (caml2html: regalloc_h) *)$/;"	v
 h	simm.ml	/^let h { name = l; args = xs; fargs = ys; body = e; ret = t } = (* トップレベル関数の即値最適化 *)$/;"	v
 h	virtual.ml	/^let h { Closure.name = (Id.L(x), t); Closure.args = yts; Closure.formal_fv = zts; Closure.body = e } =$/;"	v
@@ -363,8 +364,6 @@ id_or_imm	asm.ml	/^type id_or_imm = V of Id.t | C of int$/;"	t
 id_or_imm	asm.mli	/^type id_or_imm = V of Id.t | C of int$/;"	t
 inchan	main.ml	/^  let inchan = open_in (f ^ ".ml") in$/;"	v
 info	regAlloc.ml	/^  let info = Asm.get_info_t e in$/;"	v
-info_get	info.ml	/^let info_get () =$/;"	v
-info_show	info.ml	/^let info_show (fname, start_row, start_column, end_row, end_column) = Printf.sprintf "%s:%d:%d->%d:%d" fname start_row start_column end_row end_column$/;"	v
 insert_let	kNormal.ml	/^let insert_let (e, t) k info = (* letを挿入する補助関数 (caml2html: knormal_insert) *)$/;"	v
 int	virtual.ml	/^      let (int, float) = separate (List.map (fun y -> (y, M.find y env)) ys) in$/;"	v
 int	virtual.ml	/^  let (int, float) = separate yts in$/;"	v
@@ -416,7 +415,7 @@ s	virtual.ml	/^      let s = Closure.fv e2 in$/;"	v
 save	emit.ml	/^let save x =$/;"	v
 savef	emit.ml	/^let savef x =$/;"	v
 seq	asm.ml	/^let seq(e1, e2, info) = Let((Id.gentmp Type.Unit, Type.Unit), e1, e2, info)$/;"	v
-seq	asm.mli	/^val seq : exp * t  * Syntax.info -> t (* shorthand of Let for unit *)$/;"	v
+seq	asm.mli	/^val seq : exp * t  * Info.t -> t (* shorthand of Let for unit *)$/;"	v
 size	inline.ml	/^let rec size = function$/;"	v
 ss	emit.ml	/^	let ss = stacksize () in$/;"	v
 ss	emit.ml	/^      let ss = stacksize () in$/;"	v
@@ -440,10 +439,11 @@ t2	typing.ml	/^	let t2 = g env e2 in$/;"	v
 t3	typing.ml	/^	let t3 = g env e3 in$/;"	v
 target'	regAlloc.ml	/^let rec target' src (dest, t) = function$/;"	v
 threshold	inline.ml	/^let threshold = ref 0 (* Mainで-inlineオプションによりセットされる *)$/;"	v
+to_string	info.ml	/^let to_string (fname, start_row, start_column, end_row, end_column) = Printf.sprintf "%s:%d:%d->%d:%d" fname start_row start_column end_row end_column$/;"	v
 to_string	kNormal.ml	/^let to_string x =$/;"	v
 to_string	syntax.ml	/^let to_string (x: t) =$/;"	v
 to_string_args	syntax.ml	/^    and to_string_args pre = function$/;"	v
-to_string_pre	id.ml	/^let to_string_pre pre ((id, info): t) = Printf.sprintf "%sID%s\\t#%s" pre id (Syntax.info_show info)$/;"	v
+to_string_pre	id.ml	/^let to_string_pre pre ((id, info): t) = Printf.sprintf "%sID%s\\t#%s" pre id (Info.to_string info)$/;"	v
 to_string_pre	type.ml	/^let rec to_string_pre pre typ =$/;"	v
 toplevel	closure.ml	/^let toplevel : fundef list ref = ref []$/;"	v
 unify	typing.ml	/^let rec unify t1 t2 = (* 型が合うように、型変数への代入をする (caml2html: typing_unify) *)$/;"	v

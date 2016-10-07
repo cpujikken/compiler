@@ -1,28 +1,28 @@
 type closure = { entry : Id.l; actual_fv : Id.t list }
 type t = (* クロージャ変換後の式 (caml2html: closure_t) *)
-  | Unit of Syntax.info
-  | Int of int * Syntax.info
-  | Float of float * Syntax.info
-  | Neg of Id.t * Syntax.info
-  | Add of Id.t * Id.t * Syntax.info
-  | Sub of Id.t * Id.t * Syntax.info
-  | FNeg of Id.t * Syntax.info
-  | FAdd of Id.t * Id.t * Syntax.info
-  | FSub of Id.t * Id.t * Syntax.info
-  | FMul of Id.t * Id.t * Syntax.info
-  | FDiv of Id.t * Id.t * Syntax.info
-  | IfEq of Id.t * Id.t * t * t * Syntax.info
-  | IfLE of Id.t * Id.t * t * t * Syntax.info
-  | Let of (Id.t * Type.t) * t * t * Syntax.info
-  | Var of Id.t * Syntax.info
-  | MakeCls of (Id.t * Type.t) * closure * t * Syntax.info
-  | AppCls of Id.t * Id.t list * Syntax.info
-  | AppDir of Id.l * Id.t list * Syntax.info
-  | Tuple of Id.t list * Syntax.info
-  | LetTuple of (Id.t * Type.t) list * Id.t * t * Syntax.info
-  | Get of Id.t * Id.t * Syntax.info
-  | Put of Id.t * Id.t * Id.t * Syntax.info
-  | ExtArray of Id.l * Syntax.info
+  | Unit of Info.t
+  | Int of int * Info.t
+  | Float of float * Info.t
+  | Neg of Id.t * Info.t
+  | Add of Id.t * Id.t * Info.t
+  | Sub of Id.t * Id.t * Info.t
+  | FNeg of Id.t * Info.t
+  | FAdd of Id.t * Id.t * Info.t
+  | FSub of Id.t * Id.t * Info.t
+  | FMul of Id.t * Id.t * Info.t
+  | FDiv of Id.t * Id.t * Info.t
+  | IfEq of Id.t * Id.t * t * t * Info.t
+  | IfLE of Id.t * Id.t * t * t * Info.t
+  | Let of (Id.t * Type.t) * t * t * Info.t
+  | Var of Id.t * Info.t
+  | MakeCls of (Id.t * Type.t) * closure * t * Info.t
+  | AppCls of Id.t * Id.t list * Info.t
+  | AppDir of Id.l * Id.t list * Info.t
+  | Tuple of Id.t list * Info.t
+  | LetTuple of (Id.t * Type.t) list * Id.t * t * Info.t
+  | Get of Id.t * Id.t * Info.t
+  | Put of Id.t * Id.t * Id.t * Info.t
+  | ExtArray of Id.l * Info.t
 type fundef = { name : Id.l * Type.t;
 		args : (Id.t * Type.t) list;
 		formal_fv : (Id.t * Type.t) list;
