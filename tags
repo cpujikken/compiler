@@ -349,9 +349,8 @@ g'_call	regAlloc.ml	/^and g'_call dest cont regenv exp constr ys zs info = (* 関
 g'_tail_if	emit.ml	/^and g'_tail_if oc e1 e2 b bn =$/;"	v
 gcd	example.ml	/^let rec gcd m n =$/;"	v
 genid	id.ml	/^let genid s =$/;"	v
-gentmp	id.ml	/^let gentmp typ =$/;"	v
-gentyp	type.ml	/^let gentyp () = Var(ref None) (* 新しい型変数を作る *)$/;"	v
-get	info.ml	/^let get () =$/;"	v
+gentmp	id.ml	/^let gentmp typ info=$/;"	v
+gentyp	type.ml	/^let gentyp info = Var(ref None, info) (* 新しい型変数を作る *)$/;"	v
 get_info_exp	asm.ml	/^let get_info_exp = function$/;"	v
 get_info_exp	asm.mli	/^val get_info_exp: exp -> Info.t$/;"	v
 get_info_t	asm.mli	/^val get_info_t: t -> Info.t$/;"	v
@@ -373,6 +372,7 @@ known'	closure.ml	/^      let known' = S.add x known in$/;"	v
 known'	closure.ml	/^      let known', e1' =$/;"	v
 l	id.ml	/^type l = L of string (* トップレベル関数やグローバル配列のラベル (caml2html: id_l) *)$/;"	t
 lbuf	main.ml	/^      let lbuf = Lexing.from_channel inchan$/;"	v
+lex_get	info.ml	/^let lex_get lexbuf =$/;"	v
 lexbuf	main.ml	/^let lexbuf outchan l = (* バッファをコンパイルしてチャンネルへ出力する (caml2html: main_lexbuf) *)$/;"	v
 limit	main.ml	/^let limit = ref 1000$/;"	v
 live	elim.ml	/^      let live = fv e' in$/;"	v
@@ -396,6 +396,7 @@ offset	virtual.ml	/^      let (offset, store) =$/;"	v
 offset	virtual.ml	/^      let offset, store_fv =$/;"	v
 offset	virtual.ml	/^  let (offset, load) =$/;"	v
 outchan	main.ml	/^  let outchan = open_out (f ^ ".s") in$/;"	v
+parsing_get	info.ml	/^let parsing_get () =$/;"	v
 pp_id_or_imm	emit.ml	/^let pp_id_or_imm = function$/;"	v
 pp_list	id.ml	/^let rec pp_list = function$/;"	v
 prog	asm.ml	/^type prog = Prog of (Id.l * float) list * fundef list * t$/;"	t

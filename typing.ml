@@ -9,7 +9,7 @@ let extenv = ref M.empty
 
 (* for pretty printing (and type normalization) *)
 let rec deref_typ = function (* 型変数を中身でおきかえる関数 (caml2html: typing_deref) *)
-  | Type.Fun(t1s, t2) -> Type.Fun(List.map deref_typ t1s, deref_typ t2)
+  | Type.Fun(t1s, t2, info) -> Type.Fun(List.map deref_typ t1s, deref_typ t2, info)
   | Type.Tuple(ts) -> Type.Tuple(List.map deref_typ ts)
   | Type.Array(t) -> Type.Array(deref_typ t)
   | Type.Var({ contents = None } as r) ->

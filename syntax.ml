@@ -31,31 +31,31 @@ let to_string (x: t) =
     let npre = pre ^ " "
     in
     match t with
-        | Unit info -> Printf.sprintf "%sUnit\t#%s" pre (info_show info)
-        | Bool(b, info) -> Printf.sprintf "%s%s\t#%s" pre (if b then "BOOL true" else "BOOL false") (info_show info)
-        | Int (i, info) -> Printf.sprintf "%sINT %d\t#%s" pre i (info_show info)
-        | Float (f, info) -> Printf.sprintf "%sFLOAT %f\t#%s" pre f (info_show info)
-        | Not (t, info) -> Printf.sprintf "%sNOT\t#%s\n%s" pre (info_show info) (to_string_pre npre t)
-        | Neg (t, info) -> Printf.sprintf "%sNEG\t#%s\n%s" pre (info_show info) (to_string_pre npre t)
-        | Add (x, y, info) -> Printf.sprintf "%sADD\t#%s\n%s\n%s" pre (info_show info) (to_string_pre npre x) (to_string_pre npre y)
-        | Sub (x, y, info) -> Printf.sprintf "%sSUB\t#%s\n%s\n%s" pre (info_show info) (to_string_pre npre x) (to_string_pre npre y)
-        | FNeg (t, info) -> Printf.sprintf "%sFNEG\t#%s\n%s" pre  (info_show info) (to_string_pre npre t)
-        | FAdd (x, y, info) -> Printf.sprintf "%sFADD\t#%s\n%s\n%s" pre (info_show info) (to_string_pre npre x) (to_string_pre npre y)
-        | FSub (x, y, info) -> Printf.sprintf "%sFSUB\t#%s\n%s\n%s" pre (info_show info) (to_string_pre npre x) (to_string_pre npre y)
-        | FMul (x, y, info) -> Printf.sprintf "%sFMUL\t#%s\n%s\n%s" pre (info_show info) (to_string_pre npre x) (to_string_pre npre y)
-        | FDiv (x, y, info) -> Printf.sprintf "%sFDIV\t#%s\n%s\n%s" pre (info_show info) (to_string_pre npre x) (to_string_pre npre y)
-        | Eq (x, y, info) -> Printf.sprintf "%sEQ\t#%s\n%s\n%s" pre (info_show info) (to_string_pre npre x) (to_string_pre npre y)
-        | LE (x, y, info) -> Printf.sprintf "%sLE\t#%s\n%s\n%s" pre (info_show info) (to_string_pre npre x) (to_string_pre npre y)
-        | If (x, y, z, info) -> Printf.sprintf "%sIF\t#%s\n%s\n%sTHEN\t#%s\n%s\n%sELSE\t#%s\n%s" pre (info_show info) (to_string_pre npre x) pre (info_show info) (to_string_pre npre y) pre (info_show info) (to_string_pre npre z)
-        | Let ((id, typ), x, y, info) -> Printf.sprintf "%sLET\t#%s\n%s\n%s\n%s\n%s" pre (info_show info) (Id.to_string_pre npre id) (Type.to_string_pre npre typ) (to_string_pre npre x) (to_string_pre npre y)
-        | Var (id, info) -> Printf.sprintf "%sVAR\t#%s\n%s" pre (info_show info) (Id.to_string_pre npre id)
-        | LetRec (f, t, info) -> Printf.sprintf "%sLET_REC\t#%s\n%s\n%s" pre (info_show info) (to_string_let_rec npre f info) (to_string_pre npre t)
-        | App (x, xlist, info) -> Printf.sprintf "%sAPP\t#%s\n%s%s" pre (info_show info) (to_string_pre npre x) (to_string_list npre xlist)
-        | Tuple (xlist, info) -> Printf.sprintf "%sTUPLE\t#%s%s" pre (info_show info) (to_string_list npre xlist)
-        | LetTuple (idlist, x, y, info) -> Printf.sprintf "%sLET_TUPLE\t#%s\n%s\n%s\n%s" pre (info_show info) (to_string_idtype_list npre idlist) (to_string_pre npre x) (to_string_pre npre y)
-        | Array (x, y, info) -> Printf.sprintf "%sARRAY\t#%s\n%s\n%s" pre (info_show info) (to_string_pre npre x) (to_string_pre npre y)
-        | Get (x, y, info) -> Printf.sprintf "%sGET\t#%s\n%s\n%s" pre (info_show info) (to_string_pre npre x) (to_string_pre npre y)
-        | Put (x, y, z, info) -> Printf.sprintf "%sPUT\t#%s\n%s\n%s\n%s" pre (info_show info) (to_string_pre npre x) (to_string_pre npre y ) (to_string_pre (pre ^ " " ) z)
+        | Unit info -> Printf.sprintf "%sUnit\t#%s" pre (Info.to_string info)
+        | Bool(b, info) -> Printf.sprintf "%s%s\t#%s" pre (if b then "BOOL true" else "BOOL false") (Info.to_string info)
+        | Int (i, info) -> Printf.sprintf "%sINT %d\t#%s" pre i (Info.to_string info)
+        | Float (f, info) -> Printf.sprintf "%sFLOAT %f\t#%s" pre f (Info.to_string info)
+        | Not (t, info) -> Printf.sprintf "%sNOT\t#%s\n%s" pre (Info.to_string info) (to_string_pre npre t)
+        | Neg (t, info) -> Printf.sprintf "%sNEG\t#%s\n%s" pre (Info.to_string info) (to_string_pre npre t)
+        | Add (x, y, info) -> Printf.sprintf "%sADD\t#%s\n%s\n%s" pre (Info.to_string info) (to_string_pre npre x) (to_string_pre npre y)
+        | Sub (x, y, info) -> Printf.sprintf "%sSUB\t#%s\n%s\n%s" pre (Info.to_string info) (to_string_pre npre x) (to_string_pre npre y)
+        | FNeg (t, info) -> Printf.sprintf "%sFNEG\t#%s\n%s" pre  (Info.to_string info) (to_string_pre npre t)
+        | FAdd (x, y, info) -> Printf.sprintf "%sFADD\t#%s\n%s\n%s" pre (Info.to_string info) (to_string_pre npre x) (to_string_pre npre y)
+        | FSub (x, y, info) -> Printf.sprintf "%sFSUB\t#%s\n%s\n%s" pre (Info.to_string info) (to_string_pre npre x) (to_string_pre npre y)
+        | FMul (x, y, info) -> Printf.sprintf "%sFMUL\t#%s\n%s\n%s" pre (Info.to_string info) (to_string_pre npre x) (to_string_pre npre y)
+        | FDiv (x, y, info) -> Printf.sprintf "%sFDIV\t#%s\n%s\n%s" pre (Info.to_string info) (to_string_pre npre x) (to_string_pre npre y)
+        | Eq (x, y, info) -> Printf.sprintf "%sEQ\t#%s\n%s\n%s" pre (Info.to_string info) (to_string_pre npre x) (to_string_pre npre y)
+        | LE (x, y, info) -> Printf.sprintf "%sLE\t#%s\n%s\n%s" pre (Info.to_string info) (to_string_pre npre x) (to_string_pre npre y)
+        | If (x, y, z, info) -> Printf.sprintf "%sIF\t#%s\n%s\n%sTHEN\t#%s\n%s\n%sELSE\t#%s\n%s" pre (Info.to_string info) (to_string_pre npre x) pre (Info.to_string info) (to_string_pre npre y) pre (Info.to_string info) (to_string_pre npre z)
+        | Let ((id, typ), x, y, info) -> Printf.sprintf "%sLET\t#%s\n%s\n%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre id) (Type.to_string_pre npre typ) (to_string_pre npre x) (to_string_pre npre y)
+        | Var (id, info) -> Printf.sprintf "%sVAR\t#%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre id)
+        | LetRec (f, t, info) -> Printf.sprintf "%sLET_REC\t#%s\n%s\n%s" pre (Info.to_string info) (to_string_let_rec npre f info) (to_string_pre npre t)
+        | App (x, xlist, info) -> Printf.sprintf "%sAPP\t#%s\n%s%s" pre (Info.to_string info) (to_string_pre npre x) (to_string_list npre xlist)
+        | Tuple (xlist, info) -> Printf.sprintf "%sTUPLE\t#%s%s" pre (Info.to_string info) (to_string_list npre xlist)
+        | LetTuple (idlist, x, y, info) -> Printf.sprintf "%sLET_TUPLE\t#%s\n%s\n%s\n%s" pre (Info.to_string info) (to_string_idtype_list npre idlist) (to_string_pre npre x) (to_string_pre npre y)
+        | Array (x, y, info) -> Printf.sprintf "%sARRAY\t#%s\n%s\n%s" pre (Info.to_string info) (to_string_pre npre x) (to_string_pre npre y)
+        | Get (x, y, info) -> Printf.sprintf "%sGET\t#%s\n%s\n%s" pre (Info.to_string info) (to_string_pre npre x) (to_string_pre npre y)
+        | Put (x, y, z, info) -> Printf.sprintf "%sPUT\t#%s\n%s\n%s\n%s" pre (Info.to_string info) (to_string_pre npre x) (to_string_pre npre y ) (to_string_pre (pre ^ " " ) z)
     and to_string_list pre = function
         | [] -> ""
         | x :: xlist -> Printf.sprintf "\n%s%s" (to_string_pre pre x) (to_string_list pre xlist)
@@ -66,24 +66,24 @@ let to_string (x: t) =
         in
         Printf.sprintf "%sNAME\t#%s\n%s\n%sTYPE\t#%s\n%s\n%sARGS\t#%s%s\n%sBODY\t#%s\n%s"
             pre
-            (info_show info) (*after NAME *)
+            (Info.to_string info) (*after NAME *)
 
             (Id.to_string_pre npre nid)
 
             (*TYPE*)
             pre
-            (info_show info)
+            (Info.to_string info)
 
             (Type.to_string_pre npre ntype)
 
             pre
-            (info_show info)
+            (Info.to_string info)
 
             (*ARGS*)
             (to_string_args npre f.args)
 
             pre
-            (info_show info)
+            (Info.to_string info)
 
             (to_string_pre npre f.body)
     and to_string_args pre = function

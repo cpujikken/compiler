@@ -830,7 +830,7 @@ and __ocaml_lex_token_rec lexbuf __ocaml_lex_state =
 
   | 29 ->
 # 75 "lexer.mll"
-    ( IDENT(Id.gentmp Type.Unit) )
+    ( IDENT(Id.gentmp (Type.Unit (Info.lex_get lexbuf)) (Info.lex_get lexbuf)) )
 # 835 "lexer.ml"
 
   | 30 ->
@@ -860,7 +860,7 @@ and __ocaml_lex_token_rec lexbuf __ocaml_lex_state =
 
   | 35 ->
 # 87 "lexer.mll"
-    ( IDENT(Lexing.lexeme lexbuf) )
+    ( IDENT(Lexing.lexeme lexbuf, Info.lex_get lexbuf) )
 # 865 "lexer.ml"
 
   | 36 ->

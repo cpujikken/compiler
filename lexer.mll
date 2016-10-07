@@ -72,7 +72,7 @@ rule token = parse
 | ','
     { COMMA }
 | '_'
-    { IDENT(Id.gentmp Type.Unit) }
+    { IDENT(Id.gentmp (Type.Unit (Info.lex_get lexbuf)) (Info.lex_get lexbuf)) }
 | "Array.create" (* [XX] ad hoc *)
     { ARRAY_CREATE }
 | '.'
@@ -84,7 +84,7 @@ rule token = parse
 | eof
     { EOF }
 | lower (digit|lower|upper|'_')* (* 他の「予約語」より後でないといけない *)
-    { IDENT(Lexing.lexeme lexbuf) }
+    { IDENT(Lexing.lexeme lexbuf, Info.lex_get lexbuf) }
 | _
     { failwith
 	(Printf.sprintf "\"%s\": unknown token %s near characters %d-%d, i.e. %d:%d to %d:%d (line:column format)"
