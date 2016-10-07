@@ -1,28 +1,28 @@
 type closure = { entry : Id.l; actual_fv : Id.t list }
 type t =
-  | Unit
-  | Int of int
-  | Float of float
-  | Neg of Id.t
-  | Add of Id.t * Id.t
-  | Sub of Id.t * Id.t
-  | FNeg of Id.t
-  | FAdd of Id.t * Id.t
-  | FSub of Id.t * Id.t
-  | FMul of Id.t * Id.t
-  | FDiv of Id.t * Id.t
-  | IfEq of Id.t * Id.t * t * t
-  | IfLE of Id.t * Id.t * t * t
-  | Let of (Id.t * Type.t) * t * t
-  | Var of Id.t
-  | MakeCls of (Id.t * Type.t) * closure * t
-  | AppCls of Id.t * Id.t list
-  | AppDir of Id.l * Id.t list
-  | Tuple of Id.t list
-  | LetTuple of (Id.t * Type.t) list * Id.t * t
-  | Get of Id.t * Id.t
-  | Put of Id.t * Id.t * Id.t
-  | ExtArray of Id.l
+  | Unit of Syntax.info
+  | Int of int * Syntax.info
+  | Float of float * Syntax.info
+  | Neg of Id.t * Syntax.info
+  | Add of Id.t * Id.t * Syntax.info
+  | Sub of Id.t * Id.t * Syntax.info
+  | FNeg of Id.t * Syntax.info
+  | FAdd of Id.t * Id.t * Syntax.info
+  | FSub of Id.t * Id.t * Syntax.info
+  | FMul of Id.t * Id.t * Syntax.info
+  | FDiv of Id.t * Id.t * Syntax.info
+  | IfEq of Id.t * Id.t * t * t * Syntax.info
+  | IfLE of Id.t * Id.t * t * t * Syntax.info
+  | Let of (Id.t * Type.t) * t * t * Syntax.info
+  | Var of Id.t * Syntax.info
+  | MakeCls of (Id.t * Type.t) * closure * t * Syntax.info
+  | AppCls of Id.t * Id.t list * Syntax.info
+  | AppDir of Id.l * Id.t list * Syntax.info
+  | Tuple of Id.t list * Syntax.info
+  | LetTuple of (Id.t * Type.t) list * Id.t * t * Syntax.info
+  | Get of Id.t * Id.t * Syntax.info
+  | Put of Id.t * Id.t * Id.t * Syntax.info
+  | ExtArray of Id.l * Syntax.info
 type fundef = { name : Id.l * Type.t;
 		args : (Id.t * Type.t) list;
 		formal_fv : (Id.t * Type.t) list;

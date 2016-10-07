@@ -1,42 +1,42 @@
 type id_or_imm = V of Id.t | C of int
 type t =
-  | Ans of exp
-  | Let of (Id.t * Type.t) * exp * t
+  | Ans of exp * Syntax.info
+  | Let of (Id.t * Type.t) * exp * t * Syntax.info
 and exp =
-  | Nop
-  | Set of int
-  | SetL of Id.l
-  | Mov of Id.t
-  | Neg of Id.t
-  | Add of Id.t * id_or_imm
-  | Sub of Id.t * id_or_imm
-  | Ld of Id.t * id_or_imm * int
-  | St of Id.t * Id.t * id_or_imm * int
-  | FMovD of Id.t
-  | FNegD of Id.t
-  | FAddD of Id.t * Id.t
-  | FSubD of Id.t * Id.t
-  | FMulD of Id.t * Id.t
-  | FDivD of Id.t * Id.t
-  | LdDF of Id.t * id_or_imm * int
-  | StDF of Id.t * Id.t * id_or_imm * int
-  | Comment of string
+  | Nop of Syntax.info
+  | Set of int * Syntax.info
+  | SetL of Id.l * Syntax.info
+  | Mov of Id.t * Syntax.info
+  | Neg of Id.t * Syntax.info
+  | Add of Id.t * id_or_imm * Syntax.info
+  | Sub of Id.t * id_or_imm * Syntax.info
+  | Ld of Id.t * id_or_imm * int * Syntax.info
+  | St of Id.t * Id.t * id_or_imm * int * Syntax.info
+  | FMovD of Id.t * Syntax.info
+  | FNegD of Id.t * Syntax.info
+  | FAddD of Id.t * Id.t * Syntax.info
+  | FSubD of Id.t * Id.t * Syntax.info
+  | FMulD of Id.t * Id.t * Syntax.info
+  | FDivD of Id.t * Id.t * Syntax.info
+  | LdDF of Id.t * id_or_imm * int * Syntax.info
+  | StDF of Id.t * Id.t * id_or_imm * int * Syntax.info
+  | Comment of string * Syntax.info
   (* virtual instructions *)
-  | IfEq of Id.t * id_or_imm * t * t
-  | IfLE of Id.t * id_or_imm * t * t
-  | IfGE of Id.t * id_or_imm * t * t
-  | IfFEq of Id.t * Id.t * t * t
-  | IfFLE of Id.t * Id.t * t * t
+  | IfEq of Id.t * id_or_imm * t * t * Syntax.info
+  | IfLE of Id.t * id_or_imm * t * t * Syntax.info
+  | IfGE of Id.t * id_or_imm * t * t * Syntax.info
+  | IfFEq of Id.t * Id.t * t * t * Syntax.info
+  | IfFLE of Id.t * Id.t * t * t * Syntax.info
   (* closure address, integer arguments, and float arguments *)
-  | CallCls of Id.t * Id.t list * Id.t list
-  | CallDir of Id.l * Id.t list * Id.t list
-  | Save of Id.t * Id.t (* レジスタ変数の値をスタック変数へ保存 *)
-  | Restore of Id.t (* スタック変数から値を復元 *)
+  | CallCls of Id.t * Id.t list * Id.t list * Syntax.info
+  | CallDir of Id.l * Id.t list * Id.t list * Syntax.info
+  | Save of Id.t * Id.t  * Syntax.info (* レジスタ変数の値をスタック変数へ保存 *)
+  | Restore of Id.t * Syntax.info  (* スタック変数から値を復元 *)
 type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }
 type prog = Prog of (Id.l * float) list * fundef list * t
 
-val fletd : Id.t * exp * t -> t (* shorthand of Let for float *)
-val seq : exp * t -> t (* shorthand of Let for unit *)
+val fletd : Id.t * exp * t * Syntax.info -> t (* shorthand of Let for float *)
+val seq : exp * t  * Syntax.info -> t (* shorthand of Let for unit *)
 
 val regs : Id.t array
 val fregs : Id.t array
@@ -56,3 +56,5 @@ val fv : t -> Id.t list
 val concat : t -> Id.t * Type.t -> t -> t
 
 val align : int -> int
+val get_info_exp: exp -> Syntax.info
+val get_info_t: t -> Syntax.info

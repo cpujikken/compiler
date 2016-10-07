@@ -32,4 +32,4 @@ type token =
   | EOF
 
 val exp :
-  (Lexing.lexbuf  -> token) -> Lexing.lexbuf -> Syntax.t_info
+  (Lexing.lexbuf  -> token) -> Lexing.lexbuf -> Syntax.t
