@@ -52,88 +52,88 @@ let rec g oc = function (* 命令列のアセンブリ生成 (caml2html: emit_g) *)
 and g' oc = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
   (* 末尾でなかったら計算結果をdestにセット (caml2html: emit_nontail) *)
   | NonTail(_), Nop info -> ()
-  | NonTail(x), Set(i, info) -> Printf.fprintf oc "\tmovl\t$%d, %s%s\n" i x (Syntax.info_show info)
-  | NonTail(x), SetL(Id.L(y), info) -> Printf.fprintf oc "\tmovl\t$%s, %s%s\n" y x (Syntax.info_show info)
+  | NonTail(x), Set(i, info) -> Printf.fprintf oc "\tmovl\t$%d, %s\t#%s\n" i x (Syntax.info_show info)
+  | NonTail(x), SetL(Id.L(y), info) -> Printf.fprintf oc "\tmovl\t$%s, %s\t#%s\n" y x (Syntax.info_show info)
   | NonTail(x), Mov(y, info) ->
-      if x <> y then Printf.fprintf oc "\tmovl\t%s, %s%s\n" y x (Syntax.info_show info)
+      if x <> y then Printf.fprintf oc "\tmovl\t%s, %s\t#%s\n" y x (Syntax.info_show info)
   | NonTail(x), Neg(y, info) ->
-      if x <> y then Printf.fprintf oc "\tmovl\t%s, %s%s\n" y x (Syntax.info_show info);
-      Printf.fprintf oc "\tnegl\t%s%s\n" x (Syntax.info_show info)
+      if x <> y then Printf.fprintf oc "\tmovl\t%s, %s\t#%s\n" y x (Syntax.info_show info);
+      Printf.fprintf oc "\tnegl\t%s\t#%s\n" x (Syntax.info_show info)
   | NonTail(x), Add(y, z', info) ->
       if V(x) = z' then
-	Printf.fprintf oc "\taddl\t%s, %s%s\n" y x (Syntax.info_show info)
+	Printf.fprintf oc "\taddl\t%s, %s\t#%s\n" y x (Syntax.info_show info)
       else
-	(if x <> y then Printf.fprintf oc "\tmovl\t%s, %s%s\n" y x (Syntax.info_show info);
-	 Printf.fprintf oc "\taddl\t%s, %s%s\n" (pp_id_or_imm z') x (Syntax.info_show info))
+	(if x <> y then Printf.fprintf oc "\tmovl\t%s, %s\t#%s\n" y x (Syntax.info_show info);
+	 Printf.fprintf oc "\taddl\t%s, %s\t#%s\n" (pp_id_or_imm z') x (Syntax.info_show info))
   | NonTail(x), Sub(y, z', info) ->
       if V(x) = z' then
-          (Printf.fprintf oc "\tsubl\t%s, %s%s\n" y x (Syntax.info_show info);
-         Printf.fprintf oc "\tnegl\t%s%s\n" x (Syntax.info_show info))
+          (Printf.fprintf oc "\tsubl\t%s, %s\t#%s\n" y x (Syntax.info_show info);
+         Printf.fprintf oc "\tnegl\t%s\t#%s\n" x (Syntax.info_show info))
       else
-	(if x <> y then Printf.fprintf oc "\tmovl\t%s, %s%s\n" y x (Syntax.info_show info);
-	 Printf.fprintf oc "\tsubl\t%s, %s%s\n" (pp_id_or_imm z') x (Syntax.info_show info))
-  | NonTail(x), Ld(y, V(z), i, info) -> Printf.fprintf oc "\tmovl\t(%s,%s,%d), %s%s\n" y z i x (Syntax.info_show info)
-  | NonTail(x), Ld(y, C(j), i, info) -> Printf.fprintf oc "\tmovl\t%d(%s), %s%s\n" (j * i) y x (Syntax.info_show info)
-  | NonTail(_), St(x, y, V(z), i, info) -> Printf.fprintf oc "\tmovl\t%s, (%s,%s,%d)%s\n" x y z i (Syntax.info_show info)
-  | NonTail(_), St(x, y, C(j), i, info) -> Printf.fprintf oc "\tmovl\t%s, %d(%s)%s\n" x (j * i) y (Syntax.info_show info)
+	(if x <> y then Printf.fprintf oc "\tmovl\t%s, %s\t#%s\n" y x (Syntax.info_show info);
+	 Printf.fprintf oc "\tsubl\t%s, %s\t#%s\n" (pp_id_or_imm z') x (Syntax.info_show info))
+  | NonTail(x), Ld(y, V(z), i, info) -> Printf.fprintf oc "\tmovl\t(%s,%s,%d), %s\t#%s\n" y z i x (Syntax.info_show info)
+  | NonTail(x), Ld(y, C(j), i, info) -> Printf.fprintf oc "\tmovl\t%d(%s), %s\t#%s\n" (j * i) y x (Syntax.info_show info)
+  | NonTail(_), St(x, y, V(z), i, info) -> Printf.fprintf oc "\tmovl\t%s, (%s,%s,%d)\t#%s\n" x y z i (Syntax.info_show info)
+  | NonTail(_), St(x, y, C(j), i, info) -> Printf.fprintf oc "\tmovl\t%s, %d(%s)\t#%s\n" x (j * i) y (Syntax.info_show info)
   | NonTail(x), FMovD(y, info) ->
-      if x <> y then Printf.fprintf oc "\tmovsd\t%s, %s%s\n" y x (Syntax.info_show info)
+      if x <> y then Printf.fprintf oc "\tmovsd\t%s, %s\t#%s\n" y x (Syntax.info_show info)
   | NonTail(x), FNegD(y, info) ->
-          if x <> y then Printf.fprintf oc "\tmovsd\t%s, %s%s\n" y x (Syntax.info_show info);
-      Printf.fprintf oc "\txorpd\tmin_caml_fnegd, %s%s\n" x (Syntax.info_show info)
+          if x <> y then Printf.fprintf oc "\tmovsd\t%s, %s\t#%s\n" y x (Syntax.info_show info);
+      Printf.fprintf oc "\txorpd\tmin_caml_fnegd, %s\t#%s\n" x (Syntax.info_show info)
   | NonTail(x), FAddD(y, z, info) ->
       if x = z then
-        Printf.fprintf oc "\taddsd\t%s, %s%s\n" y x (Syntax.info_show info)
+        Printf.fprintf oc "\taddsd\t%s, %s\t#%s\n" y x (Syntax.info_show info)
       else
-        (if x <> y then Printf.fprintf oc "\tmovsd\t%s, %s%s\n" y x (Syntax.info_show info);
-	 Printf.fprintf oc "\taddsd\t%s, %s%s\n" z x (Syntax.info_show info))
+        (if x <> y then Printf.fprintf oc "\tmovsd\t%s, %s\t#%s\n" y x (Syntax.info_show info);
+	 Printf.fprintf oc "\taddsd\t%s, %s\t#%s\n" z x (Syntax.info_show info))
   | NonTail(x), FSubD(y, z, info) ->
       if x = z then (* [XXX] ugly *)
 	let ss = stacksize () in
-    Printf.fprintf oc "\tmovsd\t%s, %d(%s)%s\n" z ss reg_sp (Syntax.info_show info);
-	if x <> y then Printf.fprintf oc "\tmovsd\t%s, %s%s\n" y x (Syntax.info_show info);
-	Printf.fprintf oc "\tsubsd\t%d(%s), %s%s\n" ss reg_sp x (Syntax.info_show info)
+    Printf.fprintf oc "\tmovsd\t%s, %d(%s)\t#%s\n" z ss reg_sp (Syntax.info_show info);
+	if x <> y then Printf.fprintf oc "\tmovsd\t%s, %s\t#%s\n" y x (Syntax.info_show info);
+	Printf.fprintf oc "\tsubsd\t%d(%s), %s\t#%s\n" ss reg_sp x (Syntax.info_show info)
       else
-	(if x <> y then Printf.fprintf oc "\tmovsd\t%s, %s%s\n" y x (Syntax.info_show info);
-	 Printf.fprintf oc "\tsubsd\t%s, %s%s\n" z x (Syntax.info_show info))
+	(if x <> y then Printf.fprintf oc "\tmovsd\t%s, %s\t#%s\n" y x (Syntax.info_show info);
+	 Printf.fprintf oc "\tsubsd\t%s, %s\t#%s\n" z x (Syntax.info_show info))
   | NonTail(x), FMulD(y, z, info) ->
       if x = z then
-        Printf.fprintf oc "\tmulsd\t%s, %s%s\n" y x (Syntax.info_show info)
+        Printf.fprintf oc "\tmulsd\t%s, %s\t#%s\n" y x (Syntax.info_show info)
       else
-        (if x <> y then Printf.fprintf oc "\tmovsd\t%s, %s%s\n" y x (Syntax.info_show info);
-	 Printf.fprintf oc "\tmulsd\t%s, %s%s\n" z x (Syntax.info_show info))
+        (if x <> y then Printf.fprintf oc "\tmovsd\t%s, %s\t#%s\n" y x (Syntax.info_show info);
+	 Printf.fprintf oc "\tmulsd\t%s, %s\t#%s\n" z x (Syntax.info_show info))
   | NonTail(x), FDivD(y, z, info) ->
       if x = z then (* [XXX] ugly *)
 	let ss = stacksize () in
-	Printf.fprintf oc "\tmovsd\t%s, %d(%s)%s\n" z ss reg_sp (Syntax.info_show info);
-	if x <> y then Printf.fprintf oc "\tmovsd\t%s, %s%s\n" y x (Syntax.info_show info);
-	Printf.fprintf oc "\tdivsd\t%d(%s), %s%s\n" ss reg_sp x (Syntax.info_show info)
+	Printf.fprintf oc "\tmovsd\t%s, %d(%s)\t#%s\n" z ss reg_sp (Syntax.info_show info);
+	if x <> y then Printf.fprintf oc "\tmovsd\t%s, %s\t#%s\n" y x (Syntax.info_show info);
+	Printf.fprintf oc "\tdivsd\t%d(%s), %s\t#%s\n" ss reg_sp x (Syntax.info_show info)
       else
-	(if x <> y then Printf.fprintf oc "\tmovsd\t%s, %s%s\n" y x (Syntax.info_show info);
-	 Printf.fprintf oc "\tdivsd\t%s, %s%s\n" z x (Syntax.info_show info))
-  | NonTail(x), LdDF(y, V(z), i, info) -> Printf.fprintf oc "\tmovsd\t(%s,%s,%d), %s%s\n" y z i x (Syntax.info_show info)
-  | NonTail(x), LdDF(y, C(j), i, info) -> Printf.fprintf oc "\tmovsd\t%d(%s), %s%s\n" (j * i) y x (Syntax.info_show info)
-  | NonTail(_), StDF(x, y, V(z), i, info) -> Printf.fprintf oc "\tmovsd\t%s, (%s,%s,%d)%s\n" x y z i (Syntax.info_show info)
-  | NonTail(_), StDF(x, y, C(j), i, info) -> Printf.fprintf oc "\tmovsd\t%s, %d(%s)%s\n" x (j * i) y (Syntax.info_show info)
-  | NonTail(_), Comment(s, info) -> Printf.fprintf oc "\t# %s%s\n" s (Syntax.info_show info)
+	(if x <> y then Printf.fprintf oc "\tmovsd\t%s, %s\t#%s\n" y x (Syntax.info_show info);
+	 Printf.fprintf oc "\tdivsd\t%s, %s\t#%s\n" z x (Syntax.info_show info))
+  | NonTail(x), LdDF(y, V(z), i, info) -> Printf.fprintf oc "\tmovsd\t(%s,%s,%d), %s\t#%s\n" y z i x (Syntax.info_show info)
+  | NonTail(x), LdDF(y, C(j), i, info) -> Printf.fprintf oc "\tmovsd\t%d(%s), %s\t#%s\n" (j * i) y x (Syntax.info_show info)
+  | NonTail(_), StDF(x, y, V(z), i, info) -> Printf.fprintf oc "\tmovsd\t%s, (%s,%s,%d)\t#%s\n" x y z i (Syntax.info_show info)
+  | NonTail(_), StDF(x, y, C(j), i, info) -> Printf.fprintf oc "\tmovsd\t%s, %d(%s)\t#%s\n" x (j * i) y (Syntax.info_show info)
+  | NonTail(_), Comment(s, info) -> Printf.fprintf oc "\t# %s\t#%s\n" s (Syntax.info_show info)
   (* 退避の仮想命令の実装 (caml2html: emit_save) *)
   | NonTail(_), Save(x, y, info) when List.mem x allregs && not (S.mem y !stackset) ->
       save y;
-      Printf.fprintf oc "\tmovl\t%s, %d(%s)%s\n" x (offset y) reg_sp (Syntax.info_show info)
+      Printf.fprintf oc "\tmovl\t%s, %d(%s)\t#%s\n" x (offset y) reg_sp (Syntax.info_show info)
   | NonTail(_), Save(x, y, info) when List.mem x allfregs && not (S.mem y !stackset) ->
       savef y;
-      Printf.fprintf oc "\tmovsd\t%s, %d(%s)%s\n" x (offset y) reg_sp (Syntax.info_show info)
+      Printf.fprintf oc "\tmovsd\t%s, %d(%s)\t#%s\n" x (offset y) reg_sp (Syntax.info_show info)
   | NonTail(_), Save(x, y, info) -> assert (S.mem y !stackset); ()
   (* 復帰の仮想命令の実装 (caml2html: emit_restore) *)
   | NonTail(x), Restore(y, info) when List.mem x allregs ->
-      Printf.fprintf oc "\tmovl\t%d(%s), %s%s\n" (offset y) reg_sp x (Syntax.info_show info)
+      Printf.fprintf oc "\tmovl\t%d(%s), %s\t#%s\n" (offset y) reg_sp x (Syntax.info_show info)
   | NonTail(x), Restore(y, info) ->
       assert (List.mem x allfregs);
-      Printf.fprintf oc "\tmovsd\t%d(%s), %s%s\n" (offset y) reg_sp x (Syntax.info_show info)
+      Printf.fprintf oc "\tmovsd\t%d(%s), %s\t#%s\n" (offset y) reg_sp x (Syntax.info_show info)
   (* 末尾だったら計算結果を第一レジスタにセットしてret (caml2html: emit_tailret) *)
   | Tail, (Nop info| St (_, _, _, _, info) | StDF (_, _, _, _, info) | Comment( _, info) | Save( _, _, info) as exp) ->
       g' oc (NonTail(Id.gentmp Type.Unit), exp);
-      Printf.fprintf oc "\tret%s\n" (Syntax.info_show info);
+      Printf.fprintf oc "\tret\t#%s\n" (Syntax.info_show info);
   | Tail, (Set(_, info) | SetL(_, info) | Mov(_, info) | Neg(_, info) | Add(_, _, info) | Sub(_, _, info) | Ld(_,_, _, info) as exp) ->
       g' oc (NonTail(regs.(0)), exp);
       Printf.fprintf oc "\tret\n";
@@ -147,62 +147,62 @@ and g' oc = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
       | _ -> assert false);
       Printf.fprintf oc "\tret\n";
   | Tail, IfEq(x, y', e1, e2, info) ->
-      Printf.fprintf oc "\tcmpl\t%s, %s%s\n" (pp_id_or_imm y') x (Syntax.info_show info);
+      Printf.fprintf oc "\tcmpl\t%s, %s\t#%s\n" (pp_id_or_imm y') x (Syntax.info_show info);
       g'_tail_if oc e1 e2 "je" "jne"
   | Tail, IfLE(x, y', e1, e2, info) ->
-      Printf.fprintf oc "\tcmpl\t%s, %s%s\n" (pp_id_or_imm y') x (Syntax.info_show info);
+      Printf.fprintf oc "\tcmpl\t%s, %s\t#%s\n" (pp_id_or_imm y') x (Syntax.info_show info);
       g'_tail_if oc e1 e2 "jle" "jg"
   | Tail, IfGE(x, y', e1, e2, info) ->
-      Printf.fprintf oc "\tcmpl\t%s, %s%s\n" (pp_id_or_imm y') x (Syntax.info_show info);
+      Printf.fprintf oc "\tcmpl\t%s, %s\t#%s\n" (pp_id_or_imm y') x (Syntax.info_show info);
       g'_tail_if oc e1 e2 "jge" "jl"
   | Tail, IfFEq(x, y, e1, e2, info) ->
-      Printf.fprintf oc "\tcomisd\t%s, %s%s\n" y x (Syntax.info_show info);
+      Printf.fprintf oc "\tcomisd\t%s, %s\t#%s\n" y x (Syntax.info_show info);
       g'_tail_if oc e1 e2 "je" "jne"
   | Tail, IfFLE(x, y, e1, e2, info) ->
-      Printf.fprintf oc "\tcomisd\t%s, %s%s\n" y x (Syntax.info_show info);
+      Printf.fprintf oc "\tcomisd\t%s, %s\t#%s\n" y x (Syntax.info_show info);
       g'_tail_if oc e1 e2 "jbe" "ja"
   | NonTail(z), IfEq(x, y', e1, e2, info) ->
-      Printf.fprintf oc "\tcmpl\t%s, %s%s\n" (pp_id_or_imm y') x (Syntax.info_show info);
+      Printf.fprintf oc "\tcmpl\t%s, %s\t#%s\n" (pp_id_or_imm y') x (Syntax.info_show info);
       g'_non_tail_if oc (NonTail(z)) e1 e2 "je" "jne"
   | NonTail(z), IfLE(x, y', e1, e2, info) ->
-      Printf.fprintf oc "\tcmpl\t%s, %s%s\n" (pp_id_or_imm y') x (Syntax.info_show info);
+      Printf.fprintf oc "\tcmpl\t%s, %s\t#%s\n" (pp_id_or_imm y') x (Syntax.info_show info);
       g'_non_tail_if oc (NonTail(z)) e1 e2 "jle" "jg"
   | NonTail(z), IfGE(x, y', e1, e2, info) ->
-      Printf.fprintf oc "\tcmpl\t%s, %s%s\n" (pp_id_or_imm y') x (Syntax.info_show info);
+      Printf.fprintf oc "\tcmpl\t%s, %s\t#%s\n" (pp_id_or_imm y') x (Syntax.info_show info);
       g'_non_tail_if oc (NonTail(z)) e1 e2 "jge" "jl"
   | NonTail(z), IfFEq(x, y, e1, e2, info) ->
-      Printf.fprintf oc "\tcomisd\t%s, %s%s\n" y x (Syntax.info_show info);
+      Printf.fprintf oc "\tcomisd\t%s, %s\t#%s\n" y x (Syntax.info_show info);
       g'_non_tail_if oc (NonTail(z)) e1 e2 "je" "jne"
   | NonTail(z), IfFLE(x, y, e1, e2, info) ->
-      Printf.fprintf oc "\tcomisd\t%s, %s%s\n" y x (Syntax.info_show info);
+      Printf.fprintf oc "\tcomisd\t%s, %s\t#%s\n" y x (Syntax.info_show info);
       g'_non_tail_if oc (NonTail(z)) e1 e2 "jbe" "ja"
   (* 関数呼び出しの仮想命令の実装 (caml2html: emit_call) *)
   | Tail, CallCls(x, ys, zs, info) -> (* 末尾呼び出し (caml2html: emit_tailcall) *)
       g'_args oc [(x, reg_cl)] ys zs;
-      Printf.fprintf oc "\tjmp\t*(%s)%s\n" reg_cl (Syntax.info_show info);
+      Printf.fprintf oc "\tjmp\t*(%s)\t#%s\n" reg_cl (Syntax.info_show info);
   | Tail, CallDir(Id.L(x), ys, zs, info) -> (* 末尾呼び出し *)
       g'_args oc [] ys zs;
-      Printf.fprintf oc "\tjmp\t%s%s\n" x (Syntax.info_show info);
+      Printf.fprintf oc "\tjmp\t%s\t#%s\n" x (Syntax.info_show info);
   | NonTail(a), CallCls(x, ys, zs, info) ->
       g'_args oc [(x, reg_cl)] ys zs;
       let ss = stacksize () in
-      if ss > 0 then Printf.fprintf oc "\taddl\t$%d, %s%s\n" ss reg_sp (Syntax.info_show info);
-      Printf.fprintf oc "\tcall\t*(%s)%s\n" reg_cl (Syntax.info_show info);
-      if ss > 0 then Printf.fprintf oc "\tsubl\t$%d, %s%s\n" ss reg_sp (Syntax.info_show info);
+      if ss > 0 then Printf.fprintf oc "\taddl\t$%d, %s\t#%s\n" ss reg_sp (Syntax.info_show info);
+      Printf.fprintf oc "\tcall\t*(%s)\t#%s\n" reg_cl (Syntax.info_show info);
+      if ss > 0 then Printf.fprintf oc "\tsubl\t$%d, %s\t#%s\n" ss reg_sp (Syntax.info_show info);
       if List.mem a allregs && a <> regs.(0) then
-        Printf.fprintf oc "\tmovl\t%s, %s%s\n" regs.(0) a (Syntax.info_show info)
+        Printf.fprintf oc "\tmovl\t%s, %s\t#%s\n" regs.(0) a (Syntax.info_show info)
       else if List.mem a allfregs && a <> fregs.(0) then
-        Printf.fprintf oc "\tmovsd\t%s, %s%s\n" fregs.(0) a (Syntax.info_show info)
+        Printf.fprintf oc "\tmovsd\t%s, %s\t#%s\n" fregs.(0) a (Syntax.info_show info)
   | NonTail(a), CallDir(Id.L(x), ys, zs, info) ->
       g'_args oc [] ys zs;
       let ss = stacksize () in
-      if ss > 0 then Printf.fprintf oc "\taddl\t$%d, %s%s\n" ss reg_sp (Syntax.info_show info);
-      Printf.fprintf oc "\tcall\t%s%s\n" x (Syntax.info_show info);
-      if ss > 0 then Printf.fprintf oc "\tsubl\t$%d, %s%s\n" ss reg_sp (Syntax.info_show info);
+      if ss > 0 then Printf.fprintf oc "\taddl\t$%d, %s\t#%s\n" ss reg_sp (Syntax.info_show info);
+      Printf.fprintf oc "\tcall\t%s\t#%s\n" x (Syntax.info_show info);
+      if ss > 0 then Printf.fprintf oc "\tsubl\t$%d, %s\t#%s\n" ss reg_sp (Syntax.info_show info);
       if List.mem a allregs && a <> regs.(0) then
-        Printf.fprintf oc "\tmovl\t%s, %s%s\n" regs.(0) a (Syntax.info_show info)
+        Printf.fprintf oc "\tmovl\t%s, %s\t#%s\n" regs.(0) a (Syntax.info_show info)
       else if List.mem a allfregs && a <> fregs.(0) then
-        Printf.fprintf oc "\tmovsd\t%s, %s%s\n" fregs.(0) a (Syntax.info_show info)
+        Printf.fprintf oc "\tmovsd\t%s, %s\t#%s\n" fregs.(0) a (Syntax.info_show info)
 and g'_tail_if oc e1 e2 b bn =
   let b_else = Id.genid (b ^ "_else") in
   Printf.fprintf oc "\t%s\t%s\n" bn b_else;

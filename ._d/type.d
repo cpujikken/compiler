@@ -1,2 +1,2 @@
-type.cmo :
-type.cmx :
+type.cmo : syntax.cmo
+type.cmx : syntax.cmx
