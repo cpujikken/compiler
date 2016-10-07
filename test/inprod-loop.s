@@ -14,14 +14,14 @@ l.42:	# 1.230000
 	.long	0x3ff3ae14
 .text
 inprod.18:
-	cmpl	$0, %ecx	;#2
+	cmpl	$0, %ecx	#test/inprod-loop.ml:2
 	jl	jge_else.53
-	movsd	(%eax,%ecx,8), %xmm1	;#3
-	movsd	(%ebx,%ecx,8), %xmm2	;#3
-	mulsd	%xmm2, %xmm1	;#3
-	addsd	%xmm1, %xmm0	;#3
-	subl	$1, %ecx	;#3
-	jmp	inprod.18	;#3
+	movsd	(%eax,%ecx,8), %xmm1	#test/inprod-loop.ml:3
+	movsd	(%ebx,%ecx,8), %xmm2	#test/inprod-loop.ml:3
+	mulsd	%xmm2, %xmm1	#test/inprod-loop.ml:3
+	addsd	%xmm1, %xmm0	#test/inprod-loop.ml:3
+	subl	$1, %ecx	#test/inprod-loop.ml:3
+	jmp	inprod.18	#test/inprod-loop.ml:3
 jge_else.53:
 	ret
 .globl	min_caml_start
@@ -38,38 +38,38 @@ _min_caml_start: # for cygwin
 	movl	32(%esp),%ebp
 	movl	36(%esp),%eax
 	movl	%eax,min_caml_hp
-	movl	$3, %eax	;#4
-	movl	$l.42, %ebx	;#4
-	movsd	0(%ebx), %xmm0	;#4
-	call	min_caml_create_float_array	;#4
-	movl	$3, %ebx	;#5
-	movl	$l.44, %ecx	;#5
-	movsd	0(%ecx), %xmm0	;#5
-	movl	%eax, 0(%ebp)	;#5
+	movl	$3, %eax	#test/inprod-loop.ml:4
+	movl	$l.42, %ebx	#test/inprod-loop.ml:4
+	movsd	0(%ebx), %xmm0	#test/inprod-loop.ml:4
+	call	min_caml_create_float_array	#test/inprod-loop.ml:4
+	movl	$3, %ebx	#test/inprod-loop.ml:5
+	movl	$l.44, %ecx	#test/inprod-loop.ml:5
+	movsd	0(%ecx), %xmm0	#test/inprod-loop.ml:5
+	movl	%eax, 0(%ebp)	#test/inprod-loop.ml:5
 	movl	%ebx, %eax
-	addl	$8, %ebp	;#5
-	call	min_caml_create_float_array	;#5
-	subl	$8, %ebp	;#5
-	movl	%eax, %ebx	;#5
-	movl	$l.46, %eax	;#6
-	movsd	0(%eax), %xmm0	;#6
-	movl	$l.48, %eax	;#6
-	movsd	0(%eax), %xmm1	;#6
-	movl	$2, %ecx	;#6
-	movl	0(%ebp), %eax	;#6
-	movsd	%xmm0, 8(%ebp)	;#6
+	addl	$8, %ebp	#test/inprod-loop.ml:5
+	call	min_caml_create_float_array	#test/inprod-loop.ml:5
+	subl	$8, %ebp	#test/inprod-loop.ml:5
+	movl	%eax, %ebx	#test/inprod-loop.ml:5
+	movl	$l.46, %eax	#test/inprod-loop.ml:6
+	movsd	0(%eax), %xmm0	#test/inprod-loop.ml:6
+	movl	$l.48, %eax	#test/inprod-loop.ml:6
+	movsd	0(%eax), %xmm1	#test/inprod-loop.ml:6
+	movl	$2, %ecx	#test/inprod-loop.ml:6
+	movl	0(%ebp), %eax	#test/inprod-loop.ml:6
+	movsd	%xmm0, 8(%ebp)	#test/inprod-loop.ml:6
 	movsd	%xmm1, %xmm0
-	addl	$16, %ebp	;#6
-	call	inprod.18	;#6
-	subl	$16, %ebp	;#6
-	movsd	8(%ebp), %xmm1	;#6
-	mulsd	%xmm1, %xmm0	;#6
-	addl	$16, %ebp	;#6
-	call	min_caml_truncate	;#6
-	subl	$16, %ebp	;#6
-	addl	$16, %ebp	;#6
-	call	min_caml_print_int	;#6
-	subl	$16, %ebp	;#6
+	addl	$16, %ebp	#test/inprod-loop.ml:6
+	call	inprod.18	#test/inprod-loop.ml:6
+	subl	$16, %ebp	#test/inprod-loop.ml:6
+	movsd	8(%ebp), %xmm1	#test/inprod-loop.ml:6
+	mulsd	%xmm1, %xmm0	#test/inprod-loop.ml:6
+	addl	$16, %ebp	#test/inprod-loop.ml:6
+	call	min_caml_truncate	#test/inprod-loop.ml:6
+	subl	$16, %ebp	#test/inprod-loop.ml:6
+	addl	$16, %ebp	#test/inprod-loop.ml:6
+	call	min_caml_print_int	#test/inprod-loop.ml:6
+	subl	$16, %ebp	#test/inprod-loop.ml:6
 	popl	%ebp
 	popl	%edi
 	popl	%esi

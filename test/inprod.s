@@ -23,55 +23,55 @@ l.63:	# 1000000.000000
 	.long	0x412e8480
 .text
 getx.23:
-	movsd	0(%eax), %xmm0	;#1
+	movsd	0(%eax), %xmm0	#test/inprod.ml:1
 	ret
 gety.25:
-	movsd	8(%eax), %xmm0	;#2
+	movsd	8(%eax), %xmm0	#test/inprod.ml:2
 	ret
 getz.27:
-	movsd	16(%eax), %xmm0	;#3
+	movsd	16(%eax), %xmm0	#test/inprod.ml:3
 	ret
 inprod.29:
-	movl	%eax, 0(%ebp)	;#5
-	movl	%ebx, 4(%ebp)	;#5
-	addl	$8, %ebp	;#5
-	call	getx.23	;#5
-	subl	$8, %ebp	;#5
-	movl	4(%ebp), %eax	;#5
-	movsd	%xmm0, 8(%ebp)	;#5
-	addl	$16, %ebp	;#5
-	call	getx.23	;#5
-	subl	$16, %ebp	;#5
-	movsd	8(%ebp), %xmm1	;#5
-	mulsd	%xmm0, %xmm1	;#5
-	movl	0(%ebp), %eax	;#5
-	movsd	%xmm1, 16(%ebp)	;#5
-	addl	$24, %ebp	;#5
-	call	gety.25	;#5
-	subl	$24, %ebp	;#5
-	movl	4(%ebp), %eax	;#5
-	movsd	%xmm0, 24(%ebp)	;#5
-	addl	$32, %ebp	;#5
-	call	gety.25	;#5
-	subl	$32, %ebp	;#5
-	movsd	24(%ebp), %xmm1	;#5
-	mulsd	%xmm0, %xmm1	;#5
-	movsd	16(%ebp), %xmm0	;#5
-	addsd	%xmm1, %xmm0	;#5
-	movl	0(%ebp), %eax	;#5
-	movsd	%xmm0, 32(%ebp)	;#5
-	addl	$40, %ebp	;#5
-	call	getz.27	;#5
-	subl	$40, %ebp	;#5
-	movl	4(%ebp), %eax	;#5
-	movsd	%xmm0, 40(%ebp)	;#5
-	addl	$48, %ebp	;#5
-	call	getz.27	;#5
-	subl	$48, %ebp	;#5
-	movsd	40(%ebp), %xmm1	;#5
-	mulsd	%xmm0, %xmm1	;#5
-	movsd	32(%ebp), %xmm0	;#5
-	addsd	%xmm1, %xmm0	;#5
+	movl	%eax, 0(%ebp)	#test/inprod.ml:5
+	movl	%ebx, 4(%ebp)	#test/inprod.ml:5
+	addl	$8, %ebp	#test/inprod.ml:5
+	call	getx.23	#test/inprod.ml:5
+	subl	$8, %ebp	#test/inprod.ml:5
+	movl	4(%ebp), %eax	#test/inprod.ml:5
+	movsd	%xmm0, 8(%ebp)	#test/inprod.ml:5
+	addl	$16, %ebp	#test/inprod.ml:5
+	call	getx.23	#test/inprod.ml:5
+	subl	$16, %ebp	#test/inprod.ml:5
+	movsd	8(%ebp), %xmm1	#test/inprod.ml:5
+	mulsd	%xmm0, %xmm1	#test/inprod.ml:5
+	movl	0(%ebp), %eax	#test/inprod.ml:5
+	movsd	%xmm1, 16(%ebp)	#test/inprod.ml:5
+	addl	$24, %ebp	#test/inprod.ml:5
+	call	gety.25	#test/inprod.ml:5
+	subl	$24, %ebp	#test/inprod.ml:5
+	movl	4(%ebp), %eax	#test/inprod.ml:5
+	movsd	%xmm0, 24(%ebp)	#test/inprod.ml:5
+	addl	$32, %ebp	#test/inprod.ml:5
+	call	gety.25	#test/inprod.ml:5
+	subl	$32, %ebp	#test/inprod.ml:5
+	movsd	24(%ebp), %xmm1	#test/inprod.ml:5
+	mulsd	%xmm0, %xmm1	#test/inprod.ml:5
+	movsd	16(%ebp), %xmm0	#test/inprod.ml:5
+	addsd	%xmm1, %xmm0	#test/inprod.ml:5
+	movl	0(%ebp), %eax	#test/inprod.ml:5
+	movsd	%xmm0, 32(%ebp)	#test/inprod.ml:5
+	addl	$40, %ebp	#test/inprod.ml:5
+	call	getz.27	#test/inprod.ml:5
+	subl	$40, %ebp	#test/inprod.ml:5
+	movl	4(%ebp), %eax	#test/inprod.ml:5
+	movsd	%xmm0, 40(%ebp)	#test/inprod.ml:5
+	addl	$48, %ebp	#test/inprod.ml:5
+	call	getz.27	#test/inprod.ml:5
+	subl	$48, %ebp	#test/inprod.ml:5
+	movsd	40(%ebp), %xmm1	#test/inprod.ml:5
+	mulsd	%xmm0, %xmm1	#test/inprod.ml:5
+	movsd	32(%ebp), %xmm0	#test/inprod.ml:5
+	addsd	%xmm1, %xmm0	#test/inprod.ml:5
 	ret
 .globl	min_caml_start
 min_caml_start:
@@ -87,42 +87,42 @@ _min_caml_start: # for cygwin
 	movl	32(%esp),%ebp
 	movl	36(%esp),%eax
 	movl	%eax,min_caml_hp
-	movl	$l.63, %eax	;#6
-	movsd	0(%eax), %xmm0	;#6
-	movl	$l.65, %eax	;#6
-	movsd	0(%eax), %xmm1	;#6
-	movl	$l.67, %eax	;#6
-	movsd	0(%eax), %xmm2	;#6
-	movl	$l.69, %eax	;#6
-	movsd	0(%eax), %xmm3	;#6
-	movl	min_caml_hp, %eax	;#6
-	addl	$24, min_caml_hp	;#6
-	movsd	%xmm3, 16(%eax)	;#6
-	movsd	%xmm2, 8(%eax)	;#6
-	movsd	%xmm1, 0(%eax)	;#6
-	movl	$l.75, %ebx	;#6
-	movsd	0(%ebx), %xmm1	;#6
-	movl	$l.77, %ebx	;#6
-	movsd	0(%ebx), %xmm2	;#6
-	movl	$l.79, %ebx	;#6
-	movsd	0(%ebx), %xmm3	;#6
-	movl	min_caml_hp, %ebx	;#6
-	addl	$24, min_caml_hp	;#6
-	movsd	%xmm3, 16(%ebx)	;#6
-	movsd	%xmm2, 8(%ebx)	;#6
-	movsd	%xmm1, 0(%ebx)	;#6
-	movsd	%xmm0, 0(%ebp)	;#6
-	addl	$8, %ebp	;#6
-	call	inprod.29	;#6
-	subl	$8, %ebp	;#6
-	movsd	0(%ebp), %xmm1	;#6
-	mulsd	%xmm1, %xmm0	;#6
-	addl	$8, %ebp	;#6
-	call	min_caml_truncate	;#6
-	subl	$8, %ebp	;#6
-	addl	$8, %ebp	;#6
-	call	min_caml_print_int	;#6
-	subl	$8, %ebp	;#6
+	movl	$l.63, %eax	#test/inprod.ml:6
+	movsd	0(%eax), %xmm0	#test/inprod.ml:6
+	movl	$l.65, %eax	#test/inprod.ml:6
+	movsd	0(%eax), %xmm1	#test/inprod.ml:6
+	movl	$l.67, %eax	#test/inprod.ml:6
+	movsd	0(%eax), %xmm2	#test/inprod.ml:6
+	movl	$l.69, %eax	#test/inprod.ml:6
+	movsd	0(%eax), %xmm3	#test/inprod.ml:6
+	movl	min_caml_hp, %eax	#test/inprod.ml:6
+	addl	$24, min_caml_hp	#test/inprod.ml:6
+	movsd	%xmm3, 16(%eax)	#test/inprod.ml:6
+	movsd	%xmm2, 8(%eax)	#test/inprod.ml:6
+	movsd	%xmm1, 0(%eax)	#test/inprod.ml:6
+	movl	$l.75, %ebx	#test/inprod.ml:6
+	movsd	0(%ebx), %xmm1	#test/inprod.ml:6
+	movl	$l.77, %ebx	#test/inprod.ml:6
+	movsd	0(%ebx), %xmm2	#test/inprod.ml:6
+	movl	$l.79, %ebx	#test/inprod.ml:6
+	movsd	0(%ebx), %xmm3	#test/inprod.ml:6
+	movl	min_caml_hp, %ebx	#test/inprod.ml:6
+	addl	$24, min_caml_hp	#test/inprod.ml:6
+	movsd	%xmm3, 16(%ebx)	#test/inprod.ml:6
+	movsd	%xmm2, 8(%ebx)	#test/inprod.ml:6
+	movsd	%xmm1, 0(%ebx)	#test/inprod.ml:6
+	movsd	%xmm0, 0(%ebp)	#test/inprod.ml:6
+	addl	$8, %ebp	#test/inprod.ml:6
+	call	inprod.29	#test/inprod.ml:6
+	subl	$8, %ebp	#test/inprod.ml:6
+	movsd	0(%ebp), %xmm1	#test/inprod.ml:6
+	mulsd	%xmm1, %xmm0	#test/inprod.ml:6
+	addl	$8, %ebp	#test/inprod.ml:6
+	call	min_caml_truncate	#test/inprod.ml:6
+	subl	$8, %ebp	#test/inprod.ml:6
+	addl	$8, %ebp	#test/inprod.ml:6
+	call	min_caml_print_int	#test/inprod.ml:6
+	subl	$8, %ebp	#test/inprod.ml:6
 	popl	%ebp
 	popl	%edi
 	popl	%esi

@@ -2,31 +2,31 @@
 .balign	8
 .text
 composed.22:
-	movl	8(%edi), %ebx	;#2
-	movl	4(%edi), %edi	;#2
-	movl	%ebx, 0(%ebp)	;#2
-	addl	$8, %ebp	;#2
-	call	*(%edi)	;#2
-	subl	$8, %ebp	;#2
-	movl	0(%ebp), %edi	;#2
-	jmp	*(%edi)	;#2
+	movl	8(%edi), %ebx	#test/funcomp.ml:2
+	movl	4(%edi), %edi	#test/funcomp.ml:2
+	movl	%ebx, 0(%ebp)	#test/funcomp.ml:2
+	addl	$8, %ebp	#test/funcomp.ml:2
+	call	*(%edi)	#test/funcomp.ml:2
+	subl	$8, %ebp	#test/funcomp.ml:2
+	movl	0(%ebp), %edi	#test/funcomp.ml:2
+	jmp	*(%edi)	#test/funcomp.ml:2
 compose.7:
-	movl	min_caml_hp, %ecx	;#2
-	addl	$16, min_caml_hp	;#2
-	movl	$composed.22, %edx	;#2
-	movl	%edx, 0(%ecx)	;#2
-	movl	%ebx, 8(%ecx)	;#2
-	movl	%eax, 4(%ecx)	;#2
-	movl	%ecx, %eax	;#3
+	movl	min_caml_hp, %ecx	#test/funcomp.ml:2
+	addl	$16, min_caml_hp	#test/funcomp.ml:2
+	movl	$composed.22, %edx	#test/funcomp.ml:2
+	movl	%edx, 0(%ecx)	#test/funcomp.ml:2
+	movl	%ebx, 8(%ecx)	#test/funcomp.ml:2
+	movl	%eax, 4(%ecx)	#test/funcomp.ml:2
+	movl	%ecx, %eax	#test/funcomp.ml:3
 	ret
 dbl.10:
-	addl	%eax, %eax	;#4
+	addl	%eax, %eax	#test/funcomp.ml:4
 	ret
 inc.12:
-	addl	$1, %eax	;#5
+	addl	$1, %eax	#test/funcomp.ml:5
 	ret
 dec.14:
-	subl	$1, %eax	;#6
+	subl	$1, %eax	#test/funcomp.ml:6
 	ret
 .globl	min_caml_start
 min_caml_start:
@@ -42,36 +42,36 @@ _min_caml_start: # for cygwin
 	movl	32(%esp),%ebp
 	movl	36(%esp),%eax
 	movl	%eax,min_caml_hp
-	movl	min_caml_hp, %eax	;#4
-	addl	$8, min_caml_hp	;#4
-	movl	$dbl.10, %ebx	;#4
-	movl	%ebx, 0(%eax)	;#4
-	movl	min_caml_hp, %ebx	;#5
-	addl	$8, min_caml_hp	;#5
-	movl	$inc.12, %ecx	;#5
-	movl	%ecx, 0(%ebx)	;#5
-	movl	min_caml_hp, %ecx	;#6
-	addl	$8, min_caml_hp	;#6
-	movl	$dec.14, %edx	;#6
-	movl	%edx, 0(%ecx)	;#6
-	movl	%ebx, 0(%ebp)	;#7
+	movl	min_caml_hp, %eax	#test/funcomp.ml:4
+	addl	$8, min_caml_hp	#test/funcomp.ml:4
+	movl	$dbl.10, %ebx	#test/funcomp.ml:4
+	movl	%ebx, 0(%eax)	#test/funcomp.ml:4
+	movl	min_caml_hp, %ebx	#test/funcomp.ml:5
+	addl	$8, min_caml_hp	#test/funcomp.ml:5
+	movl	$inc.12, %ecx	#test/funcomp.ml:5
+	movl	%ecx, 0(%ebx)	#test/funcomp.ml:5
+	movl	min_caml_hp, %ecx	#test/funcomp.ml:6
+	addl	$8, min_caml_hp	#test/funcomp.ml:6
+	movl	$dec.14, %edx	#test/funcomp.ml:6
+	movl	%edx, 0(%ecx)	#test/funcomp.ml:6
+	movl	%ebx, 0(%ebp)	#test/funcomp.ml:7
 	movl	%ecx, %ebx
-	addl	$8, %ebp	;#7
-	call	compose.7	;#7
-	subl	$8, %ebp	;#7
-	movl	%eax, %ebx	;#7
-	movl	0(%ebp), %eax	;#7
-	addl	$8, %ebp	;#7
-	call	compose.7	;#7
-	subl	$8, %ebp	;#7
-	movl	%eax, %edi	;#7
-	movl	$123, %eax	;#8
-	addl	$8, %ebp	;#8
-	call	*(%edi)	;#8
-	subl	$8, %ebp	;#8
-	addl	$8, %ebp	;#8
-	call	min_caml_print_int	;#8
-	subl	$8, %ebp	;#8
+	addl	$8, %ebp	#test/funcomp.ml:7
+	call	compose.7	#test/funcomp.ml:7
+	subl	$8, %ebp	#test/funcomp.ml:7
+	movl	%eax, %ebx	#test/funcomp.ml:7
+	movl	0(%ebp), %eax	#test/funcomp.ml:7
+	addl	$8, %ebp	#test/funcomp.ml:7
+	call	compose.7	#test/funcomp.ml:7
+	subl	$8, %ebp	#test/funcomp.ml:7
+	movl	%eax, %edi	#test/funcomp.ml:7
+	movl	$123, %eax	#test/funcomp.ml:8
+	addl	$8, %ebp	#test/funcomp.ml:8
+	call	*(%edi)	#test/funcomp.ml:8
+	subl	$8, %ebp	#test/funcomp.ml:8
+	addl	$8, %ebp	#test/funcomp.ml:8
+	call	min_caml_print_int	#test/funcomp.ml:8
+	subl	$8, %ebp	#test/funcomp.ml:8
 	popl	%ebp
 	popl	%edi
 	popl	%esi

@@ -2,7 +2,7 @@
 .balign	8
 .text
 f.13:
-	movl	$12345, %eax	;#1
+	movl	$12345, %eax	#test/non-tail-if2.ml:1
 	ret
 .globl	min_caml_start
 min_caml_start:
@@ -18,27 +18,27 @@ _min_caml_start: # for cygwin
 	movl	32(%esp),%ebp
 	movl	36(%esp),%eax
 	movl	%eax,min_caml_hp
-	movl	$10, %eax	;#2
-	movl	$3, %ebx	;#2
-	call	min_caml_create_array	;#2
-	movl	0(%eax), %ebx	;#4
-	cmpl	$3, %ebx	;#4
+	movl	$10, %eax	#test/non-tail-if2.ml:2
+	movl	$3, %ebx	#test/non-tail-if2.ml:2
+	call	min_caml_create_array	#test/non-tail-if2.ml:2
+	movl	0(%eax), %ebx	#test/non-tail-if2.ml:4
+	cmpl	$3, %ebx	#test/non-tail-if2.ml:4
 	jne	je_else.30
-	movl	%eax, 0(%ebp)	;#4
-	addl	$8, %ebp	;#4
-	call	f.13	;#4
-	subl	$8, %ebp	;#4
-	movl	0(%ebp), %ebx	;#4
-	movl	4(%ebx), %ebx	;#4
-	addl	%ebx, %eax	;#4
-	addl	$67890, %eax	;#4
+	movl	%eax, 0(%ebp)	#test/non-tail-if2.ml:4
+	addl	$8, %ebp	#test/non-tail-if2.ml:4
+	call	f.13	#test/non-tail-if2.ml:4
+	subl	$8, %ebp	#test/non-tail-if2.ml:4
+	movl	0(%ebp), %ebx	#test/non-tail-if2.ml:4
+	movl	4(%ebx), %ebx	#test/non-tail-if2.ml:4
+	addl	%ebx, %eax	#test/non-tail-if2.ml:4
+	addl	$67890, %eax	#test/non-tail-if2.ml:4
 	jmp	je_cont.31
 je_else.30:
-	movl	$7, %eax	;#4
+	movl	$7, %eax	#test/non-tail-if2.ml:4
 je_cont.31:
-	addl	$8, %ebp	;#4
-	call	min_caml_print_int	;#4
-	subl	$8, %ebp	;#4
+	addl	$8, %ebp	#test/non-tail-if2.ml:4
+	call	min_caml_print_int	#test/non-tail-if2.ml:4
+	subl	$8, %ebp	#test/non-tail-if2.ml:4
 	popl	%ebp
 	popl	%edi
 	popl	%esi

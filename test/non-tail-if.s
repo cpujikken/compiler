@@ -24,48 +24,48 @@ _min_caml_start: # for cygwin
 	movl	32(%esp),%ebp
 	movl	36(%esp),%eax
 	movl	%eax,min_caml_hp
-	movl	$l.28, %eax	;#1
-	movsd	0(%eax), %xmm0	;#1
-	call	min_caml_truncate	;#1
-	movl	$l.30, %ebx	;#2
-	movsd	0(%ebx), %xmm0	;#2
-	movl	%eax, 0(%ebp)	;#2
-	addl	$8, %ebp	;#2
-	call	min_caml_truncate	;#2
-	subl	$8, %ebp	;#2
-	movl	$l.32, %ebx	;#3
-	movsd	0(%ebx), %xmm0	;#3
-	movl	%eax, 4(%ebp)	;#3
-	addl	$8, %ebp	;#3
-	call	min_caml_truncate	;#3
-	subl	$8, %ebp	;#3
-	cmpl	$0, %eax	;#5
+	movl	$l.28, %eax	#test/non-tail-if.ml:1
+	movsd	0(%eax), %xmm0	#test/non-tail-if.ml:1
+	call	min_caml_truncate	#test/non-tail-if.ml:1
+	movl	$l.30, %ebx	#test/non-tail-if.ml:2
+	movsd	0(%ebx), %xmm0	#test/non-tail-if.ml:2
+	movl	%eax, 0(%ebp)	#test/non-tail-if.ml:2
+	addl	$8, %ebp	#test/non-tail-if.ml:2
+	call	min_caml_truncate	#test/non-tail-if.ml:2
+	subl	$8, %ebp	#test/non-tail-if.ml:2
+	movl	$l.32, %ebx	#test/non-tail-if.ml:3
+	movsd	0(%ebx), %xmm0	#test/non-tail-if.ml:3
+	movl	%eax, 4(%ebp)	#test/non-tail-if.ml:3
+	addl	$8, %ebp	#test/non-tail-if.ml:3
+	call	min_caml_truncate	#test/non-tail-if.ml:3
+	subl	$8, %ebp	#test/non-tail-if.ml:3
+	cmpl	$0, %eax	#test/non-tail-if.ml:5
 	jl	jge_else.37
-	movl	0(%ebp), %ebx	;#5
+	movl	0(%ebp), %ebx	#test/non-tail-if.ml:5
 	jmp	jge_cont.38
 jge_else.37:
-	movl	4(%ebp), %ebx	;#5
+	movl	4(%ebp), %ebx	#test/non-tail-if.ml:5
 jge_cont.38:
-	movl	0(%ebp), %ecx	;#6
-	cmpl	$0, %ecx	;#6
+	movl	0(%ebp), %ecx	#test/non-tail-if.ml:6
+	cmpl	$0, %ecx	#test/non-tail-if.ml:6
 	jg	jle_else.39
-	movl	4(%ebp), %edx	;#6
+	movl	4(%ebp), %edx	#test/non-tail-if.ml:6
 	jmp	jle_cont.40
 jle_else.39:
-	movl	%eax, %edx	;#6
+	movl	%eax, %edx	#test/non-tail-if.ml:6
 jle_cont.40:
-	addl	%edx, %ebx	;#5
-	movl	4(%ebp), %edx	;#7
-	cmpl	$0, %edx	;#7
+	addl	%edx, %ebx	#test/non-tail-if.ml:5
+	movl	4(%ebp), %edx	#test/non-tail-if.ml:7
+	cmpl	$0, %edx	#test/non-tail-if.ml:7
 	jl	jge_else.41
 	jmp	jge_cont.42
 jge_else.41:
-	movl	%ecx, %eax	;#7
+	movl	%ecx, %eax	#test/non-tail-if.ml:7
 jge_cont.42:
-	addl	%ebx, %eax	;#5
-	addl	$8, %ebp	;#4
-	call	min_caml_print_int	;#4
-	subl	$8, %ebp	;#4
+	addl	%ebx, %eax	#test/non-tail-if.ml:5
+	addl	$8, %ebp	#test/non-tail-if.ml:4
+	call	min_caml_print_int	#test/non-tail-if.ml:4
+	subl	$8, %ebp	#test/non-tail-if.ml:4
 	popl	%ebp
 	popl	%edi
 	popl	%esi

@@ -2,20 +2,20 @@
 .balign	8
 .text
 sum.7:
-	cmpl	$0, %eax	;#2
+	cmpl	$0, %eax	#test/sum.ml:2
 	jg	jle_else.17
-	movl	$0, %eax	;#2
+	movl	$0, %eax	#test/sum.ml:2
 	ret
 jle_else.17:
-	movl	%eax, %ebx	;#3
-	subl	$1, %ebx	;#3
-	movl	%eax, 0(%ebp)	;#3
+	movl	%eax, %ebx	#test/sum.ml:3
+	subl	$1, %ebx	#test/sum.ml:3
+	movl	%eax, 0(%ebp)	#test/sum.ml:3
 	movl	%ebx, %eax
-	addl	$8, %ebp	;#3
-	call	sum.7	;#3
-	subl	$8, %ebp	;#3
-	movl	0(%ebp), %ebx	;#3
-	addl	%ebx, %eax	;#3
+	addl	$8, %ebp	#test/sum.ml:3
+	call	sum.7	#test/sum.ml:3
+	subl	$8, %ebp	#test/sum.ml:3
+	movl	0(%ebp), %ebx	#test/sum.ml:3
+	addl	%ebx, %eax	#test/sum.ml:3
 	ret
 .globl	min_caml_start
 min_caml_start:
@@ -31,9 +31,9 @@ _min_caml_start: # for cygwin
 	movl	32(%esp),%ebp
 	movl	36(%esp),%eax
 	movl	%eax,min_caml_hp
-	movl	$10000, %eax	;#4
-	call	sum.7	;#4
-	call	min_caml_print_int	;#4
+	movl	$10000, %eax	#test/sum.ml:4
+	call	sum.7	#test/sum.ml:4
+	call	min_caml_print_int	#test/sum.ml:4
 	popl	%ebp
 	popl	%edi
 	popl	%esi

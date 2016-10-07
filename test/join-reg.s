@@ -2,13 +2,13 @@
 .balign	8
 .text
 f.12:
-	movl	$123, %eax	;#1
+	movl	$123, %eax	#test/join-reg.ml:1
 	ret
 g.14:
-	movl	$456, %eax	;#2
+	movl	$456, %eax	#test/join-reg.ml:2
 	ret
 h.16:
-	movl	$789, %eax	;#3
+	movl	$789, %eax	#test/join-reg.ml:3
 	ret
 .globl	min_caml_start
 min_caml_start:
@@ -24,33 +24,33 @@ _min_caml_start: # for cygwin
 	movl	32(%esp),%ebp
 	movl	36(%esp),%eax
 	movl	%eax,min_caml_hp
-	call	f.12	;#5
-	movl	%eax, 0(%ebp)	;#6
-	addl	$8, %ebp	;#6
-	call	g.14	;#6
-	subl	$8, %ebp	;#6
-	movl	%eax, 4(%ebp)	;#7
-	addl	$8, %ebp	;#7
-	call	h.16	;#7
-	subl	$8, %ebp	;#7
-	cmpl	$0, %eax	;#7
+	call	f.12	#test/join-reg.ml:5
+	movl	%eax, 0(%ebp)	#test/join-reg.ml:6
+	addl	$8, %ebp	#test/join-reg.ml:6
+	call	g.14	#test/join-reg.ml:6
+	subl	$8, %ebp	#test/join-reg.ml:6
+	movl	%eax, 4(%ebp)	#test/join-reg.ml:7
+	addl	$8, %ebp	#test/join-reg.ml:7
+	call	h.16	#test/join-reg.ml:7
+	subl	$8, %ebp	#test/join-reg.ml:7
+	cmpl	$0, %eax	#test/join-reg.ml:7
 	jne	je_else.31
-	movl	4(%ebp), %eax	;#7
-	movl	0(%ebp), %ebx	;#7
-	subl	%eax, %ebx	;#7
+	movl	4(%ebp), %eax	#test/join-reg.ml:7
+	movl	0(%ebp), %ebx	#test/join-reg.ml:7
+	subl	%eax, %ebx	#test/join-reg.ml:7
 	jmp	je_cont.32
 je_else.31:
-	movl	0(%ebp), %eax	;#7
-	movl	4(%ebp), %ebx	;#7
-	subl	%eax, %ebx	;#7
+	movl	0(%ebp), %eax	#test/join-reg.ml:7
+	movl	4(%ebp), %ebx	#test/join-reg.ml:7
+	subl	%eax, %ebx	#test/join-reg.ml:7
 je_cont.32:
-	movl	0(%ebp), %eax	;#7
-	addl	%eax, %ebx	;#7
-	movl	4(%ebp), %eax	;#7
-	addl	%ebx, %eax	;#7
-	addl	$8, %ebp	;#7
-	call	min_caml_print_int	;#7
-	subl	$8, %ebp	;#7
+	movl	0(%ebp), %eax	#test/join-reg.ml:7
+	addl	%eax, %ebx	#test/join-reg.ml:7
+	movl	4(%ebp), %eax	#test/join-reg.ml:7
+	addl	%ebx, %eax	#test/join-reg.ml:7
+	addl	$8, %ebp	#test/join-reg.ml:7
+	call	min_caml_print_int	#test/join-reg.ml:7
+	subl	$8, %ebp	#test/join-reg.ml:7
 	popl	%ebp
 	popl	%edi
 	popl	%esi

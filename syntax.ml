@@ -1,4 +1,4 @@
-type info = int
+type info = int * string
 type t = (* MinCamlの構文を表現するデータ型 (caml2html: syntax_t) *)
   | Unit of info
   | Bool of bool * info
@@ -27,7 +27,7 @@ type t = (* MinCamlの構文を表現するデータ型 (caml2html: syntax_t) *)
   | Put of t * t * t * info
 and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }
 
-let info_show i = Printf.sprintf "\t;#%d" i
+let info_show (i, fname) = Printf.sprintf "\t#%s:%d" fname i
 
 let to_string (x: t) =
     let rec to_string_pre pre t =
@@ -74,3 +74,5 @@ let to_string (x: t) =
     and to_string_idtype_list pre x = to_string_args pre x
     in
     to_string_pre "" x
+let get_info () =
+    (Parsing.symbol_start_pos ()).pos_lnum, (Parsing.symbol_start_pos ()).pos_fname

@@ -60,82 +60,83 @@ simple_exp: /* (* 括弧をつけなくても関数の引数になれる式 (caml2html: parser_simp
 | LPAREN exp RPAREN
     { $2}
 | LPAREN RPAREN
-    { Unit (Parsing.symbol_start_pos ()).pos_lnum  }
+    { Unit (Syntax.get_info())  }
 | BOOL
-    { Bool($1, (Parsing.symbol_start_pos ()).pos_lnum ) }
+    { Bool($1, (Syntax.get_info())) }
 | INT
-    { Int($1, (Parsing.symbol_start_pos ()).pos_lnum  )}
+    { Int($1, (Syntax.get_info())  )}
 | FLOAT
-    { Float($1, (Parsing.symbol_start_pos ()).pos_lnum)  }
+    { Float($1, (Syntax.get_info()))  }
 | IDENT
-    { Var($1, (Parsing.symbol_start_pos ()).pos_lnum ) }
+    { Var($1, (Syntax.get_info()) ) }
 | simple_exp DOT LPAREN exp RPAREN
-    { Get($1, $4, (Parsing.symbol_start_pos ()).pos_lnum ) }
+    { Get($1, $4, (Syntax.get_info()) ) }
 
 exp: /* (* 一般の式 (caml2html: parser_exp) *) */
 | simple_exp
     { $1 }
 | NOT exp
     %prec prec_app
-    { Not($2, (Parsing.symbol_start_pos ()).pos_lnum  )}
+    { Not($2, (Syntax.get_info())  )}
 | MINUS exp
     %prec prec_unary_minus
     { match $2 with
-    | Float(f, info) -> Float(-.f, (Parsing.symbol_start_pos ()).pos_lnum)  (* -1.23などは型エラーではないので別扱い *)
-    | e -> Neg(e, (Parsing.symbol_start_pos ()).pos_lnum ) }
+    | Float(f, info) -> Float(-.f, (Syntax.get_info()))  (* -1.23などは型エラーではないので別扱い *)
+    | e -> Neg(e, (Syntax.get_info()) ) }
 | exp PLUS exp /* (* 足し算を構文解析するルール (caml2html: parser_add) *) */
-    { Add($1,$3, (Parsing.symbol_start_pos ()).pos_lnum)  }
+    { Add($1,$3, (Syntax.get_info()))  }
 | exp MINUS exp
-    { Sub($1, $3, (Parsing.symbol_start_pos ()).pos_lnum  )}
+    { Sub($1, $3, (Syntax.get_info())  )}
 | exp EQUAL exp
-    { Eq($1, $3, (Parsing.symbol_start_pos ()).pos_lnum  )}
+    { Eq($1, $3, (Syntax.get_info())  )}
 | exp LESS_GREATER exp
-    { Not(Eq($1, $3, (Parsing.symbol_start_pos ()).pos_lnum), (Parsing.symbol_start_pos ()).pos_lnum  )}
+    { Not(Eq($1, $3, (Syntax.get_info())), (Syntax.get_info())  )}
 | exp LESS exp
-    { Not(LE($3, $1, (Parsing.symbol_start_pos ()).pos_lnum  ), (Parsing.symbol_start_pos ()).pos_lnum  )}
+    { Not(LE($3, $1, (Syntax.get_info())  ), (Syntax.get_info())  )}
 | exp GREATER exp
-    { Not(LE($1, $3, (Parsing.symbol_start_pos ()).pos_lnum  ), (Parsing.symbol_start_pos ()).pos_lnum  )}
+    { Not(LE($1, $3, (Syntax.get_info())  ), (Syntax.get_info())  )}
 | exp LESS_EQUAL exp
-    { LE($1, $3, (Parsing.symbol_start_pos ()).pos_lnum  )}
+    { LE($1, $3, (Syntax.get_info())  )}
 | exp GREATER_EQUAL exp
-    { LE($3, $1, (Parsing.symbol_start_pos ()).pos_lnum  )}
+    { LE($3, $1, (Syntax.get_info())  )}
 | IF exp THEN exp ELSE exp
     %prec prec_if
-    { If($2, $4, $6, (Parsing.symbol_start_pos ()).pos_lnum  )}
+    { If($2, $4, $6, (Syntax.get_info())  )}
 | MINUS_DOT exp
     %prec prec_unary_minus
-    { FNeg($2, (Parsing.symbol_start_pos ()).pos_lnum  )}
+    { FNeg($2, (Syntax.get_info())  )}
 | exp PLUS_DOT exp
-    { FAdd($1, $3, (Parsing.symbol_start_pos ()).pos_lnum  )}
+    { FAdd($1, $3, (Syntax.get_info())  )}
 | exp MINUS_DOT exp
-    { FSub($1, $3, (Parsing.symbol_start_pos ()).pos_lnum  )}
+    { FSub($1, $3, (Syntax.get_info())  )}
 | exp AST_DOT exp
-    { FMul($1, $3, (Parsing.symbol_start_pos ()).pos_lnum  )}
+    { FMul($1, $3, (Syntax.get_info())  )}
 | exp SLASH_DOT exp
-    { FDiv($1, $3, (Parsing.symbol_start_pos ()).pos_lnum  )}
+    { FDiv($1, $3, (Syntax.get_info())  )}
 | LET IDENT EQUAL exp IN exp
     %prec prec_let
-    { Let(addtyp $2, $4, $6, (Parsing.symbol_start_pos ()).pos_lnum  )}
+    { Let(addtyp $2, $4, $6, (Syntax.get_info())  )}
 | LET REC fundef IN exp
     %prec prec_let
-    { LetRec($3, $5, (Parsing.symbol_start_pos ()).pos_lnum  )}
+    { LetRec($3, $5, (Syntax.get_info())  )}
 | exp actual_args
     %prec prec_app
-    { App($1, $2, (Parsing.symbol_start_pos ()).pos_lnum  )}
+    { App($1, $2, (Syntax.get_info())  )}
 | elems
-    { Tuple($1, (Parsing.symbol_start_pos ()).pos_lnum  )}
+    { Tuple($1, (Syntax.get_info())  )}
 | LET LPAREN pat RPAREN EQUAL exp IN exp
-    { LetTuple($3, $6, $8, (Parsing.symbol_start_pos ()).pos_lnum  )}
+    { LetTuple($3, $6, $8, (Syntax.get_info())  )}
 | simple_exp DOT LPAREN exp RPAREN LESS_MINUS exp
-    { Put($1, $4, $7, (Parsing.symbol_start_pos ()).pos_lnum  )}
+    { Put($1, $4, $7, (Syntax.get_info())  )}
 | exp SEMICOLON exp
-    { Let((Id.gentmp Type.Unit, Type.Unit), $1, $3, (Parsing.symbol_start_pos ()).pos_lnum  )}
+    { Let((Id.gentmp Type.Unit, Type.Unit), $1, $3, (Syntax.get_info())  )}
 | ARRAY_CREATE simple_exp simple_exp
     %prec prec_app
-    { Array($2, $3, (Parsing.symbol_start_pos ()).pos_lnum  )}
+    { Array($2, $3, (Syntax.get_info())  )}
 | error
     { failwith
-	(Printf.sprintf "parse error near characters %d-%d, i.e. %d:%d to %d:%d (row:column format)"
+	(Printf.sprintf "\"%s\": parse error near characters %d-%d, i.e. %d:%d to %d:%d (file:row:column format)"
+       (Parsing.symbol_start_pos ()).pos_fname
 	   (Parsing.symbol_start ())
 	   (Parsing.symbol_end ())
        (Parsing.symbol_start_pos ()).pos_lnum

@@ -866,7 +866,8 @@ and __ocaml_lex_token_rec lexbuf __ocaml_lex_state =
   | 36 ->
 # 89 "lexer.mll"
     ( failwith
-	(Printf.sprintf "unknown token %s near characters %d-%d, i.e. %d:%d to %d:%d (line:column format)"
+	(Printf.sprintf "\"%s\": unknown token %s near characters %d-%d, i.e. %d:%d to %d:%d (line:column format)"
+       (Lexing.lexeme_start_p lexbuf).pos_fname
 	   (Lexing.lexeme lexbuf)
 	   (Lexing.lexeme_start lexbuf)
 	   (Lexing.lexeme_end lexbuf)
@@ -875,7 +876,7 @@ and __ocaml_lex_token_rec lexbuf __ocaml_lex_state =
        (Lexing.lexeme_end_p lexbuf).pos_lnum
        ((Lexing.lexeme_end_p lexbuf).pos_cnum - (Lexing.lexeme_end_p lexbuf).pos_bol + 1)
        ) )
-# 879 "lexer.ml"
+# 880 "lexer.ml"
 
   | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf; 
       __ocaml_lex_token_rec lexbuf __ocaml_lex_state
@@ -885,30 +886,30 @@ and comment lexbuf =
 and __ocaml_lex_comment_rec lexbuf __ocaml_lex_state =
   match Lexing.engine __ocaml_lex_tables __ocaml_lex_state lexbuf with
       | 0 ->
-# 101 "lexer.mll"
+# 102 "lexer.mll"
     ( () )
-# 891 "lexer.ml"
+# 892 "lexer.ml"
 
   | 1 ->
-# 103 "lexer.mll"
+# 104 "lexer.mll"
     ( comment lexbuf;
       comment lexbuf )
-# 897 "lexer.ml"
+# 898 "lexer.ml"
 
   | 2 ->
-# 106 "lexer.mll"
+# 107 "lexer.mll"
     (Lexing.new_line lexbuf; comment lexbuf)
-# 902 "lexer.ml"
+# 903 "lexer.ml"
 
   | 3 ->
-# 108 "lexer.mll"
+# 109 "lexer.mll"
     ( Format.eprintf "warning: unterminated comment@." )
-# 907 "lexer.ml"
+# 908 "lexer.ml"
 
   | 4 ->
-# 110 "lexer.mll"
+# 111 "lexer.mll"
     ( comment lexbuf )
-# 912 "lexer.ml"
+# 913 "lexer.ml"
 
   | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf; 
       __ocaml_lex_comment_rec lexbuf __ocaml_lex_state

@@ -2,10 +2,10 @@
 .balign	8
 .text
 f.9:
-	movl	$123, %eax	;#1
+	movl	$123, %eax	#test/join-stack2.ml:1
 	ret
 g.11:
-	movl	$456, %eax	;#2
+	movl	$456, %eax	#test/join-stack2.ml:2
 	ret
 .globl	min_caml_start
 min_caml_start:
@@ -21,23 +21,23 @@ _min_caml_start: # for cygwin
 	movl	32(%esp),%ebp
 	movl	36(%esp),%eax
 	movl	%eax,min_caml_hp
-	call	f.9	;#4
-	movl	%eax, 0(%ebp)	;#5
-	cmpl	$0, %eax	;#5
+	call	f.9	#test/join-stack2.ml:4
+	movl	%eax, 0(%ebp)	#test/join-stack2.ml:5
+	cmpl	$0, %eax	#test/join-stack2.ml:5
 	jg	jle_else.23
-	addl	$8, %ebp	;#5
-	call	g.11	;#5
-	subl	$8, %ebp	;#5
-	movl	0(%ebp), %ebx	;#5
-	addl	%ebx, %eax	;#5
+	addl	$8, %ebp	#test/join-stack2.ml:5
+	call	g.11	#test/join-stack2.ml:5
+	subl	$8, %ebp	#test/join-stack2.ml:5
+	movl	0(%ebp), %ebx	#test/join-stack2.ml:5
+	addl	%ebx, %eax	#test/join-stack2.ml:5
 	jmp	jle_cont.24
 jle_else.23:
 jle_cont.24:
-	movl	0(%ebp), %ebx	;#5
-	addl	%ebx, %eax	;#5
-	addl	$8, %ebp	;#5
-	call	min_caml_print_int	;#5
-	subl	$8, %ebp	;#5
+	movl	0(%ebp), %ebx	#test/join-stack2.ml:5
+	addl	%ebx, %eax	#test/join-stack2.ml:5
+	addl	$8, %ebp	#test/join-stack2.ml:5
+	call	min_caml_print_int	#test/join-stack2.ml:5
+	subl	$8, %ebp	#test/join-stack2.ml:5
 	popl	%ebp
 	popl	%edi
 	popl	%esi

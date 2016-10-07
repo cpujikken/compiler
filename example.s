@@ -1,28 +1,6 @@
 .data
 .balign	8
 .text
-fib.26:
-	cmpl	$1, %eax
-	jg	jle_else.66
-	ret
-jle_else.66:
-	movl	%eax, %ebx
-	subl	$1, %ebx
-	movl	%eax, 0(%ebp)
-	movl	%ebx, %eax
-	addl	$8, %ebp
-	call	fib.26
-	subl	$8, %ebp
-	movl	0(%ebp), %ebx
-	subl	$2, %ebx
-	movl	%eax, 4(%ebp)
-	movl	%ebx, %eax
-	addl	$8, %ebp
-	call	fib.26
-	subl	$8, %ebp
-	movl	4(%ebp), %ebx
-	addl	%ebx, %eax
-	ret
 .globl	min_caml_start
 min_caml_start:
 .globl	_min_caml_start
@@ -37,9 +15,6 @@ _min_caml_start: # for cygwin
 	movl	32(%esp),%ebp
 	movl	36(%esp),%eax
 	movl	%eax,min_caml_hp
-	movl	$30, %eax
-	call	fib.26
-	call	min_caml_print_int
 	popl	%ebp
 	popl	%edi
 	popl	%esi
