@@ -13,3 +13,4 @@ let lex_get lexbuf =
        ((Lexing.lexeme_start_p lexbuf).pos_cnum - (Lexing.lexeme_start_p lexbuf).pos_bol + 1),
        (Lexing.lexeme_end_p lexbuf).pos_lnum,
        ((Lexing.lexeme_end_p lexbuf).pos_cnum - (Lexing.lexeme_end_p lexbuf).pos_bol + 1)
+let dump() = "dump_file.ml", -1, -1, -1, -1

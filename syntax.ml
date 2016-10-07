@@ -92,3 +92,31 @@ let to_string (x: t) =
     and to_string_idtype_list pre x = to_string_args pre x
     in
     to_string_pre "" x
+
+let get_info = function
+  | Unit info
+  | Bool (_, info)
+  | Int (_, info)
+  | Float (_, info)
+  | Not (_, info)
+  | Neg (_, info)
+  | Add (_, _, info)
+  | Sub (_, _, info)
+  | FNeg (_, info)
+  | FAdd (_, _, info)
+  | FSub (_, _, info)
+  | FMul (_, _, info)
+  | FDiv (_, _, info)
+  | Eq (_, _, info)
+  | LE (_, _, info)
+  | If (_, _, _, info)
+  | Let (_, _, _, info)
+  | Var (_, info)
+  | LetRec (_, _, info)
+  | App (_, _, info)
+  | Tuple (_, info)
+  | LetTuple (_, _, _, info)
+  | Array (_, _, info)
+  | Get (_, _, info)
+  | Put (_, _, _, info)
+  -> info

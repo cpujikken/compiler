@@ -75,32 +75,58 @@ let rec g env known = function (* クロージャ変換ルーチン本体 (caml2html: closure
       let known', e1' =
 	if S.is_empty zs then known', e1' else
 	(* 駄目だったら状態(toplevelの値)を戻して、クロージャ変換をやり直す *)
-	(Format.eprintf "free variable(s) %s found in function %s@." (Id.pp_list (S.elements zs)) x;
-	 Format.eprintf "function %s cannot be directly applied in fact@." x;
+	(Format.eprintf "free variable(s) %s found in function %s@." (Id.pp_list (S.elements zs)) (Id.to_string x);
+	 Format.eprintf "function %s cannot be directly applied in fact@." (Id.to_string x);
 	 toplevel := toplevel_backup;
 	 let e1' = g (M.add_list yts env') known e1 in
 	 known, e1') in
       let zs = S.elements (S.diff (fv e1') (S.add x (S.of_list (List.map fst yts)))) in (* 自由変数のリスト *)
       let zts = List.map (fun z -> (z, M.find z env')) zs in (* ここで自由変数zの型を引くために引数envが必要 *)
-      toplevel := { name = (Id.L(x), t); args = yts; formal_fv = zts; body = e1' } :: !toplevel; (* トップレベル関数を追加 *)
+      toplevel := { name = (Id.to_L x, t); args = yts; formal_fv = zts; body = e1' } :: !toplevel; (* トップレベル関数を追加 *)
       let e2' = g env' known' e2 in
       if S.mem x (fv e2') then (* xが変数としてe2'に出現するか *)
-	MakeCls((x, t), { entry = Id.L(x); actual_fv = zs }, e2', info) (* 出現していたら削除しない *)
+	MakeCls((x, t), { entry = Id.to_L x; actual_fv = zs }, e2', info) (* 出現していたら削除しない *)
       else
-	(Format.eprintf "eliminating closure(s) %s@." x;
+	(Format.eprintf "eliminating closure(s) %s@." (Id.to_string x);
 	 e2') (* 出現しなければMakeClsを削除 *)
   | KNormal.App(x, ys, info) when S.mem x known -> (* 関数適用の場合 (caml2html: closure_app) *)
-      Format.eprintf "directly applying %s@." x;
-      AppDir(Id.L(x), ys, info)
+      Format.eprintf "directly applying %s@." (Id.to_string x);
+      AppDir(Id.to_L x, ys, info)
   | KNormal.App(f, xs, info) -> AppCls(f, xs, info)
   | KNormal.Tuple(xs, info) -> Tuple(xs, info)
   | KNormal.LetTuple(xts, y, e, info) -> LetTuple(xts, y, g (M.add_list xts env) known e, info)
   | KNormal.Get(x, y, info) -> Get(x, y, info)
   | KNormal.Put(x, y, z, info) -> Put(x, y, z, info)
-  | KNormal.ExtArray(x, info) -> ExtArray(Id.L(x), info)
-  | KNormal.ExtFunApp(x, ys, info) -> AppDir(Id.L("min_caml_" ^ x), ys, info)
+  | KNormal.ExtArray(x, info) -> ExtArray(Id.to_L(x), info)
+  | KNormal.ExtFunApp(x, ys, info) -> AppDir(Id.L("min_caml_" ^ (fst x), snd x), ys, info)
 
 let f e =
   toplevel := [];
   let e' = g M.empty S.empty e in
   Prog(List.rev !toplevel, e')
+
+let get_info = function
+  | Unit info
+  | Int (_, info)
+  | Float(_, info)
+  | Neg(_, info)
+  | Add (_, _, info)
+  | Sub (_, _, info)
+  | FNeg(_, info)
+  | FAdd (_, _, info)
+  | FSub (_, _, info)
+  | FMul (_, _, info)
+  | FDiv (_, _, info)
+  | IfEq (_, _, _, _, info)
+  | IfLE (_, _, _, _, info)
+  | Let (_, _, _, info)
+  | Var(_, info)
+  | MakeCls (_, _, _, info)
+  | AppCls (_, _, info)
+  | AppDir (_, _, info)
+  | Tuple(_, info)
+  | LetTuple (_, _, _, info)
+  | Get (_, _, info)
+  | Put (_, _, _, info)
+  | ExtArray(_, info)
+  -> info

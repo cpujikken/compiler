@@ -89,46 +89,46 @@ let insert_let (e, t) k info = (* letを挿入する補助関数 (caml2html: knormal_inse
   match e with
   | Var(x, _) -> k x
   | _ ->
-      let x = Id.gentmp t in
+      let x = Id.gentmp t info in
       let e', t' = k x in
       Let((x, t), e, e', info), t'
 
 let rec g env = function (* K正規化ルーチン本体 (caml2html: knormal_g) *)
-  | Syntax.Unit info -> Unit info, Type.Unit
-  | Syntax.Bool(b, info) -> Int((if b then 1 else 0), info), Type.Int (* 論理値true, falseを整数1, 0に変換 (caml2html: knormal_bool) *)
-  | Syntax.Int(i, info) -> Int(i, info), Type.Int
-  | Syntax.Float(d, info) -> Float(d, info), Type.Float
+  | Syntax.Unit info -> Unit info, Type.Unit info
+  | Syntax.Bool(b, info) -> Int((if b then 1 else 0), info), Type.Int info (* 論理値true, falseを整数1, 0に変換 (caml2html: knormal_bool) *)
+  | Syntax.Int(i, info) -> Int(i, info), Type.Int info
+  | Syntax.Float(d, info) -> Float(d, info), Type.Float info
   | Syntax.Not(e, info) -> g env (Syntax.If(e, Syntax.Bool(false, info), Syntax.Bool(true, info), info))
   | Syntax.Neg(e, info) ->
       insert_let (g env e)
-	(fun x -> Neg(x, info), Type.Int) info
+	(fun x -> Neg(x, info), Type.Int info) info
   | Syntax.Add(e1, e2, info) -> (* 足し算のK正規化 (caml2html: knormal_add) *)
       insert_let (g env e1)
 	(fun x -> insert_let (g env e2)
-	    (fun y -> Add(x, y, info), Type.Int) info) info
+	    (fun y -> Add(x, y, info), Type.Int info) info) info
   | Syntax.Sub(e1, e2, info) ->
       insert_let (g env e1)
 	(fun x -> insert_let (g env e2)
-	    (fun y -> Sub(x, y, info), Type.Int) info) info
+	    (fun y -> Sub(x, y, info), Type.Int info) info) info
   | Syntax.FNeg(e, info) ->
       insert_let (g env e)
-	(fun x -> FNeg(x, info), Type.Float) info
+	(fun x -> FNeg(x, info), Type.Float info) info
   | Syntax.FAdd(e1, e2, info) ->
       insert_let (g env e1)
 	(fun x -> insert_let (g env e2)
-	    (fun y -> FAdd(x, y, info), Type.Float) info) info
+	    (fun y -> FAdd(x, y, info), Type.Float info) info) info
   | Syntax.FSub(e1, e2, info) ->
       insert_let (g env e1)
 	(fun x -> insert_let (g env e2)
-	    (fun y -> FSub(x, y, info), Type.Float) info) info
+	    (fun y -> FSub(x, y, info), Type.Float info) info) info
   | Syntax.FMul(e1, e2, info) ->
       insert_let (g env e1)
 	(fun x -> insert_let (g env e2)
-	    (fun y -> FMul(x, y, info), Type.Float) info) info
+	    (fun y -> FMul(x, y, info), Type.Float info) info) info
   | Syntax.FDiv(e1, e2, info) ->
       insert_let (g env e1)
 	(fun x -> insert_let (g env e2)
-	    (fun y -> FDiv(x, y, info), Type.Float) info) info
+	    (fun y -> FDiv(x, y, info), Type.Float info) info) info
   | Syntax.Eq (_, _, info) | Syntax.LE (_, _, info) as cmp ->
       g env (Syntax.If(cmp, Syntax.Bool(true, info), Syntax.Bool(false, info), info))
   | Syntax.If(Syntax.Not(e1, _), e2, e3, info) -> g env (Syntax.If(e1, e3, e2, info)) (* notによる分岐を変換 (caml2html: knormal_not) *)
@@ -154,8 +154,8 @@ let rec g env = function (* K正規化ルーチン本体 (caml2html: knormal_g) *)
   | Syntax.Var(x, info) when M.mem x env -> Var(x, info), M.find x env
   | Syntax.Var(x, info) -> (* 外部配列の参照 (caml2html: knormal_extarray) *)
       (match M.find x !Typing.extenv with
-      | Type.Array(_) as t -> ExtArray(x, info), t
-      | _ -> failwith (Printf.sprintf "external variable %s does not have an array type" x))
+      | Type.Array(_, _) as t -> ExtArray(x, info), t
+      | _ -> failwith (Printf.sprintf "external variable %s does not have an array type" (Id.to_string x)))
   | Syntax.LetRec({ Syntax.name = (x, t); Syntax.args = yts; Syntax.body = e1 }, e2, info) ->
       let env' = M.add x t env in
       let e2', t2 = g env' e2 in
@@ -163,7 +163,7 @@ let rec g env = function (* K正規化ルーチン本体 (caml2html: knormal_g) *)
       LetRec({ name = (x, t); args = yts; body = e1' }, e2', info), t2
   | Syntax.App(Syntax.Var(f, _) as f_with_info, e2s, info) when not (M.mem f env) -> (* 外部関数の呼び出し (caml2html: knormal_extfunapp) *)
       (match M.find f !Typing.extenv with
-      | Type.Fun(_, t) ->
+      | Type.Fun(_, t, _) ->
 	  let rec bind xs = function (* "xs" are identifiers for the arguments *)
 	    | [] -> ExtFunApp(f, xs, info), t
 	    | e2 :: e2s ->
@@ -174,7 +174,7 @@ let rec g env = function (* K正規化ルーチン本体 (caml2html: knormal_g) *)
       )
   | Syntax.App(e1, e2s, info) ->
       (match g env e1 with
-      | _, Type.Fun(_, t) as g_e1 ->
+      | _, Type.Fun(_, t, _) as g_e1 ->
 	  insert_let g_e1
 	    (fun f ->
 	      let rec bind xs = function (* "xs" are identifiers for the arguments *)
@@ -186,7 +186,7 @@ let rec g env = function (* K正規化ルーチン本体 (caml2html: knormal_g) *)
       | _ -> failwith (Printf.sprintf "%s is not a function" (Syntax.to_string e1)))
   | Syntax.Tuple(es, info) ->
       let rec bind xs ts = function (* "xs" and "ts" are identifiers and types for the elements *)
-	| [] -> Tuple(xs, info), Type.Tuple(ts)
+	| [] -> Tuple(xs, info), Type.Tuple(ts, info)
 	| e :: es ->
 	    let _, t as g_e = g env e in
 	    insert_let g_e
@@ -205,12 +205,12 @@ let rec g env = function (* K正規化ルーチン本体 (caml2html: knormal_g) *)
 	    (fun y ->
 	      let l =
 		match t2 with
-		| Type.Float -> "create_float_array"
-		| _ -> "create_array" in
-	      ExtFunApp(l, [x; y], info), Type.Array(t2)) info) info
+		| Type.Float info -> "create_float_array", info
+		| x -> "create_array", (Type.get_info x) in
+	      ExtFunApp(l, [x; y], info), Type.Array(t2, info)) info) info
   | Syntax.Get(e1, e2, info) ->
       (match g env e1 with
-      |	_, Type.Array(t) as g_e1 ->
+      |	_, Type.Array(t, info) as g_e1 ->
 	  insert_let g_e1
 	    (fun x -> insert_let (g env e2)
 		(fun y -> Get(x, y, info), t) info) info
@@ -219,7 +219,7 @@ let rec g env = function (* K正規化ルーチン本体 (caml2html: knormal_g) *)
       insert_let (g env e1)
 	(fun x -> insert_let (g env e2)
 	    (fun y -> insert_let (g env e3)
-		(fun z -> Put(x, y, z, info), Type.Unit) info) info) info
+		(fun z -> Put(x, y, z, info), Type.Unit info) info) info) info
 
 let f e =
     Printf.printf "%s" (Syntax.to_string e);

@@ -38,12 +38,12 @@ type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret 
 (* プログラム全体 = 浮動小数点数テーブル + トップレベル関数 + メインの式 (caml2html: sparcasm_prog) *)
 type prog = Prog of (Id.l * float) list * fundef list * t
 
-let fletd(x, e1, e2, info) = Let((x, Type.Float), e1, e2, info)
-let seq(e1, e2, info) = Let((Id.gentmp Type.Unit, Type.Unit), e1, e2, info)
+let fletd(x, e1, e2, info) = Let((x, Type.Float info), e1, e2, info)
+let seq(e1, e2, info) = Let((Id.gentmp (Type.Unit info) info, Type.Unit info), e1, e2, info)
 
 let regs = (* Array.init 16 (fun i -> Printf.sprintf "%%r%d" i) *)
-  [| "%eax"; "%ebx"; "%ecx"; "%edx"; "%esi"; "%edi" |]
-let fregs = Array.init 8 (fun i -> Printf.sprintf "%%xmm%d" i)
+  [| "%eax", Info.dump(); "%ebx", Info.dump(); "%ecx", Info.dump(); "%edx", Info.dump(); "%esi", Info.dump(); "%edi", Info.dump() |]
+let fregs = Array.init 8 (fun i -> Printf.sprintf "%%xmm%d" i, Info.dump())
 let allregs = Array.to_list regs
 let allfregs = Array.to_list fregs
 let reg_cl = regs.(Array.length regs - 1) (* closure address (caml2html: sparcasm_regcl) *)
@@ -51,10 +51,10 @@ let reg_cl = regs.(Array.length regs - 1) (* closure address (caml2html: sparcas
 let reg_sw = regs.(Array.length regs - 1) (* temporary for swap *)
 let reg_fsw = fregs.(Array.length fregs - 1) (* temporary for swap *)
 *)
-let reg_sp = "%ebp" (* stack pointer *)
-let reg_hp = "min_caml_hp" (* heap pointer (caml2html: sparcasm_reghp) *)
+let reg_sp = "%ebp", Info.dump() (* stack pointer *)
+let reg_hp = "min_caml_hp", Info.dump() (* heap pointer (caml2html: sparcasm_reghp) *)
 (* let reg_ra = "%eax" (* return address *) *)
-let is_reg x = (x.[0] = '%' || x = reg_hp)
+let is_reg x = ((fst x).[0] = '%' || fst x = fst reg_hp)
 
 (* super-tenuki *)
 let rec remove_and_uniq xs = function
@@ -87,35 +87,34 @@ let rec concat e1 xt e2 =
 
 let align i = (if i mod 8 = 0 then i else i + 4)
 let get_info_exp = function
-  | Nop info -> info
-  | Set (_, info) -> info
-  | SetL (_, info) -> info
-  | Mov (_, info) -> info
-  | Neg (_, info) -> info
-  | Add (_, _, info) -> info
-  | Sub (_, _, info) -> info
-  | Ld (_, _, _, info) -> info
-  | St (_, _, _, _, info) -> info
-  | FMovD (_, info) -> info
-  | FNegD (_, info) -> info
-  | FAddD (_, _, info) -> info
-  | FSubD (_, _, info) -> info
-  | FMulD (_, _, info) -> info
-  | FDivD (_, _, info) -> info
-  | LdDF (_, _, _, info) -> info
-  | StDF (_, _, _, _, info) -> info
-  | Comment (_, info) -> info
+  | Nop info
+  | Set (_, info)
+  | SetL (_, info)
+  | Mov (_, info)
+  | Neg (_, info)
+  | Add (_, _, info)
+  | Sub (_, _, info)
+  | Ld (_, _, _, info)
+  | St (_, _, _, _, info)
+  | FMovD (_, info)
+  | FNegD (_, info)
+  | FAddD (_, _, info)
+  | FSubD (_, _, info)
+  | FMulD (_, _, info)
+  | FDivD (_, _, info)
+  | LdDF (_, _, _, info)
+  | StDF (_, _, _, _, info)
+  | Comment (_, info)
   (* virtual instructions *)
-  | IfEq (_, _, _, _, info) -> info
-  | IfLE (_, _, _, _, info) -> info
-  | IfGE (_, _, _, _, info) -> info (* 左右対称ではないので必要 *)
-  | IfFEq (_, _, _, _, info) -> info
-  | IfFLE (_, _, _, _, info) -> info
-  (* closure address, integer arguments, and float arguments *)
-  | CallCls (_, _, _, info) -> info
-  | CallDir (_, _, _, info) -> info
-  | Save (_, _, info) -> info (* レジスタ変数の値をスタック変数へ保存 (caml2html: sparcasm_save) *)
-  | Restore (_, info) -> info(* スタック変数から値を復元 (caml2html: sparcasm_restore) *)
+  | IfEq (_, _, _, _, info)
+  | IfLE (_, _, _, _, info)
+  | IfGE (_, _, _, _, info)
+  | IfFEq (_, _, _, _, info)
+  | IfFLE (_, _, _, _, info)
+  | CallCls (_, _, _, info)
+  | CallDir (_, _, _, info)
+  | Save (_, _, info)
+  | Restore (_, info) -> info
 let get_info_t = function
-  | Ans (_, info) -> info
+  | Ans (_, info)
   | Let (_, _, _, info) -> info

@@ -4,7 +4,7 @@ module S =
   Set.Make
     (struct
       type t = Id.t
-      let compare = compare
+      let compare x y = compare (Id.get_key x) (Id.get_key y)
     end)
 include S
 

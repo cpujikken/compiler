@@ -30,3 +30,13 @@ let rec to_string_pre pre typ =
     and to_string_list pre = function
         | [] -> ""
         | x :: xlist -> Printf.sprintf "\n%s%s" (to_string_pre pre x) (to_string_list pre xlist)
+
+let get_info = function
+  | Unit info -> info
+  | Bool info -> info
+  | Int info -> info
+  | Float info -> info
+  | Fun (_, _, info) -> info
+  | Tuple (_, info) -> info
+  | Array (_, info) -> info
+  | Var (_, info) -> info

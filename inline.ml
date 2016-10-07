@@ -18,7 +18,7 @@ let rec g env = function (* インライン展開ルーチン本体 (caml2html: inline_g) *)
       LetRec({ name = (x, t); args = yts; body = g env e1}, g env e2, info)
   | App(x, ys, info) when M.mem x env -> (* 関数適用の場合 (caml2html: inline_app) *)
       let (zs, e) = M.find x env in
-      Format.eprintf "inlining %s@." x;
+      Format.eprintf "inlining %s@." (Id.to_string x);
       let env' =
 	List.fold_left2
 	  (fun env' (z, t) y -> M.add z y env')

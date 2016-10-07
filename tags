@@ -32,6 +32,8 @@ Bool	syntax.ml	/^  | Bool of bool * Info.t$/;"	C	type:t
 Bool	type.ml	/^  | Bool of Info.t$/;"	C	type:t
 C	asm.ml	/^type id_or_imm = V of Id.t | C of int$/;"	C	type:id_or_imm
 C	asm.mli	/^type id_or_imm = V of Id.t | C of int$/;"	C	type:id_or_imm
+CC	Makefile	/^CC = gcc$/;"	m
+CFLAGS	Makefile	/^CFLAGS = -g -O2 -Wall$/;"	m
 CallCls	asm.ml	/^  | CallCls of Id.t * Id.t list * Id.t list * Info.t$/;"	C	type:exp
 CallCls	asm.mli	/^  | CallCls of Id.t * Id.t list * Id.t list * Info.t$/;"	C	type:exp
 CallDir	asm.ml	/^  | CallDir of Id.l * Id.t list * Id.t list * Info.t$/;"	C	type:exp
@@ -132,7 +134,7 @@ Int	syntax.ml	/^  | Int of int * Info.t$/;"	C	type:t
 Int	type.ml	/^  | Int of Info.t$/;"	C	type:t
 KNormal	kNormal.ml	1;"	M
 KNormal	kNormal.mli	1;"	M
-L	id.ml	/^type l = L of string (* トップレベル関数やグローバル配列のラベル (caml2html: id_l) *)$/;"	C	type:l
+L	id.ml	/^type l = L of string * Info.t (* トップレベル関数やグローバル配列のラベル (caml2html: id_l) *)$/;"	C	type:l
 LE	syntax.ml	/^  | LE of t * t * Info.t$/;"	C	type:t
 Ld	asm.ml	/^  | Ld of Id.t * id_or_imm * int * Info.t$/;"	C	type:exp
 Ld	asm.mli	/^  | Ld of Id.t * id_or_imm * int * Info.t$/;"	C	type:exp
@@ -153,11 +155,13 @@ LetTuple	closure.mli	/^  | LetTuple of (Id.t * Type.t) list * Id.t * t * Info.t$
 LetTuple	kNormal.ml	/^  | LetTuple of (Id.t * Type.t) list * Id.t * t * Info.t$/;"	C	type:t
 LetTuple	kNormal.mli	/^  | LetTuple of (Id.t * Type.t) list * Id.t * t * Info.t$/;"	C	type:t
 LetTuple	syntax.ml	/^  | LetTuple of (Id.t * Type.t) list * t * t * Info.t$/;"	C	type:t
+M	m.ml	1;"	M
 Main	main.ml	1;"	M
 MakeCls	closure.ml	/^  | MakeCls of (Id.t * Type.t) * closure * t * Info.t$/;"	C	type:t
 MakeCls	closure.mli	/^  | MakeCls of (Id.t * Type.t) * closure * t * Info.t$/;"	C	type:t
 Mov	asm.ml	/^  | Mov of Id.t * Info.t$/;"	C	type:exp
 Mov	asm.mli	/^  | Mov of Id.t * Info.t$/;"	C	type:exp
+NCSUFFIX	Makefile	/^NCSUFFIX = .opt$/;"	m
 Neg	asm.ml	/^  | Neg of Id.t * Info.t$/;"	C	type:exp
 Neg	asm.mli	/^  | Neg of Id.t * Info.t$/;"	C	type:exp
 Neg	closure.ml	/^  | Neg of Id.t * Info.t$/;"	C	type:t
@@ -179,9 +183,12 @@ Put	closure.mli	/^  | Put of Id.t * Id.t * Id.t * Info.t$/;"	C	type:t
 Put	kNormal.ml	/^  | Put of Id.t * Id.t * Id.t * Info.t$/;"	C	type:t
 Put	kNormal.mli	/^  | Put of Id.t * Id.t * Id.t * Info.t$/;"	C	type:t
 Put	syntax.ml	/^  | Put of t * t * t * Info.t$/;"	C	type:t
+RESULT	Makefile	/^RESULT = min-caml$/;"	m
 RegAlloc	regAlloc.ml	1;"	M
 Restore	asm.ml	/^  | Restore of Id.t * Info.t (* スタック変数から値を復元 (caml2html: sparcasm_restore) *)$/;"	C	type:exp
 Restore	asm.mli	/^  | Restore of Id.t * Info.t  (* スタック変数から値を復元 *)$/;"	C	type:exp
+S	s.ml	1;"	M
+SOURCES	Makefile	/^SOURCES = float.c info.ml type.ml id.ml m.ml s.ml \\$/;"	m
 Save	asm.ml	/^  | Save of Id.t * Id.t * Info.t (* レジスタ変数の値をスタック変数へ保存 (caml2html: sparcasm_save) *)$/;"	C	type:exp
 Save	asm.mli	/^  | Save of Id.t * Id.t  * Info.t (* レジスタ変数の値をスタック変数へ保存 *)$/;"	C	type:exp
 Set	asm.ml	/^  | Set of int * Info.t$/;"	C	type:exp
@@ -202,6 +209,8 @@ Sub	kNormal.ml	/^  | Sub of Id.t * Id.t * Info.t$/;"	C	type:t
 Sub	kNormal.mli	/^  | Sub of Id.t * Id.t * Info.t$/;"	C	type:t
 Sub	syntax.ml	/^  | Sub of t * t * Info.t$/;"	C	type:t
 Syntax	syntax.ml	1;"	M
+TESTS	Makefile	/^TESTS = print sum-tail gcd sum fib ack even-odd \\$/;"	m
+TRASH	Makefile	/^TRASH = $(TESTS:%=test\/%.s) $(TESTS:%=test\/%) $(TESTS:%=test\/%.res) $(TESTS:%=test\/%.ans) $(TESTS:%=test\/%.cmp)$/;"	m
 Tail	emit.ml	/^type dest = Tail | NonTail of Id.t (* 末尾かどうかを表すデータ型 (caml2html: emit_dest) *)$/;"	C	type:dest
 Tuple	closure.ml	/^  | Tuple of Id.t list * Info.t$/;"	C	type:t
 Tuple	closure.mli	/^  | Tuple of Id.t list * Info.t$/;"	C	type:t
@@ -228,11 +237,13 @@ Var	kNormal.mli	/^  | Var of Id.t * Info.t$/;"	C	type:t
 Var	syntax.ml	/^  | Var of Id.t * Info.t$/;"	C	type:t
 Var	type.ml	/^  | Var of t option ref * Info.t$/;"	C	type:t
 Virtual	virtual.ml	1;"	M
+_min_caml_start	example.s	/^_min_caml_start: # for cygwin$/;"	l
 _min_caml_start	test/print.s	/^_min_caml_start: # for cygwin$/;"	l
 a	regAlloc.ml	/^  let a =$/;"	v
 actual_fv	closure.ml	/^type closure = { entry : Id.l; actual_fv : Id.t list }$/;"	r	type:closure
 actual_fv	closure.mli	/^type closure = { entry : Id.l; actual_fv : Id.t list }$/;"	r	type:closure
 add	regAlloc.ml	/^let add x r regenv =$/;"	v
+add_list	m.ml	/^let add_list xys env = List.fold_left (fun env (x, y) -> add x y env) env xys$/;"	v
 align	asm.ml	/^let align i = (if i mod 8 = 0 then i else i + 4)$/;"	v
 align	asm.mli	/^val align : int -> int$/;"	v
 all	regAlloc.ml	/^  let all =$/;"	v
@@ -254,9 +265,12 @@ body	closure.mli	/^		body : t }$/;"	r	type:fundef
 body	kNormal.ml	/^and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }$/;"	r	type:fundef
 body	kNormal.mli	/^and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }$/;"	r	type:fundef
 body	syntax.ml	/^and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }$/;"	r	type:fundef
+charset	Makefile	/^	sed 's\/charset=iso-8859-1\/charset=euc-jp\/g' < min-caml.html > min-caml.tmp.html$/;"	m
 classify	virtual.ml	/^let classify xts ini addf addi =$/;"	v
 closure	closure.ml	/^type closure = { entry : Id.l; actual_fv : Id.t list }$/;"	t
 closure	closure.mli	/^type closure = { entry : Id.l; actual_fv : Id.t list }$/;"	t
+compare	m.ml	/^      let compare x y= compare (Id.get_key x) (Id.get_key y)$/;"	v
+compare	s.ml	/^      let compare x y = compare (Id.get_key x) (Id.get_key y)$/;"	v
 concat	asm.ml	/^let rec concat e1 xt e2 =$/;"	v
 concat	asm.mli	/^val concat : t -> Id.t * Type.t -> t -> t$/;"	v
 counter	id.ml	/^let counter = ref 0$/;"	v
@@ -266,11 +280,12 @@ deref_id_typ	typing.ml	/^let rec deref_id_typ (x, t) = (x, deref_typ t)$/;"	v
 deref_term	typing.ml	/^let rec deref_term = function$/;"	v
 deref_typ	typing.ml	/^let rec deref_typ = function (* 型変数を中身でおきかえる関数 (caml2html: typing_deref) *)$/;"	v
 dest	emit.ml	/^type dest = Tail | NonTail of Id.t (* 末尾かどうかを表すデータ型 (caml2html: emit_dest) *)$/;"	t
+dump	info.ml	/^let dump() = "dump_file.ml", -1, -1, -1, -1$/;"	v
 e'	elim.ml	/^      let e' = f e in$/;"	v
 e'	kNormal.ml	/^      let e', t' = k x in$/;"	v
 e'	main.ml	/^  let e' = Elim.f (ConstFold.f (Inline.f (Assoc.f (Beta.f e)))) in$/;"	v
 e'	regAlloc.ml	/^  let (e', regenv') = g (a, t) (Ans(Mov(a, info), info)) regenv e in$/;"	v
-e'	regAlloc.ml	/^  let e', regenv' = g (Id.gentmp Type.Unit, Type.Unit) (Ans(Nop info, info)) M.empty e in$/;"	v
+e'	regAlloc.ml	/^  let e', regenv' = g (Id.gentmp (Type.Unit info) info, Type.Unit info) (Ans(Nop info, info)) M.empty e in$/;"	v
 e1'	closure.ml	/^      let e1' = g (M.add_list yts env') known' e1 in$/;"	v
 e1'	constFold.ml	/^      let e1' = g env e1 in$/;"	v
 e1'	virtual.ml	/^      let e1' = g env e1 in$/;"	v
@@ -314,12 +329,12 @@ find	beta.ml	/^let find x env = try M.find x env with Not_found -> x (* 置換のた
 find	regAlloc.ml	/^let find x t regenv info =$/;"	v
 find'	regAlloc.ml	/^let find' x' regenv info=$/;"	v
 findi	constFold.ml	/^let findi x env = (match M.find x env with Int(i, info) -> i | _ -> raise Not_found)$/;"	v
-fletd	asm.ml	/^let fletd(x, e1, e2, info) = Let((x, Type.Float), e1, e2, info)$/;"	v
+fletd	asm.ml	/^let fletd(x, e1, e2, info) = Let((x, Type.Float info), e1, e2, info)$/;"	v
 fletd	asm.mli	/^val fletd : Id.t * exp * t * Info.t -> t (* shorthand of Let for float *)$/;"	v
 formal_fv	closure.ml	/^		formal_fv : (Id.t * Type.t) list;$/;"	r	type:fundef
 formal_fv	closure.mli	/^		formal_fv : (Id.t * Type.t) list;$/;"	r	type:fundef
 free	regAlloc.ml	/^  let free = fv cont in$/;"	v
-fregs	asm.ml	/^let fregs = Array.init 8 (fun i -> Printf.sprintf "%%xmm%d" i)$/;"	v
+fregs	asm.ml	/^let fregs = Array.init 8 (fun i -> Printf.sprintf "%%xmm%d" i, Info.dump())$/;"	v
 fregs	asm.mli	/^val fregs : Id.t array$/;"	v
 fundef	asm.ml	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	t
 fundef	asm.mli	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	t
@@ -346,23 +361,30 @@ g	simm.ml	/^let rec g env = function (* 命令列の即値最適化 (caml2html: simm13_g)
 g	typing.ml	/^let rec g env e = (* 型推論ルーチン (caml2html: typing_g) *)$/;"	v
 g'	simm.ml	/^and g' env = function (* 各命令の即値最適化 (caml2html: simm13_gprime) *)$/;"	v
 g'_call	regAlloc.ml	/^and g'_call dest cont regenv exp constr ys zs info = (* 関数呼び出しのレジスタ割り当て (caml2html: regalloc_call) *)$/;"	v
-g'_tail_if	emit.ml	/^and g'_tail_if oc e1 e2 b bn =$/;"	v
-gcd	example.ml	/^let rec gcd m n =$/;"	v
-genid	id.ml	/^let genid s =$/;"	v
+g'_tail_if	emit.ml	/^and g'_tail_if oc e1 e2 b bn info=$/;"	v
+genid	id.ml	/^let genid (s, info) =$/;"	v
 gentmp	id.ml	/^let gentmp typ info=$/;"	v
 gentyp	type.ml	/^let gentyp info = Var(ref None, info) (* 新しい型変数を作る *)$/;"	v
+get_info	closure.ml	/^let get_info = function$/;"	v
+get_info	closure.mli	/^val get_info: t -> Info.t$/;"	v
+get_info	syntax.ml	/^let get_info = function$/;"	v
+get_info	type.ml	/^let get_info = function$/;"	v
 get_info_exp	asm.ml	/^let get_info_exp = function$/;"	v
 get_info_exp	asm.mli	/^val get_info_exp: exp -> Info.t$/;"	v
+get_info_t	asm.ml	/^let get_info_t = function$/;"	v
 get_info_t	asm.mli	/^val get_info_t: t -> Info.t$/;"	v
-h	regAlloc.ml	/^let h { name = Id.L(x); args = ys; fargs = zs; body = e; ret = t } = (* 関数のレジスタ割り当て (caml2html: regalloc_h) *)$/;"	v
+get_key	id.ml	/^let get_key x = fst x$/;"	v
+h	regAlloc.ml	/^let h { name = Id.L(_) as x; args = ys; fargs = zs; body = e; ret = t } = (* 関数のレジスタ割り当て (caml2html: regalloc_h) *)$/;"	v
 h	simm.ml	/^let h { name = l; args = xs; fargs = ys; body = e; ret = t } = (* トップレベル関数の即値最適化 *)$/;"	v
-h	virtual.ml	/^let h { Closure.name = (Id.L(x), t); Closure.args = yts; Closure.formal_fv = zts; Closure.body = e } =$/;"	v
+h	virtual.ml	/^let h { Closure.name = (Id.L(x1, x2) as x , t); Closure.args = yts; Closure.formal_fv = zts; Closure.body = e } =$/;"	v
 i	regAlloc.ml	/^  let (i, arg_regs, regenv) =$/;"	v
 id_of_typ	id.ml	/^let rec id_of_typ = function$/;"	v
 id_or_imm	asm.ml	/^type id_or_imm = V of Id.t | C of int$/;"	t
 id_or_imm	asm.mli	/^type id_or_imm = V of Id.t | C of int$/;"	t
 inchan	main.ml	/^  let inchan = open_in (f ^ ".ml") in$/;"	v
 info	regAlloc.ml	/^  let info = Asm.get_info_t e in$/;"	v
+info	typing.ml	/^      let info = Syntax.get_info e$/;"	v
+info	virtual.ml	/^    let info = Closure.get_info e in$/;"	v
 insert_let	kNormal.ml	/^let insert_let (e, t) k info = (* letを挿入する補助関数 (caml2html: knormal_insert) *)$/;"	v
 int	virtual.ml	/^      let (int, float) = separate (List.map (fun y -> (y, M.find y env)) ys) in$/;"	v
 int	virtual.ml	/^  let (int, float) = separate yts in$/;"	v
@@ -370,7 +392,7 @@ is_reg	asm.mli	/^val is_reg : Id.t -> bool$/;"	v
 iter	main.ml	/^let rec iter n e = (* 最適化処理をくりかえす (caml2html: main_iter) *)$/;"	v
 known'	closure.ml	/^      let known' = S.add x known in$/;"	v
 known'	closure.ml	/^      let known', e1' =$/;"	v
-l	id.ml	/^type l = L of string (* トップレベル関数やグローバル配列のラベル (caml2html: id_l) *)$/;"	t
+l	id.ml	/^type l = L of string * Info.t (* トップレベル関数やグローバル配列のラベル (caml2html: id_l) *)$/;"	t
 lbuf	main.ml	/^      let lbuf = Lexing.from_channel inchan$/;"	v
 lex_get	info.ml	/^let lex_get lexbuf =$/;"	v
 lexbuf	main.ml	/^let lexbuf outchan l = (* バッファをコンパイルしてチャンネルへ出力する (caml2html: main_lexbuf) *)$/;"	v
@@ -381,6 +403,7 @@ locate	emit.ml	/^let locate x =$/;"	v
 memf	constFold.ml	/^let memf x env =$/;"	v
 memi	constFold.ml	/^let memi x env =$/;"	v
 memt	constFold.ml	/^let memt x env =$/;"	v
+min_caml_start	example.s	/^min_caml_start:$/;"	l
 min_caml_start	test/print.s	/^min_caml_start:$/;"	l
 name	asm.ml	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
 name	asm.mli	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
@@ -390,6 +413,7 @@ name	kNormal.ml	/^and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) li
 name	kNormal.mli	/^and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }$/;"	r	type:fundef
 name	syntax.ml	/^and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }$/;"	r	type:fundef
 occur	typing.ml	/^let rec occur r1 = function (* occur check (caml2html: typing_occur) *)$/;"	v
+of_list	s.ml	/^let of_list l = List.fold_left (fun s e -> add e s) empty l$/;"	v
 offset	emit.ml	/^let offset x = 4 * List.hd (locate x)$/;"	v
 offset	virtual.ml	/^      let (offset, load) =$/;"	v
 offset	virtual.ml	/^      let (offset, store) =$/;"	v
@@ -407,15 +431,15 @@ r	regAlloc.ml	/^    let r = (* そうでないレジスタを探す *)$/;"	v
 reg_cl	asm.mli	/^val reg_cl : Id.t$/;"	v
 reg_hp	asm.mli	/^val reg_hp : Id.t$/;"	v
 reg_sp	asm.mli	/^val reg_sp : Id.t$/;"	v
-regenv	regAlloc.ml	/^  let regenv = M.add x reg_cl M.empty in$/;"	v
+regenv	regAlloc.ml	/^  let regenv = M.add (Id.to_t x) reg_cl M.empty in$/;"	v
 regs	asm.ml	/^let regs = (* Array.init 16 (fun i -> Printf.sprintf "%%r%d" i) *)$/;"	v
 regs	asm.mli	/^val regs : Id.t array$/;"	v
 ret	asm.ml	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
 ret	asm.mli	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
 s	virtual.ml	/^      let s = Closure.fv e2 in$/;"	v
 save	emit.ml	/^let save x =$/;"	v
-savef	emit.ml	/^let savef x =$/;"	v
-seq	asm.ml	/^let seq(e1, e2, info) = Let((Id.gentmp Type.Unit, Type.Unit), e1, e2, info)$/;"	v
+savef	emit.ml	/^let savef x info=$/;"	v
+seq	asm.ml	/^let seq(e1, e2, info) = Let((Id.gentmp (Type.Unit info) info, Type.Unit info), e1, e2, info)$/;"	v
 seq	asm.mli	/^val seq : exp * t  * Info.t -> t (* shorthand of Let for unit *)$/;"	v
 size	inline.ml	/^let rec size = function$/;"	v
 ss	emit.ml	/^	let ss = stacksize () in$/;"	v
@@ -432,30 +456,37 @@ t	id.ml	/^type t = string * Info.t (* 変数の名前 (caml2html: id_t) *)$/;"	t
 t	info.ml	/^type t = string * int * int * int * int$/;"	t
 t	kNormal.ml	/^type t = (* K正規化後の式 (caml2html: knormal_t) *)$/;"	t
 t	kNormal.mli	/^type t =$/;"	t
+t	m.ml	/^      type t = Id.t$/;"	t
+t	s.ml	/^      type t = Id.t$/;"	t
 t	syntax.ml	/^type t = (* MinCamlの構文を表現するデータ型 (caml2html: syntax_t) *)$/;"	t
 t	type.ml	/^type t = (* MinCamlの型を表現するデータ型 (caml2html: type_t) *)$/;"	t
-t	typing.ml	/^	let t = Type.gentyp () in$/;"	v
+t	typing.ml	/^	let t = Type.gentyp info in$/;"	v
 t	typing.ml	/^	let t = g env e3 in$/;"	v
 t2	typing.ml	/^	let t2 = g env e2 in$/;"	v
 t3	typing.ml	/^	let t3 = g env e3 in$/;"	v
 target'	regAlloc.ml	/^let rec target' src (dest, t) = function$/;"	v
 threshold	inline.ml	/^let threshold = ref 0 (* Mainで-inlineオプションによりセットされる *)$/;"	v
+to_L	id.ml	/^let to_L x = L (fst x, snd x)$/;"	v
+to_string	id.ml	/^let to_string (id, info) = Printf.sprintf "ID(%s,%s)" id (Info.to_string info)$/;"	v
 to_string	info.ml	/^let to_string (fname, start_row, start_column, end_row, end_column) = Printf.sprintf "%s:%d:%d->%d:%d" fname start_row start_column end_row end_column$/;"	v
 to_string	kNormal.ml	/^let to_string x =$/;"	v
 to_string	syntax.ml	/^let to_string (x: t) =$/;"	v
 to_string_args	syntax.ml	/^    and to_string_args pre = function$/;"	v
-to_string_pre	id.ml	/^let to_string_pre pre ((id, info): t) = Printf.sprintf "%sID%s\\t#%s" pre id (Info.to_string info)$/;"	v
+to_string_core	id.ml	/^let to_string_core x = fst x$/;"	v
+to_string_pre	id.ml	/^let to_string_pre pre ((id, info): t) = Printf.sprintf "%sID %s\\t#%s" pre id (Info.to_string info)$/;"	v
 to_string_pre	type.ml	/^let rec to_string_pre pre typ =$/;"	v
+to_t	id.ml	/^let to_t( L(x, y)) = x, y$/;"	v
 toplevel	closure.ml	/^let toplevel : fundef list ref = ref []$/;"	v
 unify	typing.ml	/^let rec unify t1 t2 = (* 型が合うように、型変数への代入をする (caml2html: typing_unify) *)$/;"	v
-x	kNormal.ml	/^      let x = Id.gentmp t in$/;"	v
-x	virtual.ml	/^      let x = Id.genid "l" in$/;"	v
+x	example.ml	/^let x =$/;"	v
+x	kNormal.ml	/^      let x = Id.gentmp t info in$/;"	v
+x	virtual.ml	/^      let x = Id.genid( "l", Info.dump()) in$/;"	v
 xs	alpha.ml	/^      let xs = List.map fst xts in$/;"	v
 xs	elim.ml	/^      let xs = List.map fst xts in$/;"	v
 y	regAlloc.ml	/^    let y = (* 型の合うレジスタ変数を探す *)$/;"	v
-y	virtual.ml	/^      let y = Id.genid "t" in$/;"	v
+y	virtual.ml	/^      let y = Id.genid("t", info )in$/;"	v
 ys	alpha.ml	/^      let ys = List.map fst yts in$/;"	v
-z	virtual.ml	/^              let z = Id.genid "l"$/;"	v
+z	virtual.ml	/^              let z = Id.genid("l", Info.dump())$/;"	v
 zs	closure.ml	/^      let zs = S.diff (fv e1') (S.of_list (List.map fst yts)) in$/;"	v
 zs	closure.ml	/^      let zs = S.elements (S.diff (fv e1') (S.add x (S.of_list (List.map fst yts)))) in (* 自由変数のリスト *)$/;"	v
 zs	inline.ml	/^      let (zs, e) = M.find x env in$/;"	v
