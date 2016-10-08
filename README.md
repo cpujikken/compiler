@@ -1,3 +1,5 @@
+CPU実験H班
+
 An educational compiler for a minimal subset of OCaml, written in
 ~2000 lines of OCaml.  For details, see:
 
@@ -9,7 +11,7 @@ http://esumii.github.io/min-caml/paper.pdf (English academic paper)
 1. Install OCaml (http://caml.inria.fr/) if you haven't
 
 2. Download (and expand) MinCaml, e.g.
-   git clone https://github.com/esumii/min-caml.git
+   git clone https://github.com/cpujikken/compiler
 
 3. cd min-caml/
 
