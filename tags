@@ -4,6 +4,28 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+ALIGNSTACK0	libmincaml.S	/^#define ALIGNSTACK0 andl $0xfffffff0, %esp$/;"	d
+ALIGNSTACK0	libmincaml.S	/^#define ALIGNSTACK0$/;"	d
+ALIGNSTACK0	x86/libmincaml.S	/^#define ALIGNSTACK0 andl $0xfffffff0, %esp$/;"	d
+ALIGNSTACK0	x86/libmincaml.S	/^#define ALIGNSTACK0$/;"	d
+ALIGNSTACK1	libmincaml.S	/^#define ALIGNSTACK1 andl $0xfffffff0, %esp; pushl %eax; pushl %eax; pushl %eax$/;"	d
+ALIGNSTACK1	libmincaml.S	/^#define ALIGNSTACK1$/;"	d
+ALIGNSTACK1	x86/libmincaml.S	/^#define ALIGNSTACK1 andl $0xfffffff0, %esp; pushl %eax; pushl %eax; pushl %eax$/;"	d
+ALIGNSTACK1	x86/libmincaml.S	/^#define ALIGNSTACK1$/;"	d
+ALIGNSTACK2	libmincaml.S	/^#define ALIGNSTACK2 andl $0xfffffff0, %esp; pushl %eax; pushl %eax$/;"	d
+ALIGNSTACK2	libmincaml.S	/^#define ALIGNSTACK2$/;"	d
+ALIGNSTACK2	x86/libmincaml.S	/^#define ALIGNSTACK2 andl $0xfffffff0, %esp; pushl %eax; pushl %eax$/;"	d
+ALIGNSTACK2	x86/libmincaml.S	/^#define ALIGNSTACK2$/;"	d
+ALIGNSTACK3	libmincaml.S	/^#define ALIGNSTACK3 andl $0xfffffff0, %esp; pushl %eax$/;"	d
+ALIGNSTACK3	libmincaml.S	/^#define ALIGNSTACK3$/;"	d
+ALIGNSTACK3	x86/libmincaml.S	/^#define ALIGNSTACK3 andl $0xfffffff0, %esp; pushl %eax$/;"	d
+ALIGNSTACK3	x86/libmincaml.S	/^#define ALIGNSTACK3$/;"	d
+Ack	shootout/ack.ml	1;"	M
+Ack	test/ack.ml	1;"	M
+Add	PowerPC/asm.ml	/^  | Add of Id.t * id_or_imm$/;"	C	type:exp
+Add	PowerPC/asm.mli	/^  | Add of Id.t * id_or_imm$/;"	C	type:exp
+Add	SPARC/asm.ml	/^  | Add of Id.t * id_or_imm$/;"	C	type:exp
+Add	SPARC/asm.mli	/^  | Add of Id.t * id_or_imm$/;"	C	type:exp
 Add	asm.ml	/^  | Add of Id.t * id_or_imm * Info.t$/;"	C	type:exp
 Add	asm.mli	/^  | Add of Id.t * id_or_imm * Info.t$/;"	C	type:exp
 Add	closure.ml	/^  | Add of Id.t * Id.t * Info.t$/;"	C	type:t
@@ -11,10 +33,24 @@ Add	closure.mli	/^  | Add of Id.t * Id.t * Info.t$/;"	C	type:t
 Add	kNormal.ml	/^  | Add of Id.t * Id.t * Info.t$/;"	C	type:t
 Add	kNormal.mli	/^  | Add of Id.t * Id.t * Info.t$/;"	C	type:t
 Add	syntax.ml	/^  | Add of t * t * Info.t$/;"	C	type:t
+Add	x86/asm.ml	/^  | Add of Id.t * id_or_imm * Info.t$/;"	C	type:exp
+Add	x86/asm.mli	/^  | Add of Id.t * id_or_imm * Info.t$/;"	C	type:exp
+Adder	test/adder.ml	1;"	M
+Alloc	PowerPC/regAlloc.ml	/^  | Alloc of Id.t (* allocated register *)$/;"	C	type:alloc_result
+Alloc	SPARC/regAlloc.ml	/^  | Alloc of Id.t (* allocated register *)$/;"	C	type:alloc_result
 Alloc	regAlloc.ml	/^  | Alloc of Id.t (* allocated register *)$/;"	C	type:alloc_result
+Alloc	x86/regAlloc.ml	/^  | Alloc of Id.t (* allocated register *)$/;"	C	type:alloc_result
 Alpha	alpha.ml	1;"	M
+Alpha	alpha.mli	1;"	M
+Anchor	anchor.ml	1;"	M
+Ans	PowerPC/asm.ml	/^  | Ans of exp$/;"	C	type:t
+Ans	PowerPC/asm.mli	/^  | Ans of exp$/;"	C	type:t
+Ans	SPARC/asm.ml	/^  | Ans of exp$/;"	C	type:t
+Ans	SPARC/asm.mli	/^  | Ans of exp$/;"	C	type:t
 Ans	asm.ml	/^  | Ans of exp * Info.t$/;"	C	type:t
 Ans	asm.mli	/^  | Ans of exp * Info.t$/;"	C	type:t
+Ans	x86/asm.ml	/^  | Ans of exp * Info.t$/;"	C	type:t
+Ans	x86/asm.mli	/^  | Ans of exp * Info.t$/;"	C	type:t
 App	kNormal.ml	/^  | App of Id.t * Id.t list * Info.t$/;"	C	type:t
 App	kNormal.mli	/^  | App of Id.t * Id.t list * Info.t$/;"	C	type:t
 App	syntax.ml	/^  | App of t * t list * Info.t$/;"	C	type:t
@@ -24,30 +60,77 @@ AppDir	closure.ml	/^  | AppDir of Id.l * Id.t list * Info.t$/;"	C	type:t
 AppDir	closure.mli	/^  | AppDir of Id.l * Id.t list * Info.t$/;"	C	type:t
 Array	syntax.ml	/^  | Array of t * t * Info.t$/;"	C	type:t
 Array	type.ml	/^  | Array of t * Info.t$/;"	C	type:t
+Asm	PowerPC/asm.ml	1;"	M
+Asm	PowerPC/asm.mli	1;"	M
+Asm	SPARC/asm.ml	1;"	M
+Asm	SPARC/asm.mli	1;"	M
 Asm	asm.ml	1;"	M
 Asm	asm.mli	1;"	M
+Asm	x86/asm.ml	1;"	M
+Asm	x86/asm.mli	1;"	M
 Assoc	assoc.ml	1;"	M
+Assoc	assoc.mli	1;"	M
+BYTE	min-rt/RayTrace.cxx	/^typedef unsigned char BYTE;$/;"	t	file:
 Beta	beta.ml	1;"	M
+Beta	beta.mli	1;"	M
 Bool	syntax.ml	/^  | Bool of bool * Info.t$/;"	C	type:t
 Bool	type.ml	/^  | Bool of Info.t$/;"	C	type:t
+C	PowerPC/asm.ml	/^type id_or_imm = V of Id.t | C of int$/;"	C	type:id_or_imm
+C	PowerPC/asm.mli	/^type id_or_imm = V of Id.t | C of int$/;"	C	type:id_or_imm
+C	SPARC/asm.ml	/^type id_or_imm = V of Id.t | C of int$/;"	C	type:id_or_imm
+C	SPARC/asm.mli	/^type id_or_imm = V of Id.t | C of int$/;"	C	type:id_or_imm
 C	asm.ml	/^type id_or_imm = V of Id.t | C of int$/;"	C	type:id_or_imm
 C	asm.mli	/^type id_or_imm = V of Id.t | C of int$/;"	C	type:id_or_imm
+C	x86/asm.ml	/^type id_or_imm = V of Id.t | C of int$/;"	C	type:id_or_imm
+C	x86/asm.mli	/^type id_or_imm = V of Id.t | C of int$/;"	C	type:id_or_imm
 CC	Makefile	/^CC = gcc$/;"	m
 CFLAGS	Makefile	/^CFLAGS = -g -O2 -Wall$/;"	m
+CallCls	PowerPC/asm.ml	/^  | CallCls of Id.t * Id.t list * Id.t list$/;"	C	type:exp
+CallCls	PowerPC/asm.mli	/^  | CallCls of Id.t * Id.t list * Id.t list$/;"	C	type:exp
+CallCls	SPARC/asm.ml	/^  | CallCls of Id.t * Id.t list * Id.t list$/;"	C	type:exp
+CallCls	SPARC/asm.mli	/^  | CallCls of Id.t * Id.t list * Id.t list$/;"	C	type:exp
 CallCls	asm.ml	/^  | CallCls of Id.t * Id.t list * Id.t list * Info.t$/;"	C	type:exp
 CallCls	asm.mli	/^  | CallCls of Id.t * Id.t list * Id.t list * Info.t$/;"	C	type:exp
+CallCls	x86/asm.ml	/^  | CallCls of Id.t * Id.t list * Id.t list * Info.t$/;"	C	type:exp
+CallCls	x86/asm.mli	/^  | CallCls of Id.t * Id.t list * Id.t list * Info.t$/;"	C	type:exp
+CallDir	PowerPC/asm.ml	/^  | CallDir of Id.l * Id.t list * Id.t list$/;"	C	type:exp
+CallDir	PowerPC/asm.mli	/^  | CallDir of Id.l * Id.t list * Id.t list$/;"	C	type:exp
+CallDir	SPARC/asm.ml	/^  | CallDir of Id.l * Id.t list * Id.t list$/;"	C	type:exp
+CallDir	SPARC/asm.mli	/^  | CallDir of Id.l * Id.t list * Id.t list$/;"	C	type:exp
 CallDir	asm.ml	/^  | CallDir of Id.l * Id.t list * Id.t list * Info.t$/;"	C	type:exp
 CallDir	asm.mli	/^  | CallDir of Id.l * Id.t list * Id.t list * Info.t$/;"	C	type:exp
+CallDir	x86/asm.ml	/^  | CallDir of Id.l * Id.t list * Id.t list * Info.t$/;"	C	type:exp
+CallDir	x86/asm.mli	/^  | CallDir of Id.l * Id.t list * Id.t list * Info.t$/;"	C	type:exp
 Closure	closure.ml	1;"	M
 Closure	closure.mli	1;"	M
+Cls-bug	test/cls-bug.ml	1;"	M
+Cls-bug2	test/cls-bug2.ml	1;"	M
+Cls-rec	test/cls-rec.ml	1;"	M
+Cls-reg-bug	test/cls-reg-bug.ml	1;"	M
+Comment	PowerPC/asm.ml	/^  | Comment of string$/;"	C	type:exp
+Comment	PowerPC/asm.mli	/^  | Comment of string$/;"	C	type:exp
+Comment	SPARC/asm.ml	/^  | Comment of string$/;"	C	type:exp
+Comment	SPARC/asm.mli	/^  | Comment of string$/;"	C	type:exp
 Comment	asm.ml	/^  | Comment of string * Info.t$/;"	C	type:exp
 Comment	asm.mli	/^  | Comment of string * Info.t$/;"	C	type:exp
+Comment	x86/asm.ml	/^  | Comment of string * Info.t$/;"	C	type:exp
+Comment	x86/asm.mli	/^  | Comment of string * Info.t$/;"	C	type:exp
 ConstFold	constFold.ml	1;"	M
+ConstFold	constFold.mli	1;"	M
+DELIMITER	min-rt/RayTrace.cxx	1325;"	d	file:
+DELIMITER	min-rt/RayTrace.cxx	1344;"	d	file:
+Diff	min-rt/diff.ml	1;"	M
 Elim	elim.ml	1;"	M
+Elim	elim.mli	1;"	M
+Emit	PowerPC/emit.ml	1;"	M
+Emit	SPARC/emit.ml	1;"	M
 Emit	emit.ml	1;"	M
+Emit	emit.mli	1;"	M
+Emit	x86/emit.ml	1;"	M
 Eq	syntax.ml	/^  | Eq of t * t * Info.t$/;"	C	type:t
 Error	typing.ml	/^exception Error of t * Type.t * Type.t$/;"	e
 Error	typing.mli	/^exception Error of Syntax.t * Type.t * Type.t$/;"	e
+Even-odd	test/even-odd.ml	1;"	M
 Example	example.ml	1;"	M
 ExtArray	closure.ml	/^  | ExtArray of Id.l * Info.t$/;"	C	type:t
 ExtArray	closure.mli	/^  | ExtArray of Id.l * Info.t$/;"	C	type:t
@@ -55,91 +138,215 @@ ExtArray	kNormal.ml	/^  | ExtArray of Id.t * Info.t$/;"	C	type:t
 ExtArray	kNormal.mli	/^  | ExtArray of Id.t * Info.t$/;"	C	type:t
 ExtFunApp	kNormal.ml	/^  | ExtFunApp of Id.t * Id.t list * Info.t$/;"	C	type:t
 ExtFunApp	kNormal.mli	/^  | ExtFunApp of Id.t * Id.t list * Info.t$/;"	C	type:t
+FAdd	PowerPC/asm.ml	/^  | FAdd of Id.t * Id.t$/;"	C	type:exp
+FAdd	PowerPC/asm.mli	/^  | FAdd of Id.t * Id.t$/;"	C	type:exp
 FAdd	closure.ml	/^  | FAdd of Id.t * Id.t * Info.t$/;"	C	type:t
 FAdd	closure.mli	/^  | FAdd of Id.t * Id.t * Info.t$/;"	C	type:t
 FAdd	kNormal.ml	/^  | FAdd of Id.t * Id.t * Info.t$/;"	C	type:t
 FAdd	kNormal.mli	/^  | FAdd of Id.t * Id.t * Info.t$/;"	C	type:t
 FAdd	syntax.ml	/^  | FAdd of t * t * Info.t$/;"	C	type:t
+FAddD	SPARC/asm.ml	/^  | FAddD of Id.t * Id.t$/;"	C	type:exp
+FAddD	SPARC/asm.mli	/^  | FAddD of Id.t * Id.t$/;"	C	type:exp
 FAddD	asm.ml	/^  | FAddD of Id.t * Id.t * Info.t$/;"	C	type:exp
 FAddD	asm.mli	/^  | FAddD of Id.t * Id.t * Info.t$/;"	C	type:exp
+FAddD	x86/asm.ml	/^  | FAddD of Id.t * Id.t * Info.t$/;"	C	type:exp
+FAddD	x86/asm.mli	/^  | FAddD of Id.t * Id.t * Info.t$/;"	C	type:exp
+FDiv	PowerPC/asm.ml	/^  | FDiv of Id.t * Id.t$/;"	C	type:exp
+FDiv	PowerPC/asm.mli	/^  | FDiv of Id.t * Id.t$/;"	C	type:exp
 FDiv	closure.ml	/^  | FDiv of Id.t * Id.t * Info.t$/;"	C	type:t
 FDiv	closure.mli	/^  | FDiv of Id.t * Id.t * Info.t$/;"	C	type:t
 FDiv	kNormal.ml	/^  | FDiv of Id.t * Id.t * Info.t$/;"	C	type:t
 FDiv	kNormal.mli	/^  | FDiv of Id.t * Id.t * Info.t$/;"	C	type:t
 FDiv	syntax.ml	/^  | FDiv of t * t * Info.t$/;"	C	type:t
+FDivD	SPARC/asm.ml	/^  | FDivD of Id.t * Id.t$/;"	C	type:exp
+FDivD	SPARC/asm.mli	/^  | FDivD of Id.t * Id.t$/;"	C	type:exp
 FDivD	asm.ml	/^  | FDivD of Id.t * Id.t * Info.t$/;"	C	type:exp
 FDivD	asm.mli	/^  | FDivD of Id.t * Id.t * Info.t$/;"	C	type:exp
+FDivD	x86/asm.ml	/^  | FDivD of Id.t * Id.t * Info.t$/;"	C	type:exp
+FDivD	x86/asm.mli	/^  | FDivD of Id.t * Id.t * Info.t$/;"	C	type:exp
+FLi	PowerPC/asm.ml	/^  | FLi of Id.l$/;"	C	type:exp
+FLi	PowerPC/asm.mli	/^  | FLi of Id.l$/;"	C	type:exp
+FMovD	SPARC/asm.ml	/^  | FMovD of Id.t$/;"	C	type:exp
+FMovD	SPARC/asm.mli	/^  | FMovD of Id.t$/;"	C	type:exp
 FMovD	asm.ml	/^  | FMovD of Id.t * Info.t$/;"	C	type:exp
 FMovD	asm.mli	/^  | FMovD of Id.t * Info.t$/;"	C	type:exp
+FMovD	x86/asm.ml	/^  | FMovD of Id.t * Info.t$/;"	C	type:exp
+FMovD	x86/asm.mli	/^  | FMovD of Id.t * Info.t$/;"	C	type:exp
+FMr	PowerPC/asm.ml	/^  | FMr of Id.t $/;"	C	type:exp
+FMr	PowerPC/asm.mli	/^  | FMr of Id.t $/;"	C	type:exp
+FMul	PowerPC/asm.ml	/^  | FMul of Id.t * Id.t$/;"	C	type:exp
+FMul	PowerPC/asm.mli	/^  | FMul of Id.t * Id.t$/;"	C	type:exp
 FMul	closure.ml	/^  | FMul of Id.t * Id.t * Info.t$/;"	C	type:t
 FMul	closure.mli	/^  | FMul of Id.t * Id.t * Info.t$/;"	C	type:t
 FMul	kNormal.ml	/^  | FMul of Id.t * Id.t * Info.t$/;"	C	type:t
 FMul	kNormal.mli	/^  | FMul of Id.t * Id.t * Info.t$/;"	C	type:t
 FMul	syntax.ml	/^  | FMul of t * t * Info.t$/;"	C	type:t
+FMulD	SPARC/asm.ml	/^  | FMulD of Id.t * Id.t$/;"	C	type:exp
+FMulD	SPARC/asm.mli	/^  | FMulD of Id.t * Id.t$/;"	C	type:exp
 FMulD	asm.ml	/^  | FMulD of Id.t * Id.t * Info.t$/;"	C	type:exp
 FMulD	asm.mli	/^  | FMulD of Id.t * Id.t * Info.t$/;"	C	type:exp
+FMulD	x86/asm.ml	/^  | FMulD of Id.t * Id.t * Info.t$/;"	C	type:exp
+FMulD	x86/asm.mli	/^  | FMulD of Id.t * Id.t * Info.t$/;"	C	type:exp
+FNeg	PowerPC/asm.ml	/^  | FNeg of Id.t$/;"	C	type:exp
+FNeg	PowerPC/asm.mli	/^  | FNeg of Id.t$/;"	C	type:exp
 FNeg	closure.ml	/^  | FNeg of Id.t * Info.t$/;"	C	type:t
 FNeg	closure.mli	/^  | FNeg of Id.t * Info.t$/;"	C	type:t
 FNeg	kNormal.ml	/^  | FNeg of Id.t * Info.t$/;"	C	type:t
 FNeg	kNormal.mli	/^  | FNeg of Id.t * Info.t$/;"	C	type:t
 FNeg	syntax.ml	/^  | FNeg of t * Info.t$/;"	C	type:t
+FNegD	SPARC/asm.ml	/^  | FNegD of Id.t$/;"	C	type:exp
+FNegD	SPARC/asm.mli	/^  | FNegD of Id.t$/;"	C	type:exp
 FNegD	asm.ml	/^  | FNegD of Id.t * Info.t$/;"	C	type:exp
 FNegD	asm.mli	/^  | FNegD of Id.t * Info.t$/;"	C	type:exp
+FNegD	x86/asm.ml	/^  | FNegD of Id.t * Info.t$/;"	C	type:exp
+FNegD	x86/asm.mli	/^  | FNegD of Id.t * Info.t$/;"	C	type:exp
+FSub	PowerPC/asm.ml	/^  | FSub of Id.t * Id.t$/;"	C	type:exp
+FSub	PowerPC/asm.mli	/^  | FSub of Id.t * Id.t$/;"	C	type:exp
 FSub	closure.ml	/^  | FSub of Id.t * Id.t * Info.t$/;"	C	type:t
 FSub	closure.mli	/^  | FSub of Id.t * Id.t * Info.t$/;"	C	type:t
 FSub	kNormal.ml	/^  | FSub of Id.t * Id.t * Info.t$/;"	C	type:t
 FSub	kNormal.mli	/^  | FSub of Id.t * Id.t * Info.t$/;"	C	type:t
 FSub	syntax.ml	/^  | FSub of t * t * Info.t$/;"	C	type:t
+FSubD	SPARC/asm.ml	/^  | FSubD of Id.t * Id.t$/;"	C	type:exp
+FSubD	SPARC/asm.mli	/^  | FSubD of Id.t * Id.t$/;"	C	type:exp
 FSubD	asm.ml	/^  | FSubD of Id.t * Id.t * Info.t$/;"	C	type:exp
 FSubD	asm.mli	/^  | FSubD of Id.t * Id.t * Info.t$/;"	C	type:exp
+FSubD	x86/asm.ml	/^  | FSubD of Id.t * Id.t * Info.t$/;"	C	type:exp
+FSubD	x86/asm.mli	/^  | FSubD of Id.t * Id.t * Info.t$/;"	C	type:exp
+Fib	shootout/fib.ml	1;"	M
+Fib	test/fib.ml	1;"	M
 Float	closure.ml	/^  | Float of float * Info.t$/;"	C	type:t
 Float	closure.mli	/^  | Float of float * Info.t$/;"	C	type:t
 Float	kNormal.ml	/^  | Float of float * Info.t$/;"	C	type:t
 Float	kNormal.mli	/^  | Float of float * Info.t$/;"	C	type:t
 Float	syntax.ml	/^  | Float of float * Info.t$/;"	C	type:t
+Float	test/float.ml	1;"	M
 Float	type.ml	/^  | Float of Info.t$/;"	C	type:t
 Fun	type.ml	/^  | Fun of t list * t * Info.t (* arguments are uncurried *)$/;"	C	type:t
+Funcomp	test/funcomp.ml	1;"	M
+Gcd	test/gcd.ml	1;"	M
 Get	closure.ml	/^  | Get of Id.t * Id.t * Info.t$/;"	C	type:t
 Get	closure.mli	/^  | Get of Id.t * Id.t * Info.t$/;"	C	type:t
 Get	kNormal.ml	/^  | Get of Id.t * Id.t * Info.t$/;"	C	type:t
 Get	kNormal.mli	/^  | Get of Id.t * Id.t * Info.t$/;"	C	type:t
 Get	syntax.ml	/^  | Get of t * t * Info.t$/;"	C	type:t
+Globals	min-rt/globals.ml	1;"	M
+Harmonic	shootout/harmonic.ml	1;"	M
+IPx	min-rt/RayTrace.cxx	/^float IPx, IPy, IPz; \/\/ tracer ¤È in-out ¤È shadow_evaluator ·×»»Ãæ¤Î¸òÅÀ¤ÎºÂÉ¸$/;"	v
+IPy	min-rt/RayTrace.cxx	/^float IPx, IPy, IPz; \/\/ tracer ¤È in-out ¤È shadow_evaluator ·×»»Ãæ¤Î¸òÅÀ¤ÎºÂÉ¸$/;"	v
+IPz	min-rt/RayTrace.cxx	/^float IPx, IPy, IPz; \/\/ tracer ¤È in-out ¤È shadow_evaluator ·×»»Ãæ¤Î¸òÅÀ¤ÎºÂÉ¸$/;"	v
 Id	id.ml	1;"	M
 If	syntax.ml	/^  | If of t * t * t * Info.t$/;"	C	type:t
+IfEq	PowerPC/asm.ml	/^  | IfEq of Id.t * id_or_imm * t * t$/;"	C	type:exp
+IfEq	PowerPC/asm.mli	/^  | IfEq of Id.t * id_or_imm * t * t$/;"	C	type:exp
+IfEq	SPARC/asm.ml	/^  | IfEq of Id.t * id_or_imm * t * t$/;"	C	type:exp
+IfEq	SPARC/asm.mli	/^  | IfEq of Id.t * id_or_imm * t * t$/;"	C	type:exp
 IfEq	asm.ml	/^  | IfEq of Id.t * id_or_imm * t * t * Info.t$/;"	C	type:exp
 IfEq	asm.mli	/^  | IfEq of Id.t * id_or_imm * t * t * Info.t$/;"	C	type:exp
 IfEq	closure.ml	/^  | IfEq of Id.t * Id.t * t * t * Info.t$/;"	C	type:t
 IfEq	closure.mli	/^  | IfEq of Id.t * Id.t * t * t * Info.t$/;"	C	type:t
 IfEq	kNormal.ml	/^  | IfEq of Id.t * Id.t * t * t * Info.t (* Èæ³Ó + Ê¬´ô (caml2html: knormal_branch) *)$/;"	C	type:t
 IfEq	kNormal.mli	/^  | IfEq of Id.t * Id.t * t * t * Info.t$/;"	C	type:t
+IfEq	x86/asm.ml	/^  | IfEq of Id.t * id_or_imm * t * t * Info.t$/;"	C	type:exp
+IfEq	x86/asm.mli	/^  | IfEq of Id.t * id_or_imm * t * t * Info.t$/;"	C	type:exp
+IfFEq	PowerPC/asm.ml	/^  | IfFEq of Id.t * Id.t * t * t$/;"	C	type:exp
+IfFEq	PowerPC/asm.mli	/^  | IfFEq of Id.t * Id.t * t * t$/;"	C	type:exp
+IfFEq	SPARC/asm.ml	/^  | IfFEq of Id.t * Id.t * t * t$/;"	C	type:exp
+IfFEq	SPARC/asm.mli	/^  | IfFEq of Id.t * Id.t * t * t$/;"	C	type:exp
 IfFEq	asm.ml	/^  | IfFEq of Id.t * Id.t * t * t * Info.t$/;"	C	type:exp
 IfFEq	asm.mli	/^  | IfFEq of Id.t * Id.t * t * t * Info.t$/;"	C	type:exp
+IfFEq	x86/asm.ml	/^  | IfFEq of Id.t * Id.t * t * t * Info.t$/;"	C	type:exp
+IfFEq	x86/asm.mli	/^  | IfFEq of Id.t * Id.t * t * t * Info.t$/;"	C	type:exp
+IfFLE	PowerPC/asm.ml	/^  | IfFLE of Id.t * Id.t * t * t$/;"	C	type:exp
+IfFLE	PowerPC/asm.mli	/^  | IfFLE of Id.t * Id.t * t * t$/;"	C	type:exp
+IfFLE	SPARC/asm.ml	/^  | IfFLE of Id.t * Id.t * t * t$/;"	C	type:exp
+IfFLE	SPARC/asm.mli	/^  | IfFLE of Id.t * Id.t * t * t$/;"	C	type:exp
 IfFLE	asm.ml	/^  | IfFLE of Id.t * Id.t * t * t * Info.t$/;"	C	type:exp
 IfFLE	asm.mli	/^  | IfFLE of Id.t * Id.t * t * t * Info.t$/;"	C	type:exp
+IfFLE	x86/asm.ml	/^  | IfFLE of Id.t * Id.t * t * t * Info.t$/;"	C	type:exp
+IfFLE	x86/asm.mli	/^  | IfFLE of Id.t * Id.t * t * t * Info.t$/;"	C	type:exp
+IfGE	PowerPC/asm.ml	/^  | IfGE of Id.t * id_or_imm * t * t$/;"	C	type:exp
+IfGE	PowerPC/asm.mli	/^  | IfGE of Id.t * id_or_imm * t * t (* for simm *)$/;"	C	type:exp
+IfGE	SPARC/asm.ml	/^  | IfGE of Id.t * id_or_imm * t * t (* º¸±¦ÂÐ¾Î¤Ç¤Ï¤Ê¤¤¤Î¤ÇÉ¬Í× *)$/;"	C	type:exp
+IfGE	SPARC/asm.mli	/^  | IfGE of Id.t * id_or_imm * t * t$/;"	C	type:exp
 IfGE	asm.ml	/^  | IfGE of Id.t * id_or_imm * t * t * Info.t (* º¸±¦ÂÐ¾Î¤Ç¤Ï¤Ê¤¤¤Î¤ÇÉ¬Í× *)$/;"	C	type:exp
 IfGE	asm.mli	/^  | IfGE of Id.t * id_or_imm * t * t * Info.t$/;"	C	type:exp
+IfGE	x86/asm.ml	/^  | IfGE of Id.t * id_or_imm * t * t * Info.t (* º¸±¦ÂÐ¾Î¤Ç¤Ï¤Ê¤¤¤Î¤ÇÉ¬Í× *)$/;"	C	type:exp
+IfGE	x86/asm.mli	/^  | IfGE of Id.t * id_or_imm * t * t * Info.t$/;"	C	type:exp
+IfLE	PowerPC/asm.ml	/^  | IfLE of Id.t * id_or_imm * t * t$/;"	C	type:exp
+IfLE	PowerPC/asm.mli	/^  | IfLE of Id.t * id_or_imm * t * t$/;"	C	type:exp
+IfLE	SPARC/asm.ml	/^  | IfLE of Id.t * id_or_imm * t * t$/;"	C	type:exp
+IfLE	SPARC/asm.mli	/^  | IfLE of Id.t * id_or_imm * t * t$/;"	C	type:exp
 IfLE	asm.ml	/^  | IfLE of Id.t * id_or_imm * t * t * Info.t$/;"	C	type:exp
 IfLE	asm.mli	/^  | IfLE of Id.t * id_or_imm * t * t * Info.t$/;"	C	type:exp
 IfLE	closure.ml	/^  | IfLE of Id.t * Id.t * t * t * Info.t$/;"	C	type:t
 IfLE	closure.mli	/^  | IfLE of Id.t * Id.t * t * t * Info.t$/;"	C	type:t
 IfLE	kNormal.ml	/^  | IfLE of Id.t * Id.t * t * t * Info.t (* Èæ³Ó + Ê¬´ô *)$/;"	C	type:t
 IfLE	kNormal.mli	/^  | IfLE of Id.t * Id.t * t * t * Info.t$/;"	C	type:t
+IfLE	x86/asm.ml	/^  | IfLE of Id.t * id_or_imm * t * t * Info.t$/;"	C	type:exp
+IfLE	x86/asm.mli	/^  | IfLE of Id.t * id_or_imm * t * t * Info.t$/;"	C	type:exp
 Info	info.ml	1;"	M
 Inline	inline.ml	1;"	M
+Inline	inline.mli	1;"	M
+Inprod	test/inprod.ml	1;"	M
+Inprod-loop	test/inprod-loop.ml	1;"	M
+Inprod-rec	test/inprod-rec.ml	1;"	M
 Int	closure.ml	/^  | Int of int * Info.t$/;"	C	type:t
 Int	closure.mli	/^  | Int of int * Info.t$/;"	C	type:t
 Int	kNormal.ml	/^  | Int of int * Info.t$/;"	C	type:t
 Int	kNormal.mli	/^  | Int of int * Info.t$/;"	C	type:t
 Int	syntax.ml	/^  | Int of int * Info.t$/;"	C	type:t
 Int	type.ml	/^  | Int of Info.t$/;"	C	type:t
+Join-reg	test/join-reg.ml	1;"	M
+Join-reg2	test/join-reg2.ml	1;"	M
+Join-stack	test/join-stack.ml	1;"	M
+Join-stack2	test/join-stack2.ml	1;"	M
+Join-stack3	test/join-stack3.ml	1;"	M
 KNormal	kNormal.ml	1;"	M
 KNormal	kNormal.mli	1;"	M
+L	PowerPC/libmincaml.S	/^L:$/;"	l
 L	id.ml	/^type l = L of string * Info.t (* ¥È¥Ã¥×¥ì¥Ù¥ë´Ø¿ô¤ä¥°¥í¡¼¥Ð¥ëÇÛÎó¤Î¥é¥Ù¥ë (caml2html: id_l) *)$/;"	C	type:l
+L1spb	PowerPC/libmincaml.S	/^L1spb:$/;"	l
+L2pb	PowerPC/libmincaml.S	/^L2pb:$/;"	l
+L2spb	PowerPC/libmincaml.S	/^L2spb:$/;"	l
+L3pb	PowerPC/libmincaml.S	/^L3pb:$/;"	l
+L3spb	PowerPC/libmincaml.S	/^L3spb:$/;"	l
+L4pb	PowerPC/libmincaml.S	/^L4pb:$/;"	l
+L4spb	PowerPC/libmincaml.S	/^L4spb:$/;"	l
+L5pb	PowerPC/libmincaml.S	/^L5pb:$/;"	l
+L6pb	PowerPC/libmincaml.S	/^L6pb:$/;"	l
+L6spb	PowerPC/libmincaml.S	/^L6spb:$/;"	l
+L7pb	PowerPC/libmincaml.S	/^L7pb:$/;"	l
+L8pb	PowerPC/libmincaml.S	/^L8pb:$/;"	l
+L8spb	PowerPC/libmincaml.S	/^L8spb:$/;"	l
+L9spb	PowerPC/libmincaml.S	/^L9spb:$/;"	l
+LC0	PowerPC/libmincaml.S	/^LC0:$/;"	l
+LC1	PowerPC/libmincaml.S	/^LC1:$/;"	l
+LC2	PowerPC/libmincaml.S	/^LC2:$/;"	l
 LE	syntax.ml	/^  | LE of t * t * Info.t$/;"	C	type:t
+Lapb	PowerPC/libmincaml.S	/^Lapb:$/;"	l
+Lbpb	PowerPC/libmincaml.S	/^Lbpb:$/;"	l
+Lbspb	PowerPC/libmincaml.S	/^Lbspb:$/;"	l
+Lcpb	PowerPC/libmincaml.S	/^Lcpb:	$/;"	l
+Lcspb	PowerPC/libmincaml.S	/^Lcspb:	$/;"	l
+Ld	SPARC/asm.ml	/^  | Ld of Id.t * id_or_imm$/;"	C	type:exp
+Ld	SPARC/asm.mli	/^  | Ld of Id.t * id_or_imm$/;"	C	type:exp
 Ld	asm.ml	/^  | Ld of Id.t * id_or_imm * int * Info.t$/;"	C	type:exp
 Ld	asm.mli	/^  | Ld of Id.t * id_or_imm * int * Info.t$/;"	C	type:exp
+Ld	x86/asm.ml	/^  | Ld of Id.t * id_or_imm * int * Info.t$/;"	C	type:exp
+Ld	x86/asm.mli	/^  | Ld of Id.t * id_or_imm * int * Info.t$/;"	C	type:exp
+LdDF	SPARC/asm.ml	/^  | LdDF of Id.t * id_or_imm$/;"	C	type:exp
+LdDF	SPARC/asm.mli	/^  | LdDF of Id.t * id_or_imm$/;"	C	type:exp
 LdDF	asm.ml	/^  | LdDF of Id.t * id_or_imm * int * Info.t$/;"	C	type:exp
 LdDF	asm.mli	/^  | LdDF of Id.t * id_or_imm * int * Info.t$/;"	C	type:exp
+LdDF	x86/asm.ml	/^  | LdDF of Id.t * id_or_imm * int * Info.t$/;"	C	type:exp
+LdDF	x86/asm.mli	/^  | LdDF of Id.t * id_or_imm * int * Info.t$/;"	C	type:exp
+Ldpb	PowerPC/libmincaml.S	/^Ldpb:$/;"	l
+Ldspb	PowerPC/libmincaml.S	/^Ldspb:$/;"	l
+Let	PowerPC/asm.ml	/^  | Let of (Id.t * Type.t) * exp * t$/;"	C	type:t
+Let	PowerPC/asm.mli	/^  | Let of (Id.t * Type.t) * exp * t$/;"	C	type:t
+Let	SPARC/asm.ml	/^  | Let of (Id.t * Type.t) * exp * t$/;"	C	type:t
+Let	SPARC/asm.mli	/^  | Let of (Id.t * Type.t) * exp * t$/;"	C	type:t
 Let	asm.ml	/^  | Let of (Id.t * Type.t) * exp * t * Info.t$/;"	C	type:t
 Let	asm.mli	/^  | Let of (Id.t * Type.t) * exp * t * Info.t$/;"	C	type:t
 Let	closure.ml	/^  | Let of (Id.t * Type.t) * t * t * Info.t$/;"	C	type:t
@@ -147,6 +354,8 @@ Let	closure.mli	/^  | Let of (Id.t * Type.t) * t * t * Info.t$/;"	C	type:t
 Let	kNormal.ml	/^  | Let of (Id.t * Type.t) * t * t * Info.t$/;"	C	type:t
 Let	kNormal.mli	/^  | Let of (Id.t * Type.t) * t * t * Info.t$/;"	C	type:t
 Let	syntax.ml	/^  | Let of (Id.t * Type.t) * t * t * Info.t$/;"	C	type:t
+Let	x86/asm.ml	/^  | Let of (Id.t * Type.t) * exp * t * Info.t$/;"	C	type:t
+Let	x86/asm.mli	/^  | Let of (Id.t * Type.t) * exp * t * Info.t$/;"	C	type:t
 LetRec	kNormal.ml	/^  | LetRec of fundef * t * Info.t$/;"	C	type:t
 LetRec	kNormal.mli	/^  | LetRec of fundef * t * Info.t$/;"	C	type:t
 LetRec	syntax.ml	/^  | LetRec of fundef * t * Info.t$/;"	C	type:t
@@ -155,13 +364,40 @@ LetTuple	closure.mli	/^  | LetTuple of (Id.t * Type.t) list * Id.t * t * Info.t$
 LetTuple	kNormal.ml	/^  | LetTuple of (Id.t * Type.t) list * Id.t * t * Info.t$/;"	C	type:t
 LetTuple	kNormal.mli	/^  | LetTuple of (Id.t * Type.t) list * Id.t * t * Info.t$/;"	C	type:t
 LetTuple	syntax.ml	/^  | LetTuple of (Id.t * Type.t) list * t * t * Info.t$/;"	C	type:t
+Lfd	PowerPC/asm.ml	/^  | Lfd of Id.t * id_or_imm$/;"	C	type:exp
+Lfd	PowerPC/asm.mli	/^  | Lfd of Id.t * id_or_imm$/;"	C	type:exp
+Li	PowerPC/asm.ml	/^  | Li of int$/;"	C	type:exp
+Li	PowerPC/asm.mli	/^  | Li of int$/;"	C	type:exp
+Lwz	PowerPC/asm.ml	/^  | Lwz of Id.t * id_or_imm$/;"	C	type:exp
+Lwz	PowerPC/asm.mli	/^  | Lwz of Id.t * id_or_imm$/;"	C	type:exp
 M	m.ml	1;"	M
+MAX_AND	min-rt/RayTrace.cxx	128;"	d	file:
+MAX_OR	min-rt/RayTrace.cxx	129;"	d	file:
+MAX_PRIMITIVE	min-rt/RayTrace.cxx	127;"	d	file:
 Main	main.ml	1;"	M
+Main	main.mli	1;"	M
 MakeCls	closure.ml	/^  | MakeCls of (Id.t * Type.t) * closure * t * Info.t$/;"	C	type:t
 MakeCls	closure.mli	/^  | MakeCls of (Id.t * Type.t) * closure * t * Info.t$/;"	C	type:t
+Mandelbrot	shootout/mandelbrot.ml	1;"	M
+Matmul	test/matmul.ml	1;"	M
+Matmul-flat	test/matmul-flat.ml	1;"	M
+Min-rt	min-rt/min-rt.ml	1;"	M
+MiniMLRuntime	min-rt/miniMLRuntime.ml	1;"	M
+MiniMLRuntime	min-rt/miniMLRuntime.mli	1;"	M
+Mov	SPARC/asm.ml	/^  | Mov of Id.t$/;"	C	type:exp
+Mov	SPARC/asm.mli	/^  | Mov of Id.t$/;"	C	type:exp
 Mov	asm.ml	/^  | Mov of Id.t * Info.t$/;"	C	type:exp
 Mov	asm.mli	/^  | Mov of Id.t * Info.t$/;"	C	type:exp
+Mov	x86/asm.ml	/^  | Mov of Id.t * Info.t$/;"	C	type:exp
+Mov	x86/asm.mli	/^  | Mov of Id.t * Info.t$/;"	C	type:exp
+Mr	PowerPC/asm.ml	/^  | Mr of Id.t$/;"	C	type:exp
+Mr	PowerPC/asm.mli	/^  | Mr of Id.t$/;"	C	type:exp
 NCSUFFIX	Makefile	/^NCSUFFIX = .opt$/;"	m
+NULL	min-rt/raytrace.c	13;"	d	file:
+Neg	PowerPC/asm.ml	/^  | Neg of Id.t$/;"	C	type:exp
+Neg	PowerPC/asm.mli	/^  | Neg of Id.t$/;"	C	type:exp
+Neg	SPARC/asm.ml	/^  | Neg of Id.t$/;"	C	type:exp
+Neg	SPARC/asm.mli	/^  | Neg of Id.t$/;"	C	type:exp
 Neg	asm.ml	/^  | Neg of Id.t * Info.t$/;"	C	type:exp
 Neg	asm.mli	/^  | Neg of Id.t * Info.t$/;"	C	type:exp
 Neg	closure.ml	/^  | Neg of Id.t * Info.t$/;"	C	type:t
@@ -169,38 +405,123 @@ Neg	closure.mli	/^  | Neg of Id.t * Info.t$/;"	C	type:t
 Neg	kNormal.ml	/^  | Neg of Id.t * Info.t$/;"	C	type:t
 Neg	kNormal.mli	/^  | Neg of Id.t * Info.t$/;"	C	type:t
 Neg	syntax.ml	/^  | Neg of t * Info.t$/;"	C	type:t
+Neg	x86/asm.ml	/^  | Neg of Id.t * Info.t$/;"	C	type:exp
+Neg	x86/asm.mli	/^  | Neg of Id.t * Info.t$/;"	C	type:exp
+NoReg	PowerPC/regAlloc.ml	/^exception NoReg of Id.t * Type.t$/;"	e
+NoReg	SPARC/regAlloc.ml	/^exception NoReg of Id.t * Type.t$/;"	e
 NoReg	regAlloc.ml	/^exception NoReg of Id.t * Type.t * Info.t$/;"	e
+NoReg	x86/regAlloc.ml	/^exception NoReg of Id.t * Type.t * Info.t$/;"	e
+Non-tail-if	test/non-tail-if.ml	1;"	M
+Non-tail-if2	test/non-tail-if2.ml	1;"	M
+NonTail	PowerPC/emit.ml	/^type dest = Tail | NonTail of Id.t (* ËöÈø¤«¤É¤¦¤«¤òÉ½¤¹¥Ç¡¼¥¿·¿ *)$/;"	C	type:dest
+NonTail	SPARC/emit.ml	/^type dest = Tail | NonTail of Id.t (* ËöÈø¤«¤É¤¦¤«¤òÉ½¤¹¥Ç¡¼¥¿·¿ (caml2html: emit_dest) *)$/;"	C	type:dest
 NonTail	emit.ml	/^type dest = Tail | NonTail of Id.t (* ËöÈø¤«¤É¤¦¤«¤òÉ½¤¹¥Ç¡¼¥¿·¿ (caml2html: emit_dest) *)$/;"	C	type:dest
+NonTail	x86/emit.ml	/^type dest = Tail | NonTail of Id.t (* ËöÈø¤«¤É¤¦¤«¤òÉ½¤¹¥Ç¡¼¥¿·¿ (caml2html: emit_dest) *)$/;"	C	type:dest
+Nop	PowerPC/asm.ml	/^  | Nop$/;"	C	type:exp
+Nop	PowerPC/asm.mli	/^  | Nop$/;"	C	type:exp
+Nop	SPARC/asm.ml	/^  | Nop$/;"	C	type:exp
+Nop	SPARC/asm.mli	/^  | Nop$/;"	C	type:exp
 Nop	asm.ml	/^  | Nop of Info.t$/;"	C	type:exp
 Nop	asm.mli	/^  | Nop of Info.t$/;"	C	type:exp
+Nop	x86/asm.ml	/^  | Nop of Info.t$/;"	C	type:exp
+Nop	x86/asm.mli	/^  | Nop of Info.t$/;"	C	type:exp
 Not	syntax.ml	/^  | Not of t * Info.t$/;"	C	type:t
+Ppm	min-rt/ppm.ml	1;"	M
+PrimitiveData_f	min-rt/RayTrace.cxx	/^typedef float PrimitiveData_f[15];$/;"	t	file:
+PrimitiveData_i	min-rt/RayTrace.cxx	/^typedef int PrimitiveData_i[4];$/;"	t	file:
+Print	test/print.ml	1;"	M
+Prog	PowerPC/asm.ml	/^type prog = Prog of (Id.l * float) list * fundef list * t$/;"	C	type:prog
+Prog	PowerPC/asm.mli	/^type prog = Prog of (Id.l * float) list * fundef list * t$/;"	C	type:prog
+Prog	SPARC/asm.ml	/^type prog = Prog of (Id.l * float) list * fundef list * t$/;"	C	type:prog
+Prog	SPARC/asm.mli	/^type prog = Prog of (Id.l * float) list * fundef list * t$/;"	C	type:prog
 Prog	asm.ml	/^type prog = Prog of (Id.l * float) list * fundef list * t$/;"	C	type:prog
 Prog	asm.mli	/^type prog = Prog of (Id.l * float) list * fundef list * t$/;"	C	type:prog
 Prog	closure.ml	/^type prog = Prog of fundef list * t$/;"	C	type:prog
 Prog	closure.mli	/^type prog = Prog of fundef list * t$/;"	C	type:prog
+Prog	x86/asm.ml	/^type prog = Prog of (Id.l * float) list * fundef list * t$/;"	C	type:prog
+Prog	x86/asm.mli	/^type prog = Prog of (Id.l * float) list * fundef list * t$/;"	C	type:prog
 Put	closure.ml	/^  | Put of Id.t * Id.t * Id.t * Info.t$/;"	C	type:t
 Put	closure.mli	/^  | Put of Id.t * Id.t * Id.t * Info.t$/;"	C	type:t
 Put	kNormal.ml	/^  | Put of Id.t * Id.t * Id.t * Info.t$/;"	C	type:t
 Put	kNormal.mli	/^  | Put of Id.t * Id.t * Id.t * Info.t$/;"	C	type:t
 Put	syntax.ml	/^  | Put of t * t * t * Info.t$/;"	C	type:t
 RESULT	Makefile	/^RESULT = min-caml$/;"	m
+RegAlloc	PowerPC/regAlloc.ml	1;"	M
+RegAlloc	SPARC/regAlloc.ml	1;"	M
 RegAlloc	regAlloc.ml	1;"	M
+RegAlloc	regAlloc.mli	1;"	M
+RegAlloc	x86/regAlloc.ml	1;"	M
+Restore	PowerPC/asm.ml	/^  | Restore of Id.t (* ¥¹¥¿¥Ã¥¯ÊÑ¿ô¤«¤éÃÍ¤òÉü¸µ *)$/;"	C	type:exp
+Restore	PowerPC/asm.mli	/^  | Restore of Id.t (* ¥¹¥¿¥Ã¥¯ÊÑ¿ô¤«¤éÃÍ¤òÉü¸µ *)$/;"	C	type:exp
+Restore	SPARC/asm.ml	/^  | Restore of Id.t (* ¥¹¥¿¥Ã¥¯ÊÑ¿ô¤«¤éÃÍ¤òÉü¸µ (caml2html: sparcasm_restore) *)$/;"	C	type:exp
+Restore	SPARC/asm.mli	/^  | Restore of Id.t (* ¥¹¥¿¥Ã¥¯ÊÑ¿ô¤«¤éÃÍ¤òÉü¸µ *)$/;"	C	type:exp
 Restore	asm.ml	/^  | Restore of Id.t * Info.t (* ¥¹¥¿¥Ã¥¯ÊÑ¿ô¤«¤éÃÍ¤òÉü¸µ (caml2html: sparcasm_restore) *)$/;"	C	type:exp
 Restore	asm.mli	/^  | Restore of Id.t * Info.t  (* ¥¹¥¿¥Ã¥¯ÊÑ¿ô¤«¤éÃÍ¤òÉü¸µ *)$/;"	C	type:exp
+Restore	x86/asm.ml	/^  | Restore of Id.t * Info.t (* ¥¹¥¿¥Ã¥¯ÊÑ¿ô¤«¤éÃÍ¤òÉü¸µ (caml2html: sparcasm_restore) *)$/;"	C	type:exp
+Restore	x86/asm.mli	/^  | Restore of Id.t * Info.t  (* ¥¹¥¿¥Ã¥¯ÊÑ¿ô¤«¤éÃÍ¤òÉü¸µ *)$/;"	C	type:exp
 S	s.ml	1;"	M
+SIGN	min-rt/RayTrace.cxx	/^typedef float SIGN; \/\/ Éé¤Ç¤¢¤ë¤«¤É¤¦¤«¤À¤±¤òÉ½¤¹·¿ (Âè 0bit ÌÜ¤¬Éä¹æ)$/;"	t	file:
+SLDS	min-rt/Makefile	/^SLDS = ball contest cup dra lattice mange mir orange piero1 piero2 planet \\$/;"	m
+SLL	SPARC/asm.ml	/^  | SLL of Id.t * id_or_imm$/;"	C	type:exp
+SLL	SPARC/asm.mli	/^  | SLL of Id.t * id_or_imm$/;"	C	type:exp
 SOURCES	Makefile	/^SOURCES = float.c info.ml type.ml id.ml m.ml s.ml \\$/;"	m
+Save	PowerPC/asm.ml	/^  | Save of Id.t * Id.t (* ¥ì¥¸¥¹¥¿ÊÑ¿ô¤ÎÃÍ¤ò¥¹¥¿¥Ã¥¯ÊÑ¿ô¤ØÊÝÂ¸ *)$/;"	C	type:exp
+Save	PowerPC/asm.mli	/^  | Save of Id.t * Id.t (* ¥ì¥¸¥¹¥¿ÊÑ¿ô¤ÎÃÍ¤ò¥¹¥¿¥Ã¥¯ÊÑ¿ô¤ØÊÝÂ¸ *)$/;"	C	type:exp
+Save	SPARC/asm.ml	/^  | Save of Id.t * Id.t (* ¥ì¥¸¥¹¥¿ÊÑ¿ô¤ÎÃÍ¤ò¥¹¥¿¥Ã¥¯ÊÑ¿ô¤ØÊÝÂ¸ (caml2html: sparcasm_save) *)$/;"	C	type:exp
+Save	SPARC/asm.mli	/^  | Save of Id.t * Id.t (* ¥ì¥¸¥¹¥¿ÊÑ¿ô¤ÎÃÍ¤ò¥¹¥¿¥Ã¥¯ÊÑ¿ô¤ØÊÝÂ¸ *)$/;"	C	type:exp
 Save	asm.ml	/^  | Save of Id.t * Id.t * Info.t (* ¥ì¥¸¥¹¥¿ÊÑ¿ô¤ÎÃÍ¤ò¥¹¥¿¥Ã¥¯ÊÑ¿ô¤ØÊÝÂ¸ (caml2html: sparcasm_save) *)$/;"	C	type:exp
 Save	asm.mli	/^  | Save of Id.t * Id.t  * Info.t (* ¥ì¥¸¥¹¥¿ÊÑ¿ô¤ÎÃÍ¤ò¥¹¥¿¥Ã¥¯ÊÑ¿ô¤ØÊÝÂ¸ *)$/;"	C	type:exp
+Save	x86/asm.ml	/^  | Save of Id.t * Id.t * Info.t (* ¥ì¥¸¥¹¥¿ÊÑ¿ô¤ÎÃÍ¤ò¥¹¥¿¥Ã¥¯ÊÑ¿ô¤ØÊÝÂ¸ (caml2html: sparcasm_save) *)$/;"	C	type:exp
+Save	x86/asm.mli	/^  | Save of Id.t * Id.t  * Info.t (* ¥ì¥¸¥¹¥¿ÊÑ¿ô¤ÎÃÍ¤ò¥¹¥¿¥Ã¥¯ÊÑ¿ô¤ØÊÝÂ¸ *)$/;"	C	type:exp
+Set	SPARC/asm.ml	/^  | Set of int$/;"	C	type:exp
+Set	SPARC/asm.mli	/^  | Set of int$/;"	C	type:exp
 Set	asm.ml	/^  | Set of int * Info.t$/;"	C	type:exp
 Set	asm.mli	/^  | Set of int * Info.t$/;"	C	type:exp
+Set	x86/asm.ml	/^  | Set of int * Info.t$/;"	C	type:exp
+Set	x86/asm.mli	/^  | Set of int * Info.t$/;"	C	type:exp
+SetL	PowerPC/asm.ml	/^  | SetL of Id.l$/;"	C	type:exp
+SetL	PowerPC/asm.mli	/^  | SetL of Id.l$/;"	C	type:exp
+SetL	SPARC/asm.ml	/^  | SetL of Id.l$/;"	C	type:exp
+SetL	SPARC/asm.mli	/^  | SetL of Id.l$/;"	C	type:exp
 SetL	asm.ml	/^  | SetL of Id.l * Info.t$/;"	C	type:exp
 SetL	asm.mli	/^  | SetL of Id.l * Info.t$/;"	C	type:exp
+SetL	x86/asm.ml	/^  | SetL of Id.l * Info.t$/;"	C	type:exp
+SetL	x86/asm.mli	/^  | SetL of Id.l * Info.t$/;"	C	type:exp
+Shuffle	test/shuffle.ml	1;"	M
+Simm	PowerPC/simm.ml	1;"	M
+Simm	SPARC/simm.ml	1;"	M
 Simm	simm.ml	1;"	M
+Simm	simm.mli	1;"	M
+Simm	x86/simm.ml	1;"	M
+Slw	PowerPC/asm.ml	/^  | Slw of Id.t * id_or_imm$/;"	C	type:exp
+Slw	PowerPC/asm.mli	/^  | Slw of Id.t * id_or_imm$/;"	C	type:exp
+Spill	PowerPC/regAlloc.ml	/^  | Spill of Id.t (* spilled variable *)$/;"	C	type:alloc_result
+Spill	SPARC/regAlloc.ml	/^  | Spill of Id.t (* spilled variable *)$/;"	C	type:alloc_result
 Spill	regAlloc.ml	/^  | Spill of Id.t (* spilled variable *)$/;"	C	type:alloc_result
+Spill	test/spill.ml	1;"	M
+Spill	x86/regAlloc.ml	/^  | Spill of Id.t (* spilled variable *)$/;"	C	type:alloc_result
+Spill2	test/spill2.ml	1;"	M
+Spill3	test/spill3.ml	1;"	M
+St	SPARC/asm.ml	/^  | St of Id.t * Id.t * id_or_imm$/;"	C	type:exp
+St	SPARC/asm.mli	/^  | St of Id.t * Id.t * id_or_imm$/;"	C	type:exp
 St	asm.ml	/^  | St of Id.t * Id.t * id_or_imm * int * Info.t$/;"	C	type:exp
 St	asm.mli	/^  | St of Id.t * Id.t * id_or_imm * int * Info.t$/;"	C	type:exp
+St	x86/asm.ml	/^  | St of Id.t * Id.t * id_or_imm * int * Info.t$/;"	C	type:exp
+St	x86/asm.mli	/^  | St of Id.t * Id.t * id_or_imm * int * Info.t$/;"	C	type:exp
+StDF	SPARC/asm.ml	/^  | StDF of Id.t * Id.t * id_or_imm$/;"	C	type:exp
+StDF	SPARC/asm.mli	/^  | StDF of Id.t * Id.t * id_or_imm$/;"	C	type:exp
 StDF	asm.ml	/^  | StDF of Id.t * Id.t * id_or_imm * int * Info.t$/;"	C	type:exp
 StDF	asm.mli	/^  | StDF of Id.t * Id.t * id_or_imm * int * Info.t$/;"	C	type:exp
+StDF	x86/asm.ml	/^  | StDF of Id.t * Id.t * id_or_imm * int * Info.t$/;"	C	type:exp
+StDF	x86/asm.mli	/^  | StDF of Id.t * Id.t * id_or_imm * int * Info.t$/;"	C	type:exp
+Stfd	PowerPC/asm.ml	/^  | Stfd of Id.t * Id.t * id_or_imm$/;"	C	type:exp
+Stfd	PowerPC/asm.mli	/^  | Stfd of Id.t * Id.t * id_or_imm$/;"	C	type:exp
+Stw	PowerPC/asm.ml	/^  | Stw of Id.t * Id.t * id_or_imm$/;"	C	type:exp
+Stw	PowerPC/asm.mli	/^  | Stw of Id.t * Id.t * id_or_imm$/;"	C	type:exp
+Sub	PowerPC/asm.ml	/^  | Sub of Id.t * id_or_imm$/;"	C	type:exp
+Sub	PowerPC/asm.mli	/^  | Sub of Id.t * id_or_imm$/;"	C	type:exp
+Sub	SPARC/asm.ml	/^  | Sub of Id.t * id_or_imm$/;"	C	type:exp
+Sub	SPARC/asm.mli	/^  | Sub of Id.t * id_or_imm$/;"	C	type:exp
 Sub	asm.ml	/^  | Sub of Id.t * id_or_imm * Info.t$/;"	C	type:exp
 Sub	asm.mli	/^  | Sub of Id.t * id_or_imm * Info.t$/;"	C	type:exp
 Sub	closure.ml	/^  | Sub of Id.t * Id.t * Info.t$/;"	C	type:t
@@ -208,19 +529,33 @@ Sub	closure.mli	/^  | Sub of Id.t * Id.t * Info.t$/;"	C	type:t
 Sub	kNormal.ml	/^  | Sub of Id.t * Id.t * Info.t$/;"	C	type:t
 Sub	kNormal.mli	/^  | Sub of Id.t * Id.t * Info.t$/;"	C	type:t
 Sub	syntax.ml	/^  | Sub of t * t * Info.t$/;"	C	type:t
+Sub	x86/asm.ml	/^  | Sub of Id.t * id_or_imm * Info.t$/;"	C	type:exp
+Sub	x86/asm.mli	/^  | Sub of Id.t * id_or_imm * Info.t$/;"	C	type:exp
+Sum	test/sum.ml	1;"	M
+Sum-tail	test/sum-tail.ml	1;"	M
 Syntax	syntax.ml	1;"	M
 TESTS	Makefile	/^TESTS = print sum-tail gcd sum fib ack even-odd \\$/;"	m
 TRASH	Makefile	/^TRASH = $(TESTS:%=test\/%.s) $(TESTS:%=test\/%) $(TESTS:%=test\/%.res) $(TESTS:%=test\/%.ans) $(TESTS:%=test\/%.cmp)$/;"	m
+Tail	PowerPC/emit.ml	/^type dest = Tail | NonTail of Id.t (* ËöÈø¤«¤É¤¦¤«¤òÉ½¤¹¥Ç¡¼¥¿·¿ *)$/;"	C	type:dest
+Tail	SPARC/emit.ml	/^type dest = Tail | NonTail of Id.t (* ËöÈø¤«¤É¤¦¤«¤òÉ½¤¹¥Ç¡¼¥¿·¿ (caml2html: emit_dest) *)$/;"	C	type:dest
 Tail	emit.ml	/^type dest = Tail | NonTail of Id.t (* ËöÈø¤«¤É¤¦¤«¤òÉ½¤¹¥Ç¡¼¥¿·¿ (caml2html: emit_dest) *)$/;"	C	type:dest
+Tail	x86/emit.ml	/^type dest = Tail | NonTail of Id.t (* ËöÈø¤«¤É¤¦¤«¤òÉ½¤¹¥Ç¡¼¥¿·¿ (caml2html: emit_dest) *)$/;"	C	type:dest
+Tak	shootout/tak.c	/^double Tak (double x, double y, double z)$/;"	f
+Tak	shootout/tak.ml	1;"	M
 Tuple	closure.ml	/^  | Tuple of Id.t list * Info.t$/;"	C	type:t
 Tuple	closure.mli	/^  | Tuple of Id.t list * Info.t$/;"	C	type:t
 Tuple	kNormal.ml	/^  | Tuple of Id.t list * Info.t$/;"	C	type:t
 Tuple	kNormal.mli	/^  | Tuple of Id.t list * Info.t$/;"	C	type:t
 Tuple	syntax.ml	/^  | Tuple of t list * Info.t$/;"	C	type:t
 Tuple	type.ml	/^  | Tuple of t list * Info.t$/;"	C	type:t
+Txt2int	bytemark/txt2int.ml	1;"	M
 Type	type.ml	1;"	M
 Typing	typing.ml	1;"	M
 Typing	typing.mli	1;"	M
+U	libmincaml.S	/^#define U(x) _##x$/;"	d
+U	libmincaml.S	/^#define U(x) x$/;"	d
+U	x86/libmincaml.S	/^#define U(x) _##x$/;"	d
+U	x86/libmincaml.S	/^#define U(x) x$/;"	d
 Unify	typing.ml	/^exception Unify of Type.t * Type.t$/;"	e
 Unit	closure.ml	/^  | Unit of Info.t$/;"	C	type:t
 Unit	closure.mli	/^  | Unit of Info.t$/;"	C	type:t
@@ -228,29 +563,101 @@ Unit	kNormal.ml	/^  | Unit of Info.t$/;"	C	type:t
 Unit	kNormal.mli	/^  | Unit of Info.t$/;"	C	type:t
 Unit	syntax.ml	/^  | Unit of Info.t$/;"	C	type:t
 Unit	type.ml	/^  | Unit of Info.t$/;"	C	type:t
+V	PowerPC/asm.ml	/^type id_or_imm = V of Id.t | C of int$/;"	C	type:id_or_imm
+V	PowerPC/asm.mli	/^type id_or_imm = V of Id.t | C of int$/;"	C	type:id_or_imm
+V	SPARC/asm.ml	/^type id_or_imm = V of Id.t | C of int$/;"	C	type:id_or_imm
+V	SPARC/asm.mli	/^type id_or_imm = V of Id.t | C of int$/;"	C	type:id_or_imm
 V	asm.ml	/^type id_or_imm = V of Id.t | C of int$/;"	C	type:id_or_imm
 V	asm.mli	/^type id_or_imm = V of Id.t | C of int$/;"	C	type:id_or_imm
+V	x86/asm.ml	/^type id_or_imm = V of Id.t | C of int$/;"	C	type:id_or_imm
+V	x86/asm.mli	/^type id_or_imm = V of Id.t | C of int$/;"	C	type:id_or_imm
+VPx	min-rt/RayTrace.cxx	/^float VPx, VPy, VPz; \/\/ ·×»»Ãæ¤Î»ë^H»ÏÅÀ (¶À¤ÇÈ¿¼Í¤¹¤ë¤È°ÌÃÖ¤¬ÊÑ¤ï¤ë)$/;"	v
+VPy	min-rt/RayTrace.cxx	/^float VPx, VPy, VPz; \/\/ ·×»»Ãæ¤Î»ë^H»ÏÅÀ (¶À¤ÇÈ¿¼Í¤¹¤ë¤È°ÌÃÖ¤¬ÊÑ¤ï¤ë)$/;"	v
+VPz	min-rt/RayTrace.cxx	/^float VPx, VPy, VPz; \/\/ ·×»»Ãæ¤Î»ë^H»ÏÅÀ (¶À¤ÇÈ¿¼Í¤¹¤ë¤È°ÌÃÖ¤¬ÊÑ¤ï¤ë)$/;"	v
 Var	closure.ml	/^  | Var of Id.t * Info.t$/;"	C	type:t
 Var	closure.mli	/^  | Var of Id.t * Info.t$/;"	C	type:t
 Var	kNormal.ml	/^  | Var of Id.t * Info.t$/;"	C	type:t
 Var	kNormal.mli	/^  | Var of Id.t * Info.t$/;"	C	type:t
 Var	syntax.ml	/^  | Var of Id.t * Info.t$/;"	C	type:t
 Var	type.ml	/^  | Var of t option ref * Info.t$/;"	C	type:t
+Virtual	PowerPC/virtual.ml	1;"	M
+Virtual	SPARC/virtual.ml	1;"	M
 Virtual	virtual.ml	1;"	M
+Virtual	virtual.mli	1;"	M
+Virtual	x86/virtual.ml	1;"	M
+WORD	min-rt/RayTrace.cxx	/^typedef unsigned short WORD;$/;"	t	file:
+WRITE_QUEUE_SIZE	min-rt/RayTrace.cxx	798;"	d	file:
+__USE_FIXED_PROTOTYPES__	min-rt/raytrace.c	1;"	d	file:
 _min_caml_start	example.s	/^_min_caml_start: # for cygwin$/;"	l
-_min_caml_start	test/print.s	/^_min_caml_start: # for cygwin$/;"	l
+_min_caml_start	min-rt/min-rt.s	/^_min_caml_start: # for cygwin$/;"	l
+_screen_height	min-rt/RayTrace.cxx	/^int  _screen_height = 256;$/;"	v
+_screen_width	min-rt/RayTrace.cxx	/^int  _screen_width  = 256;$/;"	v
+_with_shadow	min-rt/RayTrace.cxx	/^int  _with_shadow   = false;$/;"	v
+_y_offset	min-rt/RayTrace.cxx	/^int  _y_offset      = 0;$/;"	v
+a	PowerPC/regAlloc.ml	/^  let a =$/;"	v
+a	SPARC/regAlloc.ml	/^  let a =$/;"	v
+a	min-rt/min-rt.ml	/^	 let a = abc.(0) in$/;"	v
 a	regAlloc.ml	/^  let a =$/;"	v
+a	test/matmul-flat.ml	/^let a = make 2 3 dummy in$/;"	v
+a	test/matmul.ml	/^let a = make 2 3 in$/;"	v
+a	x86/regAlloc.ml	/^  let a =$/;"	v
+aa	min-rt/min-rt.ml	/^  let aa =$/;"	v
+aa0	min-rt/min-rt.ml	/^  let aa0 = in_prod_sqr_obj m l in$/;"	v
+abc	min-rt/min-rt.ml	/^      let abc = Array.create 3 0.0 in$/;"	v
+accumulate_vec_mul	min-rt/min-rt.ml	/^(*MINCAML*)let rec accumulate_vec_mul v1 v2 w =$/;"	v
+ack	shootout/ack.c	/^static int ack(int x, int y) {$/;"	f	file:
+ack	shootout/ack.ml	/^let rec ack x y =$/;"	v
+ack	test/ack.c	/^static int ack(int x, int y) {$/;"	f	file:
+ack	test/ack.ml	/^let rec ack x y =$/;"	v
 actual_fv	closure.ml	/^type closure = { entry : Id.l; actual_fv : Id.t list }$/;"	r	type:closure
 actual_fv	closure.mli	/^type closure = { entry : Id.l; actual_fv : Id.t list }$/;"	r	type:closure
+add	PowerPC/regAlloc.ml	/^let add x r regenv =$/;"	v
+add	SPARC/regAlloc.ml	/^let add x r regenv =$/;"	v
 add	regAlloc.ml	/^let add x r regenv =$/;"	v
+add	x86/regAlloc.ml	/^let add x r regenv =$/;"	v
 add_list	m.ml	/^let add_list xys env = List.fold_left (fun env (x, y) -> add x y env) env xys$/;"	v
+add_vec	min-rt/raytrace.c	/^inline static void add_vec (vec_t * dest, const vec_t * src) {$/;"	f	file:
+align	PowerPC/asm.mli	/^val align : int -> int$/;"	v
+align	SPARC/asm.ml	/^let align i = (if i mod 8 = 0 then i else i + 4)$/;"	v
+align	SPARC/asm.mli	/^val align : int -> int$/;"	v
 align	asm.ml	/^let align i = (if i mod 8 = 0 then i else i + 4)$/;"	v
 align	asm.mli	/^val align : int -> int$/;"	v
+align	x86/asm.ml	/^let align i = (if i mod 8 = 0 then i else i + 4)$/;"	v
+align	x86/asm.mli	/^val align : int -> int$/;"	v
+all	PowerPC/regAlloc.ml	/^  let all =$/;"	v
+all	SPARC/regAlloc.ml	/^  let all =$/;"	v
 all	regAlloc.ml	/^  let all =$/;"	v
+all	x86/regAlloc.ml	/^  let all =$/;"	v
+allfregs	PowerPC/asm.mli	/^val allfregs : Id.t list$/;"	v
+allfregs	SPARC/asm.mli	/^val allfregs : Id.t list$/;"	v
 allfregs	asm.mli	/^val allfregs : Id.t list$/;"	v
+allfregs	x86/asm.mli	/^val allfregs : Id.t list$/;"	v
+alloc	PowerPC/regAlloc.ml	/^let rec alloc dest cont regenv x t =$/;"	v
+alloc	SPARC/regAlloc.ml	/^let rec alloc dest cont regenv x t =$/;"	v
 alloc	regAlloc.ml	/^let rec alloc cont regenv x t prefer =$/;"	v
+alloc	x86/regAlloc.ml	/^let rec alloc cont regenv x t prefer =$/;"	v
+alloc_result	PowerPC/regAlloc.ml	/^type alloc_result = (* alloc¤Ë¤ª¤¤¤Æspilling¤¬¤¢¤Ã¤¿¤«¤É¤¦¤«¤òÉ½¤¹¥Ç¡¼¥¿·¿ *)$/;"	t
+alloc_result	SPARC/regAlloc.ml	/^type alloc_result = (* alloc¤Ë¤ª¤¤¤Æspilling¤¬¤¢¤Ã¤¿¤«¤É¤¦¤«¤òÉ½¤¹¥Ç¡¼¥¿·¿ *)$/;"	t
 alloc_result	regAlloc.ml	/^type alloc_result = (* alloc¤Ë¤ª¤¤¤Æspilling¤¬¤¢¤Ã¤¿¤«¤É¤¦¤«¤òÉ½¤¹¥Ç¡¼¥¿·¿ *)$/;"	t
+alloc_result	x86/regAlloc.ml	/^type alloc_result = (* alloc¤Ë¤ª¤¤¤Æspilling¤¬¤¢¤Ã¤¿¤«¤É¤¦¤«¤òÉ½¤¹¥Ç¡¼¥¿·¿ *)$/;"	t
+allregs	PowerPC/asm.mli	/^val allregs : Id.t list$/;"	v
+allregs	SPARC/asm.mli	/^val allregs : Id.t list$/;"	v
 allregs	asm.mli	/^val allregs : Id.t list$/;"	v
+allregs	x86/asm.mli	/^val allregs : Id.t list$/;"	v
+and_group	min-rt/min-rt.ml	/^    let and_group = and_net.(head) in$/;"	v
+and_net	min-rt/globals.ml	/^let and_net = Array.create 50 (Array.create 1 (-1))$/;"	v
+andprim_t	min-rt/raytrace.c	/^} andprim_t;$/;"	t	typeref:struct:__anon14	file:
+andprims	min-rt/raytrace.c	/^  andprim_t * andprims [max_andprim];$/;"	m	struct:__anon15	file:
+andprims	min-rt/raytrace.c	/^static andprim_t andprims [max_andprim]; \/\/ AND¥×¥ê¥ß¥Æ¥£¥Ö¤ÎÇÛÎó$/;"	v	file:
+answera	min-rt/min-rt.ml	/^  let answera = $/;"	v
+answerb	min-rt/min-rt.ml	/^  let answerb = $/;"	v
+answerc	min-rt/min-rt.ml	/^  let answerc = $/;"	v
+ao	min-rt/min-rt.ml	/^	 let ao = abc.(0) in$/;"	v
+appname	min-rt/RayTrace.cxx	/^char *appname; \/\/ RayTrace ¤ÎÌ¾Á°$/;"	v
+args	PowerPC/asm.ml	/^    { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
+args	PowerPC/asm.mli	/^    { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
+args	SPARC/asm.ml	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
+args	SPARC/asm.mli	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
 args	asm.ml	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
 args	asm.mli	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
 args	closure.ml	/^		args : (Id.t * Type.t) list;$/;"	r	type:fundef
@@ -258,6 +665,26 @@ args	closure.mli	/^		args : (Id.t * Type.t) list;$/;"	r	type:fundef
 args	kNormal.ml	/^and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }$/;"	r	type:fundef
 args	kNormal.mli	/^and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }$/;"	r	type:fundef
 args	syntax.ml	/^and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }$/;"	r	type:fundef
+args	x86/asm.ml	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
+args	x86/asm.mli	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
+atan	PowerPC/libmincaml.S	/^atan:$/;"	l
+atan_lazy	PowerPC/libmincaml.S	/^atan_lazy:$/;"	l
+b	min-rt/min-rt.ml	/^	 let b = abc.(1) in$/;"	v
+b	min-rt/raytrace.c	/^  hil_t b;$/;"	m	struct:__anon3	file:
+b	test/matmul-flat.ml	/^let b = make 3 2 dummy in$/;"	v
+b	test/matmul.ml	/^let b = make 3 2 in$/;"	v
+bar	test/shuffle.ml	/^let rec bar a b c d e f =$/;"	v
+bb	min-rt/min-rt.ml	/^     let bb = $/;"	v
+bb0	min-rt/min-rt.ml	/^     let bb0 = 2.0 *. solver2nd_mul_b m l$/;"	v
+beam	min-rt/globals.ml	/^let beam = Array.create 1 255.0$/;"	v
+black_pixel	min-rt/raytrace.c	/^static const pixel_t black_pixel = { hil_min, hil_min, hil_min };$/;"	v	file:
+blue	min-rt/min-rt.ml	/^   let blue = if blue > 255 then 255 else blue in$/;"	v
+blue	min-rt/min-rt.ml	/^   let blue = int_of_float rgb.(2) in$/;"	v
+bo	min-rt/min-rt.ml	/^	 let bo = abc.(1) in$/;"	v
+body	PowerPC/asm.ml	/^    { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
+body	PowerPC/asm.mli	/^    { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
+body	SPARC/asm.ml	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
+body	SPARC/asm.mli	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
 body	asm.ml	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
 body	asm.mli	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
 body	closure.ml	/^		body : t }$/;"	r	type:fundef
@@ -265,36 +692,165 @@ body	closure.mli	/^		body : t }$/;"	r	type:fundef
 body	kNormal.ml	/^and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }$/;"	r	type:fundef
 body	kNormal.mli	/^and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }$/;"	r	type:fundef
 body	syntax.ml	/^and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }$/;"	r	type:fundef
+body	x86/asm.ml	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
+body	x86/asm.mli	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
+bool	min-rt/RayTrace.cxx	26;"	d	file:
+bool_t	min-rt/raytrace.c	/^typedef unsigned bool_t; \/\/ ¿¿µ¶ÃÍ¡Ê0¤Ê¤éµ¶¡¢¤½¤ì°Ê³°¤Ï¿¿¡Ë$/;"	t	file:
+bright	min-rt/min-rt.ml	/^      let bright = $/;"	v
+bright	min-rt/raytrace.c	/^static double bright; \/\/ ¸½ºß¤ÎÌÀ¤ë¤µ$/;"	v	file:
+brighten	min-rt/raytrace.c	/^static void brighten (void) {$/;"	f	file:
+buf	min-rt/miniMLRuntime.ml	/^let buf = Buffer.create 16$/;"	v
+c	PowerPC/regAlloc.ml	/^    let (c, prefer) = target x dest cont in$/;"	v
+c	SPARC/regAlloc.ml	/^    let (c, prefer) = target x dest cont in$/;"	v
+c	bytemark/txt2int.ml	/^  let c = input_char stdin in$/;"	v
+c	min-rt/min-rt.ml	/^	 let c = abc.(2) in$/;"	v
+c	test/matmul-flat.ml	/^let c = make 2 2 dummy in$/;"	v
+c	test/matmul.ml	/^let c = make 2 2 in$/;"	v
+card_t	min-rt/raytrace.c	/^typedef unsigned card_t; \/\/ Êª¤Î¸Ä¿ô$/;"	t	file:
+cc	min-rt/min-rt.ml	/^     let cc =$/;"	v
+cc0	min-rt/min-rt.ml	/^     let cc0 = in_prod_sqr_obj m solver_w_vec in$/;"	v
+cc1	min-rt/min-rt.ml	/^     let cc1 = $/;"	v
 charset	Makefile	/^	sed 's\/charset=iso-8859-1\/charset=euc-jp\/g' < min-caml.html > min-caml.tmp.html$/;"	m
+check_all_inside	min-rt/min-rt.ml	/^(*MINCAML*)let rec check_all_inside ofs iand =$/;"	v
+chkinside_p	min-rt/globals.ml	/^let chkinside_p = Array.create 3 0.0$/;"	v
+ci	shootout/mandelbrot.ml	/^                let ci = dbl (float_of_int y) \/. 400.0 -. 1.0 in$/;"	v
+cl1	min-rt/min-rt.ml	/^  let cl1 = cos l1 in$/;"	v
+cl2	min-rt/min-rt.ml	/^  let cl2 = cos l2 in$/;"	v
+classify	PowerPC/virtual.ml	/^let classify xts ini addf addi =$/;"	v
+classify	SPARC/virtual.ml	/^let classify xts ini addf addi =$/;"	v
 classify	virtual.ml	/^let classify xts ini addf addi =$/;"	v
+classify	x86/virtual.ml	/^let classify xts ini addf addi =$/;"	v
 closure	closure.ml	/^type closure = { entry : Id.l; actual_fv : Id.t list }$/;"	t
 closure	closure.mli	/^type closure = { entry : Id.l; actual_fv : Id.t list }$/;"	t
+co	min-rt/min-rt.ml	/^	 let co = abc.(2) in$/;"	v
+co_freg	SPARC/asm.ml	/^let co_freg freg = Hashtbl.find co_freg_table freg (* "companion" freg *)$/;"	v
+co_freg	SPARC/asm.mli	/^val co_freg : Id.t -> Id.t$/;"	v
+cobj	min-rt/min-rt.ml	/^      let cobj = objects.(crashed_object.(0)) in$/;"	v
+color	min-rt/min-rt.ml	/^      let color = Array.create 3 0.0 in$/;"	v
+color	min-rt/raytrace.c	/^  pixel_t color; \/\/ ¿§$/;"	m	struct:__anon13	file:
 compare	m.ml	/^      let compare x y= compare (Id.get_key x) (Id.get_key y)$/;"	v
 compare	s.ml	/^      let compare x y = compare (Id.get_key x) (Id.get_key y)$/;"	v
+compose	test/funcomp.ml	/^let rec compose f g =$/;"	v
+concat	PowerPC/asm.mli	/^val concat : t -> Id.t * Type.t -> t -> t$/;"	v
+concat	SPARC/asm.ml	/^let rec concat e1 xt e2 =$/;"	v
+concat	SPARC/asm.mli	/^val concat : t -> Id.t * Type.t -> t -> t$/;"	v
 concat	asm.ml	/^let rec concat e1 xt e2 =$/;"	v
 concat	asm.mli	/^val concat : t -> Id.t * Type.t -> t -> t$/;"	v
+concat	x86/asm.ml	/^let rec concat e1 xt e2 =$/;"	v
+concat	x86/asm.mli	/^val concat : t -> Id.t * Type.t -> t -> t$/;"	v
+cont	min-rt/raytrace.c	/^inline static bool_t cont (unsigned num) {$/;"	f	file:
+cos	PowerPC/libmincaml.S	/^cos:$/;"	l
+cos	min-rt/raytrace.c	/^  double cos;$/;"	m	struct:__anon2	file:
+cos_lazy	PowerPC/libmincaml.S	/^cos_lazy:$/;"	l
+cos_v	min-rt/globals.ml	/^let cos_v = Array.create 2 0.0$/;"	v
+cossin	min-rt/raytrace.c	/^inline static void cossin (trig_t * trig, rad_t rad) {$/;"	f	file:
 counter	id.ml	/^let counter = ref 0$/;"	v
+cpu_main	min-rt/RayTrace.cxx	/^char *cpu_main(void)$/;"	f
+cr	shootout/mandelbrot.ml	/^                let cr = dbl (float_of_int x) \/. 400.0 -. 1.5 in$/;"	v
+crashed_object	min-rt/globals.ml	/^let crashed_object = Array.create 1 0$/;"	v
+crashed_p	min-rt/min-rt.ml	/^  let crashed_p = tracer viewpoint vscan in$/;"	v
+crashed_point	min-rt/globals.ml	/^let crashed_point = Array.create 3 0.0$/;"	v
+create_array_cont	PowerPC/libmincaml.S	/^create_array_cont:$/;"	l
+create_array_cont	SPARC/libmincaml.S	/^create_array_cont:$/;"	l
+create_array_cont	libmincaml.S	/^create_array_cont:$/;"	l
+create_array_cont	x86/libmincaml.S	/^create_array_cont:$/;"	l
+create_array_exit	PowerPC/libmincaml.S	/^create_array_exit:$/;"	l
+create_array_exit	SPARC/libmincaml.S	/^create_array_exit:$/;"	l
+create_array_exit	libmincaml.S	/^create_array_exit:$/;"	l
+create_array_exit	x86/libmincaml.S	/^create_array_exit:$/;"	l
+create_array_loop	PowerPC/libmincaml.S	/^create_array_loop:$/;"	l
+create_array_loop	SPARC/libmincaml.S	/^create_array_loop:$/;"	l
+create_array_loop	libmincaml.S	/^create_array_loop:$/;"	l
+create_array_loop	x86/libmincaml.S	/^create_array_loop:$/;"	l
+create_float_array_cont	PowerPC/libmincaml.S	/^create_float_array_cont:$/;"	l
+create_float_array_cont	SPARC/libmincaml.S	/^create_float_array_cont:$/;"	l
+create_float_array_cont	libmincaml.S	/^create_float_array_cont:$/;"	l
+create_float_array_cont	x86/libmincaml.S	/^create_float_array_cont:$/;"	l
+create_float_array_exit	libmincaml.S	/^create_float_array_exit:$/;"	l
+create_float_array_exit	x86/libmincaml.S	/^create_float_array_exit:$/;"	l
+create_float_array_loop	PowerPC/libmincaml.S	/^create_float_array_loop:$/;"	l
+create_float_array_loop	SPARC/libmincaml.S	/^create_float_array_loop:$/;"	l
+create_float_array_loop	libmincaml.S	/^create_float_array_loop:$/;"	l
+create_float_array_loop	x86/libmincaml.S	/^create_float_array_loop:$/;"	l
+cross	min-rt/raytrace.c	/^  vec_t cross; \/\/ ¥¯¥í¥¹¥¿¡¼¥à¤Î·¸¿ô¡Êrot¤¬µ¶¤Î¤È¤­¤ÏÌµ°ÕÌ£¡Ë$/;"	m	struct:__anon13	file:
+cs_temp	min-rt/globals.ml	/^let cs_temp = Array.create 16 0.0$/;"	v
+cws	min-rt/min-rt.ml	/^      let cws = fsqr (cos w4) in$/;"	v
+d	PowerPC/regAlloc.ml	/^  let (d, farg_regs, regenv) =$/;"	v
+d	SPARC/regAlloc.ml	/^  let (d, farg_regs, regenv) =$/;"	v
+d	float.c	/^  double d;$/;"	m	union:__anon1	file:
+d	min-rt/RayTrace.cxx	/^PrimitiveData_f d [MAX_PRIMITIVE + 1]; \/\/ ¥×¥ê¥ß¥Æ¥£¥ÖÄêµÁ a b c x y z SG REF HL RGB ¦È$/;"	v
+d	min-rt/diff.ml	/^        let d = 128 + i1 - i2 in$/;"	v
+d	min-rt/min-rt.ml	/^     let d = (* åˆ¤åˆ¥å¼ *)$/;"	v
 d	regAlloc.ml	/^  let (d, farg_regs, regenv) =$/;"	v
+d	x86/regAlloc.ml	/^  let (d, farg_regs, regenv) =$/;"	v
+d2	min-rt/min-rt.ml	/^       let d2 = 4.0 *. aa *. cc in$/;"	v
+d2	min-rt/min-rt.ml	/^      let d2 = (d -. solver_w_vec.(0)) \/. l.(0) $/;"	v
+d2	min-rt/min-rt.ml	/^      let d2 = (d -. solver_w_vec.(1)) \/. l.(1)$/;"	v
+d2	min-rt/min-rt.ml	/^      let d2 = (d -. solver_w_vec.(2)) \/. l.(2)$/;"	v
+data	PowerPC/virtual.ml	/^let data = ref [] (* ÉâÆ°¾®¿ôÅÀ¿ô¤ÎÄê¿ô¥Æ¡¼¥Ö¥ë *)$/;"	v
+data	SPARC/virtual.ml	/^let data = ref [] (* ÉâÆ°¾®¿ôÅÀ¿ô¤ÎÄê¿ô¥Æ¡¼¥Ö¥ë (caml2html: virtual_data) *)$/;"	v
 data	virtual.ml	/^let data = ref [] (* ÉâÆ°¾®¿ôÅÀ¿ô¤ÎÄê¿ô¥Æ¡¼¥Ö¥ë (caml2html: virtual_data) *)$/;"	v
+data	x86/virtual.ml	/^let data = ref [] (* ÉâÆ°¾®¿ôÅÀ¿ô¤ÎÄê¿ô¥Æ¡¼¥Ö¥ë (caml2html: virtual_data) *)$/;"	v
+dbg	min-rt/globals.ml	/^let dbg = Array.create 1 true$/;"	v
+dbl	float.c	/^} dbl;$/;"	t	typeref:union:__anon1	file:
+dbl	shootout/mandelbrot.c	/^double dbl(double f) {$/;"	f
+dbl	shootout/mandelbrot.ml	/^(*MINCAML*) let rec dbl f = f +. f in$/;"	v
+dbl	test/funcomp.ml	/^let rec dbl x = x + x in$/;"	v
+dblprod_vec	min-rt/raytrace.c	/^static double dblprod_vec (const vec_t * a, const vec_t * b) {$/;"	f	file:
+dec	test/funcomp.ml	/^let rec dec x = x - 1 in$/;"	v
+deg_t	min-rt/raytrace.c	/^typedef double deg_t; \/\/ ³ÑÅÙ¡ÊÅÙ¡Ë$/;"	t	file:
+deg_to_rad	min-rt/raytrace.c	/^inline static rad_t deg_to_rad (deg_t deg) {$/;"	f	file:
 deref_id_typ	typing.ml	/^let rec deref_id_typ (x, t) = (x, deref_typ t)$/;"	v
 deref_term	typing.ml	/^let rec deref_term = function$/;"	v
 deref_typ	typing.ml	/^let rec deref_typ = function (* ·¿ÊÑ¿ô¤òÃæ¿È¤Ç¤ª¤­¤«¤¨¤ë´Ø¿ô (caml2html: typing_deref) *)$/;"	v
+dest	PowerPC/emit.ml	/^type dest = Tail | NonTail of Id.t (* ËöÈø¤«¤É¤¦¤«¤òÉ½¤¹¥Ç¡¼¥¿·¿ *)$/;"	t
+dest	SPARC/emit.ml	/^type dest = Tail | NonTail of Id.t (* ËöÈø¤«¤É¤¦¤«¤òÉ½¤¹¥Ç¡¼¥¿·¿ (caml2html: emit_dest) *)$/;"	t
 dest	emit.ml	/^type dest = Tail | NonTail of Id.t (* ËöÈø¤«¤É¤¦¤«¤òÉ½¤¹¥Ç¡¼¥¿·¿ (caml2html: emit_dest) *)$/;"	t
+dest	x86/emit.ml	/^type dest = Tail | NonTail of Id.t (* ËöÈø¤«¤É¤¦¤«¤òÉ½¤¹¥Ç¡¼¥¿·¿ (caml2html: emit_dest) *)$/;"	t
+dir	min-rt/raytrace.c	/^  rot2_t dir; \/\/ ³ÑÅÙ¤Ç¤¢¤é¤ï¤·¤¿Êý¸þ$/;"	m	struct:__anon9	file:
+dir	min-rt/raytrace.c	/^  rot2_t dir; \/\/ ¸þ¤­$/;"	m	struct:__anon8	file:
+dist_back	min-rt/raytrace.c	225;"	d	file:
+dist_delta	min-rt/raytrace.c	226;"	d	file:
+dist_far	min-rt/raytrace.c	224;"	d	file:
+dist_max	min-rt/raytrace.c	223;"	d	file:
+dist_t	min-rt/raytrace.c	/^typedef double dist_t;$/;"	t	file:
+dm	min-rt/RayTrace.cxx	/^int dm[MAX_OR][32]; \/\/ OR ÄêµÁ$/;"	v
+dot	min-rt/raytrace.c	/^static dist_t dot; \/\/ ¥¹¥¯¥ê¡¼¥ó¾å¤Ç½ÐÎÏ²èÁü1¥É¥Ã¥È¤ËÅö¤¿¤ëÀµÊý·Á¤Î°ìÊÕ¤ÎÄ¹¤µ$/;"	v	file:
+dr	min-rt/RayTrace.cxx	/^int dr[MAX_AND][32]; \/\/ AND ÄêµÁ$/;"	v
+ds	min-rt/RayTrace.cxx	/^PrimitiveData_i ds[MAX_PRIMITIVE + 1]; \/\/ ¥×¥ê¥ß¥Æ¥£¥ÖÄêµÁ TX P SF RT$/;"	v
+dummy	test/matmul-flat.ml	/^let dummy = Array.create 0 0. in$/;"	v
+dummy	test/matmul.ml	/^let dummy = Array.create 0 0. in$/;"	v
 dump	info.ml	/^let dump() = "dump_file.ml", -1, -1, -1, -1$/;"	v
+dump	min-rt/ppm.ml	/^let dump file (img, width) =$/;"	v
+e'	PowerPC/regAlloc.ml	/^  let (e', regenv') = g (a, t) (Ans(Mr(a))) regenv e in$/;"	v
+e'	PowerPC/regAlloc.ml	/^  let e', regenv' = g (Id.gentmp Type.Unit, Type.Unit) (Ans(Nop)) M.empty e in$/;"	v
+e'	SPARC/regAlloc.ml	/^  let (e', regenv') = g (a, t) (Ans(Mov(a))) regenv e in$/;"	v
+e'	SPARC/regAlloc.ml	/^  let e', regenv' = g (Id.gentmp Type.Unit, Type.Unit) (Ans(Nop)) M.empty e in$/;"	v
 e'	elim.ml	/^      let e' = f e in$/;"	v
 e'	kNormal.ml	/^      let e', t' = k x in$/;"	v
 e'	main.ml	/^  let e' = Elim.f (ConstFold.f (Inline.f (Assoc.f (Beta.f e)))) in$/;"	v
 e'	regAlloc.ml	/^  let (e', regenv') = g (a, t) (Ans(Mov(a, info), info)) regenv e in$/;"	v
 e'	regAlloc.ml	/^  let e', regenv' = g (Id.gentmp (Type.Unit info) info, Type.Unit info) (Ans(Nop info, info)) M.empty e in$/;"	v
+e'	x86/regAlloc.ml	/^  let (e', regenv') = g (a, t) (Ans(Mov(a, info), info)) regenv e in$/;"	v
+e'	x86/regAlloc.ml	/^  let e', regenv' = g (Id.gentmp (Type.Unit info) info, Type.Unit info) (Ans(Nop info, info)) M.empty e in$/;"	v
+e1'	SPARC/virtual.ml	/^      let e1' = g env e1 in$/;"	v
 e1'	closure.ml	/^      let e1' = g (M.add_list yts env') known' e1 in$/;"	v
 e1'	constFold.ml	/^      let e1' = g env e1 in$/;"	v
 e1'	virtual.ml	/^      let e1' = g env e1 in$/;"	v
+e1'	x86/virtual.ml	/^      let e1' = g env e1 in$/;"	v
+e2'	SPARC/virtual.ml	/^      let e2' = g (M.add x t env) e2 in$/;"	v
+e2'	SPARC/virtual.ml	/^      let e2' = g (M.add x t1 env) e2 in$/;"	v
 e2'	closure.ml	/^      let e2' = g env' known' e2 in$/;"	v
 e2'	constFold.ml	/^      let e2' = g (M.add x e1' env) e2 in$/;"	v
 e2'	elim.ml	/^      let e2' = f e2 in$/;"	v
 e2'	virtual.ml	/^      let e2' = g (M.add x t env) e2 in$/;"	v
 e2'	virtual.ml	/^      let e2' = g (M.add x t1 env) e2 in$/;"	v
+e2'	x86/virtual.ml	/^      let e2' = g (M.add x t env) e2 in$/;"	v
+e2'	x86/virtual.ml	/^      let e2' = g (M.add x t1 env) e2 in$/;"	v
 effect	elim.ml	/^let rec effect = function (* ÉûºîÍÑ¤ÎÍ­Ìµ (caml2html: elim_effect) *)$/;"	v
+end_flag	min-rt/globals.ml	/^let end_flag = Array.create 1 false$/;"	v
+energy	min-rt/raytrace.c	/^static double energy; \/\/ ¸½ºß¤Î¸÷Àþ¤Î¥¨¥Í¥ë¥®¡¼$/;"	v	file:
+energy2	min-rt/min-rt.ml	/^	      let energy2 = energy *. (1.0 -. o_diffuse cobj) in$/;"	v
 entry	closure.ml	/^type closure = { entry : Id.l; actual_fv : Id.t list }$/;"	r	type:closure
 entry	closure.mli	/^type closure = { entry : Id.l; actual_fv : Id.t list }$/;"	r	type:closure
 env	alpha.ml	/^      let env = M.add x (Id.genid x) env in$/;"	v
@@ -303,39 +859,163 @@ env'	alpha.ml	/^      let env' = M.add_list2 xs (List.map Id.genid xs) env in$/;
 env'	alpha.ml	/^      let env' = M.add_list2 ys (List.map Id.genid ys) env in$/;"	v
 env'	closure.ml	/^      let env' = M.add x t env in$/;"	v
 env'	inline.ml	/^      let env' =$/;"	v
+equation_solver	min-rt/RayTrace.cxx	/^SIGN equation_solver(int i,           \/\/ ¥×¥ê¥ß¥Æ¥£¥Ö¥¤¥ó¥Ç¥Ã¥¯¥¹$/;"	f
+even	test/even-odd.ml	/^let rec even x =$/;"	v
+ex	min-rt/RayTrace.cxx	/^float ex,  ey,  ez;  \/\/ »ëÀþ¤Î¸þ¤­¤ÎÃ±°Ì¥Ù¥¯¥È¥ë$/;"	v
+exp	PowerPC/asm.ml	/^and exp = (* °ì¤Ä°ì¤Ä¤ÎÌ¿Îá¤ËÂÐ±þ¤¹¤ë¼° *)$/;"	t
+exp	PowerPC/asm.mli	/^and exp = $/;"	t
+exp	SPARC/asm.ml	/^and exp = (* °ì¤Ä°ì¤Ä¤ÎÌ¿Îá¤ËÂÐ±þ¤¹¤ë¼° (caml2html: sparcasm_exp) *)$/;"	t
+exp	SPARC/asm.mli	/^and exp =$/;"	t
 exp	asm.ml	/^and exp = (* °ì¤Ä°ì¤Ä¤ÎÌ¿Îá¤ËÂÐ±þ¤¹¤ë¼° (caml2html: sparcasm_exp) *)$/;"	t
 exp	asm.mli	/^and exp =$/;"	t
+exp	x86/asm.ml	/^and exp = (* °ì¤Ä°ì¤Ä¤ÎÌ¿Îá¤ËÂÐ±þ¤¹¤ë¼° (caml2html: sparcasm_exp) *)$/;"	t
+exp	x86/asm.mli	/^and exp =$/;"	t
 extenv	typing.ml	/^let extenv = ref M.empty$/;"	v
 extenv	typing.mli	/^val extenv : Type.t M.t ref$/;"	v
+ey	min-rt/RayTrace.cxx	/^float ex,  ey,  ez;  \/\/ »ëÀþ¤Î¸þ¤­¤ÎÃ±°Ì¥Ù¥¯¥È¥ë$/;"	v
+ez	min-rt/RayTrace.cxx	/^float ex,  ey,  ez;  \/\/ »ëÀþ¤Î¸þ¤­¤ÎÃ±°Ì¥Ù¥¯¥È¥ë$/;"	v
+f	PowerPC/regAlloc.ml	/^let f (Prog(data, fundefs, e)) = (* ¥×¥í¥°¥é¥àÁ´ÂÎ¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: regalloc_f) *)$/;"	v
+f	PowerPC/virtual.ml	/^let f (Closure.Prog (fundefs, e)) =$/;"	v
+f	SPARC/regAlloc.ml	/^let f (Prog(data, fundefs, e)) = (* ¥×¥í¥°¥é¥àÁ´ÂÎ¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: regalloc_f) *)$/;"	v
+f	SPARC/simm.ml	/^let f (Prog(data, fundefs, e)) = (* ¥×¥í¥°¥é¥àÁ´ÂÎ¤Î13bitÂ¨ÃÍºÇÅ¬²½ *)$/;"	v
+f	SPARC/virtual.ml	/^let f (Closure.Prog(fundefs, e)) =$/;"	v
 f	alpha.ml	/^let f = g M.empty$/;"	v
+f	alpha.mli	/^val f : KNormal.t -> KNormal.t$/;"	v
 f	assoc.ml	/^let rec f = function (* ¥Í¥¹¥È¤·¤¿let¤Î´ÊÌó (caml2html: assoc_f) *)$/;"	v
+f	assoc.mli	/^val f : KNormal.t -> KNormal.t$/;"	v
+f	beta.mli	/^val f : KNormal.t -> KNormal.t$/;"	v
 f	closure.ml	/^let f e =$/;"	v
 f	closure.mli	/^val f : KNormal.t -> prog$/;"	v
 f	constFold.ml	/^let f = g M.empty$/;"	v
+f	constFold.mli	/^val f : KNormal.t -> KNormal.t$/;"	v
 f	elim.ml	/^let rec f = function (* ÉÔÍ×ÄêµÁºï½ü¥ë¡¼¥Á¥óËÜÂÎ (caml2html: elim_f) *)$/;"	v
+f	elim.mli	/^val f : KNormal.t -> KNormal.t$/;"	v
+f	emit.mli	/^val f : out_channel -> Asm.prog -> unit$/;"	v
 f	inline.ml	/^let f e = g M.empty e$/;"	v
+f	inline.mli	/^val f : KNormal.t -> KNormal.t$/;"	v
 f	kNormal.mli	/^val f : Syntax.t -> t$/;"	v
 f	regAlloc.ml	/^let f (Prog(data, fundefs, e)) = (* ¥×¥í¥°¥é¥àÁ´ÂÎ¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: regalloc_f) *)$/;"	v
+f	regAlloc.mli	/^val f : Asm.prog -> Asm.prog$/;"	v
+f	shootout/harmonic.ml	/^(*MINCAML*) let rec f n i d s =$/;"	v
 f	simm.ml	/^let f (Prog(data, fundefs, e)) = (* ¥×¥í¥°¥é¥àÁ´ÂÎ¤ÎÂ¨ÃÍºÇÅ¬²½ *)$/;"	v
+f	simm.mli	/^val f : Asm.prog -> Asm.prog$/;"	v
+f	test/cls-bug.ml	/^let rec f x = x + 123 in$/;"	v
+f	test/cls-bug2.ml	/^let rec f n =$/;"	v
+f	test/cls-rec.ml	/^let rec f y =$/;"	v
+f	test/even-odd.ml	/^let f = 456 in$/;"	v
+f	test/join-reg.ml	/^let rec f _ = 123 in$/;"	v
+f	test/join-reg2.ml	/^let rec f _ = 123 in$/;"	v
+f	test/join-stack.ml	/^let rec f _ = 123 in$/;"	v
+f	test/join-stack2.ml	/^let rec f _ = 123 in$/;"	v
+f	test/join-stack3.ml	/^let rec f _ = 123 in$/;"	v
+f	test/non-tail-if2.ml	/^let rec f _ = 12345 in$/;"	v
+f	test/spill.ml	/^let rec f a b c d =$/;"	v
+f	test/spill2.ml	/^let rec f _ = 12345 in$/;"	v
+f	test/spill3.ml	/^let rec f x0 =$/;"	v
 f	typing.ml	/^let f e =$/;"	v
 f	typing.mli	/^val f : Syntax.t -> Syntax.t$/;"	v
 f	virtual.ml	/^let f (Closure.Prog(fundefs, e)) =$/;"	v
+f	virtual.mli	/^val f : Closure.prog -> Asm.prog$/;"	v
+f	x86/regAlloc.ml	/^let f (Prog(data, fundefs, e)) = (* ¥×¥í¥°¥é¥àÁ´ÂÎ¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: regalloc_f) *)$/;"	v
+f	x86/simm.ml	/^let f (Prog(data, fundefs, e)) = (* ¥×¥í¥°¥é¥àÁ´ÂÎ¤ÎÂ¨ÃÍºÇÅ¬²½ *)$/;"	v
+f	x86/virtual.ml	/^let f (Closure.Prog(fundefs, e)) =$/;"	v
+f_abs	min-rt/RayTrace.cxx	43;"	d	file:
+f_atan	min-rt/RayTrace.cxx	44;"	d	file:
+f_cos	min-rt/RayTrace.cxx	42;"	d	file:
+f_fraction	min-rt/RayTrace.cxx	/^inline float f_fraction(float f)$/;"	f
+f_mod	min-rt/RayTrace.cxx	/^inline float f_mod(float a, float b)$/;"	f
+f_round	min-rt/RayTrace.cxx	/^inline float f_round(float f)$/;"	f
+f_sgn	min-rt/RayTrace.cxx	/^inline float f_sgn(float f)$/;"	f
+f_sin	min-rt/RayTrace.cxx	41;"	d	file:
+f_sq	min-rt/RayTrace.cxx	46;"	d	file:
+f_sqrt	min-rt/RayTrace.cxx	45;"	d	file:
+f_sqrt_inverse	min-rt/RayTrace.cxx	/^inline float f_sqrt_inverse(float f)$/;"	f
+fabs	min-rt/raytrace.c	17;"	d	file:
+false	min-rt/RayTrace.cxx	28;"	d	file:
+fargs	PowerPC/asm.ml	/^    { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
+fargs	PowerPC/asm.mli	/^    { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
+fargs	SPARC/asm.ml	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
+fargs	SPARC/asm.mli	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
 fargs	asm.ml	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
 fargs	asm.mli	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
+fargs	x86/asm.ml	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
+fargs	x86/asm.mli	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
+fcube	min-rt/raytrace.c	/^inline static double fcube (double x) {$/;"	f	file:
+fdbl	min-rt/raytrace.c	/^inline static double fdbl (double x) {$/;"	f	file:
+fhalf	min-rt/min-rt.ml	/^(*MINCAML*)let rec fhalf x = x \/. 2. in$/;"	v
+fhalf	min-rt/raytrace.c	/^static double fhalf (double x) {$/;"	f	file:
+fib	shootout/fib.c	/^int fib(int n) {$/;"	f
+fib	shootout/fib.ml	/^let rec fib n =$/;"	v
+fib	test/fib.ml	/^let rec fib n =$/;"	v
 file	main.ml	/^let file f = (* ¥Õ¥¡¥¤¥ë¤ò¥³¥ó¥Ñ¥¤¥ë¤·¤Æ¥Õ¥¡¥¤¥ë¤Ë½ÐÎÏ¤¹¤ë (caml2html: main_file) *)$/;"	v
+file	main.mli	/^val file : string -> unit$/;"	v
 files	main.ml	/^  let files = ref [] in$/;"	v
+find	PowerPC/regAlloc.ml	/^let find x t regenv =$/;"	v
+find	SPARC/regAlloc.ml	/^let find x t regenv =$/;"	v
 find	alpha.ml	/^let find x env = try M.find x env with Not_found -> x$/;"	v
 find	beta.ml	/^let find x env = try M.find x env with Not_found -> x (* ÃÖ´¹¤Î¤¿¤á¤Î´Ø¿ô (caml2html: beta_find) *)$/;"	v
 find	regAlloc.ml	/^let find x t regenv info =$/;"	v
+find	x86/regAlloc.ml	/^let find x t regenv info =$/;"	v
+find'	PowerPC/regAlloc.ml	/^let find' x' regenv =$/;"	v
+find'	SPARC/regAlloc.ml	/^let find' x' regenv =$/;"	v
 find'	regAlloc.ml	/^let find' x' regenv info=$/;"	v
+find'	x86/regAlloc.ml	/^let find' x' regenv info=$/;"	v
 findi	constFold.ml	/^let findi x env = (match M.find x env with Int(i, info) -> i | _ -> raise Not_found)$/;"	v
+flag1	min-rt/min-rt.ml	/^     let flag1 =$/;"	v
+flag2	min-rt/min-rt.ml	/^     let flag2 =$/;"	v
+fletd	PowerPC/asm.ml	/^let fletd (x, e1, e2) = Let ((x, Type.Float), e1, e2)$/;"	v
+fletd	PowerPC/asm.mli	/^val fletd : Id.t * exp * t -> t (* shorthand of Let for float *)$/;"	v
+fletd	SPARC/asm.ml	/^let fletd(x, e1, e2) = Let((x, Type.Float), e1, e2)$/;"	v
+fletd	SPARC/asm.mli	/^val fletd : Id.t * exp * t -> t (* shorthand of Let for float *)$/;"	v
 fletd	asm.ml	/^let fletd(x, e1, e2, info) = Let((x, Type.Float info), e1, e2, info)$/;"	v
 fletd	asm.mli	/^val fletd : Id.t * exp * t * Info.t -> t (* shorthand of Let for float *)$/;"	v
+fletd	x86/asm.ml	/^let fletd(x, e1, e2, info) = Let((x, Type.Float info), e1, e2, info)$/;"	v
+fletd	x86/asm.mli	/^val fletd : Id.t * exp * t * Info.t -> t (* shorthand of Let for float *)$/;"	v
+float_0	PowerPC/libmincaml.S	/^float_0:$/;"	l
+float_0	SPARC/libmincaml.S	/^float_0:$/;"	l
+float_0	libmincaml.S	/^float_0:$/;"	l
+float_0	x86/libmincaml.S	/^float_0:$/;"	l
+float_1	PowerPC/libmincaml.S	/^float_1:$/;"	l
+float_1	SPARC/libmincaml.S	/^float_1:$/;"	l
+float_1	libmincaml.S	/^float_1:$/;"	l
+float_1	x86/libmincaml.S	/^float_1:$/;"	l
+floor	PowerPC/libmincaml.S	/^floor:$/;"	l
+floor_lazy	PowerPC/libmincaml.S	/^floor_lazy:$/;"	l
+fmod20	min-rt/raytrace.c	/^static double fmod20 (double x) {$/;"	f	file:
+foo	test/shuffle.ml	/^let rec foo a b c d e f =$/;"	v
+form	min-rt/min-rt.ml	/^      let form = read_int () in (* 1 *)$/;"	v
 formal_fv	closure.ml	/^		formal_fv : (Id.t * Type.t) list;$/;"	r	type:fundef
 formal_fv	closure.mli	/^		formal_fv : (Id.t * Type.t) list;$/;"	r	type:fundef
+format_float	SPARC/libmincaml.S	/^format_float:$/;"	l
+format_float	libmincaml.S	/^format_float:$/;"	l
+format_float	x86/libmincaml.S	/^format_float:$/;"	l
+format_int	SPARC/libmincaml.S	/^format_int:$/;"	l
+format_int	libmincaml.S	/^format_int:$/;"	l
+format_int	x86/libmincaml.S	/^format_int:$/;"	l
+fprintf	PowerPC/libmincaml.S	/^fprintf:	$/;"	l
+fprintf_lazy	PowerPC/libmincaml.S	/^fprintf_lazy:$/;"	l
+fputc	PowerPC/libmincaml.S	/^fputc:$/;"	l
+fputc_lazy	PowerPC/libmincaml.S	/^fputc_lazy:$/;"	l
+fquad	min-rt/raytrace.c	/^inline static double fquad (double x) {$/;"	f	file:
+frac	min-rt/raytrace.c	/^static double frac (double x) {$/;"	f	file:
+free	PowerPC/regAlloc.ml	/^  let free = fv cont in$/;"	v
+free	SPARC/regAlloc.ml	/^  let free = fv cont in$/;"	v
 free	regAlloc.ml	/^  let free = fv cont in$/;"	v
+free	x86/regAlloc.ml	/^  let free = fv cont in$/;"	v
+fregs	PowerPC/asm.ml	/^let fregs = Array.init 32 (fun i -> Printf.sprintf "%%f%d" i)$/;"	v
+fregs	PowerPC/asm.mli	/^val fregs : Id.t array$/;"	v
+fregs	SPARC/asm.ml	/^let fregs = Array.init 16 (fun i -> Printf.sprintf "%%f%d" (i * 2))$/;"	v
+fregs	SPARC/asm.mli	/^val fregs : Id.t array$/;"	v
 fregs	asm.ml	/^let fregs = Array.init 8 (fun i -> Printf.sprintf "%%xmm%d" i, Info.dump())$/;"	v
 fregs	asm.mli	/^val fregs : Id.t array$/;"	v
+fregs	x86/asm.ml	/^let fregs = Array.init 8 (fun i -> Printf.sprintf "%%xmm%d" i, Info.dump())$/;"	v
+fregs	x86/asm.mli	/^val fregs : Id.t array$/;"	v
+fsq	min-rt/raytrace.c	/^inline static double fsq (double x) {$/;"	f	file:
+fsqr	min-rt/min-rt.ml	/^(*MINCAML*)let rec fsqr x = x *. x in$/;"	v
+fundef	PowerPC/asm.ml	/^type fundef =$/;"	t
+fundef	PowerPC/asm.mli	/^type fundef =$/;"	t
+fundef	SPARC/asm.ml	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	t
+fundef	SPARC/asm.mli	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	t
 fundef	asm.ml	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	t
 fundef	asm.mli	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	t
 fundef	closure.ml	/^type fundef = { name : Id.l * Type.t;$/;"	t
@@ -343,68 +1023,460 @@ fundef	closure.mli	/^type fundef = { name : Id.l * Type.t;$/;"	t
 fundef	kNormal.ml	/^and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }$/;"	t
 fundef	kNormal.mli	/^and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }$/;"	t
 fundef	syntax.ml	/^and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }$/;"	t
+fundef	x86/asm.ml	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	t
+fundef	x86/asm.mli	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	t
+fundefs'	PowerPC/regAlloc.ml	/^  let fundefs' = List.map h fundefs in$/;"	v
+fundefs'	SPARC/regAlloc.ml	/^  let fundefs' = List.map h fundefs in$/;"	v
 fundefs'	regAlloc.ml	/^  let fundefs' = List.map h fundefs in$/;"	v
+fundefs'	x86/regAlloc.ml	/^  let fundefs' = List.map h fundefs in$/;"	v
+fv	PowerPC/asm.mli	/^val fv : t -> Id.t list$/;"	v
+fv	SPARC/asm.ml	/^let fv e = remove_and_uniq S.empty (fv e)$/;"	v
+fv	SPARC/asm.mli	/^val fv : t -> Id.t list$/;"	v
 fv	asm.ml	/^let fv e = remove_and_uniq S.empty (fv e)$/;"	v
 fv	asm.mli	/^val fv : t -> Id.t list$/;"	v
 fv	closure.ml	/^let rec fv = function$/;"	v
 fv	closure.mli	/^val fv : t -> S.t$/;"	v
 fv	kNormal.ml	/^let rec fv = function (* ¼°¤Ë½Ð¸½¤¹¤ë¡Ê¼«Í³¤Ê¡ËÊÑ¿ô (caml2html: knormal_fv) *)$/;"	v
 fv	kNormal.mli	/^val fv : t -> S.t$/;"	v
+fv	x86/asm.ml	/^let fv e = remove_and_uniq S.empty (fv e)$/;"	v
+fv	x86/asm.mli	/^val fv : t -> Id.t list$/;"	v
+fv_exp	SPARC/asm.ml	/^let rec fv_exp = function$/;"	v
 fv_exp	asm.ml	/^let rec fv_exp = function$/;"	v
+fv_exp	x86/asm.ml	/^let rec fv_exp = function$/;"	v
+g	PowerPC/emit.ml	/^let rec g oc = function (* Ì¿ÎáÎó¤Î¥¢¥»¥ó¥Ö¥êÀ¸À® *)$/;"	v
+g	PowerPC/regAlloc.ml	/^let rec g dest cont regenv = function (* Ì¿ÎáÎó¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: regalloc_g) *)$/;"	v
+g	PowerPC/simm.ml	/^let rec g env = function (* Ì¿ÎáÎó¤Î 16 bit Â¨ÃÍºÇÅ¬²½ *)$/;"	v
+g	SPARC/emit.ml	/^let rec g oc = function (* Ì¿ÎáÎó¤Î¥¢¥»¥ó¥Ö¥êÀ¸À® (caml2html: emit_g) *)$/;"	v
+g	SPARC/regAlloc.ml	/^let rec g dest cont regenv = function (* Ì¿ÎáÎó¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: regalloc_g) *)$/;"	v
+g	SPARC/simm.ml	/^let rec g env = function (* Ì¿ÎáÎó¤Î13bitÂ¨ÃÍºÇÅ¬²½ (caml2html: simm13_g) *)$/;"	v
 g	alpha.ml	/^let rec g env = function (* ¦ÁÊÑ´¹¥ë¡¼¥Á¥óËÜÂÎ (caml2html: alpha_g) *)$/;"	v
+g	alpha.mli	/^val g : Id.t M.t -> KNormal.t -> KNormal.t (* for Inline.g *)$/;"	v
 g	closure.ml	/^let rec g env known = function (* ¥¯¥í¡¼¥¸¥ãÊÑ´¹¥ë¡¼¥Á¥óËÜÂÎ (caml2html: closure_g) *)$/;"	v
 g	emit.ml	/^let rec g oc = function (* Ì¿ÎáÎó¤Î¥¢¥»¥ó¥Ö¥êÀ¸À® (caml2html: emit_g) *)$/;"	v
 g	inline.ml	/^let rec g env = function (* ¥¤¥ó¥é¥¤¥óÅ¸³«¥ë¡¼¥Á¥óËÜÂÎ (caml2html: inline_g) *)$/;"	v
 g	kNormal.ml	/^let rec g env = function (* KÀµµ¬²½¥ë¡¼¥Á¥óËÜÂÎ (caml2html: knormal_g) *)$/;"	v
+g	min-rt/raytrace.c	/^  hil_t g;$/;"	m	struct:__anon3	file:
 g	regAlloc.ml	/^let rec g dest cont regenv = function (* Ì¿ÎáÎó¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: regalloc_g) *)$/;"	v
 g	simm.ml	/^let rec g env = function (* Ì¿ÎáÎó¤ÎÂ¨ÃÍºÇÅ¬²½ (caml2html: simm13_g) *)$/;"	v
+g	test/cls-bug.ml	/^let rec g y = f in$/;"	v
+g	test/join-reg.ml	/^let rec g _ = 456 in$/;"	v
+g	test/join-reg2.ml	/^let rec g _ = 456 in$/;"	v
+g	test/join-stack.ml	/^let rec g _ = 456 in$/;"	v
+g	test/join-stack2.ml	/^let rec g _ = 456 in$/;"	v
+g	test/join-stack3.ml	/^let rec g _ = 456 in$/;"	v
+g	test/spill2.ml	/^let rec g y = y + 1 in$/;"	v
 g	typing.ml	/^let rec g env e = (* ·¿¿äÏÀ¥ë¡¼¥Á¥ó (caml2html: typing_g) *)$/;"	v
+g	x86/emit.ml	/^let rec g oc = function (* Ì¿ÎáÎó¤Î¥¢¥»¥ó¥Ö¥êÀ¸À® (caml2html: emit_g) *)$/;"	v
+g	x86/regAlloc.ml	/^let rec g dest cont regenv = function (* Ì¿ÎáÎó¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: regalloc_g) *)$/;"	v
+g	x86/simm.ml	/^let rec g env = function (* Ì¿ÎáÎó¤ÎÂ¨ÃÍºÇÅ¬²½ (caml2html: simm13_g) *)$/;"	v
+g'	PowerPC/simm.ml	/^and g' env = function (* ³ÆÌ¿Îá¤Î 16 bit Â¨ÃÍºÇÅ¬²½ *)$/;"	v
+g'	SPARC/simm.ml	/^and g' env = function (* ³ÆÌ¿Îá¤Î13bitÂ¨ÃÍºÇÅ¬²½ (caml2html: simm13_gprime) *)$/;"	v
 g'	simm.ml	/^and g' env = function (* ³ÆÌ¿Îá¤ÎÂ¨ÃÍºÇÅ¬²½ (caml2html: simm13_gprime) *)$/;"	v
+g'	x86/simm.ml	/^and g' env = function (* ³ÆÌ¿Îá¤ÎÂ¨ÃÍºÇÅ¬²½ (caml2html: simm13_gprime) *)$/;"	v
+g'_call	PowerPC/regAlloc.ml	/^and g'_call dest cont regenv exp constr ys zs = (* ´Ø¿ô¸Æ¤Ó½Ð¤·¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: regalloc_call) *)$/;"	v
+g'_call	SPARC/regAlloc.ml	/^and g'_call dest cont regenv exp constr ys zs = (* ´Ø¿ô¸Æ¤Ó½Ð¤·¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: regalloc_call) *)$/;"	v
 g'_call	regAlloc.ml	/^and g'_call dest cont regenv exp constr ys zs info = (* ´Ø¿ô¸Æ¤Ó½Ð¤·¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: regalloc_call) *)$/;"	v
+g'_call	x86/regAlloc.ml	/^and g'_call dest cont regenv exp constr ys zs info = (* ´Ø¿ô¸Æ¤Ó½Ð¤·¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: regalloc_call) *)$/;"	v
+g'_tail_if	SPARC/emit.ml	/^and g'_tail_if oc e1 e2 b bn =$/;"	v
 g'_tail_if	emit.ml	/^and g'_tail_if oc e1 e2 b bn info=$/;"	v
+g'_tail_if	x86/emit.ml	/^and g'_tail_if oc e1 e2 b bn info=$/;"	v
+gcd	test/gcd.ml	/^let rec gcd m n =$/;"	v
 genid	id.ml	/^let genid (s, info) =$/;"	v
 gentmp	id.ml	/^let gentmp typ info=$/;"	v
 gentyp	type.ml	/^let gentyp info = Var(ref None, info) (* ¿·¤·¤¤·¿ÊÑ¿ô¤òºî¤ë *)$/;"	v
+get	min-rt/ppm.ml	/^let get (img, width) i j k =$/;"	v
 get_info	closure.ml	/^let get_info = function$/;"	v
 get_info	closure.mli	/^val get_info: t -> Info.t$/;"	v
 get_info	syntax.ml	/^let get_info = function$/;"	v
 get_info	type.ml	/^let get_info = function$/;"	v
 get_info_exp	asm.ml	/^let get_info_exp = function$/;"	v
 get_info_exp	asm.mli	/^val get_info_exp: exp -> Info.t$/;"	v
+get_info_exp	x86/asm.ml	/^let get_info_exp = function$/;"	v
+get_info_exp	x86/asm.mli	/^val get_info_exp: exp -> Info.t$/;"	v
 get_info_t	asm.ml	/^let get_info_t = function$/;"	v
 get_info_t	asm.mli	/^val get_info_t: t -> Info.t$/;"	v
+get_info_t	x86/asm.ml	/^let get_info_t = function$/;"	v
+get_info_t	x86/asm.mli	/^val get_info_t: t -> Info.t$/;"	v
 get_key	id.ml	/^let get_key x = fst x$/;"	v
+get_nvector	min-rt/min-rt.ml	/^(*MINCAML*)let rec get_nvector m p =$/;"	v
+get_nvector_plane	min-rt/min-rt.ml	/^(*MINCAML*)let rec get_nvector_plane m = $/;"	v
+get_nvector_rect	min-rt/min-rt.ml	/^(*MINCAML*)let rec get_nvector_rect _ =$/;"	v
+get_nvector_second_norot	min-rt/min-rt.ml	/^(*MINCAML*)let rec get_nvector_second_norot m p = $/;"	v
+get_nvector_second_rot	min-rt/min-rt.ml	/^(*MINCAML*)let rec get_nvector_second_rot m p =$/;"	v
+gethi	float.c	/^value gethi(value v) {$/;"	f
+getlo	float.c	/^value getlo(value v) {$/;"	f
+getx	test/inprod.ml	/^let rec getx v = (let (x, y, z) = v in x) in$/;"	v
+gety	test/inprod.ml	/^let rec gety v = (let (x, y, z) = v in y) in$/;"	v
+getz	test/inprod.ml	/^let rec getz v = (let (x, y, z) = v in z) in$/;"	v
+green	min-rt/min-rt.ml	/^   let green = if green > 255 then 255 else green in$/;"	v
+green	min-rt/min-rt.ml	/^   let green = int_of_float rgb.(1) in$/;"	v
+h	PowerPC/regAlloc.ml	/^let h { name = Id.L(x); args = ys; fargs = zs; body = e; ret = t } = (* ´Ø¿ô¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: regalloc_h) *)$/;"	v
+h	PowerPC/virtual.ml	/^let h { Closure.name = (Id.L(x), t); Closure.args = yts; $/;"	v
+h	SPARC/regAlloc.ml	/^let h { name = Id.L(x); args = ys; fargs = zs; body = e; ret = t } = (* ´Ø¿ô¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: regalloc_h) *)$/;"	v
+h	SPARC/simm.ml	/^let h { name = l; args = xs; fargs = ys; body = e; ret = t } = (* ¥È¥Ã¥×¥ì¥Ù¥ë´Ø¿ô¤Î13bitÂ¨ÃÍºÇÅ¬²½ *)$/;"	v
+h	SPARC/virtual.ml	/^let h { Closure.name = (Id.L(x), t); Closure.args = yts; Closure.formal_fv = zts; Closure.body = e } =$/;"	v
+h	min-rt/diff.ml	/^  let h = Ppm.height img1 in$/;"	v
 h	regAlloc.ml	/^let h { name = Id.L(_) as x; args = ys; fargs = zs; body = e; ret = t } = (* ´Ø¿ô¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: regalloc_h) *)$/;"	v
 h	simm.ml	/^let h { name = l; args = xs; fargs = ys; body = e; ret = t } = (* ¥È¥Ã¥×¥ì¥Ù¥ë´Ø¿ô¤ÎÂ¨ÃÍºÇÅ¬²½ *)$/;"	v
+h	test/cls-reg-bug.ml	/^let rec h p = $/;"	v
+h	test/funcomp.ml	/^let h = compose inc (compose dbl dec) in$/;"	v
+h	test/join-reg.ml	/^let rec h _ = 789 in$/;"	v
+h	test/join-reg2.ml	/^let rec h _ = 789 in$/;"	v
+h	test/join-stack.ml	/^let rec h _ = 789 in$/;"	v
+h	test/join-stack3.ml	/^let rec h _ = 789 in$/;"	v
 h	virtual.ml	/^let h { Closure.name = (Id.L(x1, x2) as x , t); Closure.args = yts; Closure.formal_fv = zts; Closure.body = e } =$/;"	v
+h	x86/regAlloc.ml	/^let h { name = Id.L(_) as x; args = ys; fargs = zs; body = e; ret = t } = (* ´Ø¿ô¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: regalloc_h) *)$/;"	v
+h	x86/simm.ml	/^let h { name = l; args = xs; fargs = ys; body = e; ret = t } = (* ¥È¥Ã¥×¥ì¥Ù¥ë´Ø¿ô¤ÎÂ¨ÃÍºÇÅ¬²½ *)$/;"	v
+h	x86/virtual.ml	/^let h { Closure.name = (Id.L(x1, x2) as x , t); Closure.args = yts; Closure.formal_fv = zts; Closure.body = e } =$/;"	v
+half	min-rt/raytrace.c	/^  card_t half; \/\/ °ìÊÕ¤ÎÄ¹¤µ¤ÎÈ¾Ê¬$/;"	m	struct:__anon7	file:
+half_vec	min-rt/raytrace.c	/^inline static void half_vec (vec_t * vec) {$/;"	f	file:
+head	min-rt/min-rt.ml	/^  let head = iand.(ofs) in$/;"	v
+head	min-rt/min-rt.ml	/^  let head = or_group.(ofs) in$/;"	v
+head	min-rt/min-rt.ml	/^  let head = or_matrix.(ofs) in$/;"	v
+head	min-rt/min-rt.ml	/^  let head = or_network.(ofs) in$/;"	v
+height	min-rt/ppm.ml	/^let height (s, width) = String.length s \/ width \/ 3$/;"	v
+hil	min-rt/raytrace.c	/^  hil_t hil; \/\/ ¥Ï¥¤¥é¥¤¥È¶¯ÅÙ$/;"	m	struct:__anon13	file:
+hil_max	min-rt/raytrace.c	233;"	d	file:
+hil_min	min-rt/raytrace.c	232;"	d	file:
+hil_t	min-rt/raytrace.c	/^typedef double hil_t;$/;"	t	file:
+hl	min-rt/min-rt.ml	/^	       let hl = -.(in_prod vscan light) in$/;"	v
+hl	min-rt/min-rt.ml	/^	let hl = -.(in_prod vscan light) in$/;"	v
+i	PowerPC/regAlloc.ml	/^  let (i, arg_regs, regenv) =$/;"	v
+i	SPARC/regAlloc.ml	/^  let (i, arg_regs, regenv) =$/;"	v
+i	float.c	/^  int32 i[2];$/;"	m	union:__anon1	file:
 i	regAlloc.ml	/^  let (i, arg_regs, regenv) =$/;"	v
+i	x86/regAlloc.ml	/^  let (i, arg_regs, regenv) =$/;"	v
+i1	min-rt/diff.ml	/^        let i1 = Ppm.get img1 i j k in$/;"	v
+i2	min-rt/diff.ml	/^        let i2 = Ppm.get img2 i j k in$/;"	v
+i_round	min-rt/RayTrace.cxx	69;"	d	file:
+i_sgn	min-rt/RayTrace.cxx	82;"	d	file:
+i_sgn_mul	min-rt/RayTrace.cxx	83;"	d	file:
 id_of_typ	id.ml	/^let rec id_of_typ = function$/;"	v
+id_or_imm	PowerPC/asm.ml	/^type id_or_imm = V of Id.t | C of int$/;"	t
+id_or_imm	PowerPC/asm.mli	/^type id_or_imm = V of Id.t | C of int$/;"	t
+id_or_imm	SPARC/asm.ml	/^type id_or_imm = V of Id.t | C of int$/;"	t
+id_or_imm	SPARC/asm.mli	/^type id_or_imm = V of Id.t | C of int$/;"	t
 id_or_imm	asm.ml	/^type id_or_imm = V of Id.t | C of int$/;"	t
 id_or_imm	asm.mli	/^type id_or_imm = V of Id.t | C of int$/;"	t
+id_or_imm	x86/asm.ml	/^type id_or_imm = V of Id.t | C of int$/;"	t
+id_or_imm	x86/asm.mli	/^type id_or_imm = V of Id.t | C of int$/;"	t
+ihl	min-rt/min-rt.ml	/^		   let ihl =$/;"	v
+ihl	min-rt/min-rt.ml	/^	   let ihl = fsqr hl *. hl *. energy *. beam.(0) in$/;"	v
+iloop	shootout/mandelbrot.ml	/^                let rec iloop i zr zi zr2 zi2 cr ci =$/;"	v
+img1	min-rt/diff.ml	/^  let img1 = Ppm.load Sys.argv.(1) in$/;"	v
+img2	min-rt/diff.ml	/^  let img2 = Ppm.load Sys.argv.(2) in$/;"	v
+in_out	min-rt/RayTrace.cxx	/^SIGN in_out(int i)$/;"	f
+in_prod	min-rt/min-rt.ml	/^(*MINCAML*)let rec in_prod v1 v2 = $/;"	v
+in_prod_co_objrot	min-rt/min-rt.ml	/^(*MINCAML*)let rec in_prod_co_objrot m v =$/;"	v
+in_prod_sqr_obj	min-rt/min-rt.ml	/^(*MINCAML*)let rec in_prod_sqr_obj m v =$/;"	v
+inc	test/funcomp.ml	/^let rec inc x = x + 1 in$/;"	v
 inchan	main.ml	/^  let inchan = open_in (f ^ ".ml") in$/;"	v
 info	regAlloc.ml	/^  let info = Asm.get_info_t e in$/;"	v
 info	typing.ml	/^      let info = Syntax.get_info e$/;"	v
 info	virtual.ml	/^    let info = Closure.get_info e in$/;"	v
+info	x86/regAlloc.ml	/^  let info = Asm.get_info_t e in$/;"	v
+info	x86/virtual.ml	/^    let info = Closure.get_info e in$/;"	v
+init	min-rt/ppm.ml	/^let init ~width ~height = (String.create (height * width * 3), width)$/;"	v
+init	test/matmul-flat.ml	/^let rec init i n mat =$/;"	v
+inprod	test/inprod-loop.ml	/^let rec inprod v1 v2 acc i =$/;"	v
+inprod	test/inprod-rec.ml	/^let rec inprod v1 v2 i =$/;"	v
+inprod	test/inprod.ml	/^let rec inprod v1 v2 =$/;"	v
+inprod_vec	min-rt/raytrace.c	/^static double inprod_vec (const vec_t * vec1, const vec_t * vec2) {$/;"	f	file:
+input_fp	min-rt/RayTrace.cxx	/^FILE *input_fp  = stdin ; \/\/ ÆþÎÏ¥Õ¥¡¥¤¥ë$/;"	v
 insert_let	kNormal.ml	/^let insert_let (e, t) k info = (* let¤òÁÞÆþ¤¹¤ëÊä½õ´Ø¿ô (caml2html: knormal_insert) *)$/;"	v
+int	PowerPC/virtual.ml	/^      let (int, float) = separate (List.map (fun y -> (y, M.find y env)) ys) in$/;"	v
+int	PowerPC/virtual.ml	/^  let (int, float) = separate yts in$/;"	v
+int	SPARC/virtual.ml	/^      let (int, float) = separate (List.map (fun y -> (y, M.find y env)) ys) in$/;"	v
+int	SPARC/virtual.ml	/^  let (int, float) = separate yts in$/;"	v
 int	virtual.ml	/^      let (int, float) = separate (List.map (fun y -> (y, M.find y env)) ys) in$/;"	v
 int	virtual.ml	/^  let (int, float) = separate yts in$/;"	v
+int	x86/virtual.ml	/^      let (int, float) = separate (List.map (fun y -> (y, M.find y env)) ys) in$/;"	v
+int	x86/virtual.ml	/^  let (int, float) = separate yts in$/;"	v
+interior	min-rt/raytrace.c	/^static bool_t interior (const prim_t * prim) {$/;"	f	file:
+intersect	min-rt/raytrace.c	/^static bool_t intersect (const prim_t * prim,$/;"	f	file:
+intersect_plane	min-rt/raytrace.c	/^static bool_t intersect_plane (const vec_t * vp,$/;"	f	file:
+intersect_quad	min-rt/raytrace.c	/^static bool_t intersect_quad (const vec_t * vp,$/;"	f	file:
+intersect_rect	min-rt/raytrace.c	/^static bool_t intersect_rect (const vec_t * vp,$/;"	f	file:
+intsec_cand	min-rt/raytrace.c	/^static vec_t intsec_cand; \/\/ intsec_point¤Î¸õÊä$/;"	v	file:
+intsec_normal	min-rt/raytrace.c	/^static vec_t intsec_normal; \/\/ ¸òÅÀ¤Ë¤ª¤±¤ëË¡Àþ$/;"	v	file:
+intsec_point	min-rt/raytrace.c	/^static vec_t intsec_point; \/\/ ¸½ºß¤Î¸òÅÀ$/;"	v	file:
+intsec_prim	min-rt/raytrace.c	/^static const prim_t * intsec_prim; \/\/ ¸òÅÀ¤Î¤¢¤ë¥×¥ê¥ß¥Æ¥£¥Ö$/;"	v	file:
+intsec_rectside	min-rt/globals.ml	/^let intsec_rectside = Array.create 1 0$/;"	v
+intsec_rectsurf	min-rt/raytrace.c	/^static rectsurf_t intsec_rectsurf; \/\/ ¤É¤ÎÌÌ¤Ç¸ò¤ï¤Ã¤¿¤«¡ÊÄ¾ÊýÂÎ¤Î¾ì¹ç¡Ë$/;"	v	file:
+inv	min-rt/raytrace.c	/^static double inv (double x) {$/;"	f	file:
+inv2	min-rt/raytrace.c	/^static double inv2 (double x) {$/;"	f	file:
+iobj	min-rt/min-rt.ml	/^  let iobj = and_group.(iand_ofs) in$/;"	v
+ipi	min-rt/RayTrace.cxx	/^int ipi;  \/\/ ¾åµ­¤Î¸òÅÀ¤ËÂÐ¤¹¤ë¥×¥ê¥ß¥Æ¥£¥Ö¤ÎÈÖ¹æ$/;"	v
+ipx	min-rt/RayTrace.cxx	/^float ipx, ipy, ipz; \/\/ ¸òÅÀ (intersection point) ¤ÎºÂÉ¸$/;"	v
+ipy	min-rt/RayTrace.cxx	/^float ipx, ipy, ipz; \/\/ ¸òÅÀ (intersection point) ¤ÎºÂÉ¸$/;"	v
+ipz	min-rt/RayTrace.cxx	/^float ipx, ipy, ipz; \/\/ ¸òÅÀ (intersection point) ¤ÎºÂÉ¸$/;"	v
+is_outside	min-rt/min-rt.ml	/^(*MINCAML*)let rec is_outside m =$/;"	v
+is_plane_outside	min-rt/min-rt.ml	/^(*MINCAML*)let rec is_plane_outside m =$/;"	v
+is_rect_outside	min-rt/min-rt.ml	/^(*MINCAML*)let rec is_rect_outside m =$/;"	v
+is_reg	PowerPC/asm.mli	/^val is_reg : Id.t -> bool$/;"	v
+is_reg	SPARC/asm.mli	/^val is_reg : Id.t -> bool$/;"	v
 is_reg	asm.mli	/^val is_reg : Id.t -> bool$/;"	v
+is_reg	x86/asm.mli	/^val is_reg : Id.t -> bool$/;"	v
+is_second_outside	min-rt/min-rt.ml	/^(*MINCAML*)let rec is_second_outside m = $/;"	v
+is_writing	min-rt/RayTrace.cxx	/^bool  is_writing(void) { return rand() % 2; }$/;"	f
+isoutside_q	min-rt/globals.ml	/^let isoutside_q = Array.create 3 0.0$/;"	v
+isrot_p	min-rt/min-rt.ml	/^      let isrot_p = read_int () in$/;"	v
+item	min-rt/min-rt.ml	/^  let item = read_int () in$/;"	v
 iter	main.ml	/^let rec iter n e = (* ºÇÅ¬²½½èÍý¤ò¤¯¤ê¤«¤¨¤¹ (caml2html: main_iter) *)$/;"	v
 known'	closure.ml	/^      let known' = S.add x known in$/;"	v
 known'	closure.ml	/^      let known', e1' =$/;"	v
 l	id.ml	/^type l = L of string * Info.t (* ¥È¥Ã¥×¥ì¥Ù¥ë´Ø¿ô¤ä¥°¥í¡¼¥Ð¥ëÇÛÎó¤Î¥é¥Ù¥ë (caml2html: id_l) *)$/;"	t
+l1	min-rt/min-rt.ml	/^  let l1 = rad (read_float ()) in$/;"	v
+l2	min-rt/min-rt.ml	/^  let l2 = rad (read_float ()) in$/;"	v
 lbuf	main.ml	/^      let lbuf = Lexing.from_channel inchan$/;"	v
 lex_get	info.ml	/^let lex_get lexbuf =$/;"	v
 lexbuf	main.ml	/^let lexbuf outchan l = (* ¥Ð¥Ã¥Õ¥¡¤ò¥³¥ó¥Ñ¥¤¥ë¤·¤Æ¥Á¥ã¥ó¥Í¥ë¤Ø½ÐÎÏ¤¹¤ë (caml2html: main_lexbuf) *)$/;"	v
+light	min-rt/globals.ml	/^let light = Array.create 3 0.0$/;"	v
+light	min-rt/raytrace.c	/^static light_t light; \/\/ ¸÷¸»¤Î¾ðÊó$/;"	v	file:
+light_t	min-rt/raytrace.c	/^} light_t;$/;"	t	typeref:struct:__anon9	file:
+lighten	min-rt/raytrace.c	/^static void lighten (void) {$/;"	f	file:
 limit	main.ml	/^let limit = ref 1000$/;"	v
+limit	main.mli	/^val limit : int ref$/;"	v
+live	PowerPC/regAlloc.ml	/^    let live = (* À¸¤­¤Æ¤¤¤ë¥ì¥¸¥¹¥¿ *)$/;"	v
+live	SPARC/regAlloc.ml	/^    let live = (* À¸¤­¤Æ¤¤¤ë¥ì¥¸¥¹¥¿ *)$/;"	v
 live	elim.ml	/^      let live = fv e' in$/;"	v
 live	regAlloc.ml	/^    let live = (* À¸¤­¤Æ¤¤¤ë¥ì¥¸¥¹¥¿ *)$/;"	v
+live	x86/regAlloc.ml	/^    let live = (* À¸¤­¤Æ¤¤¤ë¥ì¥¸¥¹¥¿ *)$/;"	v
+load	min-rt/ppm.ml	/^let load file =$/;"	v
+load_label	PowerPC/emit.ml	/^let load_label r label =$/;"	v
+locate	PowerPC/emit.ml	/^let locate x = $/;"	v
+locate	SPARC/emit.ml	/^let locate x =$/;"	v
 locate	emit.ml	/^let locate x =$/;"	v
+locate	x86/emit.ml	/^let locate x =$/;"	v
+loop	anchor.ml	/^let rec loop previous_lines =$/;"	v
+loop	shootout/fib.ml	/^let rec loop n =$/;"	v
+loop1	test/matmul-flat.ml	/^let rec loop1 i m n a b c =$/;"	v
+loop2	test/matmul-flat.ml	/^let rec loop2 i m j a b c =$/;"	v
+loop3	test/matmul-flat.ml	/^let rec loop3 i k j a b c =$/;"	v
+m	min-rt/min-rt.ml	/^  let m = objects.(index) in$/;"	v
+m_invert	min-rt/min-rt.ml	/^      let m_invert = 0.0 > (read_float ()) in (* 10 *)$/;"	v
+m_invert2	min-rt/min-rt.ml	/^      let m_invert2 = if form = 2 then true else m_invert in$/;"	v
+m_shape	min-rt/min-rt.ml	/^  let m_shape = o_form m in$/;"	v
+m_surface	min-rt/min-rt.ml	/^	  let m_surface = o_reflectiontype cobj in$/;"	v
+m_tex	min-rt/min-rt.ml	/^  let (m_tex, m_shape, m_surface, m_isrot, $/;"	v
+m_tex	min-rt/min-rt.ml	/^  let (m_tex, xm_shape, xm_surface, xm_isrot, $/;"	v
+m_tex	min-rt/min-rt.ml	/^  let m_tex = o_texturetype m in$/;"	v
+main	min-rt/RayTrace.cxx	/^int main(int argc, char *argv[])$/;"	f
+main	min-rt/raytrace.c	/^int main (void) {$/;"	f
+main	shootout/ack.c	/^int main() {$/;"	f
+main	shootout/fib.c	/^int main() {$/;"	f
+main	shootout/harmonic.c	/^int main() {$/;"	f
+main	shootout/mandelbrot.c	/^int main ()$/;"	f
+main	shootout/tak.c	/^int main(int argc, char* argv[])$/;"	f
+main	stub.c	/^int main() {$/;"	f
+main	test/ack.c	/^int main() {$/;"	f
+make	test/matmul-flat.ml	/^let rec make m n dummy =$/;"	v
+make	test/matmul.ml	/^let rec make m n =$/;"	v
+make_adder	test/adder.ml	/^let rec make_adder x =$/;"	v
+max_andprim	min-rt/raytrace.c	367;"	d	file:
+max_orprim	min-rt/raytrace.c	377;"	d	file:
+max_prim	min-rt/raytrace.c	342;"	d	file:
 memf	constFold.ml	/^let memf x env =$/;"	v
 memi	constFold.ml	/^let memi x env =$/;"	v
 memt	constFold.ml	/^let memt x env =$/;"	v
+metric	min-rt/min-rt.ml	/^    let metric = sqrt ((fsqr sscanx) +. scan_met1.(0)) in$/;"	v
+min_caml_abs_float	PowerPC/libmincaml.S	/^min_caml_abs_float:$/;"	l
+min_caml_abs_float	SPARC/libmincaml.S	/^min_caml_abs_float:$/;"	l
+min_caml_abs_float	libmincaml.S	/^min_caml_abs_float:$/;"	l
+min_caml_abs_float	x86/libmincaml.S	/^min_caml_abs_float:$/;"	l
+min_caml_and_net	min-rt/SPARC/globals.s	/^min_caml_and_net:$/;"	l
+min_caml_and_net	min-rt/globals.s	/^min_caml_and_net:$/;"	l
+min_caml_and_net	min-rt/x86/globals.s	/^min_caml_and_net:$/;"	l
+min_caml_atan	PowerPC/libmincaml.S	/^min_caml_atan:$/;"	l
+min_caml_atan	SPARC/libmincaml.S	/^min_caml_atan:$/;"	l
+min_caml_atan	libmincaml.S	/^min_caml_atan:$/;"	l
+min_caml_atan	x86/libmincaml.S	/^min_caml_atan:$/;"	l
+min_caml_beam	min-rt/SPARC/globals.s	/^min_caml_beam:$/;"	l
+min_caml_beam	min-rt/globals.s	/^min_caml_beam:$/;"	l
+min_caml_beam	min-rt/x86/globals.s	/^min_caml_beam:$/;"	l
+min_caml_chkinside_p	min-rt/SPARC/globals.s	/^min_caml_chkinside_p:$/;"	l
+min_caml_chkinside_p	min-rt/globals.s	/^min_caml_chkinside_p:$/;"	l
+min_caml_chkinside_p	min-rt/x86/globals.s	/^min_caml_chkinside_p:$/;"	l
+min_caml_cos	PowerPC/libmincaml.S	/^min_caml_cos:$/;"	l
+min_caml_cos	SPARC/libmincaml.S	/^min_caml_cos:$/;"	l
+min_caml_cos	libmincaml.S	/^min_caml_cos:$/;"	l
+min_caml_cos	x86/libmincaml.S	/^min_caml_cos:$/;"	l
+min_caml_cos_v	min-rt/SPARC/globals.s	/^min_caml_cos_v:$/;"	l
+min_caml_cos_v	min-rt/globals.s	/^min_caml_cos_v:$/;"	l
+min_caml_cos_v	min-rt/x86/globals.s	/^min_caml_cos_v:$/;"	l
+min_caml_crashed_object	min-rt/SPARC/globals.s	/^min_caml_crashed_object:$/;"	l
+min_caml_crashed_object	min-rt/globals.s	/^min_caml_crashed_object:$/;"	l
+min_caml_crashed_object	min-rt/x86/globals.s	/^min_caml_crashed_object:$/;"	l
+min_caml_crashed_point	min-rt/SPARC/globals.s	/^min_caml_crashed_point:$/;"	l
+min_caml_crashed_point	min-rt/globals.s	/^min_caml_crashed_point:$/;"	l
+min_caml_crashed_point	min-rt/x86/globals.s	/^min_caml_crashed_point:$/;"	l
+min_caml_create_array	PowerPC/libmincaml.S	/^min_caml_create_array:	$/;"	l
+min_caml_create_array	SPARC/libmincaml.S	/^min_caml_create_array:$/;"	l
+min_caml_create_array	libmincaml.S	/^min_caml_create_array:$/;"	l
+min_caml_create_array	x86/libmincaml.S	/^min_caml_create_array:$/;"	l
+min_caml_create_float_array	PowerPC/libmincaml.S	/^min_caml_create_float_array:$/;"	l
+min_caml_create_float_array	SPARC/libmincaml.S	/^min_caml_create_float_array:$/;"	l
+min_caml_create_float_array	libmincaml.S	/^min_caml_create_float_array:$/;"	l
+min_caml_create_float_array	x86/libmincaml.S	/^min_caml_create_float_array:$/;"	l
+min_caml_cs_temp	min-rt/SPARC/globals.s	/^min_caml_cs_temp:$/;"	l
+min_caml_cs_temp	min-rt/globals.s	/^min_caml_cs_temp:$/;"	l
+min_caml_cs_temp	min-rt/x86/globals.s	/^min_caml_cs_temp:$/;"	l
+min_caml_dbg	min-rt/SPARC/globals.s	/^min_caml_dbg:$/;"	l
+min_caml_dbg	min-rt/globals.s	/^min_caml_dbg:$/;"	l
+min_caml_dbg	min-rt/x86/globals.s	/^min_caml_dbg:$/;"	l
+min_caml_end_flag	min-rt/SPARC/globals.s	/^min_caml_end_flag:$/;"	l
+min_caml_end_flag	min-rt/globals.s	/^min_caml_end_flag:$/;"	l
+min_caml_end_flag	min-rt/x86/globals.s	/^min_caml_end_flag:$/;"	l
+min_caml_float_of_int	PowerPC/libmincaml.S	/^min_caml_float_of_int:$/;"	l
+min_caml_float_of_int	SPARC/libmincaml.S	/^min_caml_float_of_int:$/;"	l
+min_caml_float_of_int	libmincaml.S	/^min_caml_float_of_int:$/;"	l
+min_caml_float_of_int	x86/libmincaml.S	/^min_caml_float_of_int:$/;"	l
+min_caml_floor	PowerPC/libmincaml.S	/^min_caml_floor:$/;"	l
+min_caml_floor	SPARC/libmincaml.S	/^min_caml_floor:$/;"	l
+min_caml_floor	libmincaml.S	/^min_caml_floor:$/;"	l
+min_caml_floor	x86/libmincaml.S	/^min_caml_floor:$/;"	l
+min_caml_fnegd	libmincaml.S	/^min_caml_fnegd:$/;"	l
+min_caml_fnegd	x86/libmincaml.S	/^min_caml_fnegd:$/;"	l
+min_caml_hp	libmincaml.S	/^min_caml_hp:	$/;"	l
+min_caml_hp	x86/libmincaml.S	/^min_caml_hp:	$/;"	l
+min_caml_int_of_float	PowerPC/libmincaml.S	/^min_caml_int_of_float:$/;"	l
+min_caml_int_of_float	SPARC/libmincaml.S	/^min_caml_int_of_float:$/;"	l
+min_caml_int_of_float	libmincaml.S	/^min_caml_int_of_float:$/;"	l
+min_caml_int_of_float	x86/libmincaml.S	/^min_caml_int_of_float:$/;"	l
+min_caml_intsec_rectside	min-rt/SPARC/globals.s	/^min_caml_intsec_rectside:$/;"	l
+min_caml_intsec_rectside	min-rt/globals.s	/^min_caml_intsec_rectside:$/;"	l
+min_caml_intsec_rectside	min-rt/x86/globals.s	/^min_caml_intsec_rectside:$/;"	l
+min_caml_isoutside_q	min-rt/SPARC/globals.s	/^min_caml_isoutside_q:$/;"	l
+min_caml_isoutside_q	min-rt/globals.s	/^min_caml_isoutside_q:$/;"	l
+min_caml_isoutside_q	min-rt/x86/globals.s	/^min_caml_isoutside_q:$/;"	l
+min_caml_light	min-rt/SPARC/globals.s	/^min_caml_light:$/;"	l
+min_caml_light	min-rt/globals.s	/^min_caml_light:$/;"	l
+min_caml_light	min-rt/x86/globals.s	/^min_caml_light:$/;"	l
+min_caml_nvector	min-rt/SPARC/globals.s	/^min_caml_nvector:$/;"	l
+min_caml_nvector	min-rt/globals.s	/^min_caml_nvector:$/;"	l
+min_caml_nvector	min-rt/x86/globals.s	/^min_caml_nvector:$/;"	l
+min_caml_nvector_w	min-rt/SPARC/globals.s	/^min_caml_nvector_w:$/;"	l
+min_caml_nvector_w	min-rt/globals.s	/^min_caml_nvector_w:$/;"	l
+min_caml_nvector_w	min-rt/x86/globals.s	/^min_caml_nvector_w:$/;"	l
+min_caml_objects	min-rt/SPARC/globals.s	/^min_caml_objects:$/;"	l
+min_caml_objects	min-rt/globals.s	/^min_caml_objects:$/;"	l
+min_caml_objects	min-rt/x86/globals.s	/^min_caml_objects:$/;"	l
+min_caml_or_net	min-rt/SPARC/globals.s	/^min_caml_or_net:$/;"	l
+min_caml_or_net	min-rt/globals.s	/^min_caml_or_net:$/;"	l
+min_caml_or_net	min-rt/x86/globals.s	/^min_caml_or_net:$/;"	l
+min_caml_prerr_byte	PowerPC/libmincaml.S	/^min_caml_prerr_byte:$/;"	l
+min_caml_prerr_byte	SPARC/libmincaml.S	/^min_caml_prerr_byte:$/;"	l
+min_caml_prerr_byte	libmincaml.S	/^min_caml_prerr_byte:$/;"	l
+min_caml_prerr_byte	x86/libmincaml.S	/^min_caml_prerr_byte:$/;"	l
+min_caml_prerr_float	PowerPC/libmincaml.S	/^min_caml_prerr_float:$/;"	l
+min_caml_prerr_float	SPARC/libmincaml.S	/^min_caml_prerr_float:$/;"	l
+min_caml_prerr_float	libmincaml.S	/^min_caml_prerr_float:$/;"	l
+min_caml_prerr_float	x86/libmincaml.S	/^min_caml_prerr_float:$/;"	l
+min_caml_prerr_int	PowerPC/libmincaml.S	/^min_caml_prerr_int:$/;"	l
+min_caml_prerr_int	SPARC/libmincaml.S	/^min_caml_prerr_int:$/;"	l
+min_caml_prerr_int	libmincaml.S	/^min_caml_prerr_int:$/;"	l
+min_caml_prerr_int	x86/libmincaml.S	/^min_caml_prerr_int:$/;"	l
+min_caml_print_byte	PowerPC/libmincaml.S	/^min_caml_print_byte:$/;"	l
+min_caml_print_byte	SPARC/libmincaml.S	/^min_caml_print_byte:$/;"	l
+min_caml_print_byte	libmincaml.S	/^min_caml_print_byte:$/;"	l
+min_caml_print_byte	x86/libmincaml.S	/^min_caml_print_byte:$/;"	l
+min_caml_print_int	PowerPC/libmincaml.S	/^min_caml_print_int:$/;"	l
+min_caml_print_int	SPARC/libmincaml.S	/^min_caml_print_int:$/;"	l
+min_caml_print_int	libmincaml.S	/^min_caml_print_int:$/;"	l
+min_caml_print_int	x86/libmincaml.S	/^min_caml_print_int:$/;"	l
+min_caml_print_newline	PowerPC/libmincaml.S	/^min_caml_print_newline:$/;"	l
+min_caml_print_newline	SPARC/libmincaml.S	/^min_caml_print_newline:$/;"	l
+min_caml_print_newline	libmincaml.S	/^min_caml_print_newline:$/;"	l
+min_caml_print_newline	x86/libmincaml.S	/^min_caml_print_newline:$/;"	l
+min_caml_read_float	PowerPC/libmincaml.S	/^min_caml_read_float:	$/;"	l
+min_caml_read_float	SPARC/libmincaml.S	/^min_caml_read_float:$/;"	l
+min_caml_read_float	libmincaml.S	/^min_caml_read_float:$/;"	l
+min_caml_read_float	x86/libmincaml.S	/^min_caml_read_float:$/;"	l
+min_caml_read_int	PowerPC/libmincaml.S	/^min_caml_read_int:$/;"	l
+min_caml_read_int	SPARC/libmincaml.S	/^min_caml_read_int:$/;"	l
+min_caml_read_int	libmincaml.S	/^min_caml_read_int:$/;"	l
+min_caml_read_int	x86/libmincaml.S	/^min_caml_read_int:$/;"	l
+min_caml_rgb	min-rt/SPARC/globals.s	/^min_caml_rgb:$/;"	l
+min_caml_rgb	min-rt/globals.s	/^min_caml_rgb:$/;"	l
+min_caml_rgb	min-rt/x86/globals.s	/^min_caml_rgb:$/;"	l
+min_caml_scan_d	min-rt/SPARC/globals.s	/^min_caml_scan_d:$/;"	l
+min_caml_scan_d	min-rt/globals.s	/^min_caml_scan_d:$/;"	l
+min_caml_scan_d	min-rt/x86/globals.s	/^min_caml_scan_d:$/;"	l
+min_caml_scan_met1	min-rt/SPARC/globals.s	/^min_caml_scan_met1:$/;"	l
+min_caml_scan_met1	min-rt/globals.s	/^min_caml_scan_met1:$/;"	l
+min_caml_scan_met1	min-rt/x86/globals.s	/^min_caml_scan_met1:$/;"	l
+min_caml_scan_offset	min-rt/SPARC/globals.s	/^min_caml_scan_offset:$/;"	l
+min_caml_scan_offset	min-rt/globals.s	/^min_caml_scan_offset:$/;"	l
+min_caml_scan_offset	min-rt/x86/globals.s	/^min_caml_scan_offset:$/;"	l
+min_caml_scan_sscany	min-rt/SPARC/globals.s	/^min_caml_scan_sscany:$/;"	l
+min_caml_scan_sscany	min-rt/globals.s	/^min_caml_scan_sscany:$/;"	l
+min_caml_scan_sscany	min-rt/x86/globals.s	/^min_caml_scan_sscany:$/;"	l
+min_caml_screen	min-rt/SPARC/globals.s	/^min_caml_screen:$/;"	l
+min_caml_screen	min-rt/globals.s	/^min_caml_screen:$/;"	l
+min_caml_screen	min-rt/x86/globals.s	/^min_caml_screen:$/;"	l
+min_caml_sin	PowerPC/libmincaml.S	/^min_caml_sin:$/;"	l
+min_caml_sin	SPARC/libmincaml.S	/^min_caml_sin:$/;"	l
+min_caml_sin	libmincaml.S	/^min_caml_sin:$/;"	l
+min_caml_sin	x86/libmincaml.S	/^min_caml_sin:$/;"	l
+min_caml_sin_v	min-rt/SPARC/globals.s	/^min_caml_sin_v:$/;"	l
+min_caml_sin_v	min-rt/globals.s	/^min_caml_sin_v:$/;"	l
+min_caml_sin_v	min-rt/x86/globals.s	/^min_caml_sin_v:$/;"	l
+min_caml_size	min-rt/SPARC/globals.s	/^min_caml_size:$/;"	l
+min_caml_size	min-rt/globals.s	/^min_caml_size:$/;"	l
+min_caml_size	min-rt/x86/globals.s	/^min_caml_size:$/;"	l
+min_caml_solver_dist	min-rt/SPARC/globals.s	/^min_caml_solver_dist:$/;"	l
+min_caml_solver_dist	min-rt/globals.s	/^min_caml_solver_dist:$/;"	l
+min_caml_solver_dist	min-rt/x86/globals.s	/^min_caml_solver_dist:$/;"	l
+min_caml_solver_w_vec	min-rt/SPARC/globals.s	/^min_caml_solver_w_vec:$/;"	l
+min_caml_solver_w_vec	min-rt/globals.s	/^min_caml_solver_w_vec:$/;"	l
+min_caml_solver_w_vec	min-rt/x86/globals.s	/^min_caml_solver_w_vec:$/;"	l
+min_caml_sqrt	PowerPC/libmincaml.S	/^min_caml_sqrt:$/;"	l
+min_caml_sqrt	SPARC/libmincaml.S	/^min_caml_sqrt:$/;"	l
+min_caml_sqrt	libmincaml.S	/^min_caml_sqrt:$/;"	l
+min_caml_sqrt	x86/libmincaml.S	/^min_caml_sqrt:$/;"	l
 min_caml_start	example.s	/^min_caml_start:$/;"	l
-min_caml_start	test/print.s	/^min_caml_start:$/;"	l
+min_caml_start	min-rt/min-rt.s	/^min_caml_start:$/;"	l
+min_caml_stderr	stub.c	/^FILE *min_caml_stderr;$/;"	v
+min_caml_temp	min-rt/SPARC/globals.s	/^min_caml_temp:$/;"	l
+min_caml_temp	min-rt/globals.s	/^min_caml_temp:$/;"	l
+min_caml_temp	min-rt/x86/globals.s	/^min_caml_temp:$/;"	l
+min_caml_texture_color	min-rt/SPARC/globals.s	/^min_caml_texture_color:$/;"	l
+min_caml_texture_color	min-rt/globals.s	/^min_caml_texture_color:$/;"	l
+min_caml_texture_color	min-rt/x86/globals.s	/^min_caml_texture_color:$/;"	l
+min_caml_tmin	min-rt/SPARC/globals.s	/^min_caml_tmin:$/;"	l
+min_caml_tmin	min-rt/globals.s	/^min_caml_tmin:$/;"	l
+min_caml_tmin	min-rt/x86/globals.s	/^min_caml_tmin:$/;"	l
+min_caml_truncate	PowerPC/libmincaml.S	/^min_caml_truncate:$/;"	l
+min_caml_truncate	SPARC/libmincaml.S	/^min_caml_truncate:$/;"	l
+min_caml_truncate	libmincaml.S	/^min_caml_truncate:$/;"	l
+min_caml_truncate	x86/libmincaml.S	/^min_caml_truncate:$/;"	l
+min_caml_view	min-rt/SPARC/globals.s	/^min_caml_view:$/;"	l
+min_caml_view	min-rt/globals.s	/^min_caml_view:$/;"	l
+min_caml_view	min-rt/x86/globals.s	/^min_caml_view:$/;"	l
+min_caml_viewpoint	min-rt/SPARC/globals.s	/^min_caml_viewpoint:$/;"	l
+min_caml_viewpoint	min-rt/globals.s	/^min_caml_viewpoint:$/;"	l
+min_caml_viewpoint	min-rt/x86/globals.s	/^min_caml_viewpoint:$/;"	l
+min_caml_vp	min-rt/SPARC/globals.s	/^min_caml_vp:$/;"	l
+min_caml_vp	min-rt/globals.s	/^min_caml_vp:$/;"	l
+min_caml_vp	min-rt/x86/globals.s	/^min_caml_vp:$/;"	l
+min_caml_vscan	min-rt/SPARC/globals.s	/^min_caml_vscan:$/;"	l
+min_caml_vscan	min-rt/globals.s	/^min_caml_vscan:$/;"	l
+min_caml_vscan	min-rt/x86/globals.s	/^min_caml_vscan:$/;"	l
+min_caml_wscan	min-rt/SPARC/globals.s	/^min_caml_wscan:$/;"	l
+min_caml_wscan	min-rt/globals.s	/^min_caml_wscan:$/;"	l
+min_caml_wscan	min-rt/x86/globals.s	/^min_caml_wscan:$/;"	l
+mul	test/matmul-flat.ml	/^let rec mul l m n a b c =$/;"	v
+mul	test/matmul.ml	/^let rec mul l m n a b c =$/;"	v
+mul_sqrt_vec	min-rt/raytrace.c	/^inline static void mul_sqrt_vec (vec_t * dest,$/;"	f	file:
+mul_vec_3	min-rt/raytrace.c	/^inline static void mul_vec_3 (vec_t * dest,$/;"	f	file:
+my_xor	min-rt/raytrace.c	/^inline bool_t my_xor (bool_t x, bool_t y) {$/;"	f
+n	min-rt/min-rt.ml	/^  let n = if inv then -.n0 else n0 in$/;"	v
+n	shootout/tak.ml	/^let n = 10.0 in$/;"	v
+n0	min-rt/min-rt.ml	/^  let n0 = (sqrt (fsqr v.(0) +. fsqr v.(1) +. fsqr v.(2))) in$/;"	v
+name	PowerPC/asm.ml	/^    { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
+name	PowerPC/asm.mli	/^    { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
+name	SPARC/asm.ml	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
+name	SPARC/asm.mli	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
 name	asm.ml	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
 name	asm.mli	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
 name	closure.ml	/^type fundef = { name : Id.l * Type.t;$/;"	r	type:fundef
@@ -412,42 +1484,363 @@ name	closure.mli	/^type fundef = { name : Id.l * Type.t;$/;"	r	type:fundef
 name	kNormal.ml	/^and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }$/;"	r	type:fundef
 name	kNormal.mli	/^and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }$/;"	r	type:fundef
 name	syntax.ml	/^and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }$/;"	r	type:fundef
+name	x86/asm.ml	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
+name	x86/asm.mli	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
+neg_vec	min-rt/raytrace.c	/^inline static void neg_vec (vec_t * vec) {$/;"	f	file:
+neg_vec_2	min-rt/raytrace.c	/^inline static void neg_vec_2 (vec_t * dest, const vec_t * src) {$/;"	f	file:
+net	min-rt/min-rt.ml	/^  let net = read_net_item 0 in$/;"	v
+nidx	min-rt/RayTrace.cxx	/^int nidx; \/\/ Ë¡Àþ¤òµá¤á¤ë¤È¤­¤Î»ØÉ¸$/;"	v
+nl	min-rt/min-rt.ml	/^  let nl = read_float () in$/;"	v
+noandprim	min-rt/raytrace.c	/^static andprim_t * const noandprim = NULL;$/;"	v	file:
+noorprim	min-rt/raytrace.c	/^static orprim_t * const noorprim = NULL;$/;"	v	file:
+noprim	min-rt/raytrace.c	/^static prim_t * const noprim = NULL;$/;"	v	file:
+norm_vec	min-rt/raytrace.c	/^static void norm_vec (vec_t * vec) {$/;"	f	file:
+normal	min-rt/raytrace.c	/^static void normal (void) {$/;"	f	file:
+normal_plane	min-rt/raytrace.c	/^static void normal_plane (void) {$/;"	f	file:
+normal_quad_cone	min-rt/raytrace.c	/^static void normal_quad_cone (void) {$/;"	f	file:
+normal_rect	min-rt/raytrace.c	/^static void normal_rect (void) {$/;"	f	file:
+normal_vector	min-rt/RayTrace.cxx	/^void normal_vector(void)$/;"	f
+normalize_vector	min-rt/min-rt.ml	/^(*MINCAML*)let rec normalize_vector v inv = $/;"	v
+num_andprims	min-rt/raytrace.c	/^static card_t num_andprims = 0; \/\/ ÆÉ¤ß¹þ¤ó¤ÀAND¥×¥ê¥ß¥Æ¥£¥Ö¤Î¿ô$/;"	v	file:
+num_orprims	min-rt/raytrace.c	/^static card_t num_orprims = 0; \/\/ ÆÉ¤ß¹þ¤ó¤ÀOR¥×¥ê¥ß¥Æ¥£¥Ö¤Î¿ô$/;"	v	file:
+num_prims	min-rt/raytrace.c	/^static card_t num_prims = 0; \/\/ ÆÉ¤ß¹þ¤ó¤À¥×¥ê¥ß¥Æ¥£¥Ö¤Î¿ô$/;"	v	file:
+nvector	min-rt/globals.ml	/^let nvector = Array.create 3 0.0$/;"	v
+nvector_w	min-rt/globals.ml	/^let nvector_w = Array.create 3 0.0$/;"	v
+nx	min-rt/RayTrace.cxx	/^float nx,  ny,  nz;  \/\/ ¸òÅÀ¤Ç¤ÎË¡ÀþÃ±°Ì¥Ù¥¯¥È¥ë$/;"	v
+ny	min-rt/RayTrace.cxx	/^float nx,  ny,  nz;  \/\/ ¸òÅÀ¤Ç¤ÎË¡ÀþÃ±°Ì¥Ù¥¯¥È¥ë$/;"	v
+nz	min-rt/RayTrace.cxx	/^float nx,  ny,  nz;  \/\/ ¸òÅÀ¤Ç¤ÎË¡ÀþÃ±°Ì¥Ù¥¯¥È¥ë$/;"	v
+o_color_blue	min-rt/min-rt.ml	/^(*MINCAML*)let rec o_color_blue m = $/;"	v
+o_color_green	min-rt/min-rt.ml	/^(*MINCAML*)let rec o_color_green m = $/;"	v
+o_color_red	min-rt/min-rt.ml	/^(*MINCAML*)let rec o_color_red m = $/;"	v
+o_diffuse	min-rt/min-rt.ml	/^(*MINCAML*)let rec o_diffuse m = $/;"	v
+o_form	min-rt/min-rt.ml	/^(*MINCAML*)let rec o_form m = $/;"	v
+o_hilight	min-rt/min-rt.ml	/^(*MINCAML*)let rec o_hilight m = $/;"	v
+o_isinvert	min-rt/min-rt.ml	/^(*MINCAML*)let rec o_isinvert m = $/;"	v
+o_isrot	min-rt/min-rt.ml	/^(*MINCAML*)let rec o_isrot m = $/;"	v
+o_param_a	min-rt/min-rt.ml	/^(*MINCAML*)let rec o_param_a m = $/;"	v
+o_param_b	min-rt/min-rt.ml	/^(*MINCAML*)let rec o_param_b m = $/;"	v
+o_param_c	min-rt/min-rt.ml	/^(*MINCAML*)let rec o_param_c m = $/;"	v
+o_param_r1	min-rt/min-rt.ml	/^(*MINCAML*)let rec o_param_r1 m = $/;"	v
+o_param_r2	min-rt/min-rt.ml	/^(*MINCAML*)let rec o_param_r2 m = $/;"	v
+o_param_r3	min-rt/min-rt.ml	/^(*MINCAML*)let rec o_param_r3 m = $/;"	v
+o_param_x	min-rt/min-rt.ml	/^(*MINCAML*)let rec o_param_x m = $/;"	v
+o_param_y	min-rt/min-rt.ml	/^(*MINCAML*)let rec o_param_y m = $/;"	v
+o_param_z	min-rt/min-rt.ml	/^(*MINCAML*)let rec o_param_z m = $/;"	v
+o_reflectiontype	min-rt/min-rt.ml	/^(*MINCAML*)let rec o_reflectiontype m = $/;"	v
+o_texturetype	min-rt/min-rt.ml	/^(*MINCAML*)let rec o_texturetype m = $/;"	v
+obj	min-rt/min-rt.ml	/^      let obj = $/;"	v
+obj	min-rt/min-rt.ml	/^    let obj = and_group.(iand_ofs) in$/;"	v
+objects	min-rt/globals.ml	/^let objects = $/;"	v
 occur	typing.ml	/^let rec occur r1 = function (* occur check (caml2html: typing_occur) *)$/;"	v
 of_list	s.ml	/^let of_list l = List.fold_left (fun s e -> add e s) empty l$/;"	v
+offset	PowerPC/emit.ml	/^let offset x = 4 * List.hd (locate x)$/;"	v
+offset	PowerPC/virtual.ml	/^      let (offset, load) = $/;"	v
+offset	PowerPC/virtual.ml	/^      let (offset, store) = $/;"	v
+offset	PowerPC/virtual.ml	/^      let (offset, store_fv) = $/;"	v
+offset	PowerPC/virtual.ml	/^      let offset = Id.genid "o" in  $/;"	v
+offset	PowerPC/virtual.ml	/^      let offset = Id.genid "o" in $/;"	v
+offset	PowerPC/virtual.ml	/^  let (offset, load) = $/;"	v
+offset	SPARC/emit.ml	/^let offset x = 4 * List.hd (locate x)$/;"	v
+offset	SPARC/virtual.ml	/^      let (offset, load) =$/;"	v
+offset	SPARC/virtual.ml	/^      let (offset, store) =$/;"	v
+offset	SPARC/virtual.ml	/^      let offset = Id.genid "o" in$/;"	v
+offset	SPARC/virtual.ml	/^      let offset, store_fv =$/;"	v
+offset	SPARC/virtual.ml	/^  let (offset, load) =$/;"	v
 offset	emit.ml	/^let offset x = 4 * List.hd (locate x)$/;"	v
+offset	min-rt/raytrace.c	/^  vec_t offset; \/\/ ¥ª¥Õ¥»¥Ã¥È$/;"	m	struct:__anon13	file:
 offset	virtual.ml	/^      let (offset, load) =$/;"	v
 offset	virtual.ml	/^      let (offset, store) =$/;"	v
 offset	virtual.ml	/^      let offset, store_fv =$/;"	v
 offset	virtual.ml	/^  let (offset, load) =$/;"	v
+offset	x86/emit.ml	/^let offset x = 4 * List.hd (locate x)$/;"	v
+offset	x86/virtual.ml	/^      let (offset, load) =$/;"	v
+offset	x86/virtual.ml	/^      let (offset, store) =$/;"	v
+offset	x86/virtual.ml	/^      let offset, store_fv =$/;"	v
+offset	x86/virtual.ml	/^  let (offset, load) =$/;"	v
+option	min-rt/RayTrace.cxx	/^bool option(int &argc, char *argv[])$/;"	f
+or_net	min-rt/globals.ml	/^let or_net = Array.create 1 (Array.create 1 (and_net.(0)))$/;"	v
+orprim_t	min-rt/raytrace.c	/^} orprim_t;$/;"	t	typeref:struct:__anon15	file:
+orprims	min-rt/raytrace.c	/^static orprim_t orprims [max_orprim]; \/\/ OR¥×¥ê¥ß¥Æ¥£¥Ö¤ÎÇÛÎó$/;"	v	file:
 outchan	main.ml	/^  let outchan = open_out (f ^ ".s") in$/;"	v
+output	min-rt/raytrace.c	/^static output_t output; \/\/ ½ÐÎÏ²èÁü¤Î¾ðÊó$/;"	v	file:
+output_filename	min-rt/RayTrace.cxx	/^char *output_filename = NULL;$/;"	v
+output_fp	min-rt/RayTrace.cxx	/^FILE *output_fp = stdout; \/\/ ½ÐÎÏ¥Õ¥¡¥¤¥ë$/;"	v
+output_t	min-rt/raytrace.c	/^} output_t;$/;"	t	typeref:struct:__anon7	file:
+pB	min-rt/RayTrace.cxx	120;"	d	file:
+pG	min-rt/RayTrace.cxx	119;"	d	file:
+pHL	min-rt/RayTrace.cxx	117;"	d	file:
+pP	min-rt/RayTrace.cxx	106;"	d	file:
+pR	min-rt/RayTrace.cxx	118;"	d	file:
+pREF	min-rt/RayTrace.cxx	116;"	d	file:
+pRT	min-rt/RayTrace.cxx	108;"	d	file:
+pRX	min-rt/RayTrace.cxx	121;"	d	file:
+pRY	min-rt/RayTrace.cxx	122;"	d	file:
+pRZ	min-rt/RayTrace.cxx	123;"	d	file:
+pSF	min-rt/RayTrace.cxx	107;"	d	file:
+pSG	min-rt/RayTrace.cxx	115;"	d	file:
+pTX	min-rt/RayTrace.cxx	105;"	d	file:
+pX	min-rt/RayTrace.cxx	112;"	d	file:
+pY	min-rt/RayTrace.cxx	113;"	d	file:
+pZ	min-rt/RayTrace.cxx	114;"	d	file:
+pa	min-rt/RayTrace.cxx	109;"	d	file:
+pai	min-rt/RayTrace.cxx	/^const float pai = 3.141592f; \/\/ ¦Ð$/;"	v
+param	min-rt/raytrace.c	/^  vec_t param; \/\/ ¥Ñ¥é¥á¡¼¥¿$/;"	m	struct:__anon13	file:
 parsing_get	info.ml	/^let parsing_get () =$/;"	v
+pb	min-rt/RayTrace.cxx	110;"	d	file:
+pc	min-rt/RayTrace.cxx	111;"	d	file:
+pi	min-rt/raytrace.c	15;"	d	file:
+pi	min-rt/raytrace.c	37;"	d	file:
+pixel	min-rt/raytrace.c	/^static pixel_t pixel; \/\/ ¸½ºß·×»»Ãæ¤Î¥Ô¥¯¥»¥ëÃÍ$/;"	v	file:
+pixel_t	min-rt/raytrace.c	/^} pixel_t;$/;"	t	typeref:struct:__anon3	file:
+pixmap	min-rt/ppm.ml	/^type pixmap = string * int$/;"	t
+pol	min-rt/raytrace.c	/^  pol_t pol; \/\/ ¶ËÀ­$/;"	m	struct:__anon13	file:
+pol_t	min-rt/raytrace.c	/^typedef bool_t pol_t;$/;"	t	file:
+pos	min-rt/raytrace.c	/^  vec_t pos; \/\/ °ÌÃÖ$/;"	m	struct:__anon8	file:
+pp_id_or_imm	SPARC/emit.ml	/^let pp_id_or_imm = function$/;"	v
 pp_id_or_imm	emit.ml	/^let pp_id_or_imm = function$/;"	v
+pp_id_or_imm	x86/emit.ml	/^let pp_id_or_imm = function$/;"	v
 pp_list	id.ml	/^let rec pp_list = function$/;"	v
+prerr_byte	min-rt/miniMLRuntime.ml	/^let prerr_byte x = Pervasives.prerr_char (char_of_int x)$/;"	v
+prerr_byte	min-rt/miniMLRuntime.mli	/^val prerr_byte : int -> unit$/;"	v
+prim_t	min-rt/raytrace.c	/^} prim_t;$/;"	t	typeref:struct:__anon13	file:
+prims	min-rt/raytrace.c	/^  prim_t * prims [max_prim];$/;"	m	struct:__anon14	file:
+prims	min-rt/raytrace.c	/^static prim_t prims [max_prim]; \/\/ ¥×¥ê¥ß¥Æ¥£¥Ö¤ÎÇÛÎó$/;"	v	file:
+print_byte	min-rt/miniMLRuntime.ml	/^let print_byte x = Pervasives.print_char (char_of_int x)$/;"	v
+print_byte	min-rt/miniMLRuntime.mli	/^val print_byte : int -> unit$/;"	v
+printf	PowerPC/libmincaml.S	/^printf:$/;"	l
+printf_lazy	PowerPC/libmincaml.S	/^printf_lazy:$/;"	l
+prog	PowerPC/asm.ml	/^type prog = Prog of (Id.l * float) list * fundef list * t$/;"	t
+prog	PowerPC/asm.mli	/^type prog = Prog of (Id.l * float) list * fundef list * t$/;"	t
+prog	SPARC/asm.ml	/^type prog = Prog of (Id.l * float) list * fundef list * t$/;"	t
+prog	SPARC/asm.mli	/^type prog = Prog of (Id.l * float) list * fundef list * t$/;"	t
 prog	asm.ml	/^type prog = Prog of (Id.l * float) list * fundef list * t$/;"	t
 prog	asm.mli	/^type prog = Prog of (Id.l * float) list * fundef list * t$/;"	t
 prog	closure.ml	/^type prog = Prog of fundef list * t$/;"	t
 prog	closure.mli	/^type prog = Prog of fundef list * t$/;"	t
+prog	x86/asm.ml	/^type prog = Prog of (Id.l * float) list * fundef list * t$/;"	t
+prog	x86/asm.mli	/^type prog = Prog of (Id.l * float) list * fundef list * t$/;"	t
+putchar	PowerPC/libmincaml.S	/^putchar:$/;"	l
+putchar_lazy	PowerPC/libmincaml.S	/^putchar_lazy:$/;"	l
+q	min-rt/min-rt.ml	/^  let q = (l.(0) *. o_param_a m +. l.(1) *. o_param_b m +. l.(2) *. o_param_c m) in$/;"	v
+r	PowerPC/regAlloc.ml	/^    let r = (* ¤½¤¦¤Ç¤Ê¤¤¥ì¥¸¥¹¥¿¤òÃµ¤¹ *)$/;"	v
+r	SPARC/regAlloc.ml	/^    let r = (* ¤½¤¦¤Ç¤Ê¤¤¥ì¥¸¥¹¥¿¤òÃµ¤¹ *)$/;"	v
+r	min-rt/raytrace.c	/^  hil_t r;$/;"	m	struct:__anon3	file:
 r	regAlloc.ml	/^    let r = (* ¤½¤¦¤Ç¤Ê¤¤¥ì¥¸¥¹¥¿¤òÃµ¤¹ *)$/;"	v
+r	x86/regAlloc.ml	/^    let r = (* ¤½¤¦¤Ç¤Ê¤¤¥ì¥¸¥¹¥¿¤òÃµ¤¹ *)$/;"	v
+rad	min-rt/min-rt.ml	/^(*MINCAML*)let rec rad x = x *. (0.017453293)$/;"	v
+rad_deg	min-rt/RayTrace.cxx	/^const float rad_deg = pai \/ 180; \/\/ ¥é¥¸¥¢¥ó\/ÅÙ$/;"	v
+rad_t	min-rt/raytrace.c	/^typedef double rad_t; \/\/ ³ÑÅÙ¡Ê¥é¥¸¥¢¥ó¡Ë$/;"	t	file:
+range	min-rt/raytrace.c	/^  prim_t * range;$/;"	m	struct:__anon15	file:
+range_primitive	min-rt/min-rt.ml	/^  let range_primitive = head.(0) in$/;"	v
+raytracing	min-rt/min-rt.ml	/^(*MINCAML*)let rec raytracing nref energy =$/;"	v
+re	anchor.ml	/^let re = Str.regexp "\\\\([(\\\\\/]\\\\)\\\\* \\\\(.*\\\\) (caml2html: \\\\([a-zA-Z0-9_]+\\\\)) \\\\*\\\\([)\\\\\/]\\\\)"$/;"	v
+read_all_object	min-rt/min-rt.ml	/^(*MINCAML*)let rec read_all_object _ =$/;"	v
+read_and_network	min-rt/min-rt.ml	/^(*MINCAML*)let rec read_and_network n =$/;"	v
+read_andprim	min-rt/raytrace.c	/^static bool_t read_andprim (andprim_t * andprim) {$/;"	f	file:
+read_data	min-rt/raytrace.c	/^static void read_data (void) {$/;"	f	file:
+read_double	min-rt/raytrace.c	/^static double read_double (void) {$/;"	f	file:
+read_environ	min-rt/min-rt.ml	/^(*MINCAML*)let rec read_environ _ =$/;"	v
+read_float	min-rt/RayTrace.cxx	/^float read_float(void)$/;"	f
+read_float	min-rt/miniMLRuntime.ml	/^let read_float () = $/;"	v
+read_float	min-rt/miniMLRuntime.mli	/^val read_float : unit -> float$/;"	v
+read_int	min-rt/RayTrace.cxx	/^int read_int(int i)$/;"	f
+read_int	min-rt/RayTrace.cxx	/^int read_int(void)$/;"	f
+read_int	min-rt/miniMLRuntime.ml	/^let read_int () = $/;"	v
+read_int	min-rt/miniMLRuntime.mli	/^val read_int : unit -> int$/;"	v
+read_int	min-rt/raytrace.c	/^static int read_int (void) {$/;"	f	file:
+read_light	min-rt/raytrace.c	/^static void read_light (light_t * l) {$/;"	f	file:
+read_net_item	min-rt/min-rt.ml	/^(*MINCAML*)let rec read_net_item length =$/;"	v
+read_nth_object	min-rt/min-rt.ml	/^(*MINCAML*)let rec read_nth_object n =$/;"	v
+read_object	min-rt/min-rt.ml	/^(*MINCAML*)let rec read_object n =$/;"	v
+read_or_network	min-rt/min-rt.ml	/^(*MINCAML*)let rec read_or_network length =$/;"	v
+read_orprim	min-rt/raytrace.c	/^static bool_t read_orprim (orprim_t * orprim) {$/;"	f	file:
+read_output	min-rt/raytrace.c	/^static void read_output (output_t * o) {$/;"	f	file:
+read_param	min-rt/raytrace.c	/^static void read_param (vec_t * param, type_t type) {$/;"	f	file:
+read_parameter	min-rt/min-rt.ml	/^(*MINCAML*)let rec read_parameter _ =$/;"	v
+read_pixel	min-rt/raytrace.c	/^static void read_pixel (pixel_t * p) {$/;"	f	file:
+read_prim	min-rt/raytrace.c	/^static bool_t read_prim (prim_t * prim) {$/;"	f	file:
+read_rot2	min-rt/raytrace.c	/^static void read_rot2 (rot2_t * rot2) {$/;"	f	file:
+read_rot3	min-rt/raytrace.c	/^static void read_rot3 (rot3_t * rot3) {$/;"	f	file:
+read_screen	min-rt/raytrace.c	/^static void read_screen (screen_t * s) {$/;"	f	file:
+read_token	min-rt/miniMLRuntime.ml	/^let rec read_token in_token =$/;"	v
+read_vec	min-rt/raytrace.c	/^static void read_vec (vec_t * vec) {$/;"	f	file:
+rectside	min-rt/min-rt.ml	/^  let rectside = intsec_rectside.(0) in$/;"	v
+rectsurf_t	min-rt/raytrace.c	/^} rectsurf_t;$/;"	t	typeref:enum:__anon16	file:
+rectsurf_x	min-rt/raytrace.c	/^  rectsurf_x = 1, \/\/ yzÊ¿ÌÌ¤ËÊ¿¹Ô¤ÊÌÌ$/;"	e	enum:__anon16	file:
+rectsurf_y	min-rt/raytrace.c	/^  rectsurf_y = 2, \/\/ zxÊ¿ÌÌ¤ËÊ¿¹Ô¤ÊÌÌ$/;"	e	enum:__anon16	file:
+rectsurf_z	min-rt/raytrace.c	/^  rectsurf_z = 3 \/\/ xyÊ¿ÌÌ¤ËÊ¿¹Ô¤ÊÌÌ$/;"	e	enum:__anon16	file:
+red	min-rt/min-rt.ml	/^   let red = if red > 255 then 255 else red in$/;"	v
+red	min-rt/min-rt.ml	/^   let red = int_of_float rgb.(0) in$/;"	v
+ref	min-rt/raytrace.c	/^  double ref; \/\/ ÍðÈ¿¼ÍÎ¨¡Êsurf¤¬ÍðÈ¿¼Í¤Î¤È¤­¤Ï1¡Ë$/;"	m	struct:__anon13	file:
+reflect	min-rt/raytrace.c	/^static bool_t reflect (void) {$/;"	f	file:
+reflparam	min-rt/min-rt.ml	/^      let reflparam = Array.create 2 0.0 in$/;"	v
+refltype	min-rt/min-rt.ml	/^      let refltype = read_int () in$/;"	v
+reg	PowerPC/emit.ml	/^let reg r = $/;"	v
+reg_cl	PowerPC/asm.mli	/^val reg_cl : Id.t$/;"	v
+reg_cl	SPARC/asm.mli	/^val reg_cl : Id.t$/;"	v
 reg_cl	asm.mli	/^val reg_cl : Id.t$/;"	v
+reg_cl	x86/asm.mli	/^val reg_cl : Id.t$/;"	v
+reg_fsw	PowerPC/asm.mli	/^val reg_fsw : Id.t$/;"	v
+reg_fsw	SPARC/asm.mli	/^val reg_fsw : Id.t$/;"	v
+reg_hp	PowerPC/asm.mli	/^val reg_hp : Id.t$/;"	v
+reg_hp	SPARC/asm.mli	/^val reg_hp : Id.t$/;"	v
 reg_hp	asm.mli	/^val reg_hp : Id.t$/;"	v
+reg_hp	x86/asm.mli	/^val reg_hp : Id.t$/;"	v
+reg_ra	SPARC/asm.mli	/^val reg_ra : Id.t$/;"	v
+reg_sp	PowerPC/asm.mli	/^val reg_sp : Id.t$/;"	v
+reg_sp	SPARC/asm.mli	/^val reg_sp : Id.t$/;"	v
 reg_sp	asm.mli	/^val reg_sp : Id.t$/;"	v
+reg_sp	x86/asm.mli	/^val reg_sp : Id.t$/;"	v
+reg_sw	PowerPC/asm.mli	/^val reg_sw : Id.t$/;"	v
+reg_sw	SPARC/asm.mli	/^val reg_sw : Id.t$/;"	v
+reg_tmp	PowerPC/asm.mli	/^val reg_tmp : Id.t$/;"	v
+regenv	PowerPC/regAlloc.ml	/^  let regenv = M.add x reg_cl M.empty in$/;"	v
+regenv	SPARC/regAlloc.ml	/^  let regenv = M.add x reg_cl M.empty in$/;"	v
 regenv	regAlloc.ml	/^  let regenv = M.add (Id.to_t x) reg_cl M.empty in$/;"	v
+regenv	x86/regAlloc.ml	/^  let regenv = M.add (Id.to_t x) reg_cl M.empty in$/;"	v
+regs	PowerPC/asm.ml	/^let regs = [| "%r2"; "%r5"; "%r6"; "%r7"; "%r8"; "%r9"; "%r10"; $/;"	v
+regs	PowerPC/asm.mli	/^val regs : Id.t array$/;"	v
+regs	SPARC/asm.ml	/^let regs = (* Array.init 16 (fun i -> Printf.sprintf "%%r%d" i) *)$/;"	v
+regs	SPARC/asm.mli	/^val regs : Id.t array$/;"	v
 regs	asm.ml	/^let regs = (* Array.init 16 (fun i -> Printf.sprintf "%%r%d" i) *)$/;"	v
 regs	asm.mli	/^val regs : Id.t array$/;"	v
+regs	x86/asm.ml	/^let regs = (* Array.init 16 (fun i -> Printf.sprintf "%%r%d" i) *)$/;"	v
+regs	x86/asm.mli	/^val regs : Id.t array$/;"	v
+remove_and_uniq	SPARC/asm.ml	/^let rec remove_and_uniq xs = function$/;"	v
+render	min-rt/raytrace.c	/^static void render (void) {$/;"	f	file:
+ret	PowerPC/asm.ml	/^    { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
+ret	PowerPC/asm.mli	/^    { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
+ret	SPARC/asm.ml	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
+ret	SPARC/asm.mli	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
 ret	asm.ml	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
 ret	asm.mli	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
+ret	x86/asm.ml	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
+ret	x86/asm.mli	/^type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }$/;"	r	type:fundef
+rgb	min-rt/globals.ml	/^let rgb = Array.create 3 0.0$/;"	v
+rot	min-rt/raytrace.c	/^  bool_t rot; \/\/ ²óÅ¾¤ÎÍ­Ìµ¡Ê2¼¡¶ÊÌÌ¤Î¤ß¥µ¥Ý¡¼¥È¡Ë$/;"	m	struct:__anon13	file:
+rot2_t	min-rt/raytrace.c	/^} rot2_t;$/;"	t	typeref:struct:__anon5	file:
+rot3	min-rt/raytrace.c	/^  rot3_t rot3; \/\/ ²óÅ¾³Ñ¡Êrot¤¬µ¶¤Î¤È¤­¤ÏÌµ°ÕÌ£¡Ë$/;"	m	struct:__anon13	file:
+rot3_t	min-rt/raytrace.c	/^} rot3_t;$/;"	t	typeref:struct:__anon6	file:
+rot_view	min-rt/raytrace.c	/^  vec_t rot_view; \/\/ ²óÅ¾¸å¤Î»ëÅÀ$/;"	m	struct:__anon8	file:
+rotate_prim	min-rt/raytrace.c	/^static void rotate_prim (prim_t * prim) {$/;"	f	file:
+rotate_prim_1	min-rt/raytrace.c	/^static void rotate_prim_1 (double r [3] [3],$/;"	f	file:
+rotate_prim_2	min-rt/raytrace.c	/^static void rotate_prim_2 (double r [3] [3],$/;"	f	file:
+rotate_prim_3	min-rt/raytrace.c	/^static void rotate_prim_3 (double r [3] [3],$/;"	f	file:
+rotation	min-rt/min-rt.ml	/^      let rotation = Array.create 3 0.0 in$/;"	v
+rotprod_vec	min-rt/raytrace.c	/^static double rotprod_vec (const vec_t * a,$/;"	f	file:
+rt	min-rt/min-rt.ml	/^(*MINCAML*)let rec rt size_x size_y debug_p =$/;"	v
+s	PowerPC/virtual.ml	/^      let s = Closure.fv e2 in$/;"	v
+s	SPARC/virtual.ml	/^      let s = Closure.fv e2 in$/;"	v
+s	min-rt/min-rt.ml	/^  let s = 0.0 > w in$/;"	v
+s	min-rt/min-rt.ml	/^  let s = 0.0 > w3 in$/;"	v
 s	virtual.ml	/^      let s = Closure.fv e2 in$/;"	v
+s	x86/virtual.ml	/^      let s = Closure.fv e2 in$/;"	v
+save	PowerPC/emit.ml	/^let save x = $/;"	v
+save	SPARC/emit.ml	/^let save x =$/;"	v
 save	emit.ml	/^let save x =$/;"	v
+save	x86/emit.ml	/^let save x =$/;"	v
+savef	PowerPC/emit.ml	/^let savef x = $/;"	v
+savef	SPARC/emit.ml	/^let savef x =$/;"	v
 savef	emit.ml	/^let savef x info=$/;"	v
+savef	x86/emit.ml	/^let savef x info=$/;"	v
+scale_vec_3	min-rt/raytrace.c	/^inline static void scale_vec_3 (vec_t * dest,$/;"	f	file:
+scan_d	min-rt/globals.ml	/^let scan_d = Array.create 1 0.0$/;"	v
+scan_line	min-rt/min-rt.ml	/^(*MINCAML*)let rec scan_line scany =$/;"	v
+scan_met1	min-rt/globals.ml	/^let scan_met1 = Array.create 1 0.0$/;"	v
+scan_offset	min-rt/globals.ml	/^let scan_offset = Array.create 1 0.0$/;"	v
+scan_point	min-rt/min-rt.ml	/^(*MINCAML*)let rec scan_point scanx =$/;"	v
+scan_sscany	min-rt/globals.ml	/^let scan_sscany = Array.create 1 0.0$/;"	v
+scan_start	min-rt/min-rt.ml	/^(*MINCAML*)let rec scan_start _ =$/;"	v
+scan_x	min-rt/raytrace.c	/^static void scan_x (const vec_t * v0, dist_t len0) {$/;"	f	file:
+scan_y	min-rt/raytrace.c	/^static void scan_y (void) {$/;"	f	file:
+scanf	PowerPC/libmincaml.S	/^scanf:	$/;"	l
+scanf_lazy	PowerPC/libmincaml.S	/^scanf_lazy:	$/;"	l
+screen	min-rt/globals.ml	/^let screen = Array.create 3 0.0$/;"	v
+screen	min-rt/raytrace.c	/^static screen_t screen; \/\/ ¥¹¥¯¥ê¡¼¥ó¤Î¾ðÊó$/;"	v	file:
+screen_orig_view_z	min-rt/raytrace.c	290;"	d	file:
+screen_size	min-rt/raytrace.c	289;"	d	file:
+screen_t	min-rt/raytrace.c	/^} screen_t;$/;"	t	typeref:struct:__anon8	file:
+sd	min-rt/min-rt.ml	/^	let sd = sqrt d in$/;"	v
+seq	PowerPC/asm.ml	/^let seq (e1, e2) = Let ((Id.gentmp Type.Unit, Type.Unit), e1, e2)$/;"	v
+seq	PowerPC/asm.mli	/^val seq : exp * t -> t (* shorthand of Let for unit *)$/;"	v
+seq	SPARC/asm.ml	/^let seq(e1, e2) = Let((Id.gentmp Type.Unit, Type.Unit), e1, e2)$/;"	v
+seq	SPARC/asm.mli	/^val seq : exp * t -> t (* shorthand of Let for unit *)$/;"	v
 seq	asm.ml	/^let seq(e1, e2, info) = Let((Id.gentmp (Type.Unit info) info, Type.Unit info), e1, e2, info)$/;"	v
 seq	asm.mli	/^val seq : exp * t  * Info.t -> t (* shorthand of Let for unit *)$/;"	v
+seq	x86/asm.ml	/^let seq(e1, e2, info) = Let((Id.gentmp (Type.Unit info) info, Type.Unit info), e1, e2, info)$/;"	v
+seq	x86/asm.mli	/^val seq : exp * t  * Info.t -> t (* shorthand of Let for unit *)$/;"	v
+set	min-rt/ppm.ml	/^let set (img, width) i j k v =$/;"	v
+setp	min-rt/ppm.ml	/^let setp (img, width) i j r g b =$/;"	v
+sgn	min-rt/min-rt.ml	/^(*MINCAML*)let rec sgn x =$/;"	v
+shadow	min-rt/raytrace.c	/^static bool_t shadow (void) {$/;"	f	file:
+shadow_check_and_group	min-rt/min-rt.ml	/^(*MINCAML*)let rec shadow_check_and_group iand_ofs and_group p =$/;"	v
+shadow_check_one_or_group	min-rt/min-rt.ml	/^(*MINCAML*)let rec shadow_check_one_or_group ofs or_group p =$/;"	v
+shadow_check_one_or_matrix	min-rt/min-rt.ml	/^(*MINCAML*)let rec shadow_check_one_or_matrix ofs or_matrix p =$/;"	v
+shadow_evaluator	min-rt/RayTrace.cxx	/^float shadow_evaluator(void)$/;"	f
+shadow_p	min-rt/min-rt.ml	/^    let shadow_p = shadow_check_and_group 0 and_group p in$/;"	v
+shuffle	PowerPC/emit.ml	/^let rec shuffle sw xys = $/;"	v
+sightline	min-rt/raytrace.c	/^static vec_t sightline; \/\/ ¸½ºß¤Î»ëÀþÊý¸þ¤ÎÃ±°Ì¥Ù¥¯¥È¥ë$/;"	v	file:
+sin	PowerPC/libmincaml.S	/^sin:	$/;"	l
+sin	min-rt/raytrace.c	/^  double sin;$/;"	m	struct:__anon2	file:
+sin_lazy	PowerPC/libmincaml.S	/^sin_lazy:	$/;"	l
+sin_v	min-rt/globals.ml	/^let sin_v = Array.create 2 0.0$/;"	v
+sio_sync_read_double	min-rt/raytrace.c	/^static double sio_sync_read_double (void) {$/;"	f	file:
+sio_writable	min-rt/raytrace.c	/^static int sio_writable (void) {$/;"	f	file:
+sio_write	min-rt/raytrace.c	/^static void sio_write (int x) {$/;"	f	file:
 size	inline.ml	/^let rec size = function$/;"	v
+size	min-rt/globals.ml	/^let size = Array.create 2 128$/;"	v
+size	min-rt/raytrace.c	/^  card_t size; \/\/ °ìÊÕ¤ÎÄ¹¤µ$/;"	m	struct:__anon7	file:
+sizex	min-rt/min-rt.ml	/^    let sizex = float_of_int size.(0) in$/;"	v
+sl1	min-rt/min-rt.ml	/^  let sl1 = sin l1 in$/;"	v
+sl2	min-rt/min-rt.ml	/^  let sl2 = sin l2 in$/;"	v
+solve_each_element	min-rt/min-rt.ml	/^(*MINCAML*)let rec solve_each_element iand_ofs and_group =$/;"	v
+solve_one_or_network	min-rt/min-rt.ml	/^(*MINCAML*)let rec solve_one_or_network ofs or_group =$/;"	v
+solver	min-rt/min-rt.ml	/^(*MINCAML*)let rec solver index l p =$/;"	v
+solver2nd_mul_b	min-rt/min-rt.ml	/^(*MINCAML*)let rec solver2nd_mul_b m l =$/;"	v
+solver2nd_rot_b	min-rt/min-rt.ml	/^(*MINCAML*)let rec solver2nd_rot_b m l =$/;"	v
+solver_dist	min-rt/globals.ml	/^let solver_dist = Array.create 1 0.0$/;"	v
+solver_rect	min-rt/min-rt.ml	/^(*MINCAML*)let rec solver_rect m l =$/;"	v
+solver_second	min-rt/min-rt.ml	/^(*MINCAML*)let rec solver_second m l =$/;"	v
+solver_surface	min-rt/min-rt.ml	/^(*MINCAML*)let rec solver_surface m l =$/;"	v
+solver_w_vec	min-rt/globals.ml	/^let solver_w_vec = Array.create 3 0.0$/;"	v
+sqrt	PowerPC/libmincaml.S	/^sqrt:$/;"	l
+sqrt_lazy	PowerPC/libmincaml.S	/^sqrt_lazy:$/;"	l
+sqrtinv	min-rt/raytrace.c	/^static double sqrtinv (double x) {$/;"	f	file:
+ss	SPARC/emit.ml	/^      let ss = stacksize () in$/;"	v
 ss	emit.ml	/^	let ss = stacksize () in$/;"	v
 ss	emit.ml	/^      let ss = stacksize () in$/;"	v
+ss	x86/emit.ml	/^	let ss = stacksize () in$/;"	v
+ss	x86/emit.ml	/^      let ss = stacksize () in$/;"	v
+sscanx	min-rt/min-rt.ml	/^    let sscanx = (float_of_int scanx -. scan_offset.(0)) *. scan_d.(0) in$/;"	v
+stackmap	PowerPC/emit.ml	/^let stackmap = ref [] (* Save ¤µ¤ì¤¿ÊÑ¿ô¤Î¥¹¥¿¥Ã¥¯¤Ë¤ª¤±¤ë°ÌÃÖ *)$/;"	v
+stackmap	SPARC/emit.ml	/^let stackmap = ref [] (* Save¤µ¤ì¤¿ÊÑ¿ô¤Î¡¢¥¹¥¿¥Ã¥¯¤Ë¤ª¤±¤ë°ÌÃÖ (caml2html: emit_stackmap) *)$/;"	v
 stackmap	emit.ml	/^let stackmap = ref [] (* Save¤µ¤ì¤¿ÊÑ¿ô¤Î¡¢¥¹¥¿¥Ã¥¯¤Ë¤ª¤±¤ë°ÌÃÖ (caml2html: emit_stackmap) *)$/;"	v
+stackmap	x86/emit.ml	/^let stackmap = ref [] (* Save¤µ¤ì¤¿ÊÑ¿ô¤Î¡¢¥¹¥¿¥Ã¥¯¤Ë¤ª¤±¤ë°ÌÃÖ (caml2html: emit_stackmap) *)$/;"	v
+stackset	PowerPC/emit.ml	/^let stackset = ref S.empty (* ¤¹¤Ç¤Ë Save ¤µ¤ì¤¿ÊÑ¿ô¤Î½¸¹ç *)$/;"	v
+stackset	SPARC/emit.ml	/^let stackset = ref S.empty (* ¤¹¤Ç¤ËSave¤µ¤ì¤¿ÊÑ¿ô¤Î½¸¹ç (caml2html: emit_stackset) *)$/;"	v
 stackset	emit.ml	/^let stackset = ref S.empty (* ¤¹¤Ç¤ËSave¤µ¤ì¤¿ÊÑ¿ô¤Î½¸¹ç (caml2html: emit_stackset) *)$/;"	v
+stackset	x86/emit.ml	/^let stackset = ref S.empty (* ¤¹¤Ç¤ËSave¤µ¤ì¤¿ÊÑ¿ô¤Î½¸¹ç (caml2html: emit_stackset) *)$/;"	v
+stacksize	PowerPC/emit.ml	/^let stacksize () = align ((List.length !stackmap + 1) * 4)$/;"	v
+stacksize	SPARC/emit.ml	/^let stacksize () = align ((List.length !stackmap + 1) * 4)$/;"	v
 stacksize	emit.ml	/^let stacksize () = align (List.length !stackmap * 4)$/;"	v
+stacksize	x86/emit.ml	/^let stacksize () = align (List.length !stackmap * 4)$/;"	v
+str	min-rt/raytrace.c	/^  double str; \/\/ ¶¯¤µ$/;"	m	struct:__anon9	file:
 string	main.ml	/^let string s = lexbuf stdout (Lexing.from_string s) (* Ê¸»úÎó¤ò¥³¥ó¥Ñ¥¤¥ë¤·¤ÆÉ¸½à½ÐÎÏ¤ËÉ½¼¨¤¹¤ë (caml2html: main_string) *)$/;"	v
+string	main.mli	/^val string : string -> unit$/;"	v
+sub_vec	min-rt/raytrace.c	/^inline static void sub_vec (vec_t * dest,$/;"	f	file:
+sub_vec_3	min-rt/raytrace.c	/^inline static void sub_vec_3 (vec_t * dest,$/;"	f	file:
+sum	test/sum-tail.ml	/^let rec sum acc x =$/;"	v
+sum	test/sum.ml	/^let rec sum x =$/;"	v
+surf	min-rt/raytrace.c	/^  surf_t surf; \/\/ É½ÌÌ¤ÎÆÃÀ­$/;"	m	struct:__anon13	file:
+surf_mirror	min-rt/raytrace.c	/^  surf_mirror = 2 \/\/ ¶ÀÌÌ$/;"	e	enum:__anon12	file:
+surf_rand	min-rt/raytrace.c	/^  surf_rand = 1, \/\/ ÍðÈ¿¼Í$/;"	e	enum:__anon12	file:
+surf_t	min-rt/raytrace.c	/^} surf_t;$/;"	t	typeref:enum:__anon12	file:
+swap	min-rt/RayTrace.cxx	/^void swap(float *ex, float *lsx, float *ey, float *lsy, float *ez, float *lsz)$/;"	f
+swap_vec	min-rt/raytrace.c	/^static void swap_vec (vec_t * x, vec_t * y) {$/;"	f	file:
+t	PowerPC/asm.ml	/^type t = (* Ì¿Îá¤ÎÎó *)$/;"	t
+t	PowerPC/asm.mli	/^type t = $/;"	t
+t	SPARC/asm.ml	/^type t = (* Ì¿Îá¤ÎÎó (caml2html: sparcasm_t) *)$/;"	t
+t	SPARC/asm.mli	/^type t =$/;"	t
 t	asm.ml	/^type t = (* Ì¿Îá¤ÎÎó (caml2html: sparcasm_t) *)$/;"	t
 t	asm.mli	/^type t =$/;"	t
 t	closure.ml	/^type t = (* ¥¯¥í¡¼¥¸¥ãÊÑ´¹¸å¤Î¼° (caml2html: closure_t) *)$/;"	t
@@ -457,15 +1850,48 @@ t	info.ml	/^type t = string * int * int * int * int$/;"	t
 t	kNormal.ml	/^type t = (* KÀµµ¬²½¸å¤Î¼° (caml2html: knormal_t) *)$/;"	t
 t	kNormal.mli	/^type t =$/;"	t
 t	m.ml	/^      type t = Id.t$/;"	t
+t	min-rt/min-rt.ml	/^	    let t = t0p +. 0.01 in$/;"	v
+t	min-rt/min-rt.ml	/^	let t = (scan_offset.(0) -. 1.0 -. float_of_int scany) in$/;"	v
+t	min-rt/min-rt.ml	/^	let t = solver range_primitive vscan viewpoint in$/;"	v
+t	min-rt/min-rt.ml	/^      let t = solver range_primitive light p in$/;"	v
+t	min-rt/min-rt.ml	/^      let t = t0p +. 0.01 in$/;"	v
+t	min-rt/min-rt.ml	/^    let t = (solver_w_vec.(0) *. o_param_a m +. solver_w_vec.(1) *. o_param_b m +. solver_w_vec.(2) *. o_param_c m) \/. q in$/;"	v
+t	min-rt/min-rt.ml	/^  let t = tmin.(0) in$/;"	v
 t	s.ml	/^      type t = Id.t$/;"	t
 t	syntax.ml	/^type t = (* MinCaml¤Î¹½Ê¸¤òÉ½¸½¤¹¤ë¥Ç¡¼¥¿·¿ (caml2html: syntax_t) *)$/;"	t
+t	test/even-odd.ml	/^let t = 123 in$/;"	v
 t	type.ml	/^type t = (* MinCaml¤Î·¿¤òÉ½¸½¤¹¤ë¥Ç¡¼¥¿·¿ (caml2html: type_t) *)$/;"	t
 t	typing.ml	/^	let t = Type.gentyp info in$/;"	v
 t	typing.ml	/^	let t = g env e3 in$/;"	v
+t	x86/asm.ml	/^type t = (* Ì¿Îá¤ÎÎó (caml2html: sparcasm_t) *)$/;"	t
+t	x86/asm.mli	/^type t =$/;"	t
+t0	min-rt/min-rt.ml	/^    let t0 = solver iobj vscan viewpoint in$/;"	v
+t0	min-rt/min-rt.ml	/^    let t0 = solver obj light p in$/;"	v
+t0p	min-rt/min-rt.ml	/^       let t0p = solver_dist.(0) in$/;"	v
+t0p	min-rt/min-rt.ml	/^    let t0p = solver_dist.(0) in$/;"	v
+t1	min-rt/min-rt.ml	/^	let t1 = if o_isinvert m then sd else -.sd in$/;"	v
+t1	min-rt/min-rt.ml	/^      let t1 = scan_sscany.(0) *. sin_v.(0) in$/;"	v
 t2	typing.ml	/^	let t2 = g env e2 in$/;"	v
 t3	typing.ml	/^	let t3 = g env e3 in$/;"	v
+tak	shootout/tak.ml	/^let rec tak x y z =$/;"	v
+target'	PowerPC/regAlloc.ml	/^let rec target' src (dest, t) = function$/;"	v
+target'	SPARC/regAlloc.ml	/^let rec target' src (dest, t) = function$/;"	v
 target'	regAlloc.ml	/^let rec target' src (dest, t) = function$/;"	v
+target'	x86/regAlloc.ml	/^let rec target' src (dest, t) = function$/;"	v
+temp	min-rt/globals.ml	/^let temp = Array.create 14 0.0 (* read_nth_object å†…ã®ä½œæ¥­å¤‰æ•° *)$/;"	v
+tex	min-rt/raytrace.c	/^  tex_t tex; \/\/ ¥Æ¥¯¥¹¥Á¥å¥¢$/;"	m	struct:__anon13	file:
+tex_checker	min-rt/raytrace.c	/^  tex_checker = 1, \/\/ ¥Á¥§¥Ã¥«$/;"	e	enum:__anon10	file:
+tex_circle	min-rt/raytrace.c	/^  tex_circle = 3, \/\/ Æ±¿´±ß$/;"	e	enum:__anon10	file:
+tex_plain	min-rt/raytrace.c	/^  tex_plain = 0, \/\/ ÌµÃÏ$/;"	e	enum:__anon10	file:
+tex_spot	min-rt/raytrace.c	/^  tex_spot = 4 \/\/ ÈÃÅÀ$/;"	e	enum:__anon10	file:
+tex_stripe	min-rt/raytrace.c	/^  tex_stripe = 2, \/\/ ¥¹¥È¥é¥¤¥×$/;"	e	enum:__anon10	file:
+tex_t	min-rt/raytrace.c	/^} tex_t;$/;"	t	typeref:enum:__anon10	file:
+texture	min-rt/min-rt.ml	/^  let texture = read_int () in (* 0 *)$/;"	v
+texture	min-rt/raytrace.c	/^static void texture (void) {$/;"	f	file:
+texture_color	min-rt/globals.ml	/^let texture_color = Array.create 3 0.0$/;"	v
 threshold	inline.ml	/^let threshold = ref 0 (* Main¤Ç-inline¥ª¥×¥·¥ç¥ó¤Ë¤è¤ê¥»¥Ã¥È¤µ¤ì¤ë *)$/;"	v
+threshold	inline.mli	/^val threshold : int ref$/;"	v
+tmin	min-rt/globals.ml	/^let tmin = Array.create 1 (1000000000.0)$/;"	v
 to_L	id.ml	/^let to_L x = L (fst x, snd x)$/;"	v
 to_string	id.ml	/^let to_string (id, info) = Printf.sprintf "ID(%s,%s)" id (Info.to_string info)$/;"	v
 to_string	info.ml	/^let to_string (fname, start_row, start_column, end_row, end_column) = Printf.sprintf "%s:%d:%d->%d:%d" fname start_row start_column end_row end_column$/;"	v
@@ -477,16 +1903,157 @@ to_string_pre	id.ml	/^let to_string_pre pre ((id, info): t) = Printf.sprintf "%s
 to_string_pre	type.ml	/^let rec to_string_pre pre typ =$/;"	v
 to_t	id.ml	/^let to_t( L(x, y)) = x, y$/;"	v
 toplevel	closure.ml	/^let toplevel : fundef list ref = ref []$/;"	v
+tp	min-rt/min-rt.ml	/^	  let tp = solver_dist.(0) in$/;"	v
+trace	min-rt/raytrace.c	/^static bool_t trace (void) {$/;"	f	file:
+trace_or_matrix	min-rt/min-rt.ml	/^(*MINCAML*)let rec trace_or_matrix ofs or_network =$/;"	v
+tracer	min-rt/RayTrace.cxx	/^SIGN tracer(void)$/;"	f
+tracer	min-rt/min-rt.ml	/^(*MINCAML*)let rec tracer viewpoint vscan =$/;"	v
+trans_view	min-rt/raytrace.c	/^  vec_t trans_view; \/\/ ²óÅ¾¡¦Ê¿¹Ô°ÜÆ°¸å¤Î»ëÅÀ$/;"	m	struct:__anon8	file:
+trig_t	min-rt/raytrace.c	/^} trig_t;$/;"	t	typeref:struct:__anon2	file:
+true	min-rt/RayTrace.cxx	27;"	d	file:
+twistprod_vec	min-rt/raytrace.c	/^static void twistprod_vec (vec_t * dest,$/;"	f	file:
+tx	min-rt/raytrace.c	/^  trig_t tx; \/\/ x¼´¤ò²óÅ¾¼´¤È¤·¤Æ²óÅ¾$/;"	m	struct:__anon5	file:
+tx	min-rt/raytrace.c	/^  trig_t tx; \/\/ x¼´¤ò²óÅ¾¼´¤È¤·¤Æ²óÅ¾$/;"	m	struct:__anon6	file:
+ty	min-rt/raytrace.c	/^  trig_t ty; \/\/ y¼´¤ò²óÅ¾¼´¤È¤·¤Æ²óÅ¾$/;"	m	struct:__anon5	file:
+ty	min-rt/raytrace.c	/^  trig_t ty; \/\/ y¼´¤ò²óÅ¾¼´¤È¤·¤Æ²óÅ¾$/;"	m	struct:__anon6	file:
+type	min-rt/raytrace.c	/^  type_t type; \/\/ ¼ïÎà$/;"	m	struct:__anon13	file:
+type_cone	min-rt/raytrace.c	/^  type_cone = 4 \/\/ ¿î$/;"	e	enum:__anon11	file:
+type_plane	min-rt/raytrace.c	/^  type_plane = 2, \/\/ Ê¿ÌÌ$/;"	e	enum:__anon11	file:
+type_quad	min-rt/raytrace.c	/^  type_quad = 3, \/\/ 2¼¡¶ÊÌÌ$/;"	e	enum:__anon11	file:
+type_rect	min-rt/raytrace.c	/^  type_rect = 1, \/\/ Ä¾ÊýÂÎ$/;"	e	enum:__anon11	file:
+type_t	min-rt/raytrace.c	/^} type_t;$/;"	t	typeref:enum:__anon11	file:
+tz	min-rt/raytrace.c	/^  trig_t tz; \/\/ z¼´¤ò²óÅ¾¼´¤È¤·¤Æ²óÅ¾$/;"	m	struct:__anon6	file:
 unify	typing.ml	/^let rec unify t1 t2 = (* ·¿¤¬¹ç¤¦¤è¤¦¤Ë¡¢·¿ÊÑ¿ô¤Ø¤ÎÂåÆþ¤ò¤¹¤ë (caml2html: typing_unify) *)$/;"	v
+user_defined_texture	min-rt/RayTrace.cxx	/^void user_defined_texture(void)$/;"	f
+utexture	min-rt/min-rt.ml	/^(*MINCAML*)let rec utexture m p =$/;"	v
+v	min-rt/min-rt.ml	/^    let v = read_net_item (length + 1) in$/;"	v
+v	min-rt/min-rt.ml	/^    let v = read_or_network (length + 1) in$/;"	v
+v1	min-rt/min-rt.ml	/^  let v1 = rad (read_float ()) in$/;"	v
+v1	test/inprod-loop.ml	/^let v1 = Array.create 3 1.23 in$/;"	v
+v1	test/inprod-rec.ml	/^let v1 = Array.create 3 1.23 in$/;"	v
+v2	min-rt/min-rt.ml	/^  let v2 = rad (read_float ()) in$/;"	v
+v2	test/inprod-loop.ml	/^let v2 = Array.create 3 4.56 in$/;"	v
+v2	test/inprod-rec.ml	/^let v2 = Array.create 3 4.56 in$/;"	v
+vec	min-rt/raytrace.c	/^  vec_t vec; \/\/ Ã±°Ì¥Ù¥¯¥È¥ë¤Ç¤¢¤é¤ï¤·¤¿Êý¸þ$/;"	m	struct:__anon9	file:
+vec_t	min-rt/raytrace.c	/^} vec_t;$/;"	t	typeref:struct:__anon4	file:
+view	min-rt/globals.ml	/^let view = Array.create 3 0.0$/;"	v
+viewpoint	min-rt/globals.ml	/^let viewpoint = Array.create 3 0.0$/;"	v
+viewpoint	min-rt/raytrace.c	/^static vec_t viewpoint; \/\/ ¸½ºß¤Î»ëÅÀ$/;"	v	file:
+vp	min-rt/globals.ml	/^let vp = Array.create 3 0.0$/;"	v
+vscan	min-rt/globals.ml	/^let vscan = Array.create 3 0.0$/;"	v
+w	min-rt/diff.ml	/^  let w = Ppm.width img1 in$/;"	v
+w	min-rt/min-rt.ml	/^	  let w = (-2.0) *. in_prod vscan nvector in$/;"	v
+w	min-rt/min-rt.ml	/^  let w = (o_param_a m *. isoutside_q.(0)$/;"	v
+w	min-rt/min-rt.ml	/^  let w = in_prod_sqr_obj m isoutside_q in$/;"	v
+w1	min-rt/min-rt.ml	/^      let w1 = p.(0) -. o_param_x m in$/;"	v
+w1	min-rt/min-rt.ml	/^     let w1 = p.(0) -. o_param_x m in$/;"	v
+w1	min-rt/min-rt.ml	/^    let w1 = (p.(0) -. o_param_x m) *. (sqrt (o_param_a m)) in$/;"	v
+w10	min-rt/min-rt.ml	/^    let w10 = w8 -. (floor w8) in$/;"	v
+w11	min-rt/min-rt.ml	/^    let w11 = 0.15 -. (fsqr (0.5 -. w9)) -. (fsqr (0.5 -. w10)) in$/;"	v
+w2	min-rt/min-rt.ml	/^      let w2 = fsqr (sin (p.(1) *. 0.25)) in$/;"	v
+w2	min-rt/min-rt.ml	/^      let w2 = sqrt (fsqr w1 +. fsqr w3) \/. 10.0 in$/;"	v
+w2	min-rt/min-rt.ml	/^    let w2 = (p.(1) -. o_param_y m) *. (sqrt (o_param_b m)) in$/;"	v
+w2	min-rt/min-rt.ml	/^  let w2 = if o_form m = 3 then w -. 1.0 else w in$/;"	v
+w3	min-rt/min-rt.ml	/^      let w3 = p.(2) -. o_param_z m in$/;"	v
+w3	min-rt/min-rt.ml	/^     let w3 = p.(2) -. o_param_z m in$/;"	v
+w3	min-rt/min-rt.ml	/^    let w3 = (p.(2) -. o_param_z m) *. (sqrt (o_param_c m)) in$/;"	v
+w3	min-rt/min-rt.ml	/^  let w3 =$/;"	v
+w4	min-rt/min-rt.ml	/^      let w4 =  (w2 -. floor w2) *. 3.1415927 in$/;"	v
+w4	min-rt/min-rt.ml	/^    let w4 = sqrt ((fsqr w1) +. (fsqr w3)) in$/;"	v
+w7	min-rt/min-rt.ml	/^    let w7 = $/;"	v
+w8	min-rt/min-rt.ml	/^    let w8 =$/;"	v
+w9	min-rt/min-rt.ml	/^    let w9 = w7 -. (floor w7) in$/;"	v
+white_pixel	min-rt/raytrace.c	/^static const pixel_t white_pixel = { hil_max, hil_max, hil_max };$/;"	v	file:
+width	min-rt/ppm.ml	/^let width (s, width) = width$/;"	v
+word2ascii	min-rt/RayTrace.cxx	/^void word2ascii(int num)$/;"	f
+write_enq	min-rt/RayTrace.cxx	/^void write_enq(int value)$/;"	f
+write_flush	min-rt/RayTrace.cxx	/^void write_flush(void)$/;"	f
+write_flush	min-rt/raytrace.c	/^static void write_flush (void) {$/;"	f	file:
+write_flush_all	min-rt/RayTrace.cxx	/^void write_flush_all(void)$/;"	f
+write_flush_all	min-rt/raytrace.c	/^static void write_flush_all (void) {$/;"	f	file:
+write_header	min-rt/raytrace.c	/^static void write_header (void) {$/;"	f	file:
+write_hil	min-rt/raytrace.c	/^static void write_hil (hil_t hil) {$/;"	f	file:
+write_init	min-rt/raytrace.c	/^static void write_init (void) {$/;"	f	file:
+write_int	min-rt/raytrace.c	/^static void write_int (int x) {$/;"	f	file:
+write_octet	min-rt/raytrace.c	/^static void write_octet (int x) {$/;"	f	file:
+write_pixel	min-rt/raytrace.c	/^static void write_pixel (pixel_t * p) {$/;"	f	file:
+write_ppm_header	min-rt/min-rt.ml	/^(*MINCAML*)let rec write_ppm_header _ =$/;"	v
+write_queue	min-rt/RayTrace.cxx	/^int  write_queue[WRITE_QUEUE_SIZE]; \/\/ ¥­¥å¡¼$/;"	v
+write_queue	min-rt/raytrace.c	/^static int write_queue [write_queue_size]; \/\/ ¥­¥å¡¼$/;"	v	file:
+write_queue_deq	min-rt/RayTrace.cxx	/^int *write_queue_deq; \/\/ ¥Ç¡¼¥¿¤ò¼è¤ê½Ð¤·¤Æ¤¤¤¯Ã¼$/;"	v
+write_queue_enq	min-rt/RayTrace.cxx	/^int *write_queue_enq; \/\/ ¥Ç¡¼¥¿¤òÄÉ²Ã¤·¤Æ¤¤¤¯Ã¼$/;"	v
+write_queue_head	min-rt/raytrace.c	/^static int * write_queue_head = NULL; \/\/ ÀèÆ¬$/;"	v	file:
+write_queue_init	min-rt/RayTrace.cxx	/^void write_queue_init(void)$/;"	f
+write_queue_num	min-rt/RayTrace.cxx	/^int  write_queue_num; \/\/ ¸½ºß¥­¥å¡¼¤ËÆþ¤Ã¤Æ¤¤¤ë¥Ç¡¼¥¿¤Î¿ô$/;"	v
+write_queue_num	min-rt/raytrace.c	/^static unsigned write_queue_num = 0; \/\/ ¸½ºß¤Î¿ô$/;"	v	file:
+write_queue_size	min-rt/raytrace.c	89;"	d	file:
+write_queue_tail	min-rt/raytrace.c	/^static int * write_queue_tail = NULL; \/\/ ËöÈø$/;"	v	file:
+write_rgb	min-rt/min-rt.ml	/^(*MINCAML*)let rec write_rgb _ =$/;"	v
+write_value	min-rt/RayTrace.cxx	/^void write_value(BYTE value)$/;"	f
+wscan	min-rt/globals.ml	/^let wscan = Array.create 3 0.0$/;"	v
+x	SPARC/virtual.ml	/^      let x = Id.genid "l" in$/;"	v
 x	example.ml	/^let x =$/;"	v
 x	kNormal.ml	/^      let x = Id.gentmp t info in$/;"	v
+x	min-rt/raytrace.c	/^  dist_t x;$/;"	m	struct:__anon4	file:
+x	test/cls-rec.ml	/^let x = 10 in$/;"	v
+x	test/join-reg.ml	/^let x = f () in$/;"	v
+x	test/join-reg2.ml	/^let x = f () in$/;"	v
+x	test/join-stack.ml	/^let x = f () in$/;"	v
+x	test/join-stack2.ml	/^let x = f () in$/;"	v
+x	test/join-stack3.ml	/^let x = f () in$/;"	v
+x	test/non-tail-if.ml	/^let x = truncate 1.23 in$/;"	v
+x	test/non-tail-if2.ml	/^let x = 67890 in$/;"	v
+x	test/spill2.ml	/^let x = f () in$/;"	v
 x	virtual.ml	/^      let x = Id.genid( "l", Info.dump()) in$/;"	v
+x	x86/virtual.ml	/^      let x = Id.genid( "l", Info.dump()) in$/;"	v
+xloop	shootout/mandelbrot.ml	/^(*MINCAML*)   let rec xloop x y =$/;"	v
+xm_tex	min-rt/min-rt.ml	/^  let (xm_tex, m_shape, xm_surface, xm_isrot, $/;"	v
+xm_tex	min-rt/min-rt.ml	/^  let (xm_tex, xm_shape, m_surface, xm_isrot, $/;"	v
+xm_tex	min-rt/min-rt.ml	/^  let (xm_tex, xm_shape, xm_surface, m_isrot, $/;"	v
+xm_tex	min-rt/min-rt.ml	/^  let (xm_tex, xm_shape, xm_surface, xm_isrot, $/;"	v
+xor	min-rt/min-rt.ml	/^(*MINCAML*)let rec xor x y = if x then not y else y in$/;"	v
 xs	alpha.ml	/^      let xs = List.map fst xts in$/;"	v
 xs	elim.ml	/^      let xs = List.map fst xts in$/;"	v
+xyz	min-rt/min-rt.ml	/^      let xyz = Array.create 3 0.0 in$/;"	v
+y	PowerPC/regAlloc.ml	/^    let y = (* ·¿¤Î¹ç¤¦¥ì¥¸¥¹¥¿ÊÑ¿ô¤òÃµ¤¹ *)$/;"	v
+y	PowerPC/virtual.ml	/^      let y = Id.genid "t" in$/;"	v
+y	SPARC/regAlloc.ml	/^    let y = (* ·¿¤Î¹ç¤¦¥ì¥¸¥¹¥¿ÊÑ¿ô¤òÃµ¤¹ *)$/;"	v
+y	SPARC/virtual.ml	/^      let y = Id.genid "t" in$/;"	v
+y	min-rt/raytrace.c	/^  dist_t y;$/;"	m	struct:__anon4	file:
 y	regAlloc.ml	/^    let y = (* ·¿¤Î¹ç¤¦¥ì¥¸¥¹¥¿ÊÑ¿ô¤òÃµ¤¹ *)$/;"	v
+y	test/join-reg.ml	/^let y = g () in$/;"	v
+y	test/join-stack.ml	/^let y = g () in$/;"	v
+y	test/non-tail-if.ml	/^let y = truncate 4.56 in$/;"	v
+y	test/non-tail-if2.ml	/^let y = Array.create 10 3 in$/;"	v
+y	test/spill2.ml	/^let y = 67890 in$/;"	v
 y	virtual.ml	/^      let y = Id.genid("t", info )in$/;"	v
+y	x86/regAlloc.ml	/^    let y = (* ·¿¤Î¹ç¤¦¥ì¥¸¥¹¥¿ÊÑ¿ô¤òÃµ¤¹ *)$/;"	v
+y	x86/virtual.ml	/^      let y = Id.genid("t", info )in$/;"	v
+yloop	shootout/mandelbrot.ml	/^(*MINCAML*) let rec yloop y =$/;"	v
 ys	alpha.ml	/^      let ys = List.map fst yts in$/;"	v
+z	PowerPC/virtual.ml	/^	     let z = Id.genid "l" in  $/;"	v
+z	SPARC/virtual.ml	/^	      let z = Id.genid "l" in$/;"	v
+z	min-rt/raytrace.c	/^  dist_t z;$/;"	m	struct:__anon4	file:
+z	test/non-tail-if.ml	/^let z = truncate (-.7.89) in$/;"	v
+z	test/spill2.ml	/^let z = Array.create 10 1 in$/;"	v
 z	virtual.ml	/^              let z = Id.genid("l", Info.dump())$/;"	v
+z	x86/virtual.ml	/^              let z = Id.genid("l", Info.dump())$/;"	v
+z0	test/spill2.ml	/^let z0 = z.(0) in$/;"	v
+z1	test/spill2.ml	/^let z1 = z0 + z0 in$/;"	v
+z10	test/spill2.ml	/^let z10 = z9 + z9 in$/;"	v
+z11	test/spill2.ml	/^let z11 = z10 + z10 in$/;"	v
+z12	test/spill2.ml	/^let z12 = z11 + z11 in$/;"	v
+z13	test/spill2.ml	/^let z13 = z12 + z12 in$/;"	v
+z14	test/spill2.ml	/^let z14 = z13 + z13 in$/;"	v
+z15	test/spill2.ml	/^let z15 = z14 + z14 in$/;"	v
+z2	test/spill2.ml	/^let z2 = z1 + z1 in$/;"	v
+z3	test/spill2.ml	/^let z3 = z2 + z2 in$/;"	v
+z4	test/spill2.ml	/^let z4 = z3 + z3 in$/;"	v
+z5	test/spill2.ml	/^let z5 = z4 + z4 in$/;"	v
+z6	test/spill2.ml	/^let z6 = z5 + z5 in$/;"	v
+z7	test/spill2.ml	/^let z7 = z6 + z6 in$/;"	v
+z8	test/spill2.ml	/^let z8 = z7 + z7 in$/;"	v
+z9	test/spill2.ml	/^let z9 = z8 + z8 in$/;"	v
 zs	closure.ml	/^      let zs = S.diff (fv e1') (S.of_list (List.map fst yts)) in$/;"	v
 zs	closure.ml	/^      let zs = S.elements (S.diff (fv e1') (S.add x (S.of_list (List.map fst yts)))) in (* ¼«Í³ÊÑ¿ô¤Î¥ê¥¹¥È *)$/;"	v
 zs	inline.ml	/^      let (zs, e) = M.find x env in$/;"	v
