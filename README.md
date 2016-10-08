@@ -1,4 +1,4 @@
-CPU実験H班
+#CPU実験H班
 
 An educational compiler for a minimal subset of OCaml, written in
 ~2000 lines of OCaml.  For details, see:
