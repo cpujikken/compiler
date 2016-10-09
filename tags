@@ -1897,6 +1897,7 @@ to_string	id.ml	/^let to_string (id, info) = Printf.sprintf "ID(%s,%s)" id (Info
 to_string	info.ml	/^let to_string (fname, start_row, start_column, end_row, end_column) = Printf.sprintf "%s:%d:%d->%d:%d" fname start_row start_column end_row end_column$/;"	v
 to_string	kNormal.ml	/^let to_string x =$/;"	v
 to_string	syntax.ml	/^let to_string (x: t) =$/;"	v
+to_string	type.ml	/^let to_string typ =$/;"	v
 to_string_args	syntax.ml	/^    and to_string_args pre = function$/;"	v
 to_string_core	id.ml	/^let to_string_core x = fst x$/;"	v
 to_string_pre	id.ml	/^let to_string_pre pre ((id, info): t) = Printf.sprintf "%sID %s\\t#%s" pre id (Info.to_string info)$/;"	v

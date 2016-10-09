@@ -8,4 +8,7 @@ let rec gcd m n =
 in
 gcd 4 5
 in
-()
+if 1 = 2 then
+    3
+else
+    3.
