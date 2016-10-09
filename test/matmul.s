@@ -41,165 +41,165 @@ l.323:	# 0.000000
 	.long	0x0
 .text
 loop3.282:
-	movl	20(%edi), %ebx	#test/matmul.ml:7:2->9:17
-	movl	16(%edi), %ecx	#test/matmul.ml:7:2->9:17
-	movl	12(%edi), %edx	#test/matmul.ml:7:2->9:17
-	movl	8(%edi), %esi	#test/matmul.ml:7:2->9:17
-	movl	%edi, 0(%ebp)	#test/matmul.ml:7:2->9:17
-	movl	4(%edi), %edi	#test/matmul.ml:7:2->9:17
-	cmpl	$0, %eax	#test/matmul.ml:7:2->9:17
+	movl	20(%edi), %ebx	#
+	movl	16(%edi), %ecx	#
+	movl	12(%edi), %edx	#
+	movl	8(%edi), %esi	#
+	movl	%edi, 0(%ebp)	#
+	movl	4(%edi), %edi	#
+	cmpl	$0, %eax	#
 	jl	jge_else.389
-	movl	%esi, 4(%ebp)	#test/matmul.ml:8:16->8:21
-	movl	(%edx,%ecx,4), %esi	#test/matmul.ml:8:16->8:21
-	movl	(%edx,%ecx,4), %edx	#test/matmul.ml:8:16->8:21
-	movsd	(%edx,%ebx,8), %xmm0	#test/matmul.ml:8:16->8:25
-	movl	(%edi,%ecx,4), %ecx	#test/matmul.ml:8:29->8:34
-	movsd	(%ecx,%eax,8), %xmm1	#test/matmul.ml:8:29->8:38
-	movl	4(%ebp), %ecx	#test/matmul.ml:8:42->8:47
-	movl	(%ecx,%eax,4), %ecx	#test/matmul.ml:8:42->8:47
-	movsd	(%ecx,%ebx,8), %xmm2	#test/matmul.ml:8:42->8:51
-	mulsd	%xmm2, %xmm1	#test/matmul.ml:8:29->8:51
-	addsd	%xmm1, %xmm0	#test/matmul.ml:8:16->8:51
-	movsd	%xmm0, (%esi,%ebx,8)	#test/matmul.ml:8:3->8:51
-	subl	$1, %eax	#test/matmul.ml:9:10->9:15
-	movl	0(%ebp), %edi	#test/matmul.ml:9:3->9:16
-	jmp	*(%edi)	#test/matmul.ml:9:3->9:16
+	movl	%esi, 4(%ebp)	#
+	movl	(%edx,%ecx,4), %esi	#
+	movl	(%edx,%ecx,4), %edx	#
+	movsd	(%edx,%ebx,8), %xmm0	#
+	movl	(%edi,%ecx,4), %ecx	#
+	movsd	(%ecx,%eax,8), %xmm1	#
+	movl	4(%ebp), %ecx	#
+	movl	(%ecx,%eax,4), %ecx	#
+	movsd	(%ecx,%ebx,8), %xmm2	#
+	mulsd	%xmm2, %xmm1	#
+	addsd	%xmm1, %xmm0	#
+	movsd	%xmm0, (%esi,%ebx,8)	#
+	subl	$1, %eax	#
+	movl	0(%ebp), %edi	#
+	jmp	*(%edi)	#
 jge_else.389:
-	ret	#test/matmul.ml:7:16->7:18
+	ret	#
 loop2.274:
-	movl	20(%edi), %ebx	#test/matmul.ml:5:7->11:20
-	movl	16(%edi), %ecx	#test/matmul.ml:5:7->11:20
-	movl	12(%edi), %edx	#test/matmul.ml:5:7->11:20
-	movl	8(%edi), %esi	#test/matmul.ml:5:7->11:20
-	movl	%edi, 0(%ebp)	#test/matmul.ml:5:7->11:20
-	movl	4(%edi), %edi	#test/matmul.ml:5:7->11:20
-	cmpl	$0, %eax	#test/matmul.ml:5:7->11:20
+	movl	20(%edi), %ebx	#
+	movl	16(%edi), %ecx	#
+	movl	12(%edi), %edx	#
+	movl	8(%edi), %esi	#
+	movl	%edi, 0(%ebp)	#
+	movl	4(%edi), %edi	#
+	cmpl	$0, %eax	#
 	jl	jge_else.391
-	movl	%ebx, 4(%ebp)	#test/matmul.ml:6:7->11:20
-	movl	min_caml_hp, %ebx	#test/matmul.ml:6:7->11:20
-	addl	$24, min_caml_hp	#test/matmul.ml:6:7->11:20
-	movl	%edi, 8(%ebp)	#test/matmul.ml:6:7->11:20
-	movl	$loop3.282, %edi	#test/matmul.ml:6:7->11:20
-	movl	%edi, 0(%ebx)	#test/matmul.ml:6:7->11:20
-	movl	%eax, 20(%ebx)	#test/matmul.ml:6:7->11:20
-	movl	%ecx, 16(%ebx)	#test/matmul.ml:6:7->11:20
-	movl	%edx, 12(%ebx)	#test/matmul.ml:6:7->11:20
-	movl	%esi, 8(%ebx)	#test/matmul.ml:6:7->11:20
-	movl	8(%ebp), %ecx	#test/matmul.ml:6:7->11:20
-	movl	%ecx, 4(%ebx)	#test/matmul.ml:6:7->11:20
-	movl	4(%ebp), %ecx	#test/matmul.ml:10:14->10:19
-	subl	$1, %ecx	#test/matmul.ml:10:14->10:19
-	movl	%eax, 12(%ebp)	#test/matmul.ml:10:7->10:20
+	movl	%ebx, 4(%ebp)	#
+	movl	min_caml_hp, %ebx	#
+	addl	$24, min_caml_hp	#
+	movl	%edi, 8(%ebp)	#
+	movl	$loop3.282, %edi	#
+	movl	%edi, 0(%ebx)	#
+	movl	%eax, 20(%ebx)	#
+	movl	%ecx, 16(%ebx)	#
+	movl	%edx, 12(%ebx)	#
+	movl	%esi, 8(%ebx)	#
+	movl	8(%ebp), %ecx	#
+	movl	%ecx, 4(%ebx)	#
+	movl	4(%ebp), %ecx	#
+	subl	$1, %ecx	#
+	movl	%eax, 12(%ebp)	#
 	movl	%ecx, %eax
 	movl	%ebx, %edi
-	addl	$16, %ebp	#test/matmul.ml:10:7->10:20
-	call	*(%edi)	#test/matmul.ml:10:7->10:20
-	subl	$16, %ebp	#test/matmul.ml:10:7->10:20
-	movl	12(%ebp), %eax	#test/matmul.ml:11:14->11:19
-	subl	$1, %eax	#test/matmul.ml:11:14->11:19
-	movl	0(%ebp), %edi	#test/matmul.ml:11:7->11:20
-	jmp	*(%edi)	#test/matmul.ml:11:7->11:20
+	addl	$16, %ebp	#
+	call	*(%edi)	#
+	subl	$16, %ebp	#
+	movl	12(%ebp), %eax	#
+	subl	$1, %eax	#
+	movl	0(%ebp), %edi	#
+	jmp	*(%edi)	#
 jge_else.391:
-	ret	#test/matmul.ml:5:21->5:23
+	ret	#
 loop1.269:
-	movl	20(%edi), %ebx	#test/matmul.ml:3:5->13:18
-	movl	16(%edi), %ecx	#test/matmul.ml:3:5->13:18
-	movl	12(%edi), %edx	#test/matmul.ml:3:5->13:18
-	movl	8(%edi), %esi	#test/matmul.ml:3:5->13:18
-	movl	%edi, 0(%ebp)	#test/matmul.ml:3:5->13:18
-	movl	4(%edi), %edi	#test/matmul.ml:3:5->13:18
-	cmpl	$0, %eax	#test/matmul.ml:3:5->13:18
+	movl	20(%edi), %ebx	#
+	movl	16(%edi), %ecx	#
+	movl	12(%edi), %edx	#
+	movl	8(%edi), %esi	#
+	movl	%edi, 0(%ebp)	#
+	movl	4(%edi), %edi	#
+	cmpl	$0, %eax	#
 	jl	jge_else.393
-	movl	%ebx, 4(%ebp)	#test/matmul.ml:4:5->13:18
-	movl	min_caml_hp, %ebx	#test/matmul.ml:4:5->13:18
-	addl	$24, min_caml_hp	#test/matmul.ml:4:5->13:18
-	movl	%edi, 8(%ebp)	#test/matmul.ml:4:5->13:18
-	movl	$loop2.274, %edi	#test/matmul.ml:4:5->13:18
-	movl	%edi, 0(%ebx)	#test/matmul.ml:4:5->13:18
-	movl	%ecx, 20(%ebx)	#test/matmul.ml:4:5->13:18
-	movl	%eax, 16(%ebx)	#test/matmul.ml:4:5->13:18
-	movl	%edx, 12(%ebx)	#test/matmul.ml:4:5->13:18
-	movl	%esi, 8(%ebx)	#test/matmul.ml:4:5->13:18
-	movl	8(%ebp), %ecx	#test/matmul.ml:4:5->13:18
-	movl	%ecx, 4(%ebx)	#test/matmul.ml:4:5->13:18
-	movl	4(%ebp), %ecx	#test/matmul.ml:12:12->12:17
-	subl	$1, %ecx	#test/matmul.ml:12:12->12:17
-	movl	%eax, 12(%ebp)	#test/matmul.ml:12:5->12:18
+	movl	%ebx, 4(%ebp)	#
+	movl	min_caml_hp, %ebx	#
+	addl	$24, min_caml_hp	#
+	movl	%edi, 8(%ebp)	#
+	movl	$loop2.274, %edi	#
+	movl	%edi, 0(%ebx)	#
+	movl	%ecx, 20(%ebx)	#
+	movl	%eax, 16(%ebx)	#
+	movl	%edx, 12(%ebx)	#
+	movl	%esi, 8(%ebx)	#
+	movl	8(%ebp), %ecx	#
+	movl	%ecx, 4(%ebx)	#
+	movl	4(%ebp), %ecx	#
+	subl	$1, %ecx	#
+	movl	%eax, 12(%ebp)	#
 	movl	%ecx, %eax
 	movl	%ebx, %edi
-	addl	$16, %ebp	#test/matmul.ml:12:5->12:18
-	call	*(%edi)	#test/matmul.ml:12:5->12:18
-	subl	$16, %ebp	#test/matmul.ml:12:5->12:18
-	movl	12(%ebp), %eax	#test/matmul.ml:13:12->13:17
-	subl	$1, %eax	#test/matmul.ml:13:12->13:17
-	movl	0(%ebp), %edi	#test/matmul.ml:13:5->13:18
-	jmp	*(%edi)	#test/matmul.ml:13:5->13:18
+	addl	$16, %ebp	#
+	call	*(%edi)	#
+	subl	$16, %ebp	#
+	movl	12(%ebp), %eax	#
+	subl	$1, %eax	#
+	movl	0(%ebp), %edi	#
+	jmp	*(%edi)	#
 jge_else.393:
-	ret	#test/matmul.ml:3:19->3:21
+	ret	#
 mul.140:
-	movl	%eax, 0(%ebp)	#test/matmul.ml:2:3->14:16
-	movl	min_caml_hp, %eax	#test/matmul.ml:2:3->14:16
-	addl	$24, min_caml_hp	#test/matmul.ml:2:3->14:16
-	movl	%edx, 4(%ebp)	#test/matmul.ml:2:3->14:16
-	movl	$loop1.269, %edx	#test/matmul.ml:2:3->14:16
-	movl	%edx, 0(%eax)	#test/matmul.ml:2:3->14:16
-	movl	%ecx, 20(%eax)	#test/matmul.ml:2:3->14:16
-	movl	%ebx, 16(%eax)	#test/matmul.ml:2:3->14:16
-	movl	%edi, 12(%eax)	#test/matmul.ml:2:3->14:16
-	movl	%esi, 8(%eax)	#test/matmul.ml:2:3->14:16
-	movl	4(%ebp), %ebx	#test/matmul.ml:2:3->14:16
-	movl	%ebx, 4(%eax)	#test/matmul.ml:2:3->14:16
-	movl	0(%ebp), %ebx	#test/matmul.ml:14:10->14:15
-	subl	$1, %ebx	#test/matmul.ml:14:10->14:15
+	movl	%eax, 0(%ebp)	#
+	movl	min_caml_hp, %eax	#
+	addl	$24, min_caml_hp	#
+	movl	%edx, 4(%ebp)	#
+	movl	$loop1.269, %edx	#
+	movl	%edx, 0(%eax)	#
+	movl	%ecx, 20(%eax)	#
+	movl	%ebx, 16(%eax)	#
+	movl	%edi, 12(%eax)	#
+	movl	%esi, 8(%eax)	#
+	movl	4(%ebp), %ebx	#
+	movl	%ebx, 4(%eax)	#
+	movl	0(%ebp), %ebx	#
+	subl	$1, %ebx	#
 	movl	%eax, %edi
 	movl	%ebx, %eax
-	jmp	*(%edi)	#test/matmul.ml:14:3->14:16
+	jmp	*(%edi)	#
 init.256:
-	movl	8(%edi), %ebx	#test/matmul.ml:19:5->21:19
-	movl	4(%edi), %ecx	#test/matmul.ml:19:5->21:19
-	cmpl	$0, %eax	#test/matmul.ml:19:5->21:19
+	movl	8(%edi), %ebx	#
+	movl	4(%edi), %ecx	#
+	cmpl	$0, %eax	#
 	jl	jge_else.395
-	movl	$l.323, %edx	#test/matmul.ml:20:32->20:34
-	movsd	0(%edx), %xmm0	#test/matmul.ml:20:32->20:34
-	movl	%edi, 0(%ebp)	#test/matmul.ml:20:17->20:34
-	movl	%eax, 4(%ebp)	#test/matmul.ml:20:17->20:34
-	movl	%ecx, 8(%ebp)	#test/matmul.ml:20:17->20:34
+	movl	$l.323, %edx	#
+	movsd	0(%edx), %xmm0	#
+	movl	%edi, 0(%ebp)	#
+	movl	%eax, 4(%ebp)	#
+	movl	%ecx, 8(%ebp)	#
 	movl	%ebx, %eax
-	addl	$16, %ebp	#test/matmul.ml:20:17->20:34
-	call	min_caml_create_float_array	#test/matmul.ml:20:17->20:34
-	subl	$16, %ebp	#test/matmul.ml:20:17->20:34
-	movl	4(%ebp), %ebx	#test/matmul.ml:20:6->20:34
-	movl	8(%ebp), %ecx	#test/matmul.ml:20:6->20:34
-	movl	%eax, (%ecx,%ebx,4)	#test/matmul.ml:20:6->20:34
-	movl	%ebx, %eax	#test/matmul.ml:21:12->21:17
-	subl	$1, %eax	#test/matmul.ml:21:12->21:17
-	movl	0(%ebp), %edi	#test/matmul.ml:21:6->21:18
-	jmp	*(%edi)	#test/matmul.ml:21:6->21:18
+	addl	$16, %ebp	#
+	call	min_caml_create_float_array	#
+	subl	$16, %ebp	#
+	movl	4(%ebp), %ebx	#
+	movl	8(%ebp), %ecx	#
+	movl	%eax, (%ecx,%ebx,4)	#
+	movl	%ebx, %eax	#
+	subl	$1, %eax	#
+	movl	0(%ebp), %edi	#
+	jmp	*(%edi)	#
 jge_else.395:
-	ret	#test/matmul.ml:19:19->19:21
+	ret	#
 make.148:
-	movl	4(%edi), %ecx	#test/matmul.ml:17:3->23:6
-	movl	%eax, 0(%ebp)	#test/matmul.ml:17:13->17:33
-	movl	%ebx, 4(%ebp)	#test/matmul.ml:17:13->17:33
+	movl	4(%edi), %ecx	#
+	movl	%eax, 0(%ebp)	#
+	movl	%ebx, 4(%ebp)	#
 	movl	%ecx, %ebx
-	addl	$8, %ebp	#test/matmul.ml:17:13->17:33
-	call	min_caml_create_array	#test/matmul.ml:17:13->17:33
-	subl	$8, %ebp	#test/matmul.ml:17:13->17:33
-	movl	min_caml_hp, %edi	#test/matmul.ml:18:3->23:6
-	addl	$16, min_caml_hp	#test/matmul.ml:18:3->23:6
-	movl	$init.256, %ebx	#test/matmul.ml:18:3->23:6
-	movl	%ebx, 0(%edi)	#test/matmul.ml:18:3->23:6
-	movl	4(%ebp), %ebx	#test/matmul.ml:18:3->23:6
-	movl	%ebx, 8(%edi)	#test/matmul.ml:18:3->23:6
-	movl	%eax, 4(%edi)	#test/matmul.ml:18:3->23:6
-	movl	0(%ebp), %ebx	#test/matmul.ml:22:9->22:14
-	subl	$1, %ebx	#test/matmul.ml:22:9->22:14
-	movl	%eax, 8(%ebp)	#test/matmul.ml:22:3->22:15
+	addl	$8, %ebp	#
+	call	min_caml_create_array	#
+	subl	$8, %ebp	#
+	movl	min_caml_hp, %edi	#
+	addl	$16, min_caml_hp	#
+	movl	$init.256, %ebx	#
+	movl	%ebx, 0(%edi)	#
+	movl	4(%ebp), %ebx	#
+	movl	%ebx, 8(%edi)	#
+	movl	%eax, 4(%edi)	#
+	movl	0(%ebp), %ebx	#
+	subl	$1, %ebx	#
+	movl	%eax, 8(%ebp)	#
 	movl	%ebx, %eax
-	addl	$16, %ebp	#test/matmul.ml:22:3->22:15
-	call	*(%edi)	#test/matmul.ml:22:3->22:15
-	subl	$16, %ebp	#test/matmul.ml:22:3->22:15
-	movl	8(%ebp), %eax	#test/matmul.ml:23:3->23:6
+	addl	$16, %ebp	#
+	call	*(%edi)	#
+	subl	$16, %ebp	#
+	movl	8(%ebp), %eax	#
 	ret
 .globl	min_caml_start
 min_caml_start:
@@ -215,145 +215,145 @@ _min_caml_start: # for cygwin
 	movl	32(%esp),%ebp
 	movl	36(%esp),%eax
 	movl	%eax,min_caml_hp
-	movl	$0, %eax	#test/matmul.ml:15:26->15:27
-	movl	$l.323, %ebx	#test/matmul.ml:15:28->15:30
-	movsd	0(%ebx), %xmm0	#test/matmul.ml:15:28->15:30
-	call	min_caml_create_float_array	#test/matmul.ml:15:13->15:30
-	movl	min_caml_hp, %edi	#test/matmul.ml:16:1->40:17
-	addl	$8, min_caml_hp	#test/matmul.ml:16:1->40:17
-	movl	$make.148, %ebx	#test/matmul.ml:16:1->40:17
-	movl	%ebx, 0(%edi)	#test/matmul.ml:16:1->40:17
-	movl	%eax, 4(%edi)	#test/matmul.ml:16:1->40:17
-	movl	$2, %eax	#test/matmul.ml:24:14->24:15
-	movl	$3, %ebx	#test/matmul.ml:24:16->24:17
-	movl	%edi, 0(%ebp)	#test/matmul.ml:24:9->24:17
-	addl	$8, %ebp	#test/matmul.ml:24:9->24:17
-	call	*(%edi)	#test/matmul.ml:24:9->24:17
-	subl	$8, %ebp	#test/matmul.ml:24:9->24:17
-	movl	$3, %ebx	#test/matmul.ml:25:14->25:15
-	movl	$2, %ecx	#test/matmul.ml:25:16->25:17
-	movl	0(%ebp), %edi	#test/matmul.ml:25:9->25:17
-	movl	%eax, 4(%ebp)	#test/matmul.ml:25:9->25:17
+	movl	$0, %eax	#
+	movl	$l.323, %ebx	#
+	movsd	0(%ebx), %xmm0	#
+	call	min_caml_create_float_array	#
+	movl	min_caml_hp, %edi	#
+	addl	$8, min_caml_hp	#
+	movl	$make.148, %ebx	#
+	movl	%ebx, 0(%edi)	#
+	movl	%eax, 4(%edi)	#
+	movl	$2, %eax	#
+	movl	$3, %ebx	#
+	movl	%edi, 0(%ebp)	#
+	addl	$8, %ebp	#
+	call	*(%edi)	#
+	subl	$8, %ebp	#
+	movl	$3, %ebx	#
+	movl	$2, %ecx	#
+	movl	0(%ebp), %edi	#
+	movl	%eax, 4(%ebp)	#
 	movl	%ebx, %eax
 	movl	%ecx, %ebx
-	addl	$8, %ebp	#test/matmul.ml:25:9->25:17
-	call	*(%edi)	#test/matmul.ml:25:9->25:17
-	subl	$8, %ebp	#test/matmul.ml:25:9->25:17
-	movl	$2, %ebx	#test/matmul.ml:26:14->26:15
-	movl	$2, %ecx	#test/matmul.ml:26:16->26:17
-	movl	0(%ebp), %edi	#test/matmul.ml:26:9->26:17
-	movl	%eax, 8(%ebp)	#test/matmul.ml:26:9->26:17
+	addl	$8, %ebp	#
+	call	*(%edi)	#
+	subl	$8, %ebp	#
+	movl	$2, %ebx	#
+	movl	$2, %ecx	#
+	movl	0(%ebp), %edi	#
+	movl	%eax, 8(%ebp)	#
 	movl	%ebx, %eax
 	movl	%ecx, %ebx
-	addl	$16, %ebp	#test/matmul.ml:26:9->26:17
-	call	*(%edi)	#test/matmul.ml:26:9->26:17
-	subl	$16, %ebp	#test/matmul.ml:26:9->26:17
-	movl	%eax, %edi	#test/matmul.ml:26:9->26:17
-	movl	4(%ebp), %edx	#test/matmul.ml:17:13->17:33
-	movl	0(%edx), %eax	#test/matmul.ml:17:13->17:33
-	movl	$l.330, %ebx	#test/matmul.ml:27:14->27:16
-	movsd	0(%ebx), %xmm0	#test/matmul.ml:27:14->27:16
-	movsd	%xmm0, 0(%eax)	#test/matmul.ml:27:1->27:16
-	movl	0(%edx), %eax	#test/matmul.ml:17:13->17:33
-	movl	$l.332, %ebx	#test/matmul.ml:27:31->27:33
-	movsd	0(%ebx), %xmm0	#test/matmul.ml:27:31->27:33
-	movsd	%xmm0, 8(%eax)	#test/matmul.ml:27:18->27:33
-	movl	0(%edx), %eax	#test/matmul.ml:17:13->17:33
-	movl	$l.334, %ebx	#test/matmul.ml:27:48->27:50
-	movsd	0(%ebx), %xmm0	#test/matmul.ml:27:48->27:50
-	movsd	%xmm0, 16(%eax)	#test/matmul.ml:27:35->27:50
-	movl	4(%edx), %eax	#test/matmul.ml:17:13->17:33
-	movl	$l.336, %ebx	#test/matmul.ml:28:14->28:16
-	movsd	0(%ebx), %xmm0	#test/matmul.ml:28:14->28:16
-	movsd	%xmm0, 0(%eax)	#test/matmul.ml:28:1->28:16
-	movl	4(%edx), %eax	#test/matmul.ml:17:13->17:33
-	movl	$l.338, %ebx	#test/matmul.ml:28:31->28:33
-	movsd	0(%ebx), %xmm0	#test/matmul.ml:28:31->28:33
-	movsd	%xmm0, 8(%eax)	#test/matmul.ml:28:18->28:33
-	movl	4(%edx), %eax	#test/matmul.ml:17:13->17:33
-	movl	$l.340, %ebx	#test/matmul.ml:28:48->28:50
-	movsd	0(%ebx), %xmm0	#test/matmul.ml:28:48->28:50
-	movsd	%xmm0, 16(%eax)	#test/matmul.ml:28:35->28:50
-	movl	8(%ebp), %esi	#test/matmul.ml:17:13->17:33
-	movl	0(%esi), %eax	#test/matmul.ml:17:13->17:33
-	movl	$l.342, %ebx	#test/matmul.ml:29:14->29:16
-	movsd	0(%ebx), %xmm0	#test/matmul.ml:29:14->29:16
-	movsd	%xmm0, 0(%eax)	#test/matmul.ml:29:1->29:16
-	movl	0(%esi), %eax	#test/matmul.ml:17:13->17:33
-	movl	$l.344, %ebx	#test/matmul.ml:29:31->29:33
-	movsd	0(%ebx), %xmm0	#test/matmul.ml:29:31->29:33
-	movsd	%xmm0, 8(%eax)	#test/matmul.ml:29:18->29:33
-	movl	4(%esi), %eax	#test/matmul.ml:17:13->17:33
-	movl	$l.346, %ebx	#test/matmul.ml:30:14->30:16
-	movsd	0(%ebx), %xmm0	#test/matmul.ml:30:14->30:16
-	movsd	%xmm0, 0(%eax)	#test/matmul.ml:30:1->30:16
-	movl	4(%esi), %eax	#test/matmul.ml:17:13->17:33
-	movl	$l.348, %ebx	#test/matmul.ml:30:31->30:34
-	movsd	0(%ebx), %xmm0	#test/matmul.ml:30:31->30:34
-	movsd	%xmm0, 8(%eax)	#test/matmul.ml:30:18->30:34
-	movl	8(%esi), %eax	#test/matmul.ml:17:13->17:33
-	movl	$l.350, %ebx	#test/matmul.ml:31:14->31:17
-	movsd	0(%ebx), %xmm0	#test/matmul.ml:31:14->31:17
-	movsd	%xmm0, 0(%eax)	#test/matmul.ml:31:1->31:17
-	movl	8(%esi), %eax	#test/matmul.ml:17:13->17:33
-	movl	$l.352, %ebx	#test/matmul.ml:31:32->31:35
-	movsd	0(%ebx), %xmm0	#test/matmul.ml:31:32->31:35
-	movsd	%xmm0, 8(%eax)	#test/matmul.ml:31:19->31:35
-	movl	$2, %eax	#test/matmul.ml:32:5->32:6
-	movl	$3, %ebx	#test/matmul.ml:32:7->32:8
-	movl	$2, %ecx	#test/matmul.ml:32:9->32:10
-	movl	%edi, 12(%ebp)	#test/matmul.ml:32:1->32:16
-	addl	$16, %ebp	#test/matmul.ml:32:1->32:16
-	call	mul.140	#test/matmul.ml:32:1->32:16
-	subl	$16, %ebp	#test/matmul.ml:32:1->32:16
-	movl	12(%ebp), %eax	#test/matmul.ml:17:13->17:33
-	movl	0(%eax), %ebx	#test/matmul.ml:17:13->17:33
-	movsd	0(%ebx), %xmm0	#test/matmul.ml:15:13->15:30
-	addl	$16, %ebp	#test/matmul.ml:33:12->33:32
-	call	min_caml_truncate	#test/matmul.ml:33:12->33:32
-	subl	$16, %ebp	#test/matmul.ml:33:12->33:32
-	addl	$16, %ebp	#test/matmul.ml:33:1->33:33
-	call	min_caml_print_int	#test/matmul.ml:33:1->33:33
-	subl	$16, %ebp	#test/matmul.ml:33:1->33:33
-	addl	$16, %ebp	#test/matmul.ml:34:1->34:17
-	call	min_caml_print_newline	#test/matmul.ml:34:1->34:17
-	subl	$16, %ebp	#test/matmul.ml:34:1->34:17
-	movl	12(%ebp), %eax	#test/matmul.ml:17:13->17:33
-	movl	0(%eax), %ebx	#test/matmul.ml:17:13->17:33
-	movsd	8(%ebx), %xmm0	#test/matmul.ml:15:13->15:30
-	addl	$16, %ebp	#test/matmul.ml:35:12->35:32
-	call	min_caml_truncate	#test/matmul.ml:35:12->35:32
-	subl	$16, %ebp	#test/matmul.ml:35:12->35:32
-	addl	$16, %ebp	#test/matmul.ml:35:1->35:33
-	call	min_caml_print_int	#test/matmul.ml:35:1->35:33
-	subl	$16, %ebp	#test/matmul.ml:35:1->35:33
-	addl	$16, %ebp	#test/matmul.ml:36:1->36:17
-	call	min_caml_print_newline	#test/matmul.ml:36:1->36:17
-	subl	$16, %ebp	#test/matmul.ml:36:1->36:17
-	movl	12(%ebp), %eax	#test/matmul.ml:17:13->17:33
-	movl	4(%eax), %ebx	#test/matmul.ml:17:13->17:33
-	movsd	0(%ebx), %xmm0	#test/matmul.ml:15:13->15:30
-	addl	$16, %ebp	#test/matmul.ml:37:12->37:32
-	call	min_caml_truncate	#test/matmul.ml:37:12->37:32
-	subl	$16, %ebp	#test/matmul.ml:37:12->37:32
-	addl	$16, %ebp	#test/matmul.ml:37:1->37:33
-	call	min_caml_print_int	#test/matmul.ml:37:1->37:33
-	subl	$16, %ebp	#test/matmul.ml:37:1->37:33
-	addl	$16, %ebp	#test/matmul.ml:38:1->38:17
-	call	min_caml_print_newline	#test/matmul.ml:38:1->38:17
-	subl	$16, %ebp	#test/matmul.ml:38:1->38:17
-	movl	12(%ebp), %eax	#test/matmul.ml:17:13->17:33
-	movl	4(%eax), %eax	#test/matmul.ml:17:13->17:33
-	movsd	8(%eax), %xmm0	#test/matmul.ml:15:13->15:30
-	addl	$16, %ebp	#test/matmul.ml:39:12->39:32
-	call	min_caml_truncate	#test/matmul.ml:39:12->39:32
-	subl	$16, %ebp	#test/matmul.ml:39:12->39:32
-	addl	$16, %ebp	#test/matmul.ml:39:1->39:33
-	call	min_caml_print_int	#test/matmul.ml:39:1->39:33
-	subl	$16, %ebp	#test/matmul.ml:39:1->39:33
-	addl	$16, %ebp	#test/matmul.ml:40:1->40:17
-	call	min_caml_print_newline	#test/matmul.ml:40:1->40:17
-	subl	$16, %ebp	#test/matmul.ml:40:1->40:17
+	addl	$16, %ebp	#
+	call	*(%edi)	#
+	subl	$16, %ebp	#
+	movl	%eax, %edi	#
+	movl	4(%ebp), %edx	#
+	movl	0(%edx), %eax	#
+	movl	$l.330, %ebx	#
+	movsd	0(%ebx), %xmm0	#
+	movsd	%xmm0, 0(%eax)	#
+	movl	0(%edx), %eax	#
+	movl	$l.332, %ebx	#
+	movsd	0(%ebx), %xmm0	#
+	movsd	%xmm0, 8(%eax)	#
+	movl	0(%edx), %eax	#
+	movl	$l.334, %ebx	#
+	movsd	0(%ebx), %xmm0	#
+	movsd	%xmm0, 16(%eax)	#
+	movl	4(%edx), %eax	#
+	movl	$l.336, %ebx	#
+	movsd	0(%ebx), %xmm0	#
+	movsd	%xmm0, 0(%eax)	#
+	movl	4(%edx), %eax	#
+	movl	$l.338, %ebx	#
+	movsd	0(%ebx), %xmm0	#
+	movsd	%xmm0, 8(%eax)	#
+	movl	4(%edx), %eax	#
+	movl	$l.340, %ebx	#
+	movsd	0(%ebx), %xmm0	#
+	movsd	%xmm0, 16(%eax)	#
+	movl	8(%ebp), %esi	#
+	movl	0(%esi), %eax	#
+	movl	$l.342, %ebx	#
+	movsd	0(%ebx), %xmm0	#
+	movsd	%xmm0, 0(%eax)	#
+	movl	0(%esi), %eax	#
+	movl	$l.344, %ebx	#
+	movsd	0(%ebx), %xmm0	#
+	movsd	%xmm0, 8(%eax)	#
+	movl	4(%esi), %eax	#
+	movl	$l.346, %ebx	#
+	movsd	0(%ebx), %xmm0	#
+	movsd	%xmm0, 0(%eax)	#
+	movl	4(%esi), %eax	#
+	movl	$l.348, %ebx	#
+	movsd	0(%ebx), %xmm0	#
+	movsd	%xmm0, 8(%eax)	#
+	movl	8(%esi), %eax	#
+	movl	$l.350, %ebx	#
+	movsd	0(%ebx), %xmm0	#
+	movsd	%xmm0, 0(%eax)	#
+	movl	8(%esi), %eax	#
+	movl	$l.352, %ebx	#
+	movsd	0(%ebx), %xmm0	#
+	movsd	%xmm0, 8(%eax)	#
+	movl	$2, %eax	#
+	movl	$3, %ebx	#
+	movl	$2, %ecx	#
+	movl	%edi, 12(%ebp)	#
+	addl	$16, %ebp	#
+	call	mul.140	#
+	subl	$16, %ebp	#
+	movl	12(%ebp), %eax	#
+	movl	0(%eax), %ebx	#
+	movsd	0(%ebx), %xmm0	#
+	addl	$16, %ebp	#
+	call	min_caml_truncate	#
+	subl	$16, %ebp	#
+	addl	$16, %ebp	#
+	call	min_caml_print_int	#
+	subl	$16, %ebp	#
+	addl	$16, %ebp	#
+	call	min_caml_print_newline	#
+	subl	$16, %ebp	#
+	movl	12(%ebp), %eax	#
+	movl	0(%eax), %ebx	#
+	movsd	8(%ebx), %xmm0	#
+	addl	$16, %ebp	#
+	call	min_caml_truncate	#
+	subl	$16, %ebp	#
+	addl	$16, %ebp	#
+	call	min_caml_print_int	#
+	subl	$16, %ebp	#
+	addl	$16, %ebp	#
+	call	min_caml_print_newline	#
+	subl	$16, %ebp	#
+	movl	12(%ebp), %eax	#
+	movl	4(%eax), %ebx	#
+	movsd	0(%ebx), %xmm0	#
+	addl	$16, %ebp	#
+	call	min_caml_truncate	#
+	subl	$16, %ebp	#
+	addl	$16, %ebp	#
+	call	min_caml_print_int	#
+	subl	$16, %ebp	#
+	addl	$16, %ebp	#
+	call	min_caml_print_newline	#
+	subl	$16, %ebp	#
+	movl	12(%ebp), %eax	#
+	movl	4(%eax), %eax	#
+	movsd	8(%eax), %xmm0	#
+	addl	$16, %ebp	#
+	call	min_caml_truncate	#
+	subl	$16, %ebp	#
+	addl	$16, %ebp	#
+	call	min_caml_print_int	#
+	subl	$16, %ebp	#
+	addl	$16, %ebp	#
+	call	min_caml_print_newline	#
+	subl	$16, %ebp	#
 	popl	%ebp
 	popl	%edi
 	popl	%esi

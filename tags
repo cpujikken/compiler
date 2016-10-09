@@ -847,15 +847,15 @@ e'	x86/regAlloc.ml	/^  let e', regenv' = g (Id.gentmp (Type.Unit info) info, Typ
 e1'	SPARC/virtual.ml	/^      let e1' = g env e1 in$/;"	v
 e1'	closure.ml	/^      let e1' = g (M.add_list yts env') known' e1 in$/;"	v
 e1'	constFold.ml	/^      let e1' = g env e1 in$/;"	v
-e1'	duplicateLet.ml	/^            let e1', env' = g env e1$/;"	v
+e1'	duplicateLet.ml	/^            let e1', _ = g env e1$/;"	v
 e1'	virtual.ml	/^      let e1' = g env e1 in$/;"	v
 e1'	x86/virtual.ml	/^      let e1' = g env e1 in$/;"	v
 e2'	SPARC/virtual.ml	/^      let e2' = g (M.add x t env) e2 in$/;"	v
 e2'	SPARC/virtual.ml	/^      let e2' = g (M.add x t1 env) e2 in$/;"	v
 e2'	closure.ml	/^      let e2' = g env' known' e2 in$/;"	v
 e2'	constFold.ml	/^      let e2' = g (M.add x e1' env) e2 in$/;"	v
-e2'	duplicateLet.ml	/^            let e2', env' = g env e2$/;"	v
-e2'	duplicateLet.ml	/^            let e2', env''' = g env'' e2$/;"	v
+e2'	duplicateLet.ml	/^            let e2', _ = g env e2$/;"	v
+e2'	duplicateLet.ml	/^            let e2', _ = g env' e2$/;"	v
 e2'	elim.ml	/^      let e2' = f e2 in$/;"	v
 e2'	virtual.ml	/^      let e2' = g (M.add x t env) e2 in$/;"	v
 e2'	virtual.ml	/^      let e2' = g (M.add x t1 env) e2 in$/;"	v
@@ -872,8 +872,8 @@ env	typing.ml	/^	let env = M.add x t env in$/;"	v
 env'	alpha.ml	/^      let env' = M.add_list2 xs (List.map Id.genid xs) env in$/;"	v
 env'	alpha.ml	/^      let env' = M.add_list2 ys (List.map Id.genid ys) env in$/;"	v
 env'	closure.ml	/^      let env' = M.add x t env in$/;"	v
+env'	duplicateLet.ml	/^            let env' = M1.add e1 (KNormal.Var(x, Id.get_info x)) env$/;"	v
 env'	inline.ml	/^      let env' =$/;"	v
-env''	duplicateLet.ml	/^            let env'' = M1.add e1 (KNormal.Var(x, Id.get_info x)) env'$/;"	v
 equation_solver	min-rt/RayTrace.cxx	/^SIGN equation_solver(int i,           \/\/ プリミティブインデックス$/;"	f
 even	test/even-odd.ml	/^let rec even x =$/;"	v
 ex	min-rt/RayTrace.cxx	/^float ex,  ey,  ez;  \/\/ 視線の向きの単位ベクトル$/;"	v
@@ -2017,7 +2017,7 @@ write_rgb	min-rt/min-rt.ml	/^(*MINCAML*)let rec write_rgb _ =$/;"	v
 write_value	min-rt/RayTrace.cxx	/^void write_value(BYTE value)$/;"	f
 wscan	min-rt/globals.ml	/^let wscan = Array.create 3 0.0$/;"	v
 x	SPARC/virtual.ml	/^      let x = Id.genid "l" in$/;"	v
-x	example.ml	/^let x = 1 + 2$/;"	v
+x	example.ml	/^let x = 1$/;"	v
 x	kNormal.ml	/^      let x = Id.gentmp t info in$/;"	v
 x	min-rt/raytrace.c	/^  dist_t x;$/;"	m	struct:__anon4	file:
 x	test/cls-rec.ml	/^let x = 10 in$/;"	v
@@ -2044,7 +2044,7 @@ y	PowerPC/regAlloc.ml	/^    let y = (* 型の合うレジスタ変数を探す *)$/;"	v
 y	PowerPC/virtual.ml	/^      let y = Id.genid "t" in$/;"	v
 y	SPARC/regAlloc.ml	/^    let y = (* 型の合うレジスタ変数を探す *)$/;"	v
 y	SPARC/virtual.ml	/^      let y = Id.genid "t" in$/;"	v
-y	example.ml	/^let y = 1 + 2$/;"	v
+y	example.ml	/^let y = 2$/;"	v
 y	min-rt/raytrace.c	/^  dist_t y;$/;"	m	struct:__anon4	file:
 y	regAlloc.ml	/^    let y = (* 型の合うレジスタ変数を探す *)$/;"	v
 y	test/join-reg.ml	/^let y = g () in$/;"	v
@@ -2059,7 +2059,6 @@ yloop	shootout/mandelbrot.ml	/^(*MINCAML*) let rec yloop y =$/;"	v
 ys	alpha.ml	/^      let ys = List.map fst yts in$/;"	v
 z	PowerPC/virtual.ml	/^	     let z = Id.genid "l" in  $/;"	v
 z	SPARC/virtual.ml	/^	      let z = Id.genid "l" in$/;"	v
-z	example.ml	/^let z = 2 + 3$/;"	v
 z	min-rt/raytrace.c	/^  dist_t z;$/;"	m	struct:__anon4	file:
 z	test/non-tail-if.ml	/^let z = truncate (-.7.89) in$/;"	v
 z	test/spill2.ml	/^let z = Array.create 10 1 in$/;"	v

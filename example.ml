@@ -1,8 +1,6 @@
-let x = 1 + 2
+let x = 1
 in
-let y = 1 + 2
-in
-let z = 2 + 3
+let y = 2
 in
 let t = x + y
 in

@@ -15,7 +15,7 @@ _min_caml_start: # for cygwin
 	movl	32(%esp),%ebp
 	movl	36(%esp),%eax
 	movl	%eax,min_caml_hp
-	movl	$12, %eax	#example.ml:11:1->11:6
+	movl	$6, %eax	#
 	popl	%ebp
 	popl	%edi
 	popl	%esi

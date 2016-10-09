@@ -2,31 +2,31 @@
 .balign	8
 .text
 odd.21:
-	cmpl	$0, %eax	#test/even-odd.ml:5:5->7:6
+	cmpl	$0, %eax	#
 	jg	jle_else.36
-	cmpl	$0, %eax	#test/even-odd.ml:6:5->7:6
+	cmpl	$0, %eax	#
 	jl	jge_else.37
-	movl	$456, %eax	#test/even-odd.ml:7:5->7:6
+	movl	$456, %eax	#
 	ret
 jge_else.37:
-	addl	$1, %eax	#test/even-odd.ml:6:25->6:30
-	jmp	even.17	#test/even-odd.ml:6:19->6:31
+	addl	$1, %eax	#
+	jmp	even.17	#
 jle_else.36:
-	subl	$1, %eax	#test/even-odd.ml:5:25->5:30
-	jmp	even.17	#test/even-odd.ml:5:19->5:31
+	subl	$1, %eax	#
+	jmp	even.17	#
 even.17:
-	cmpl	$0, %eax	#test/even-odd.ml:8:3->10:4
+	cmpl	$0, %eax	#
 	jg	jle_else.38
-	cmpl	$0, %eax	#test/even-odd.ml:9:3->10:4
+	cmpl	$0, %eax	#
 	jl	jge_else.39
-	movl	$123, %eax	#test/even-odd.ml:10:3->10:4
+	movl	$123, %eax	#
 	ret
 jge_else.39:
-	addl	$1, %eax	#test/even-odd.ml:9:22->9:27
-	jmp	odd.21	#test/even-odd.ml:9:17->9:28
+	addl	$1, %eax	#
+	jmp	odd.21	#
 jle_else.38:
-	subl	$1, %eax	#test/even-odd.ml:8:22->8:27
-	jmp	odd.21	#test/even-odd.ml:8:17->8:28
+	subl	$1, %eax	#
+	jmp	odd.21	#
 .globl	min_caml_start
 min_caml_start:
 .globl	_min_caml_start
@@ -41,9 +41,9 @@ _min_caml_start: # for cygwin
 	movl	32(%esp),%ebp
 	movl	36(%esp),%eax
 	movl	%eax,min_caml_hp
-	movl	$789, %eax	#test/even-odd.ml:11:17->11:20
-	call	even.17	#test/even-odd.ml:11:12->11:20
-	call	min_caml_print_int	#test/even-odd.ml:11:1->11:21
+	movl	$789, %eax	#
+	call	even.17	#
+	call	min_caml_print_int	#
 	popl	%ebp
 	popl	%edi
 	popl	%esi
