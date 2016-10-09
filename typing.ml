@@ -160,7 +160,12 @@ let f e =
   (try
       let info = Syntax.get_info e
       in
-      unify (Type.Unit info) (g M.empty e)
-  with Unify _ -> failwith "top level does not have type unit");
+      (g M.empty e);
+      ()
+  with
+    | Error(e, t1, t2) as ex->
+            Format.eprintf "type\n%s\nis not compatible with type\n%s\nwhile evaluating\n%s" (Type.to_string t2) (Type.to_string t1) (Syntax.to_string e);
+      exit 1
+  );
   extenv := M.map deref_typ !extenv;
   deref_term e
