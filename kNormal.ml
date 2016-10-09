@@ -31,9 +31,9 @@ let to_string x =
         let npre = pre ^ " "
         in
         match k with
-        | Unit info -> Printf.sprintf "%sUnit%s" pre (Info.to_string info)
-        | Int(i, info) -> Printf.sprintf "%sINT %d%s" pre i (Info.to_string info)
-        | Float( f , info)-> Printf.sprintf "%sFLOAT %f%s" pre f (Info.to_string info)
+        | Unit info -> Printf.sprintf "%sUnit\t#%s" pre (Info.to_string info)
+        | Int(i, info) -> Printf.sprintf "%sINT %d\t%s" pre i (Info.to_string info)
+        | Float( f , info)-> Printf.sprintf "%sFLOAT %f\t%s" pre f (Info.to_string info)
         | Neg(t, info) -> Printf.sprintf "%sNEG%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre t)
         | Add (x, y, info) -> Printf.sprintf "%sADD%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
         | Sub (x, y, info) -> Printf.sprintf "%sSUB%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
@@ -44,7 +44,7 @@ let to_string x =
         | FDiv (x, y, info) -> Printf.sprintf "%sFDIV%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
         | IfEq (idx, idy, z, u, info) -> Printf.sprintf "%sIF_EQ%s\n%s\n%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre idx) (Id.to_string_pre npre idy) (to_string_pre npre z) (to_string_pre npre u)
         | IfLE (idx, idy, z, u, info) -> Printf.sprintf "%sIF_LE%s\n%s\n%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre idx) (Id.to_string_pre npre idy) (to_string_pre npre z) (to_string_pre npre u)
-        | Let ((id, typ), x, y, info) -> Printf.sprintf "%sLET%s\n%s\n%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre id) (Type.to_string_pre npre typ) (to_string_pre npre x) (to_string_pre npre y)
+        | Let ((id, typ), x, y, info) -> Printf.sprintf "%sLET\t%s\n%s\n%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre id) (Type.to_string_pre npre typ) (to_string_pre npre x) (to_string_pre npre y)
         | Var( id , info)-> Printf.sprintf "%sVAR%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre id)
         | LetRec (f, t, info) -> Printf.sprintf "%sLET_REC%s\n%s\n%s" pre (Info.to_string info) (to_string_let_rec npre f) (to_string_pre npre t)
         | App (x, xlist, info) -> Printf.sprintf "%sAPP%s\n%s%s" pre (Info.to_string info) (Id.to_string_pre npre x) (to_string_idlist npre xlist)
@@ -224,3 +224,97 @@ let rec g env = function (* K正規化ルーチン本体 (caml2html: knormal_g) *)
 let f e =
     Printf.printf "%s" (Syntax.to_string e);
     fst (g M.empty e)
+let get_constructor_code = function
+  | Unit _ -> 0
+  | Int _ ->  1
+  | Float _ ->   2
+  | Neg _ ->    3
+  | Add _ ->     4
+  | Sub _ ->      5
+  | FNeg _ ->       6
+  | FAdd _ ->        7
+  | FSub _ ->         8
+  | FMul _ ->          9
+  | FDiv _ ->           10
+  | IfEq _ ->            11
+  | IfLE _ ->             12
+  | Let _ ->              13
+  | Var _ ->               14
+  | LetRec _ ->                15
+  | App _ ->                 16
+  | Tuple _ ->                  17
+  | LetTuple _ ->                   18
+  | Get _ ->                    19
+  | Put _ ->                     20
+  | ExtArray _ ->                      21
+  | ExtFunApp _ ->                       22
+
+
+let id_type_compare (id1, type1) (id2, type2) =
+    let cmp = Id.compare id1 id2 in
+    if cmp != 0 then cmp else
+    Type.compare type1 type2
+
+(*expression compare*)
+let rec compare x y = match x, y with
+    | Unit _, Unit _ -> 0
+    | Int(a, _), Int(b, _) -> Pervasives.compare a b
+    | Float(a, _), Float(b, _) -> Pervasives.compare a b
+
+    | Neg (a, _), Neg(b, _)
+    | FNeg (a, _), FNeg(b, _)
+    -> Id.compare b a
+    | Var (a, _), Var(b, _)
+    | ExtArray(a, _), ExtArray(b, _)
+    -> Id.compare a b
+
+    | Add (a1, b1, _), Add (a2, b2, _)
+    | Sub (a1, b1, _), Sub (a2, b2, _)
+    | FAdd(a1, b1, _), FAdd (a2, b2, _)
+    | FSub(a1, b1, _), FSub (a2, b2, _)
+    | FMul(a1, b1, _), FMul (a2, b2, _)
+    | FDiv(a1, b1, _), FDiv (a2, b2, _)
+    | Get(a1, b1, _), Get(a2, b2, _)
+    -> Common.list_compare [a1; b1] [a2; b2] Id.compare
+
+    | Put(a1, b1, c1, _), Put(a2, b2, c2, _)
+    -> Common.list_compare [a1; b1; c1]  [a2; b2; c2] Id.compare
+
+    | IfEq(a1, b1, c1, d1, _), IfEq(a2, b2, c2, d2, _)
+    | IfLE(a1, b1, c1, d1, _), IfLE(a2, b2, c2, d2, _)
+    -> let cmp = Common.list_compare [a1; b1]  [a2; b2] Id.compare in
+    if cmp = 0 then Common.list_compare [c1; d1]  [c2; d2] compare
+    else cmp
+
+    |App(id1, idlist1, _), App(id2, idlist2, _)
+    |ExtFunApp(id1, idlist1, _), ExtFunApp(id2, idlist2, _)
+    -> Common.list_compare (id1::idlist1)  (id2::idlist2) Id.compare
+
+    | Let((id1, type1), e1, ee1, _), Let((id2, type2), e2, ee2, _)
+    -> let cmp1 = Id.compare id1 id2 in
+    if cmp1 != 0 then
+      cmp1
+    else
+      let cmp2 = Type.compare type1 type2 in
+      if cmp2 != 0 then
+          cmp2
+      else
+          Common.list_compare [e1; ee1]  [e2; ee2] compare
+
+    | Tuple(idlist1, _), Tuple(idlist2, _) -> Common.list_compare idlist1  idlist2 Id.compare
+
+    | LetRec(x, e1, _), LetRec(y, e2, _)
+    ->
+        let cmp1 = Common.list_compare ((x.name)::(x.args)) ((y.name)::(y.args)) id_type_compare in
+        if cmp1 != 0 then cmp1 else
+            Common.list_compare [x.body; e1] [y.body; e2] compare
+
+    |LetTuple(idtypelist1, id1, e1, _), LetTuple(idtypelist2, id2, e2, _)
+    ->
+        let cmp = Common.list_compare idtypelist1 idtypelist2 id_type_compare in
+        if cmp != 0 then cmp else
+            let cmp1 = Id.compare id1 id2 in
+            if cmp1 != 0 then cmp1 else
+                compare e1 e2
+
+    | _, _ -> Pervasives.compare (get_constructor_code x) (get_constructor_code y)

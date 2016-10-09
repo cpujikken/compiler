@@ -42,3 +42,38 @@ let get_info = function
   | Tuple (_, info) -> info
   | Array (_, info) -> info
   | Var (_, info) -> info
+
+let get_constructor_code = function
+  | Unit _ -> 0
+  | Bool _ -> 1
+  | Int _ -> 2
+  | Float _ -> 2
+  | Fun _ -> 3
+  | Tuple _ -> 4
+  | Array _ -> 5
+  | Var _ -> 6
+
+let option_code = function
+    | None -> 0
+    | Some _ -> 1
+
+let rec compare u v = match u, v with
+    | Unit _, Unit _
+    | Bool _, Bool _
+    | Int _, Int _
+    | Float _, Float _
+    -> 0
+
+    | Fun (list1, type1, _), Fun(list2, type2, _) -> Common.list_compare (type1::list1) (type2::list2) compare
+
+    | Tuple(list1, _), Tuple(list2, _) -> Common.list_compare list1 list2 compare
+
+    | Array(type1, _), Array(type2, _) -> compare type1 type2
+
+    | Var(o1, _), Var(o2, _) ->(match !o1, !o2 with
+        | None, None -> 0
+        | Some t1, Some t2 -> compare t1 t2
+        | _, _ -> Pervasives.compare (option_code !o1) (option_code !o2)
+    )
+
+    | _, _ -> Pervasives.compare (get_constructor_code u) (get_constructor_code v)
