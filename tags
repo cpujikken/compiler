@@ -847,15 +847,15 @@ e'	x86/regAlloc.ml	/^  let e', regenv' = g (Id.gentmp (Type.Unit info) info, Typ
 e1'	SPARC/virtual.ml	/^      let e1' = g env e1 in$/;"	v
 e1'	closure.ml	/^      let e1' = g (M.add_list yts env') known' e1 in$/;"	v
 e1'	constFold.ml	/^      let e1' = g env e1 in$/;"	v
-e1'	duplicateLet.ml	/^            let e1', _ = g env e1$/;"	v
+e1'	duplicateLet.ml	/^                            let e1', _ = g env e1$/;"	v
 e1'	virtual.ml	/^      let e1' = g env e1 in$/;"	v
 e1'	x86/virtual.ml	/^      let e1' = g env e1 in$/;"	v
 e2'	SPARC/virtual.ml	/^      let e2' = g (M.add x t env) e2 in$/;"	v
 e2'	SPARC/virtual.ml	/^      let e2' = g (M.add x t1 env) e2 in$/;"	v
 e2'	closure.ml	/^      let e2' = g env' known' e2 in$/;"	v
 e2'	constFold.ml	/^      let e2' = g (M.add x e1' env) e2 in$/;"	v
-e2'	duplicateLet.ml	/^            let e2', _ = g env e2$/;"	v
-e2'	duplicateLet.ml	/^            let e2', _ = g env' e2$/;"	v
+e2'	duplicateLet.ml	/^                            let e2', _ = g env e2$/;"	v
+e2'	duplicateLet.ml	/^                            let e2', _ = g env' e2$/;"	v
 e2'	elim.ml	/^      let e2' = f e2 in$/;"	v
 e2'	virtual.ml	/^      let e2' = g (M.add x t env) e2 in$/;"	v
 e2'	virtual.ml	/^      let e2' = g (M.add x t1 env) e2 in$/;"	v
@@ -872,7 +872,7 @@ env	typing.ml	/^	let env = M.add x t env in$/;"	v
 env'	alpha.ml	/^      let env' = M.add_list2 xs (List.map Id.genid xs) env in$/;"	v
 env'	alpha.ml	/^      let env' = M.add_list2 ys (List.map Id.genid ys) env in$/;"	v
 env'	closure.ml	/^      let env' = M.add x t env in$/;"	v
-env'	duplicateLet.ml	/^            let env' = M1.add e1 (KNormal.Var(x, Id.get_info x)) env$/;"	v
+env'	duplicateLet.ml	/^                            let env' =$/;"	v
 env'	inline.ml	/^      let env' =$/;"	v
 equation_solver	min-rt/RayTrace.cxx	/^SIGN equation_solver(int i,           \/\/ プリミティブインデックス$/;"	f
 even	test/even-odd.ml	/^let rec even x =$/;"	v
@@ -907,6 +907,7 @@ f	duplicateLet.ml	/^let f e =$/;"	v
 f	elim.ml	/^let rec f = function (* 不要定義削除ルーチン本体 (caml2html: elim_f) *)$/;"	v
 f	elim.mli	/^val f : KNormal.t -> KNormal.t$/;"	v
 f	emit.mli	/^val f : out_channel -> Asm.prog -> unit$/;"	v
+f	example.ml	/^let rec f x = 3$/;"	v
 f	inline.ml	/^let f e = g M.empty e$/;"	v
 f	inline.mli	/^val f : KNormal.t -> KNormal.t$/;"	v
 f	kNormal.mli	/^val f : Syntax.t -> t$/;"	v
@@ -1068,7 +1069,7 @@ g	SPARC/simm.ml	/^let rec g env = function (* 命令列の13bit即値最適化 (caml2html
 g	alpha.ml	/^let rec g env = function (* α変換ルーチン本体 (caml2html: alpha_g) *)$/;"	v
 g	alpha.mli	/^val g : Id.t M.t -> KNormal.t -> KNormal.t (* for Inline.g *)$/;"	v
 g	closure.ml	/^let rec g env known = function (* クロージャ変換ルーチン本体 (caml2html: closure_g) *)$/;"	v
-g	duplicateLet.ml	/^let rec g env = function$/;"	v
+g	duplicateLet.ml	/^let rec g env exp = match exp with$/;"	v
 g	emit.ml	/^let rec g oc = function (* 命令列のアセンブリ生成 (caml2html: emit_g) *)$/;"	v
 g	inline.ml	/^let rec g env = function (* インライン展開ルーチン本体 (caml2html: inline_g) *)$/;"	v
 g	kNormal.ml	/^let rec g env = function (* K正規化ルーチン本体 (caml2html: knormal_g) *)$/;"	v
@@ -1148,6 +1149,7 @@ h	x86/simm.ml	/^let h { name = l; args = xs; fargs = ys; body = e; ret = t } = (
 h	x86/virtual.ml	/^let h { Closure.name = (Id.L(x1, x2) as x , t); Closure.args = yts; Closure.formal_fv = zts; Closure.body = e } =$/;"	v
 half	min-rt/raytrace.c	/^  card_t half; \/\/ 一辺の長さの半分$/;"	m	struct:__anon7	file:
 half_vec	min-rt/raytrace.c	/^inline static void half_vec (vec_t * vec) {$/;"	f	file:
+has_side_effect	duplicateLet.ml	/^let rec has_side_effect = function$/;"	v
 head	min-rt/min-rt.ml	/^  let head = iand.(ofs) in$/;"	v
 head	min-rt/min-rt.ml	/^  let head = or_group.(ofs) in$/;"	v
 head	min-rt/min-rt.ml	/^  let head = or_matrix.(ofs) in$/;"	v
@@ -1586,6 +1588,7 @@ output	min-rt/raytrace.c	/^static output_t output; \/\/ 出力画像の情報$/;"	v	fil
 output_filename	min-rt/RayTrace.cxx	/^char *output_filename = NULL;$/;"	v
 output_fp	min-rt/RayTrace.cxx	/^FILE *output_fp = stdout; \/\/ 出力ファイル$/;"	v
 output_t	min-rt/raytrace.c	/^} output_t;$/;"	t	typeref:struct:__anon7	file:
+p	example.ml	/^let p = (f ()) + x$/;"	v
 pB	min-rt/RayTrace.cxx	120;"	d	file:
 pG	min-rt/RayTrace.cxx	119;"	d	file:
 pHL	min-rt/RayTrace.cxx	117;"	d	file:
@@ -1641,6 +1644,7 @@ prog	x86/asm.ml	/^type prog = Prog of (Id.l * float) list * fundef list * t$/;"	
 prog	x86/asm.mli	/^type prog = Prog of (Id.l * float) list * fundef list * t$/;"	t
 putchar	PowerPC/libmincaml.S	/^putchar:$/;"	l
 putchar_lazy	PowerPC/libmincaml.S	/^putchar_lazy:$/;"	l
+q	example.ml	/^let q = (f ()) + x$/;"	v
 q	min-rt/min-rt.ml	/^  let q = (l.(0) *. o_param_a m +. l.(1) *. o_param_b m +. l.(2) *. o_param_c m) in$/;"	v
 r	PowerPC/regAlloc.ml	/^    let r = (* そうでないレジスタを探す *)$/;"	v
 r	SPARC/regAlloc.ml	/^    let r = (* そうでないレジスタを探す *)$/;"	v
