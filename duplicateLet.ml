@@ -85,8 +85,8 @@ let rec g env exp = match exp with
   | KNormal.ExtArray _
   | KNormal.ExtFunApp _
   -> exp, env
-  | KNormal.LetTuple (a, b, ,e, info)
-  -> KNormal.LetTuple(a, b, fst (g env e), info)
+  | KNormal.LetTuple (a, b,e, info)
+  -> KNormal.LetTuple(a, b, fst (g env e), info), env
 
   | KNormal.IfEq (id1, id2, t1, t2, info)
   -> KNormal.IfEq(id1, id2, fst (g env t1), fst (g env t2), info), env

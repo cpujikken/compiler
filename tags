@@ -591,7 +591,6 @@ Virtual	x86/virtual.ml	1;"	M
 WORD	min-rt/RayTrace.cxx	/^typedef unsigned short WORD;$/;"	t	file:
 WRITE_QUEUE_SIZE	min-rt/RayTrace.cxx	798;"	d	file:
 __USE_FIXED_PROTOTYPES__	min-rt/raytrace.c	1;"	d	file:
-_min_caml_start	example.s	/^_min_caml_start: # for cygwin$/;"	l
 _min_caml_start	min-rt/min-rt.s	/^_min_caml_start: # for cygwin$/;"	l
 _screen_height	min-rt/RayTrace.cxx	/^int  _screen_height = 256;$/;"	v
 _screen_width	min-rt/RayTrace.cxx	/^int  _screen_width  = 256;$/;"	v
@@ -907,7 +906,6 @@ f	duplicateLet.ml	/^let f e =$/;"	v
 f	elim.ml	/^let rec f = function (* 不要定義削除ルーチン本体 (caml2html: elim_f) *)$/;"	v
 f	elim.mli	/^val f : KNormal.t -> KNormal.t$/;"	v
 f	emit.mli	/^val f : out_channel -> Asm.prog -> unit$/;"	v
-f	example.ml	/^let rec f x = 3$/;"	v
 f	inline.ml	/^let f e = g M.empty e$/;"	v
 f	inline.mli	/^val f : KNormal.t -> KNormal.t$/;"	v
 f	kNormal.mli	/^val f : Syntax.t -> t$/;"	v
@@ -1455,7 +1453,6 @@ min_caml_sqrt	PowerPC/libmincaml.S	/^min_caml_sqrt:$/;"	l
 min_caml_sqrt	SPARC/libmincaml.S	/^min_caml_sqrt:$/;"	l
 min_caml_sqrt	libmincaml.S	/^min_caml_sqrt:$/;"	l
 min_caml_sqrt	x86/libmincaml.S	/^min_caml_sqrt:$/;"	l
-min_caml_start	example.s	/^min_caml_start:$/;"	l
 min_caml_start	min-rt/min-rt.s	/^min_caml_start:$/;"	l
 min_caml_stderr	stub.c	/^FILE *min_caml_stderr;$/;"	v
 min_caml_temp	min-rt/SPARC/globals.s	/^min_caml_temp:$/;"	l
@@ -1588,7 +1585,6 @@ output	min-rt/raytrace.c	/^static output_t output; \/\/ 出力画像の情報$/;"	v	fil
 output_filename	min-rt/RayTrace.cxx	/^char *output_filename = NULL;$/;"	v
 output_fp	min-rt/RayTrace.cxx	/^FILE *output_fp = stdout; \/\/ 出力ファイル$/;"	v
 output_t	min-rt/raytrace.c	/^} output_t;$/;"	t	typeref:struct:__anon7	file:
-p	example.ml	/^let p = (f ()) + x$/;"	v
 pB	min-rt/RayTrace.cxx	120;"	d	file:
 pG	min-rt/RayTrace.cxx	119;"	d	file:
 pHL	min-rt/RayTrace.cxx	117;"	d	file:
@@ -1644,7 +1640,6 @@ prog	x86/asm.ml	/^type prog = Prog of (Id.l * float) list * fundef list * t$/;"	
 prog	x86/asm.mli	/^type prog = Prog of (Id.l * float) list * fundef list * t$/;"	t
 putchar	PowerPC/libmincaml.S	/^putchar:$/;"	l
 putchar_lazy	PowerPC/libmincaml.S	/^putchar_lazy:$/;"	l
-q	example.ml	/^let q = (f ()) + x$/;"	v
 q	min-rt/min-rt.ml	/^  let q = (l.(0) *. o_param_a m +. l.(1) *. o_param_b m +. l.(2) *. o_param_c m) in$/;"	v
 r	PowerPC/regAlloc.ml	/^    let r = (* そうでないレジスタを探す *)$/;"	v
 r	SPARC/regAlloc.ml	/^    let r = (* そうでないレジスタを探す *)$/;"	v
