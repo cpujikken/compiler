@@ -20,6 +20,10 @@ ALIGNSTACK3	libmincaml.S	/^#define ALIGNSTACK3 andl $0xfffffff0, %esp; pushl %ea
 ALIGNSTACK3	libmincaml.S	/^#define ALIGNSTACK3$/;"	d
 ALIGNSTACK3	x86/libmincaml.S	/^#define ALIGNSTACK3 andl $0xfffffff0, %esp; pushl %eax$/;"	d
 ALIGNSTACK3	x86/libmincaml.S	/^#define ALIGNSTACK3$/;"	d
+ARRAY_CREATE	parser.ml	/^  | ARRAY_CREATE$/;"	C	type:token
+ARRAY_CREATE	parser.mli	/^  | ARRAY_CREATE$/;"	C	type:token
+AST_DOT	parser.ml	/^  | AST_DOT$/;"	C	type:token
+AST_DOT	parser.mli	/^  | AST_DOT$/;"	C	type:token
 Ack	shootout/ack.ml	1;"	M
 Ack	test/ack.ml	1;"	M
 Add	PowerPC/asm.ml	/^  | Add of Id.t * id_or_imm$/;"	C	type:exp
@@ -70,6 +74,8 @@ Asm	x86/asm.ml	1;"	M
 Asm	x86/asm.mli	1;"	M
 Assoc	assoc.ml	1;"	M
 Assoc	assoc.mli	1;"	M
+BOOL	parser.ml	/^  | BOOL of (bool)$/;"	C	type:token
+BOOL	parser.mli	/^  | BOOL of (bool)$/;"	C	type:token
 BYTE	min-rt/RayTrace.cxx	/^typedef unsigned char BYTE;$/;"	t	file:
 Beta	beta.ml	1;"	M
 Beta	beta.mli	1;"	M
@@ -85,6 +91,8 @@ C	x86/asm.ml	/^type id_or_imm = V of Id.t | C of int$/;"	C	type:id_or_imm
 C	x86/asm.mli	/^type id_or_imm = V of Id.t | C of int$/;"	C	type:id_or_imm
 CC	Makefile	/^CC = gcc$/;"	m
 CFLAGS	Makefile	/^CFLAGS = -g -O2 -Wall$/;"	m
+COMMA	parser.ml	/^  | COMMA$/;"	C	type:token
+COMMA	parser.mli	/^  | COMMA$/;"	C	type:token
 CallCls	PowerPC/asm.ml	/^  | CallCls of Id.t * Id.t list * Id.t list$/;"	C	type:exp
 CallCls	PowerPC/asm.mli	/^  | CallCls of Id.t * Id.t list * Id.t list$/;"	C	type:exp
 CallCls	SPARC/asm.ml	/^  | CallCls of Id.t * Id.t list * Id.t list$/;"	C	type:exp
@@ -120,8 +128,16 @@ ConstFold	constFold.ml	1;"	M
 ConstFold	constFold.mli	1;"	M
 DELIMITER	min-rt/RayTrace.cxx	1325;"	d	file:
 DELIMITER	min-rt/RayTrace.cxx	1344;"	d	file:
+DOT	parser.ml	/^  | DOT$/;"	C	type:token
+DOT	parser.mli	/^  | DOT$/;"	C	type:token
 Diff	min-rt/diff.ml	1;"	M
 DuplicateLet	duplicateLet.ml	1;"	M
+ELSE	parser.ml	/^  | ELSE$/;"	C	type:token
+ELSE	parser.mli	/^  | ELSE$/;"	C	type:token
+EOF	parser.ml	/^  | EOF$/;"	C	type:token
+EOF	parser.mli	/^  | EOF$/;"	C	type:token
+EQUAL	parser.ml	/^  | EQUAL$/;"	C	type:token
+EQUAL	parser.mli	/^  | EQUAL$/;"	C	type:token
 Elim	elim.ml	1;"	M
 Elim	elim.mli	1;"	M
 Emit	PowerPC/emit.ml	1;"	M
@@ -166,6 +182,8 @@ FDivD	asm.ml	/^  | FDivD of Id.t * Id.t * Info.t$/;"	C	type:exp
 FDivD	asm.mli	/^  | FDivD of Id.t * Id.t * Info.t$/;"	C	type:exp
 FDivD	x86/asm.ml	/^  | FDivD of Id.t * Id.t * Info.t$/;"	C	type:exp
 FDivD	x86/asm.mli	/^  | FDivD of Id.t * Id.t * Info.t$/;"	C	type:exp
+FLOAT	parser.ml	/^  | FLOAT of (float)$/;"	C	type:token
+FLOAT	parser.mli	/^  | FLOAT of (float)$/;"	C	type:token
 FLi	PowerPC/asm.ml	/^  | FLi of Id.l$/;"	C	type:exp
 FLi	PowerPC/asm.mli	/^  | FLi of Id.l$/;"	C	type:exp
 FMovD	SPARC/asm.ml	/^  | FMovD of Id.t$/;"	C	type:exp
@@ -226,6 +244,10 @@ Float	test/float.ml	1;"	M
 Float	type.ml	/^  | Float of Info.t$/;"	C	type:t
 Fun	type.ml	/^  | Fun of t list * t * Info.t (* arguments are uncurried *)$/;"	C	type:t
 Funcomp	test/funcomp.ml	1;"	M
+GREATER	parser.ml	/^  | GREATER$/;"	C	type:token
+GREATER	parser.mli	/^  | GREATER$/;"	C	type:token
+GREATER_EQUAL	parser.ml	/^  | GREATER_EQUAL$/;"	C	type:token
+GREATER_EQUAL	parser.mli	/^  | GREATER_EQUAL$/;"	C	type:token
 Gcd	test/gcd.ml	1;"	M
 Get	closure.ml	/^  | Get of Id.t * Id.t * Info.t$/;"	C	type:t
 Get	closure.mli	/^  | Get of Id.t * Id.t * Info.t$/;"	C	type:t
@@ -234,6 +256,14 @@ Get	kNormal.mli	/^  | Get of Id.t * Id.t * Info.t$/;"	C	type:t
 Get	syntax.ml	/^  | Get of t * t * Info.t$/;"	C	type:t
 Globals	min-rt/globals.ml	1;"	M
 Harmonic	shootout/harmonic.ml	1;"	M
+IDENT	parser.ml	/^  | IDENT of (Id.t)$/;"	C	type:token
+IDENT	parser.mli	/^  | IDENT of (Id.t)$/;"	C	type:token
+IF	parser.ml	/^  | IF$/;"	C	type:token
+IF	parser.mli	/^  | IF$/;"	C	type:token
+IN	parser.ml	/^  | IN$/;"	C	type:token
+IN	parser.mli	/^  | IN$/;"	C	type:token
+INT	parser.ml	/^  | INT of (int)$/;"	C	type:token
+INT	parser.mli	/^  | INT of (int)$/;"	C	type:token
 IPx	min-rt/RayTrace.cxx	/^float IPx, IPy, IPz; \/\/ tracer と in-out と shadow_evaluator 計算中の交点の座標$/;"	v
 IPy	min-rt/RayTrace.cxx	/^float IPx, IPy, IPz; \/\/ tracer と in-out と shadow_evaluator 計算中の交点の座標$/;"	v
 IPz	min-rt/RayTrace.cxx	/^float IPx, IPy, IPz; \/\/ tracer と in-out と shadow_evaluator 計算中の交点の座標$/;"	v
@@ -326,6 +356,18 @@ LC0	PowerPC/libmincaml.S	/^LC0:$/;"	l
 LC1	PowerPC/libmincaml.S	/^LC1:$/;"	l
 LC2	PowerPC/libmincaml.S	/^LC2:$/;"	l
 LE	syntax.ml	/^  | LE of t * t * Info.t$/;"	C	type:t
+LESS	parser.ml	/^  | LESS$/;"	C	type:token
+LESS	parser.mli	/^  | LESS$/;"	C	type:token
+LESS_EQUAL	parser.ml	/^  | LESS_EQUAL$/;"	C	type:token
+LESS_EQUAL	parser.mli	/^  | LESS_EQUAL$/;"	C	type:token
+LESS_GREATER	parser.ml	/^  | LESS_GREATER$/;"	C	type:token
+LESS_GREATER	parser.mli	/^  | LESS_GREATER$/;"	C	type:token
+LESS_MINUS	parser.ml	/^  | LESS_MINUS$/;"	C	type:token
+LESS_MINUS	parser.mli	/^  | LESS_MINUS$/;"	C	type:token
+LET	parser.ml	/^  | LET$/;"	C	type:token
+LET	parser.mli	/^  | LET$/;"	C	type:token
+LPAREN	parser.ml	/^  | LPAREN$/;"	C	type:token
+LPAREN	parser.mli	/^  | LPAREN$/;"	C	type:token
 Lapb	PowerPC/libmincaml.S	/^Lapb:$/;"	l
 Lbpb	PowerPC/libmincaml.S	/^Lbpb:$/;"	l
 Lbspb	PowerPC/libmincaml.S	/^Lbspb:$/;"	l
@@ -366,6 +408,7 @@ LetTuple	closure.mli	/^  | LetTuple of (Id.t * Type.t) list * Id.t * t * Info.t$
 LetTuple	kNormal.ml	/^  | LetTuple of (Id.t * Type.t) list * Id.t * t * Info.t$/;"	C	type:t
 LetTuple	kNormal.mli	/^  | LetTuple of (Id.t * Type.t) list * Id.t * t * Info.t$/;"	C	type:t
 LetTuple	syntax.ml	/^  | LetTuple of (Id.t * Type.t) list * t * t * Info.t$/;"	C	type:t
+Lexer	lexer.ml	1;"	M
 Lfd	PowerPC/asm.ml	/^  | Lfd of Id.t * id_or_imm$/;"	C	type:exp
 Lfd	PowerPC/asm.mli	/^  | Lfd of Id.t * id_or_imm$/;"	C	type:exp
 Li	PowerPC/asm.ml	/^  | Li of int$/;"	C	type:exp
@@ -377,6 +420,10 @@ M1	m1.ml	1;"	M
 MAX_AND	min-rt/RayTrace.cxx	128;"	d	file:
 MAX_OR	min-rt/RayTrace.cxx	129;"	d	file:
 MAX_PRIMITIVE	min-rt/RayTrace.cxx	127;"	d	file:
+MINUS	parser.ml	/^  | MINUS$/;"	C	type:token
+MINUS	parser.mli	/^  | MINUS$/;"	C	type:token
+MINUS_DOT	parser.ml	/^  | MINUS_DOT$/;"	C	type:token
+MINUS_DOT	parser.mli	/^  | MINUS_DOT$/;"	C	type:token
 Main	main.ml	1;"	M
 Main	main.mli	1;"	M
 MakeCls	closure.ml	/^  | MakeCls of (Id.t * Type.t) * closure * t * Info.t$/;"	C	type:t
@@ -396,6 +443,8 @@ Mov	x86/asm.mli	/^  | Mov of Id.t * Info.t$/;"	C	type:exp
 Mr	PowerPC/asm.ml	/^  | Mr of Id.t$/;"	C	type:exp
 Mr	PowerPC/asm.mli	/^  | Mr of Id.t$/;"	C	type:exp
 NCSUFFIX	Makefile	/^NCSUFFIX = .opt$/;"	m
+NOT	parser.ml	/^  | NOT$/;"	C	type:token
+NOT	parser.mli	/^  | NOT$/;"	C	type:token
 NULL	min-rt/raytrace.c	13;"	d	file:
 Neg	PowerPC/asm.ml	/^  | Neg of Id.t$/;"	C	type:exp
 Neg	PowerPC/asm.mli	/^  | Neg of Id.t$/;"	C	type:exp
@@ -429,6 +478,12 @@ Nop	asm.mli	/^  | Nop of Info.t$/;"	C	type:exp
 Nop	x86/asm.ml	/^  | Nop of Info.t$/;"	C	type:exp
 Nop	x86/asm.mli	/^  | Nop of Info.t$/;"	C	type:exp
 Not	syntax.ml	/^  | Not of t * Info.t$/;"	C	type:t
+PLUS	parser.ml	/^  | PLUS$/;"	C	type:token
+PLUS	parser.mli	/^  | PLUS$/;"	C	type:token
+PLUS_DOT	parser.ml	/^  | PLUS_DOT$/;"	C	type:token
+PLUS_DOT	parser.mli	/^  | PLUS_DOT$/;"	C	type:token
+Parser	parser.ml	1;"	M
+Parser	parser.mli	1;"	M
 Ppm	min-rt/ppm.ml	1;"	M
 PrimitiveData_f	min-rt/RayTrace.cxx	/^typedef float PrimitiveData_f[15];$/;"	t	file:
 PrimitiveData_i	min-rt/RayTrace.cxx	/^typedef int PrimitiveData_i[4];$/;"	t	file:
@@ -448,7 +503,11 @@ Put	closure.mli	/^  | Put of Id.t * Id.t * Id.t * Info.t$/;"	C	type:t
 Put	kNormal.ml	/^  | Put of Id.t * Id.t * Id.t * Info.t$/;"	C	type:t
 Put	kNormal.mli	/^  | Put of Id.t * Id.t * Id.t * Info.t$/;"	C	type:t
 Put	syntax.ml	/^  | Put of t * t * t * Info.t$/;"	C	type:t
+REC	parser.ml	/^  | REC$/;"	C	type:token
+REC	parser.mli	/^  | REC$/;"	C	type:token
 RESULT	Makefile	/^RESULT = min-caml$/;"	m
+RPAREN	parser.ml	/^  | RPAREN$/;"	C	type:token
+RPAREN	parser.mli	/^  | RPAREN$/;"	C	type:token
 RegAlloc	PowerPC/regAlloc.ml	1;"	M
 RegAlloc	SPARC/regAlloc.ml	1;"	M
 RegAlloc	regAlloc.ml	1;"	M
@@ -463,7 +522,11 @@ Restore	asm.mli	/^  | Restore of Id.t * Info.t  (* スタック変数から値を復元 *)$/
 Restore	x86/asm.ml	/^  | Restore of Id.t * Info.t (* スタック変数から値を復元 (caml2html: sparcasm_restore) *)$/;"	C	type:exp
 Restore	x86/asm.mli	/^  | Restore of Id.t * Info.t  (* スタック変数から値を復元 *)$/;"	C	type:exp
 S	s.ml	1;"	M
+SEMICOLON	parser.ml	/^  | SEMICOLON$/;"	C	type:token
+SEMICOLON	parser.mli	/^  | SEMICOLON$/;"	C	type:token
 SIGN	min-rt/RayTrace.cxx	/^typedef float SIGN; \/\/ 負であるかどうかだけを表す型 (第 0bit 目が符号)$/;"	t	file:
+SLASH_DOT	parser.ml	/^  | SLASH_DOT$/;"	C	type:token
+SLASH_DOT	parser.mli	/^  | SLASH_DOT$/;"	C	type:token
 SLDS	min-rt/Makefile	/^SLDS = ball contest cup dra lattice mange mir orange piero1 piero2 planet \\$/;"	m
 SLL	SPARC/asm.ml	/^  | SLL of Id.t * id_or_imm$/;"	C	type:exp
 SLL	SPARC/asm.mli	/^  | SLL of Id.t * id_or_imm$/;"	C	type:exp
@@ -538,6 +601,8 @@ Sum	test/sum.ml	1;"	M
 Sum-tail	test/sum-tail.ml	1;"	M
 Syntax	syntax.ml	1;"	M
 TESTS	Makefile	/^TESTS = print sum-tail gcd sum fib ack even-odd \\$/;"	m
+THEN	parser.ml	/^  | THEN$/;"	C	type:token
+THEN	parser.mli	/^  | THEN$/;"	C	type:token
 TRASH	Makefile	/^TRASH = $(TESTS:%=test\/%.s) $(TESTS:%=test\/%) $(TESTS:%=test\/%.res) $(TESTS:%=test\/%.ans) $(TESTS:%=test\/%.cmp)$/;"	m
 Tail	PowerPC/emit.ml	/^type dest = Tail | NonTail of Id.t (* 末尾かどうかを表すデータ型 *)$/;"	C	type:dest
 Tail	SPARC/emit.ml	/^type dest = Tail | NonTail of Id.t (* 末尾かどうかを表すデータ型 (caml2html: emit_dest) *)$/;"	C	type:dest
@@ -592,6 +657,35 @@ WORD	min-rt/RayTrace.cxx	/^typedef unsigned short WORD;$/;"	t	file:
 WRITE_QUEUE_SIZE	min-rt/RayTrace.cxx	798;"	d	file:
 __USE_FIXED_PROTOTYPES__	min-rt/raytrace.c	1;"	d	file:
 _min_caml_start	min-rt/min-rt.s	/^_min_caml_start: # for cygwin$/;"	l
+_min_caml_start	test/ack.s	/^_min_caml_start: # for cygwin$/;"	l
+_min_caml_start	test/adder.s	/^_min_caml_start: # for cygwin$/;"	l
+_min_caml_start	test/cls-bug.s	/^_min_caml_start: # for cygwin$/;"	l
+_min_caml_start	test/cls-bug2.s	/^_min_caml_start: # for cygwin$/;"	l
+_min_caml_start	test/cls-rec.s	/^_min_caml_start: # for cygwin$/;"	l
+_min_caml_start	test/cls-reg-bug.s	/^_min_caml_start: # for cygwin$/;"	l
+_min_caml_start	test/even-odd.s	/^_min_caml_start: # for cygwin$/;"	l
+_min_caml_start	test/fib.s	/^_min_caml_start: # for cygwin$/;"	l
+_min_caml_start	test/funcomp.s	/^_min_caml_start: # for cygwin$/;"	l
+_min_caml_start	test/gcd.s	/^_min_caml_start: # for cygwin$/;"	l
+_min_caml_start	test/inprod-loop.s	/^_min_caml_start: # for cygwin$/;"	l
+_min_caml_start	test/inprod-rec.s	/^_min_caml_start: # for cygwin$/;"	l
+_min_caml_start	test/inprod.s	/^_min_caml_start: # for cygwin$/;"	l
+_min_caml_start	test/join-reg.s	/^_min_caml_start: # for cygwin$/;"	l
+_min_caml_start	test/join-reg2.s	/^_min_caml_start: # for cygwin$/;"	l
+_min_caml_start	test/join-stack.s	/^_min_caml_start: # for cygwin$/;"	l
+_min_caml_start	test/join-stack2.s	/^_min_caml_start: # for cygwin$/;"	l
+_min_caml_start	test/join-stack3.s	/^_min_caml_start: # for cygwin$/;"	l
+_min_caml_start	test/matmul-flat.s	/^_min_caml_start: # for cygwin$/;"	l
+_min_caml_start	test/matmul.s	/^_min_caml_start: # for cygwin$/;"	l
+_min_caml_start	test/non-tail-if.s	/^_min_caml_start: # for cygwin$/;"	l
+_min_caml_start	test/non-tail-if2.s	/^_min_caml_start: # for cygwin$/;"	l
+_min_caml_start	test/print.s	/^_min_caml_start: # for cygwin$/;"	l
+_min_caml_start	test/shuffle.s	/^_min_caml_start: # for cygwin$/;"	l
+_min_caml_start	test/spill.s	/^_min_caml_start: # for cygwin$/;"	l
+_min_caml_start	test/spill2.s	/^_min_caml_start: # for cygwin$/;"	l
+_min_caml_start	test/spill3.s	/^_min_caml_start: # for cygwin$/;"	l
+_min_caml_start	test/sum-tail.s	/^_min_caml_start: # for cygwin$/;"	l
+_min_caml_start	test/sum.s	/^_min_caml_start: # for cygwin$/;"	l
 _screen_height	min-rt/RayTrace.cxx	/^int  _screen_height = 256;$/;"	v
 _screen_width	min-rt/RayTrace.cxx	/^int  _screen_width  = 256;$/;"	v
 _with_shadow	min-rt/RayTrace.cxx	/^int  _with_shadow   = false;$/;"	v
@@ -619,6 +713,7 @@ add	regAlloc.ml	/^let add x r regenv =$/;"	v
 add	x86/regAlloc.ml	/^let add x r regenv =$/;"	v
 add_list	m.ml	/^let add_list xys env = List.fold_left (fun env (x, y) -> add x y env) env xys$/;"	v
 add_vec	min-rt/raytrace.c	/^inline static void add_vec (vec_t * dest, const vec_t * src) {$/;"	f	file:
+addtyp	parser.ml	/^let addtyp x info = (x, Type.gentyp info)$/;"	v
 align	PowerPC/asm.mli	/^val align : int -> int$/;"	v
 align	SPARC/asm.ml	/^let align i = (if i mod 8 = 0 then i else i + 4)$/;"	v
 align	SPARC/asm.mli	/^val align : int -> int$/;"	v
@@ -882,6 +977,7 @@ exp	SPARC/asm.ml	/^and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_
 exp	SPARC/asm.mli	/^and exp =$/;"	t
 exp	asm.ml	/^and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *)$/;"	t
 exp	asm.mli	/^and exp =$/;"	t
+exp	parser.mli	/^val exp :$/;"	v
 exp	x86/asm.ml	/^and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *)$/;"	t
 exp	x86/asm.mli	/^and exp =$/;"	t
 extenv	typing.ml	/^let extenv = ref M.empty$/;"	v
@@ -1454,6 +1550,35 @@ min_caml_sqrt	SPARC/libmincaml.S	/^min_caml_sqrt:$/;"	l
 min_caml_sqrt	libmincaml.S	/^min_caml_sqrt:$/;"	l
 min_caml_sqrt	x86/libmincaml.S	/^min_caml_sqrt:$/;"	l
 min_caml_start	min-rt/min-rt.s	/^min_caml_start:$/;"	l
+min_caml_start	test/ack.s	/^min_caml_start:$/;"	l
+min_caml_start	test/adder.s	/^min_caml_start:$/;"	l
+min_caml_start	test/cls-bug.s	/^min_caml_start:$/;"	l
+min_caml_start	test/cls-bug2.s	/^min_caml_start:$/;"	l
+min_caml_start	test/cls-rec.s	/^min_caml_start:$/;"	l
+min_caml_start	test/cls-reg-bug.s	/^min_caml_start:$/;"	l
+min_caml_start	test/even-odd.s	/^min_caml_start:$/;"	l
+min_caml_start	test/fib.s	/^min_caml_start:$/;"	l
+min_caml_start	test/funcomp.s	/^min_caml_start:$/;"	l
+min_caml_start	test/gcd.s	/^min_caml_start:$/;"	l
+min_caml_start	test/inprod-loop.s	/^min_caml_start:$/;"	l
+min_caml_start	test/inprod-rec.s	/^min_caml_start:$/;"	l
+min_caml_start	test/inprod.s	/^min_caml_start:$/;"	l
+min_caml_start	test/join-reg.s	/^min_caml_start:$/;"	l
+min_caml_start	test/join-reg2.s	/^min_caml_start:$/;"	l
+min_caml_start	test/join-stack.s	/^min_caml_start:$/;"	l
+min_caml_start	test/join-stack2.s	/^min_caml_start:$/;"	l
+min_caml_start	test/join-stack3.s	/^min_caml_start:$/;"	l
+min_caml_start	test/matmul-flat.s	/^min_caml_start:$/;"	l
+min_caml_start	test/matmul.s	/^min_caml_start:$/;"	l
+min_caml_start	test/non-tail-if.s	/^min_caml_start:$/;"	l
+min_caml_start	test/non-tail-if2.s	/^min_caml_start:$/;"	l
+min_caml_start	test/print.s	/^min_caml_start:$/;"	l
+min_caml_start	test/shuffle.s	/^min_caml_start:$/;"	l
+min_caml_start	test/spill.s	/^min_caml_start:$/;"	l
+min_caml_start	test/spill2.s	/^min_caml_start:$/;"	l
+min_caml_start	test/spill3.s	/^min_caml_start:$/;"	l
+min_caml_start	test/sum-tail.s	/^min_caml_start:$/;"	l
+min_caml_start	test/sum.s	/^min_caml_start:$/;"	l
 min_caml_stderr	stub.c	/^FILE *min_caml_stderr;$/;"	v
 min_caml_temp	min-rt/SPARC/globals.s	/^min_caml_temp:$/;"	l
 min_caml_temp	min-rt/globals.s	/^min_caml_temp:$/;"	l
@@ -1925,6 +2050,9 @@ to_string_core	id.ml	/^let to_string_core x = fst x$/;"	v
 to_string_pre	id.ml	/^let to_string_pre pre ((id, info): t) = Printf.sprintf "%sID %s\\t#%s" pre id (Info.to_string info)$/;"	v
 to_string_pre	type.ml	/^let rec to_string_pre pre typ =$/;"	v
 to_t	id.ml	/^let to_t( L(x, y)) = x, y$/;"	v
+token	lexer.ml	/^let rec token lexbuf =$/;"	v
+token	parser.ml	/^type token =$/;"	t
+token	parser.mli	/^type token =$/;"	t
 toplevel	closure.ml	/^let toplevel : fundef list ref = ref []$/;"	v
 tp	min-rt/min-rt.ml	/^	  let tp = solver_dist.(0) in$/;"	v
 trace	min-rt/raytrace.c	/^static bool_t trace (void) {$/;"	f	file:
@@ -2056,6 +2184,21 @@ y	x86/regAlloc.ml	/^    let y = (* 型の合うレジスタ変数を探す *)$/;"	v
 y	x86/virtual.ml	/^      let y = Id.genid("t", info )in$/;"	v
 yloop	shootout/mandelbrot.ml	/^(*MINCAML*) let rec yloop y =$/;"	v
 ys	alpha.ml	/^      let ys = List.map fst yts in$/;"	v
+yyact	parser.ml	/^let yyact = [|$/;"	v
+yycheck	parser.ml	/^let yycheck = "\\001\\000\\$/;"	v
+yydefred	parser.ml	/^let yydefred = "\\000\\000\\$/;"	v
+yydgoto	parser.ml	/^let yydgoto = "\\002\\000\\$/;"	v
+yygindex	parser.ml	/^let yygindex = "\\000\\000\\$/;"	v
+yylen	parser.ml	/^let yylen = "\\002\\000\\$/;"	v
+yylhs	parser.ml	/^let yylhs = "\\255\\255\\$/;"	v
+yynames_block	parser.ml	/^let yynames_block = "\\$/;"	v
+yynames_const	parser.ml	/^let yynames_const = "\\$/;"	v
+yyrindex	parser.ml	/^let yyrindex = "\\000\\000\\$/;"	v
+yysindex	parser.ml	/^let yysindex = "\\255\\255\\$/;"	v
+yytable	parser.ml	/^let yytable = "\\001\\000\\$/;"	v
+yytablesize	parser.ml	/^let yytablesize = 1256$/;"	v
+yytransl_block	parser.ml	/^let yytransl_block = [|$/;"	v
+yytransl_const	parser.ml	/^let yytransl_const = [|$/;"	v
 z	PowerPC/virtual.ml	/^	     let z = Id.genid "l" in  $/;"	v
 z	SPARC/virtual.ml	/^	      let z = Id.genid "l" in$/;"	v
 z	min-rt/raytrace.c	/^  dist_t z;$/;"	m	struct:__anon4	file:

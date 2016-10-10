@@ -6,4 +6,4 @@ let t = x + y
 in
 let u = x + y
 in
-t + 1.3
+t + u
