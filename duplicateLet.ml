@@ -14,8 +14,9 @@ let rec has_side_effect = function
   | KNormal.Tuple _
   | KNormal.Get _
   | KNormal.ExtArray _
-  | KNormal.LetTuple _
   -> false
+  | KNormal.LetTuple (_, _, e, _)
+  -> has_side_effect e
 
   | KNormal.IfEq (_, _, t1, t2, _)
   | KNormal.IfLE(_, _, t1, t2, _)
@@ -79,12 +80,13 @@ let rec g env exp = match exp with
   | KNormal.App _
   | KNormal.Tuple _
   | KNormal.Var _
-  | KNormal.LetTuple _
   | KNormal.Get _
   | KNormal.Put _
   | KNormal.ExtArray _
   | KNormal.ExtFunApp _
   -> exp, env
+  | KNormal.LetTuple (a, b,e, info)
+  -> KNormal.LetTuple(a, b, fst (g env e), info), env
 
   | KNormal.IfEq (id1, id2, t1, t2, info)
   -> KNormal.IfEq(id1, id2, fst (g env t1), fst (g env t2), info), env
