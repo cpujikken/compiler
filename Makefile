@@ -18,8 +18,9 @@ $(RESULT): debug-code top
 clean:: nobackup
 
 # ↓もし実装を改造したら、それに合わせて変える
-SOURCES = float.c info.ml type.ml id.ml m.ml s.ml \
+SOURCES = float.c common.ml info.ml type.ml id.ml m.ml s.ml \
 syntax.ml parser.mly lexer.mll typing.mli typing.ml kNormal.mli kNormal.ml \
+m1.ml duplicateLet.ml \
 alpha.mli alpha.ml beta.mli beta.ml assoc.mli assoc.ml \
 inline.mli inline.ml constFold.mli constFold.ml elim.mli elim.ml \
 closure.mli closure.ml asm.mli asm.ml virtual.mli virtual.ml \
@@ -54,7 +55,8 @@ min-caml.html: main.mli main.ml id.ml m.ml s.ml \
 		alpha.mli alpha.ml beta.mli beta.ml assoc.mli assoc.ml \
 		inline.mli inline.ml constFold.mli constFold.ml elim.mli elim.ml \
 		closure.mli closure.ml asm.mli asm.ml virtual.mli virtual.ml \
-		simm.mli simm.ml regAlloc.mli regAlloc.ml emit.mli emit.ml info.ml
+		simm.mli simm.ml regAlloc.mli regAlloc.ml emit.mli emit.ml info.ml \
+		duplicateLet.ml common.ml m1.ml
 	./to_sparc
 	caml2html -o min-caml.html $^
 	sed 's/.*<\/title>/MinCaml Source Code<\/title>/g' < min-caml.html > min-caml.tmp.html

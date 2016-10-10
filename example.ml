@@ -1,14 +1,15 @@
-let x =
-let rec gcd m n =
-    if m = 0 then n else
-        if m <= n then
-            gcd m (n - m)
-    else
-        gcd n (m - n)
+let x = 1
 in
-gcd 4 5
+let y = 2
 in
-if 1 = 2 then
-    3
-else
-    3.
+let rec f x = 3
+in
+let t = x + y
+in
+let u = x + y
+in
+let p = (f ()) + x
+in
+let q = (f ()) + x
+in
+t + u
