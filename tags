@@ -656,6 +656,7 @@ Virtual	x86/virtual.ml	1;"	M
 WORD	min-rt/RayTrace.cxx	/^typedef unsigned short WORD;$/;"	t	file:
 WRITE_QUEUE_SIZE	min-rt/RayTrace.cxx	798;"	d	file:
 __USE_FIXED_PROTOTYPES__	min-rt/raytrace.c	1;"	d	file:
+_min_caml_start	example.s	/^_min_caml_start: # for cygwin$/;"	l
 _min_caml_start	min-rt/min-rt.s	/^_min_caml_start: # for cygwin$/;"	l
 _min_caml_start	test/ack.s	/^_min_caml_start: # for cygwin$/;"	l
 _min_caml_start	test/adder.s	/^_min_caml_start: # for cygwin$/;"	l
@@ -1030,6 +1031,8 @@ f	virtual.mli	/^val f : Closure.prog -> Asm.prog$/;"	v
 f	x86/regAlloc.ml	/^let f (Prog(data, fundefs, e)) = (* プログラム全体のレジスタ割り当て (caml2html: regalloc_f) *)$/;"	v
 f	x86/simm.ml	/^let f (Prog(data, fundefs, e)) = (* プログラム全体の即値最適化 *)$/;"	v
 f	x86/virtual.ml	/^let f (Closure.Prog(fundefs, e)) =$/;"	v
+f1	example.ml	/^let f1 = t x$/;"	v
+f2	example.ml	/^let f2 = t y$/;"	v
 f_abs	min-rt/RayTrace.cxx	43;"	d	file:
 f_atan	min-rt/RayTrace.cxx	44;"	d	file:
 f_cos	min-rt/RayTrace.cxx	42;"	d	file:
@@ -1368,6 +1371,7 @@ loop	shootout/fib.ml	/^let rec loop n =$/;"	v
 loop1	test/matmul-flat.ml	/^let rec loop1 i m n a b c =$/;"	v
 loop2	test/matmul-flat.ml	/^let rec loop2 i m j a b c =$/;"	v
 loop3	test/matmul-flat.ml	/^let rec loop3 i k j a b c =$/;"	v
+m	example.ml	/^let m = f2 4$/;"	v
 m	min-rt/min-rt.ml	/^  let m = objects.(index) in$/;"	v
 m_invert	min-rt/min-rt.ml	/^      let m_invert = 0.0 > (read_float ()) in (* 10 *)$/;"	v
 m_invert2	min-rt/min-rt.ml	/^      let m_invert2 = if form = 2 then true else m_invert in$/;"	v
@@ -1549,6 +1553,7 @@ min_caml_sqrt	PowerPC/libmincaml.S	/^min_caml_sqrt:$/;"	l
 min_caml_sqrt	SPARC/libmincaml.S	/^min_caml_sqrt:$/;"	l
 min_caml_sqrt	libmincaml.S	/^min_caml_sqrt:$/;"	l
 min_caml_sqrt	x86/libmincaml.S	/^min_caml_sqrt:$/;"	l
+min_caml_start	example.s	/^min_caml_start:$/;"	l
 min_caml_start	min-rt/min-rt.s	/^min_caml_start:$/;"	l
 min_caml_start	test/ack.s	/^min_caml_start:$/;"	l
 min_caml_start	test/adder.s	/^min_caml_start:$/;"	l
@@ -1989,7 +1994,7 @@ t	asm.ml	/^type t = (* 命令の列 (caml2html: sparcasm_t) *)$/;"	t
 t	asm.mli	/^type t =$/;"	t
 t	closure.ml	/^type t = (* クロージャ変換後の式 (caml2html: closure_t) *)$/;"	t
 t	closure.mli	/^type t =$/;"	t
-t	example.ml	/^let t = x + y$/;"	v
+t	example.ml	/^let rec t k =$/;"	v
 t	id.ml	/^type t = string * Info.t (* 変数の名前 (caml2html: id_t) *)$/;"	t
 t	info.ml	/^type t = string * int * int * int * int$/;"	t
 t	kNormal.ml	/^type t = (* K正規化後の式 (caml2html: knormal_t) *)$/;"	t
@@ -2074,7 +2079,6 @@ type_quad	min-rt/raytrace.c	/^  type_quad = 3, \/\/ 2次曲面$/;"	e	enum:__anon11	
 type_rect	min-rt/raytrace.c	/^  type_rect = 1, \/\/ 直方体$/;"	e	enum:__anon11	file:
 type_t	min-rt/raytrace.c	/^} type_t;$/;"	t	typeref:enum:__anon11	file:
 tz	min-rt/raytrace.c	/^  trig_t tz; \/\/ z軸を回転軸として回転$/;"	m	struct:__anon6	file:
-u	example.ml	/^let u = x + y$/;"	v
 unify	typing.ml	/^let rec unify t1 t2 = (* 型が合うように、型変数への代入をする (caml2html: typing_unify) *)$/;"	v
 user_defined_texture	min-rt/RayTrace.cxx	/^void user_defined_texture(void)$/;"	f
 utexture	min-rt/min-rt.ml	/^(*MINCAML*)let rec utexture m p =$/;"	v
@@ -2201,6 +2205,7 @@ yytransl_block	parser.ml	/^let yytransl_block = [|$/;"	v
 yytransl_const	parser.ml	/^let yytransl_const = [|$/;"	v
 z	PowerPC/virtual.ml	/^	     let z = Id.genid "l" in  $/;"	v
 z	SPARC/virtual.ml	/^	      let z = Id.genid "l" in$/;"	v
+z	example.ml	/^let z = f2 3$/;"	v
 z	min-rt/raytrace.c	/^  dist_t z;$/;"	m	struct:__anon4	file:
 z	test/non-tail-if.ml	/^let z = truncate (-.7.89) in$/;"	v
 z	test/spill2.ml	/^let z = Array.create 10 1 in$/;"	v
