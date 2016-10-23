@@ -44,6 +44,10 @@ let rec fv = function
 
 let toplevel : fundef list ref = ref []
 
+  let e' = g M.empty S.empty e in
+(*
+ * convert KNormal.t to Closure.t
+ *)
 let rec g env known = function (* クロージャ変換ルーチン本体 (caml2html: closure_g) *)
   | KNormal.Unit info -> Unit info
   | KNormal.Int(i, info) -> Int(i, info)
@@ -60,35 +64,90 @@ let rec g env known = function (* クロージャ変換ルーチン本体 (caml2html: closure
   | KNormal.IfLE(x, y, e1, e2, info) -> IfLE(x, y, g env known e1, g env known e2, info)
   | KNormal.Let((x, t), e1, e2, info) -> Let((x, t), g env known e1, g (M.add x t env) known e2, info)
   | KNormal.Var(x, info) -> Var(x, info)
-  | KNormal.LetRec({ KNormal.name = (x, t); KNormal.args = yts; KNormal.body = e1 }, e2, info) -> (* 関数定義の場合 (caml2html: closure_letrec) *)
-      (* 関数定義let rec x y1 ... yn = e1 in e2の場合は、
-	 xに自由変数がない(closureを介さずdirectに呼び出せる)
-	 と仮定し、knownに追加してe1をクロージャ変換してみる *)
-      let toplevel_backup = !toplevel in
-      let env' = M.add x t env in
-      let known' = S.add x known in
-      let e1' = g (M.add_list yts env') known' e1 in
-      (* 本当に自由変数がなかったか、変換結果e1'を確認する *)
-      (* 注意: e1'にx自身が変数として出現する場合はclosureが必要!
-         (thanks to nuevo-namasute and azounoman; test/cls-bug2.ml参照) *)
-      let zs = S.diff (fv e1') (S.of_list (List.map fst yts)) in
-      let known', e1' =
-	if S.is_empty zs then known', e1' else
-	(* 駄目だったら状態(toplevelの値)を戻して、クロージャ変換をやり直す *)
-	(Format.eprintf "free variable(s) %s found in function %s@." (Id.pp_list (S.elements zs)) (Id.to_string x);
-	 Format.eprintf "function %s cannot be directly applied in fact@." (Id.to_string x);
-	 toplevel := toplevel_backup;
-	 let e1' = g (M.add_list yts env') known e1 in
-	 known, e1') in
-      let zs = S.elements (S.diff (fv e1') (S.add x (S.of_list (List.map fst yts)))) in (* 自由変数のリスト *)
-      let zts = List.map (fun z -> (z, M.find z env')) zs in (* ここで自由変数zの型を引くために引数envが必要 *)
-      toplevel := { name = (Id.to_L x, t); args = yts; formal_fv = zts; body = e1' } :: !toplevel; (* トップレベル関数を追加 *)
-      let e2' = g env' known' e2 in
-      if S.mem x (fv e2') then (* xが変数としてe2'に出現するか *)
-	MakeCls((x, t), { entry = Id.to_L x; actual_fv = zs }, e2', info) (* 出現していたら削除しない *)
-      else
-	(Format.eprintf "eliminating closure(s) %s@." (Id.to_string x);
-	 e2') (* 出現しなければMakeClsを削除 *)
+  | KNormal.LetRec({ KNormal.name = (fun_name, fun_type); KNormal.args = param_list; KNormal.body = fun_body }, let_body, info) -> (* 関数定義の場合 (caml2html: closure_letrec) *)
+    (* 関数定義let rec fun_name y1 ... yn = fun_body in let_bodyの場合は、
+    fun_nameに自由変数がない(closureを介さずdirectに呼び出せる)
+    と仮定し、knownに追加してfun_bodyをクロージャ変換してみる *)
+
+    (*backup top level*)
+    let toplevel_backup = !toplevel in
+
+    (*add function definition (function type) to current enviroment*)
+    let env' = M.add fun_name fun_type env in
+
+    (*add function name to known-free variable list*)
+    let known' = S.add fun_name known in
+
+    (*add parameter list (by name with type) to current env
+    * and transform function's expression
+    * *)
+    let fun_body' = g (M.add_list param_list env') known' fun_body in
+    (* 本当に自由変数がなかったか、変換結果fun_body'を確認する *)
+    (* 注意: fun_body'にfun_name自身が変数として出現する場合はclosureが必要!
+     (thanks to nuevo-namasute and azounoman; test/cls-bug2.ml参照) *)
+
+    (*get list of variables used in fun_body but not parameter
+     * external_variables might include function name
+    * *)
+    let external_variables = S.diff (fv fun_body') (S.of_list (List.map fst param_list)) in
+
+    let known', fun_body' =
+        if
+            S.is_empty external_variables
+        then
+            known', fun_body'
+        else
+            (* 駄目だったら状態(toplevelの値)を戻して、クロージャ変換をやり直す *)
+            (
+                Format.eprintf "free variable(s) %s found in function %s@." (Id.pp_list (S.elements external_variables)) (Id.to_string fun_name);
+                 Format.eprintf "function %s cannot be directly applied in fact@." (Id.to_string fun_name);
+                 toplevel := toplevel_backup;
+
+                 (*reevaluate function's expression but without function name*)
+                 let fun_body' = g (M.add_list param_list env') known fun_body
+                 in
+                 known, fun_body'
+             )
+    in
+    let external_variables =
+        (*convert to list*)
+        S.elements
+            (*free variable in this letrec*)
+            (S.diff
+                (*free variable in function's expression without func name*)
+                (fv fun_body')
+                (*paramter + func name set*)
+                (S.add
+                    fun_name
+                    (*all parameter set*)
+                    (S.of_list
+                        (*all parameter list*)
+                        (List.map fst param_list)
+                    )
+                )
+            )(* 自由変数のリスト *)
+    in
+    let external_variable_with_type =
+        List.map
+            (fun z ->
+                (*return a pair of its name and type*)
+                (z, M.find z env')
+                )
+            (*for all free variables*)
+            external_variables
+    in (* ここで自由変数zの型を引くために引数envが必要 *)
+        toplevel := { name = (Id.to_L fun_name, fun_type); args = param_list; formal_fv = external_variable_with_type; body = fun_body' } :: !toplevel; (* トップレベル関数を追加 *)
+        (*parse let_body*)
+        let let_body' = g env' known' let_body
+        in
+            (*if function is used after that*)
+            if S.mem fun_name (fv let_body') then (* fun_nameが変数としてlet_body'に出現するか *)
+                (* return a closure call*)
+                MakeCls((fun_name, fun_type), { entry = Id.to_L fun_name; actual_fv = external_variables }, let_body', info) (* 出現していたら削除しない *)
+            else
+                (*just return let_body if function is not used*)
+                (Format.eprintf "eliminating closure(s) %s@." (Id.to_string fun_name);
+                let_body') (* 出現しなければMakeClsを削除 *)
   | KNormal.App(x, ys, info) when S.mem x known -> (* 関数適用の場合 (caml2html: closure_app) *)
       Format.eprintf "directly applying %s@." (Id.to_string x);
       AppDir(Id.to_L x, ys, info)
