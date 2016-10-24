@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+ln -sf ultrapc/{*.ml{,i},libmincaml.S} .
+cd shootout; ln -sf ultrapc/Makefile .
+cd ../bytemark; ln -sf ultrapc/Makefile .
+cd ../min-rt; ln -sf ultrapc/globals.s .
+cd ..
