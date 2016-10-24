@@ -41,10 +41,10 @@ let rec g env = function (* 式の仮想マシンコード生成 (caml2html: virtual_g) *)
 	  let (l, _) = List.find (fun (_, d') -> d = d') !data in
 	  l
 	with Not_found ->
-	  let l = Id.to_L(Id.genid ("l", (Info.dump()))) in
+	  let l = Id.to_L(Id.genid ("l", info)) in
 	  data := (l, d) :: !data;
 	  l in
-      let x = Id.genid( "l", Info.dump()) in
+      let x = Id.genid( "l", info) in
       Let((x, Type.Int info), SetL(l, info), Ans(LdDF(x, C(0), 1, info), info), info)
   | Closure.Neg(x, info) -> Ans(Neg(x, info), info)
   | Closure.Add(x, y, info) -> Ans(Add(x, V(y), info), info)
@@ -90,7 +90,7 @@ let rec g env = function (* 式の仮想マシンコード生成 (caml2html: virtual_g) *)
               Add(reg_hp, C(align offset), info),
 
               (
-              let z = Id.genid("l", Info.dump())
+              let z = Id.genid("l", info)
               in
               Let(
                   (z, Type.Int info),

@@ -44,7 +44,6 @@ let rec fv = function
 
 let toplevel : fundef list ref = ref []
 
-  let e' = g M.empty S.empty e in
 (*
  * convert KNormal.t to Closure.t
  *)
@@ -88,6 +87,13 @@ let rec g env known = function (* クロージャ変換ルーチン本体 (caml2html: closure
 
     (*get list of variables used in fun_body but not parameter
      * external_variables might include function name
+     *
+     * This is just a hack to known' variable.
+     * If there is no external (free) variable, there also no need of closure.
+     * Keep function name into known' list to acknowledge of application to use
+     * closure
+     *
+     * Otherwise, Remove function name from known' list
     * *)
     let external_variables = S.diff (fv fun_body') (S.of_list (List.map fst param_list)) in
 
@@ -95,6 +101,7 @@ let rec g env known = function (* クロージャ変換ルーチン本体 (caml2html: closure
         if
             S.is_empty external_variables
         then
+            (*keep function name in known' list to aknowledge that there is no need of closure*)
             known', fun_body'
         else
             (* 駄目だったら状態(toplevelの値)を戻して、クロージャ変換をやり直す *)
@@ -103,12 +110,15 @@ let rec g env known = function (* クロージャ変換ルーチン本体 (caml2html: closure
                  Format.eprintf "function %s cannot be directly applied in fact@." (Id.to_string fun_name);
                  toplevel := toplevel_backup;
 
-                 (*reevaluate function's expression but without function name*)
+                 (*reevaluate function's expression but without function name.
+                  * There is no need of closure for this fun
+                  * *)
                  let fun_body' = g (M.add_list param_list env') known fun_body
                  in
                  known, fun_body'
              )
     in
+    (*re-calculate extern variables list*)
     let external_variables =
         (*convert to list*)
         S.elements
