@@ -3,8 +3,8 @@ open Asm
 external gethi : float -> int32 = "gethi"
 external getlo : float -> int32 = "getlo"
 
-let stackset = ref S.empty (* ¤¹¤Ç¤ËSave¤µ¤ì¤¿ÊÑ¿ô¤Î½¸¹ç (caml2html: emit_stackset) *)
-let stackmap = ref [] (* Save¤µ¤ì¤¿ÊÑ¿ô¤Î¡¢¥¹¥¿¥Ã¥¯¤Ë¤ª¤±¤ë°ÌÃÖ (caml2html: emit_stackmap) *)
+let stackset = ref S.empty (* ¿¿¿Save¿¿¿¿¿¿¿¿ (caml2html: emit_stackset) *)
+let stackmap = ref [] (* Save¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿ (caml2html: emit_stackmap) *)
 let save x =
   stackset := S.add x !stackset;
   if not (List.mem x !stackmap) then
@@ -28,7 +28,7 @@ let pp_id_or_imm = function
   | V(x, _) -> x
   | C(i) -> "$" ^ string_of_int i
 
-(* ´Ø¿ô¸Æ¤Ó½Ð¤·¤Î¤¿¤á¤Ë°ú¿ô¤òÊÂ¤ÙÂØ¤¨¤ë(register shuffling) (caml2html: emit_shuffle) *)
+(* ¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿(register shuffling) (caml2html: emit_shuffle) *)
 let rec shuffle sw xys =
   (* remove identical moves *)
   let _, xys = List.partition (fun (x, y) -> x = y) xys in
@@ -43,51 +43,51 @@ let rec shuffle sw xys =
 					 xys)
   | xys, acyc -> acyc @ shuffle sw xys
 
-type dest = Tail | NonTail of Id.t (* ËöÈø¤«¤É¤¦¤«¤òÉ½¤¹¥Ç¡¼¥¿·¿ (caml2html: emit_dest) *)
-let rec g oc = function (* Ì¿ÎáÎó¤Î¥¢¥»¥ó¥Ö¥êÀ¸À® (caml2html: emit_g) *)
-  | dest, Ans(exp, info) -> g' oc (dest, exp)
+type dest = Tail | NonTail of Id.t (* ¿¿¿¿¿¿¿¿¿¿¿¿¿ (caml2html: emit_dest) *)
+let rec g oc = function (* ¿¿¿¿¿¿¿¿¿¿¿ (caml2html: emit_g) *)
+  | dest, Ans(exp, info) -> g' oc info (dest, exp)
   | dest, Let((x, t), exp, e, info) ->
-      g' oc (NonTail(x), exp);
+      g' oc info (NonTail(x), exp);
       g oc (dest, e)
-and g' oc = function (* ³ÆÌ¿Îá¤Î¥¢¥»¥ó¥Ö¥êÀ¸À® (caml2html: emit_gprime) *)
-  (* ËöÈø¤Ç¤Ê¤«¤Ã¤¿¤é·×»»·ë²Ì¤òdest¤Ë¥»¥Ã¥È (caml2html: emit_nontail) *)
-  | NonTail(_), Nop info -> ()
-  | NonTail(x), Set(i, info) -> Printf.fprintf oc "\tadd\t%%r%d, %s, %%r0\t#%s\n" i (Id.to_string_core x) (Info.to_string info)
-  | NonTail(x), SetL(Id.L(y, _), info) -> Printf.fprintf oc "\tmovl\t$%s, %s\t#%s\n" y (Id.to_string_core x) (Info.to_string info)
-  | NonTail(x), Mov(y, info) ->
+and g' oc info = function (* ¿¿¿¿¿¿¿¿¿¿¿ (caml2html: emit_gprime) *)
+  (* ¿¿¿¿¿¿¿¿¿¿¿¿¿dest¿¿¿¿ (caml2html: emit_nontail) *)
+  | NonTail(_), Nop -> ()
+  | NonTail(x), Set(i) -> Printf.fprintf oc "\tmovl\t$%d, %s\t#%s\n" i (Id.to_string_core x) (Info.to_string info)
+  | NonTail(x), SetL(Id.L(y, _)) -> Printf.fprintf oc "\tmovl\t$%s, %s\t#%s\n" y (Id.to_string_core x) (Info.to_string info)
+  | NonTail(x), Mov(y) ->
       if x <> y then Printf.fprintf oc "\tmovl\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info)
-  | NonTail(x), Neg(y, info) ->
+  | NonTail(x), Neg(y) ->
       if x <> y then Printf.fprintf oc "\tmovl\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info);
       Printf.fprintf oc "\tnegl\t%s\t#%s\n" (Id.to_string_core x) (Info.to_string info)
-  | NonTail(x), Add(y, z', info) ->
+  | NonTail(x), Add(y, z') ->
       if V(x) = z' then
 	Printf.fprintf oc "\taddl\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info)
       else
 	(if x <> y then Printf.fprintf oc "\tmovl\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info);
 	 Printf.fprintf oc "\taddl\t%s, %s\t#%s\n" (pp_id_or_imm z') (Id.to_string_core x) (Info.to_string info))
-  | NonTail(x), Sub(y, z', info) ->
+  | NonTail(x), Sub(y, z') ->
       if V(x) = z' then
           (Printf.fprintf oc "\tsubl\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info);
          Printf.fprintf oc "\tnegl\t%s\t#%s\n" (Id.to_string_core x) (Info.to_string info))
       else
 	(if x <> y then Printf.fprintf oc "\tmovl\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info);
 	 Printf.fprintf oc "\tsubl\t%s, %s\t#%s\n" (pp_id_or_imm z') (Id.to_string_core x) (Info.to_string info))
-  | NonTail(x), Ld(y, V(z), i, info) -> Printf.fprintf oc "\tmovl\t(%s,%s,%d), %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core z) i (Id.to_string_core x) (Info.to_string info)
-  | NonTail(x), Ld(y, C(j), i, info) -> Printf.fprintf oc "\tmovl\t%d(%s), %s\t#%s\n" (j * i) (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info)
-  | NonTail(_), St(x, y, V(z), i, info) -> Printf.fprintf oc "\tmovl\t%s, (%s,%s,%d)\t#%s\n" (Id.to_string_core x) (Id.to_string_core y) (Id.to_string_core z) i (Info.to_string info)
-  | NonTail(_), St(x, y, C(j), i, info) -> Printf.fprintf oc "\tmovl\t%s, %d(%s)\t#%s\n" (Id.to_string_core x) (j * i) (Id.to_string_core y) (Info.to_string info)
-  | NonTail(x), FMovD(y, info) ->
+  | NonTail(x), Ld(y, V(z), i) -> Printf.fprintf oc "\tmovl\t(%s,%s,%d), %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core z) i (Id.to_string_core x) (Info.to_string info)
+  | NonTail(x), Ld(y, C(j), i) -> Printf.fprintf oc "\tmovl\t%d(%s), %s\t#%s\n" (j * i) (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info)
+  | NonTail(_), St(x, y, V(z), i) -> Printf.fprintf oc "\tmovl\t%s, (%s,%s,%d)\t#%s\n" (Id.to_string_core x) (Id.to_string_core y) (Id.to_string_core z) i (Info.to_string info)
+  | NonTail(_), St(x, y, C(j), i) -> Printf.fprintf oc "\tmovl\t%s, %d(%s)\t#%s\n" (Id.to_string_core x) (j * i) (Id.to_string_core y) (Info.to_string info)
+  | NonTail(x), FMovD(y) ->
       if x <> y then Printf.fprintf oc "\tmovsd\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info)
-  | NonTail(x), FNegD(y, info) ->
+  | NonTail(x), FNegD(y) ->
           if x <> y then Printf.fprintf oc "\tmovsd\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info);
       Printf.fprintf oc "\txorpd\tmin_caml_fnegd, %s\t#%s\n" (Id.to_string_core x) (Info.to_string info)
-  | NonTail(x), FAddD(y, z, info) ->
+  | NonTail(x), FAddD(y, z) ->
       if x = z then
         Printf.fprintf oc "\taddsd\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info)
       else
         (if x <> y then Printf.fprintf oc "\tmovsd\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info);
 	 Printf.fprintf oc "\taddsd\t%s, %s\t#%s\n" (Id.to_string_core z) (Id.to_string_core x) (Info.to_string info))
-  | NonTail(x), FSubD(y, z, info) ->
+  | NonTail(x), FSubD(y, z) ->
       if x = z then (* [XXX] ugly *)
 	let ss = stacksize () in
     Printf.fprintf oc "\tmovsd\t%s, %d(%s)\t#%s\n" (Id.to_string_core z) ss (Id.to_string_core reg_sp) (Info.to_string info);
@@ -96,13 +96,13 @@ and g' oc = function (* ³ÆÌ¿Îá¤Î¥¢¥»¥ó¥Ö¥êÀ¸À® (caml2html: emit_gprime) *)
       else
 	(if x <> y then Printf.fprintf oc "\tmovsd\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info);
 	 Printf.fprintf oc "\tsubsd\t%s, %s\t#%s\n" (Id.to_string_core z) (Id.to_string_core x) (Info.to_string info))
-  | NonTail(x), FMulD(y, z, info) ->
+  | NonTail(x), FMulD(y, z) ->
       if x = z then
         Printf.fprintf oc "\tmulsd\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info)
       else
         (if x <> y then Printf.fprintf oc "\tmovsd\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info);
 	 Printf.fprintf oc "\tmulsd\t%s, %s\t#%s\n" (Id.to_string_core z) (Id.to_string_core x) (Info.to_string info))
-  | NonTail(x), FDivD(y, z, info) ->
+  | NonTail(x), FDivD(y, z) ->
       if x = z then (* [XXX] ugly *)
 	let ss = stacksize () in
 	Printf.fprintf oc "\tmovsd\t%s, %d(%s)\t#%s\n" (Id.to_string_core z) ss (Id.to_string_core reg_sp) (Info.to_string info);
@@ -111,79 +111,79 @@ and g' oc = function (* ³ÆÌ¿Îá¤Î¥¢¥»¥ó¥Ö¥êÀ¸À® (caml2html: emit_gprime) *)
       else
 	(if x <> y then Printf.fprintf oc "\tmovsd\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info);
 	 Printf.fprintf oc "\tdivsd\t%s, %s\t#%s\n" (Id.to_string_core z) (Id.to_string_core x) (Info.to_string info))
-  | NonTail(x), LdDF(y, V(z), i, info) -> Printf.fprintf oc "\tmovsd\t(%s,%s,%d), %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core z) i (Id.to_string_core x) (Info.to_string info)
-  | NonTail(x), LdDF(y, C(j), i, info) -> Printf.fprintf oc "\tmovsd\t%d(%s), %s\t#%s\n" (j * i) (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info)
-  | NonTail(_), StDF(x, y, V(z), i, info) -> Printf.fprintf oc "\tmovsd\t%s, (%s,%s,%d)\t#%s\n" (Id.to_string_core x) (Id.to_string_core y) (Id.to_string_core z) i (Info.to_string info)
-  | NonTail(_), StDF(x, y, C(j), i, info) -> Printf.fprintf oc "\tmovsd\t%s, %d(%s)\t#%s\n" (Id.to_string_core x) (j * i) (Id.to_string_core y) (Info.to_string info)
-  | NonTail(_), Comment(s, info) -> Printf.fprintf oc "\t# %s\t#%s\n" s (Info.to_string info)
-  (* ÂàÈò¤Î²¾ÁÛÌ¿Îá¤Î¼ÂÁõ (caml2html: emit_save) *)
-  | NonTail(_), Save(x, y, info) when List.mem x allregs && not (S.mem y !stackset) ->
+  | NonTail(x), LdDF(y, V(z), i) -> Printf.fprintf oc "\tmovsd\t(%s,%s,%d), %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core z) i (Id.to_string_core x) (Info.to_string info)
+  | NonTail(x), LdDF(y, C(j), i) -> Printf.fprintf oc "\tmovsd\t%d(%s), %s\t#%s\n" (j * i) (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info)
+  | NonTail(_), StDF(x, y, V(z), i) -> Printf.fprintf oc "\tmovsd\t%s, (%s,%s,%d)\t#%s\n" (Id.to_string_core x) (Id.to_string_core y) (Id.to_string_core z) i (Info.to_string info)
+  | NonTail(_), StDF(x, y, C(j), i) -> Printf.fprintf oc "\tmovsd\t%s, %d(%s)\t#%s\n" (Id.to_string_core x) (j * i) (Id.to_string_core y) (Info.to_string info)
+  | NonTail(_), Comment(s) -> Printf.fprintf oc "\t# %s\t#%s\n" s (Info.to_string info)
+  (* ¿¿¿¿¿¿¿¿¿¿ (caml2html: emit_save) *)
+  | NonTail(_), Save(x, y) when List.mem x allregs && not (S.mem y !stackset) ->
       save y;
       Printf.fprintf oc "\tmovl\t%s, %d(%s)\t#%s\n" (Id.to_string_core x) (offset y) (Id.to_string_core reg_sp) (Info.to_string info)
-  | NonTail(_), Save(x, y, info) when List.mem x allfregs && not (S.mem y !stackset) ->
+  | NonTail(_), Save(x, y) when List.mem x allfregs && not (S.mem y !stackset) ->
       savef y info;
       Printf.fprintf oc "\tmovsd\t%s, %d(%s)\t#%s\n" (Id.to_string_core x) (offset y) (Id.to_string_core reg_sp) (Info.to_string info)
-  | NonTail(_), Save(x, y, info) -> assert (S.mem y !stackset); ()
-  (* Éüµ¢¤Î²¾ÁÛÌ¿Îá¤Î¼ÂÁõ (caml2html: emit_restore) *)
-  | NonTail(x), Restore(y, info) when List.mem x allregs ->
+  | NonTail(_), Save(x, y) -> assert (S.mem y !stackset); ()
+  (* ¿¿¿¿¿¿¿¿¿¿ (caml2html: emit_restore) *)
+  | NonTail(x), Restore(y) when List.mem x allregs ->
       Printf.fprintf oc "\tmovl\t%d(%s), %s\t#%s\n" (offset y) (Id.to_string_core reg_sp) (Id.to_string_core x) (Info.to_string info)
-  | NonTail(x), Restore(y, info) ->
+  | NonTail(x), Restore(y) ->
       assert (List.mem x allfregs);
       Printf.fprintf oc "\tmovsd\t%d(%s), %s\t#%s\n" (offset y) (Id.to_string_core reg_sp) (Id.to_string_core x) (Info.to_string info)
-  (* ËöÈø¤À¤Ã¤¿¤é·×»»·ë²Ì¤òÂè°ì¥ì¥¸¥¹¥¿¤Ë¥»¥Ã¥È¤·¤Æret (caml2html: emit_tailret) *)
-  | Tail, (Nop info| St (_, _, _, _, info) | StDF (_, _, _, _, info) | Comment( _, info) | Save( _, _, info) as exp) ->
-      g' oc (NonTail(Id.gentmp (Type.Unit info) info), exp);
+  (* ¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿ret (caml2html: emit_tailret) *)
+  | Tail, (Nop| St (_) | StDF (_) | Comment( _) | Save( _) as exp) ->
+      g' oc info (NonTail(Id.gentmp (Type.Unit info) info), exp);
       Printf.fprintf oc "\tret\t#%s\n" (Info.to_string info);
-  | Tail, (Set(_, info) | SetL(_, info) | Mov(_, info) | Neg(_, info) | Add(_, _, info) | Sub(_, _, info) | Ld(_,_, _, info) as exp) ->
-      g' oc (NonTail(regs.(0)), exp);
+  | Tail, (Set(_) | SetL(_) | Mov(_) | Neg(_) | Add(_) | Sub(_) | Ld(_) as exp) ->
+      g' oc info (NonTail(regs.(0)), exp);
       Printf.fprintf oc "\tret\n";
   | Tail, (FMovD _ | FNegD _ | FAddD _ | FSubD _ | FMulD _ | FDivD _ | LdDF _  as exp) ->
-      g' oc (NonTail(fregs.(0)), exp);
+      g' oc info (NonTail(fregs.(0)), exp);
       Printf.fprintf oc "\tret\n";
-  | Tail, (Restore(x, info) as exp) ->
+  | Tail, (Restore(x) as exp) ->
       (match locate x with
-      | [i] -> g' oc (NonTail(regs.(0)), exp)
-      | [i; j] when i + 1 = j -> g' oc (NonTail(fregs.(0)), exp)
+      | [i] -> g' oc info (NonTail(regs.(0)), exp)
+      | [i; j] when i + 1 = j -> g' oc info (NonTail(fregs.(0)), exp)
       | _ -> assert false);
       Printf.fprintf oc "\tret\n";
-  | Tail, IfEq(x, y', e1, e2, info) ->
+  | Tail, IfEq(x, y', e1, e2) ->
       Printf.fprintf oc "\tcmpl\t%s, %s\t#%s\n" (pp_id_or_imm y') (Id.to_string_core x) (Info.to_string info);
       g'_tail_if oc e1 e2 "je" "jne" info
-  | Tail, IfLE(x, y', e1, e2, info) ->
+  | Tail, IfLE(x, y', e1, e2) ->
       Printf.fprintf oc "\tcmpl\t%s, %s\t#%s\n" (pp_id_or_imm y') (Id.to_string_core x) (Info.to_string info);
       g'_tail_if oc e1 e2 "jle" "jg" info
-  | Tail, IfGE(x, y', e1, e2, info) ->
+  | Tail, IfGE(x, y', e1, e2) ->
       Printf.fprintf oc "\tcmpl\t%s, %s\t#%s\n" (pp_id_or_imm y') (Id.to_string_core x) (Info.to_string info);
       g'_tail_if oc e1 e2 "jge" "jl" info
-  | Tail, IfFEq(x, y, e1, e2, info) ->
+  | Tail, IfFEq(x, y, e1, e2) ->
       Printf.fprintf oc "\tcomisd\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info);
       g'_tail_if oc e1 e2 "je" "jne" info
-  | Tail, IfFLE(x, y, e1, e2, info) ->
+  | Tail, IfFLE(x, y, e1, e2) ->
       Printf.fprintf oc "\tcomisd\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info);
       g'_tail_if oc e1 e2 "jbe" "ja" info
-  | NonTail(z), IfEq(x, y', e1, e2, info) ->
+  | NonTail(z), IfEq(x, y', e1, e2) ->
       Printf.fprintf oc "\tcmpl\t%s, %s\t#%s\n" (pp_id_or_imm y') (Id.to_string_core x) (Info.to_string info);
       g'_non_tail_if oc (NonTail(z)) e1 e2 "je" "jne" info
-  | NonTail(z), IfLE(x, y', e1, e2, info) ->
+  | NonTail(z), IfLE(x, y', e1, e2) ->
       Printf.fprintf oc "\tcmpl\t%s, %s\t#%s\n" (pp_id_or_imm y') (Id.to_string_core x) (Info.to_string info);
       g'_non_tail_if oc (NonTail(z)) e1 e2 "jle" "jg" info
-  | NonTail(z), IfGE(x, y', e1, e2, info) ->
+  | NonTail(z), IfGE(x, y', e1, e2) ->
       Printf.fprintf oc "\tcmpl\t%s, %s\t#%s\n" (pp_id_or_imm y') (Id.to_string_core x) (Info.to_string info);
       g'_non_tail_if oc (NonTail(z)) e1 e2 "jge" "jl" info
-  | NonTail(z), IfFEq(x, y, e1, e2, info) ->
+  | NonTail(z), IfFEq(x, y, e1, e2) ->
       Printf.fprintf oc "\tcomisd\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info);
       g'_non_tail_if oc (NonTail(z)) e1 e2 "je" "jne" info
-  | NonTail(z), IfFLE(x, y, e1, e2, info) ->
+  | NonTail(z), IfFLE(x, y, e1, e2) ->
       Printf.fprintf oc "\tcomisd\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info);
       g'_non_tail_if oc (NonTail(z)) e1 e2 "jbe" "ja" info
-  (* ´Ø¿ô¸Æ¤Ó½Ð¤·¤Î²¾ÁÛÌ¿Îá¤Î¼ÂÁõ (caml2html: emit_call) *)
-  | Tail, CallCls(x, ys, zs, info) -> (* ËöÈø¸Æ¤Ó½Ð¤· (caml2html: emit_tailcall) *)
+  (* ¿¿¿¿¿¿¿¿¿¿¿¿¿¿ (caml2html: emit_call) *)
+  | Tail, CallCls(x, ys, zs) -> (* ¿¿¿¿¿¿ (caml2html: emit_tailcall) *)
       g'_args oc [(x, reg_cl)] ys zs;
       Printf.fprintf oc "\tjmp\t*(%s)\t#%s\n" (Id.to_string_core reg_cl) (Info.to_string info);
-  | Tail, CallDir(Id.L(x, _), ys, zs, info) -> (* ËöÈø¸Æ¤Ó½Ð¤· *)
+  | Tail, CallDir(Id.L(x, _), ys, zs) -> (* ¿¿¿¿¿¿ *)
       g'_args oc [] ys zs;
       Printf.fprintf oc "\tjmp\t%s\t#%s\n" x (Info.to_string info);
-  | NonTail(a), CallCls(x, ys, zs, info) ->
+  | NonTail(a), CallCls(x, ys, zs) ->
       g'_args oc [(x, reg_cl)] ys zs;
       let ss = stacksize () in
       if ss > 0 then Printf.fprintf oc "\taddl\t$%d, %s\t#%s\n" ss (Id.to_string_core reg_sp) (Info.to_string info);
@@ -193,7 +193,7 @@ and g' oc = function (* ³ÆÌ¿Îá¤Î¥¢¥»¥ó¥Ö¥êÀ¸À® (caml2html: emit_gprime) *)
         Printf.fprintf oc "\tmovl\t%s, %s\t#%s\n" (Id.to_string_core regs.(0)) (Id.to_string_core a) (Info.to_string info)
       else if List.mem a allfregs && a <> fregs.(0) then
         Printf.fprintf oc "\tmovsd\t%s, %s\t#%s\n" (Id.to_string_core fregs.(0)) (Id.to_string_core a) (Info.to_string info)
-  | NonTail(a), CallDir(Id.L(x, _), ys, zs, info) ->
+  | NonTail(a), CallDir(Id.L(x, _), ys, zs) ->
       g'_args oc [] ys zs;
       let ss = stacksize () in
       if ss > 0 then Printf.fprintf oc "\taddl\t$%d, %s\t#%s\n" ss (Id.to_string_core reg_sp) (Info.to_string info);

@@ -5,35 +5,35 @@ type t = (* 命令の列 (caml2html: sparcasm_t) *)
   | Ans of exp * Info.t
   | Let of (Id.t * Type.t) * exp * t * Info.t
 and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *)
-  | Nop of Info.t
-  | Set of int * Info.t
-  | SetL of Id.l * Info.t
-  | Mov of Id.t * Info.t
-  | Neg of Id.t * Info.t
-  | Add of Id.t * id_or_imm * Info.t
-  | Sub of Id.t * id_or_imm * Info.t
-  | Ld of Id.t * id_or_imm * int * Info.t
-  | St of Id.t * Id.t * id_or_imm * int * Info.t
-  | FMovD of Id.t * Info.t
-  | FNegD of Id.t * Info.t
-  | FAddD of Id.t * Id.t * Info.t
-  | FSubD of Id.t * Id.t * Info.t
-  | FMulD of Id.t * Id.t * Info.t
-  | FDivD of Id.t * Id.t * Info.t
-  | LdDF of Id.t * id_or_imm * int * Info.t
-  | StDF of Id.t * Id.t * id_or_imm * int * Info.t
-  | Comment of string * Info.t
+  | Nop
+  | Set of int
+  | SetL of Id.l
+  | Mov of Id.t
+  | Neg of Id.t
+  | Add of Id.t * id_or_imm
+  | Sub of Id.t * id_or_imm
+  | Ld of Id.t * id_or_imm * int
+  | St of Id.t * Id.t * id_or_imm * int
+  | FMovD of Id.t
+  | FNegD of Id.t
+  | FAddD of Id.t * Id.t
+  | FSubD of Id.t * Id.t
+  | FMulD of Id.t * Id.t
+  | FDivD of Id.t * Id.t
+  | LdDF of Id.t * id_or_imm * int
+  | StDF of Id.t * Id.t * id_or_imm * int
+  | Comment of string
   (* virtual instructions *)
-  | IfEq of Id.t * id_or_imm * t * t * Info.t
-  | IfLE of Id.t * id_or_imm * t * t * Info.t
-  | IfGE of Id.t * id_or_imm * t * t * Info.t (* 左右対称ではないので必要 *)
-  | IfFEq of Id.t * Id.t * t * t * Info.t
-  | IfFLE of Id.t * Id.t * t * t * Info.t
+  | IfEq of Id.t * id_or_imm * t * t
+  | IfLE of Id.t * id_or_imm * t * t
+  | IfGE of Id.t * id_or_imm * t * t (* 左右対称ではないので必要 *)
+  | IfFEq of Id.t * Id.t * t * t
+  | IfFLE of Id.t * Id.t * t * t
   (* closure address, integer arguments, and float arguments *)
-  | CallCls of Id.t * Id.t list * Id.t list * Info.t
-  | CallDir of Id.l * Id.t list * Id.t list * Info.t
-  | Save of Id.t * Id.t * Info.t (* レジスタ変数の値をスタック変数へ保存 (caml2html: sparcasm_save) *)
-  | Restore of Id.t * Info.t (* スタック変数から値を復元 (caml2html: sparcasm_restore) *)
+  | CallCls of Id.t * Id.t list * Id.t list
+  | CallDir of Id.l * Id.t list * Id.t list
+  | Save of Id.t * Id.t (* レジスタ変数の値をスタック変数へ保存 (caml2html: sparcasm_save) *)
+  | Restore of Id.t (* スタック変数から値を復元 (caml2html: sparcasm_restore) *)
 type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }
 (* プログラム全体 = 浮動小数点数テーブル + トップレベル関数 + メインの式 (caml2html: sparcasm_prog) *)
 type prog = Prog of (Id.l * float) list * fundef list * t

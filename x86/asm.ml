@@ -5,35 +5,35 @@ type t = (* 命令の列 (caml2html: sparcasm_t) *)
   | Ans of exp * Info.t
   | Let of (Id.t * Type.t) * exp * t * Info.t
 and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *)
-  | Nop of Info.t
-  | Set of int * Info.t
-  | SetL of Id.l * Info.t
-  | Mov of Id.t * Info.t
-  | Neg of Id.t * Info.t
-  | Add of Id.t * id_or_imm * Info.t
-  | Sub of Id.t * id_or_imm * Info.t
-  | Ld of Id.t * id_or_imm * int * Info.t
-  | St of Id.t * Id.t * id_or_imm * int * Info.t
-  | FMovD of Id.t * Info.t
-  | FNegD of Id.t * Info.t
-  | FAddD of Id.t * Id.t * Info.t
-  | FSubD of Id.t * Id.t * Info.t
-  | FMulD of Id.t * Id.t * Info.t
-  | FDivD of Id.t * Id.t * Info.t
-  | LdDF of Id.t * id_or_imm * int * Info.t
-  | StDF of Id.t * Id.t * id_or_imm * int * Info.t
-  | Comment of string * Info.t
+  | Nop
+  | Set of int
+  | SetL of Id.l
+  | Mov of Id.t
+  | Neg of Id.t
+  | Add of Id.t * id_or_imm
+  | Sub of Id.t * id_or_imm
+  | Ld of Id.t * id_or_imm * int
+  | St of Id.t * Id.t * id_or_imm * int
+  | FMovD of Id.t
+  | FNegD of Id.t
+  | FAddD of Id.t * Id.t
+  | FSubD of Id.t * Id.t
+  | FMulD of Id.t * Id.t
+  | FDivD of Id.t * Id.t
+  | LdDF of Id.t * id_or_imm * int
+  | StDF of Id.t * Id.t * id_or_imm * int
+  | Comment of string
   (* virtual instructions *)
-  | IfEq of Id.t * id_or_imm * t * t * Info.t
-  | IfLE of Id.t * id_or_imm * t * t * Info.t
-  | IfGE of Id.t * id_or_imm * t * t * Info.t (* 左右対称ではないので必要 *)
-  | IfFEq of Id.t * Id.t * t * t * Info.t
-  | IfFLE of Id.t * Id.t * t * t * Info.t
+  | IfEq of Id.t * id_or_imm * t * t
+  | IfLE of Id.t * id_or_imm * t * t
+  | IfGE of Id.t * id_or_imm * t * t (* 左右対称ではないので必要 *)
+  | IfFEq of Id.t * Id.t * t * t
+  | IfFLE of Id.t * Id.t * t * t
   (* closure address, integer arguments, and float arguments *)
-  | CallCls of Id.t * Id.t list * Id.t list * Info.t
-  | CallDir of Id.l * Id.t list * Id.t list * Info.t
-  | Save of Id.t * Id.t * Info.t (* レジスタ変数の値をスタック変数へ保存 (caml2html: sparcasm_save) *)
-  | Restore of Id.t * Info.t (* スタック変数から値を復元 (caml2html: sparcasm_restore) *)
+  | CallCls of Id.t * Id.t list * Id.t list
+  | CallDir of Id.l * Id.t list * Id.t list
+  | Save of Id.t * Id.t (* レジスタ変数の値をスタック変数へ保存 (caml2html: sparcasm_save) *)
+  | Restore of Id.t (* スタック変数から値を復元 (caml2html: sparcasm_restore) *)
 type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }
 (* プログラム全体 = 浮動小数点数テーブル + トップレベル関数 + メインの式 (caml2html: sparcasm_prog) *)
 type prog = Prog of (Id.l * float) list * fundef list * t
@@ -65,15 +65,15 @@ let rec remove_and_uniq xs = function
 (* free variables in the order of use (for spilling) (caml2html: sparcasm_fv) *)
 let fv_id_or_imm = function V(x) -> [x] | _ -> []
 let rec fv_exp = function
-  | Nop _ | Set(_) | SetL(_) | Comment(_) | Restore(_) -> []
-  | Mov(x, info) | Neg(x, info) | FMovD(x, info) | FNegD(x, info) | Save(x, _, info) -> [x]
-  | Add(x, y', info) | Sub(x, y', info) | Ld(x, y', _, info) | LdDF(x, y', _, info) -> x :: fv_id_or_imm y'
-  | St(x, y, z', _, info) | StDF(x, y, z', _, info) -> x :: y :: fv_id_or_imm z'
-  | FAddD(x, y, info) | FSubD(x, y, info) | FMulD(x, y, info) | FDivD(x, y, info) -> [x; y]
-  | IfEq(x, y', e1, e2, info) | IfLE(x, y', e1, e2, info) | IfGE(x, y', e1, e2, info) -> x :: fv_id_or_imm y' @ remove_and_uniq S.empty (fv e1 @ fv e2) (* uniq here just for efficiency *)
-  | IfFEq(x, y, e1, e2, info) | IfFLE(x, y, e1, e2, info) -> x :: y :: remove_and_uniq S.empty (fv e1 @ fv e2) (* uniq here just for efficiency *)
-  | CallCls(x, ys, zs, info) -> x :: ys @ zs
-  | CallDir(_, ys, zs, info) -> ys @ zs
+  | Nop | Set(_) | SetL(_) | Comment(_) | Restore(_) -> []
+  | Mov(x) | Neg(x) | FMovD(x) | FNegD(x) | Save(x, _) -> [x]
+  | Add(x, y') | Sub(x, y') | Ld(x, y', _) | LdDF(x, y', _) -> x :: fv_id_or_imm y'
+  | St(x, y, z', _) | StDF(x, y, z', _) -> x :: y :: fv_id_or_imm z'
+  | FAddD(x, y) | FSubD(x, y) | FMulD(x, y) | FDivD(x, y) -> [x; y]
+  | IfEq(x, y', e1, e2) | IfLE(x, y', e1, e2) | IfGE(x, y', e1, e2) -> x :: fv_id_or_imm y' @ remove_and_uniq S.empty (fv e1 @ fv e2) (* uniq here just for efficiency *)
+  | IfFEq(x, y, e1, e2) | IfFLE(x, y, e1, e2) -> x :: y :: remove_and_uniq S.empty (fv e1 @ fv e2) (* uniq here just for efficiency *)
+  | CallCls(x, ys, zs) -> x :: ys @ zs
+  | CallDir(_, ys, zs) -> ys @ zs
 and fv = function
   | Ans(exp, info) -> fv_exp exp
   | Let((x, t), exp, e, info) ->
@@ -86,35 +86,6 @@ let rec concat e1 xt e2 =
   | Let(yt, exp, e1', info) -> Let(yt, exp, concat e1' xt e2, info)
 
 let align i = (if i mod 8 = 0 then i else i + 4)
-let get_info_exp = function
-  | Nop info
-  | Set (_, info)
-  | SetL (_, info)
-  | Mov (_, info)
-  | Neg (_, info)
-  | Add (_, _, info)
-  | Sub (_, _, info)
-  | Ld (_, _, _, info)
-  | St (_, _, _, _, info)
-  | FMovD (_, info)
-  | FNegD (_, info)
-  | FAddD (_, _, info)
-  | FSubD (_, _, info)
-  | FMulD (_, _, info)
-  | FDivD (_, _, info)
-  | LdDF (_, _, _, info)
-  | StDF (_, _, _, _, info)
-  | Comment (_, info)
-  (* virtual instructions *)
-  | IfEq (_, _, _, _, info)
-  | IfLE (_, _, _, _, info)
-  | IfGE (_, _, _, _, info)
-  | IfFEq (_, _, _, _, info)
-  | IfFLE (_, _, _, _, info)
-  | CallCls (_, _, _, info)
-  | CallDir (_, _, _, info)
-  | Save (_, _, info)
-  | Restore (_, info) -> info
-let get_info_t = function
+let get_info = function
   | Ans (_, info)
   | Let (_, _, _, info) -> info
