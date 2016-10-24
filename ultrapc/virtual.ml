@@ -32,8 +32,8 @@ let expand xts ini addf addi =
       (offset + 4, addi x t offset acc))
 
 let rec g env = function (* 式の仮想マシンコード生成 (caml2html: virtual_g) *)
-  | Closure.Unit info -> Ans(Nop info, info)
-  | Closure.Int(i, info) -> Ans(Set(i, info), info)
+  | Closure.Unit info -> Ans(Nop, info)
+  | Closure.Int(i, info) -> Ans(Set(i), info)
   | Closure.Float(d, info) ->
       let l =
 	try
@@ -151,21 +151,6 @@ let rec g env = function (* 式の仮想マシンコード生成 (caml2html: virtual_g) *)
       | Type.Array(_) -> Ans(St(z, x, V(y), 4), info)
       | _ -> assert false)
   | Closure.ExtArray(Id.L(x, l_info), info) -> Ans(SetL(Id.L("min_caml_" ^ x, l_info)), info)
-
-(* 関数の仮想マシンコード生成 (caml2html: virtual_h) *)
-let h { Closure.name = (Id.L(x1, x2) as x , t); Closure.args = yts; Closure.formal_fv = zts; Closure.body = e } =
-    let info = Closure.get_info e in
-  let (int, float) = separate yts in
-  let (offset, load) =
-    expand
-      zts
-      (4, g (M.add (x1, x2) t (M.add_list yts (M.add_list zts M.empty))) e)
-      (fun z offset load -> fletd(z, LdDF(Id.to_t x, C(offset), 1), load, info))
-      (fun z t offset load -> Let((z, t), Ld(Id.to_t x, C(offset), 1), load, info)) in
-  match t with
-  | Type.Fun(_, t2, _) ->
-      { name = x; args = int; fargs = float; body = load; ret = t2 }
-  | _ -> assert false
 
 (* 関数の仮想マシンコード生成 (caml2html: virtual_h) *)
 let h { Closure.name = (Id.L(x1, x2) as x , t); Closure.args = yts; Closure.formal_fv = zts; Closure.body = e } =

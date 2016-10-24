@@ -3,8 +3,8 @@ open Asm
 external gethi : float -> int32 = "gethi"
 external getlo : float -> int32 = "getlo"
 
-let stackset = ref S.empty (* ¿¿¿Save¿¿¿¿¿¿¿¿ (caml2html: emit_stackset) *)
-let stackmap = ref [] (* Save¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿ (caml2html: emit_stackmap) *)
+let stackset = ref S.empty (* ¤¹¤Ç¤ËSave¤µ¤ì¤¿ÊÑ¿ô¤Î½¸¹ç (caml2html: emit_stackset) *)
+let stackmap = ref [] (* Save¤µ¤ì¤¿ÊÑ¿ô¤Î¡¢¥¹¥¿¥Ã¥¯¤Ë¤ª¤±¤ë°ÌÃÖ (caml2html: emit_stackmap) *)
 let save x =
   stackset := S.add x !stackset;
   if not (List.mem x !stackmap) then
@@ -28,7 +28,7 @@ let pp_id_or_imm = function
   | V(x, _) -> x
   | C(i) -> "$" ^ string_of_int i
 
-(* ¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿(register shuffling) (caml2html: emit_shuffle) *)
+(* ´Ø¿ô¸Æ¤Ó½Ð¤·¤Î¤¿¤á¤Ë°ú¿ô¤òÊÂ¤ÙÂØ¤¨¤ë(register shuffling) (caml2html: emit_shuffle) *)
 let rec shuffle sw xys =
   (* remove identical moves *)
   let _, xys = List.partition (fun (x, y) -> x = y) xys in
@@ -43,14 +43,14 @@ let rec shuffle sw xys =
 					 xys)
   | xys, acyc -> acyc @ shuffle sw xys
 
-type dest = Tail | NonTail of Id.t (* ¿¿¿¿¿¿¿¿¿¿¿¿¿ (caml2html: emit_dest) *)
-let rec g oc = function (* ¿¿¿¿¿¿¿¿¿¿¿ (caml2html: emit_g) *)
+type dest = Tail | NonTail of Id.t (* ËöÈø¤«¤É¤¦¤«¤òÉ½¤¹¥Ç¡¼¥¿·¿ (caml2html: emit_dest) *)
+let rec g oc = function (* Ì¿ÎáÎó¤Î¥¢¥»¥ó¥Ö¥êÀ¸À® (caml2html: emit_g) *)
   | dest, Ans(exp, info) -> g' oc info (dest, exp)
   | dest, Let((x, t), exp, e, info) ->
       g' oc info (NonTail(x), exp);
       g oc (dest, e)
-and g' oc info = function (* ¿¿¿¿¿¿¿¿¿¿¿ (caml2html: emit_gprime) *)
-  (* ¿¿¿¿¿¿¿¿¿¿¿¿¿dest¿¿¿¿ (caml2html: emit_nontail) *)
+and g' oc info = function (* ³ÆÌ¿Îá¤Î¥¢¥»¥ó¥Ö¥êÀ¸À® (caml2html: emit_gprime) *)
+  (* ËöÈø¤Ç¤Ê¤«¤Ã¤¿¤é·×»»·ë²Ì¤òdest¤Ë¥»¥Ã¥È (caml2html: emit_nontail) *)
   | NonTail(_), Nop -> ()
   | NonTail(x), Set(i) -> Printf.fprintf oc "\tmovl\t$%d, %s\t#%s\n" i (Id.to_string_core x) (Info.to_string info)
   | NonTail(x), SetL(Id.L(y, _)) -> Printf.fprintf oc "\tmovl\t$%s, %s\t#%s\n" y (Id.to_string_core x) (Info.to_string info)
@@ -116,7 +116,7 @@ and g' oc info = function (* ¿¿¿¿¿¿¿¿¿¿¿ (caml2html: emit_gprime) *)
   | NonTail(_), StDF(x, y, V(z), i) -> Printf.fprintf oc "\tmovsd\t%s, (%s,%s,%d)\t#%s\n" (Id.to_string_core x) (Id.to_string_core y) (Id.to_string_core z) i (Info.to_string info)
   | NonTail(_), StDF(x, y, C(j), i) -> Printf.fprintf oc "\tmovsd\t%s, %d(%s)\t#%s\n" (Id.to_string_core x) (j * i) (Id.to_string_core y) (Info.to_string info)
   | NonTail(_), Comment(s) -> Printf.fprintf oc "\t# %s\t#%s\n" s (Info.to_string info)
-  (* ¿¿¿¿¿¿¿¿¿¿ (caml2html: emit_save) *)
+  (* ÂàÈò¤Î²¾ÁÛÌ¿Îá¤Î¼ÂÁõ (caml2html: emit_save) *)
   | NonTail(_), Save(x, y) when List.mem x allregs && not (S.mem y !stackset) ->
       save y;
       Printf.fprintf oc "\tmovl\t%s, %d(%s)\t#%s\n" (Id.to_string_core x) (offset y) (Id.to_string_core reg_sp) (Info.to_string info)
@@ -124,13 +124,13 @@ and g' oc info = function (* ¿¿¿¿¿¿¿¿¿¿¿ (caml2html: emit_gprime) *)
       savef y info;
       Printf.fprintf oc "\tmovsd\t%s, %d(%s)\t#%s\n" (Id.to_string_core x) (offset y) (Id.to_string_core reg_sp) (Info.to_string info)
   | NonTail(_), Save(x, y) -> assert (S.mem y !stackset); ()
-  (* ¿¿¿¿¿¿¿¿¿¿ (caml2html: emit_restore) *)
+  (* Éüµ¢¤Î²¾ÁÛÌ¿Îá¤Î¼ÂÁõ (caml2html: emit_restore) *)
   | NonTail(x), Restore(y) when List.mem x allregs ->
       Printf.fprintf oc "\tmovl\t%d(%s), %s\t#%s\n" (offset y) (Id.to_string_core reg_sp) (Id.to_string_core x) (Info.to_string info)
   | NonTail(x), Restore(y) ->
       assert (List.mem x allfregs);
       Printf.fprintf oc "\tmovsd\t%d(%s), %s\t#%s\n" (offset y) (Id.to_string_core reg_sp) (Id.to_string_core x) (Info.to_string info)
-  (* ¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿ret (caml2html: emit_tailret) *)
+  (* ËöÈø¤À¤Ã¤¿¤é·×»»·ë²Ì¤òÂè°ì¥ì¥¸¥¹¥¿¤Ë¥»¥Ã¥È¤·¤Æret (caml2html: emit_tailret) *)
   | Tail, (Nop| St (_) | StDF (_) | Comment( _) | Save( _) as exp) ->
       g' oc info (NonTail(Id.gentmp (Type.Unit info) info), exp);
       Printf.fprintf oc "\tret\t#%s\n" (Info.to_string info);
@@ -176,11 +176,11 @@ and g' oc info = function (* ¿¿¿¿¿¿¿¿¿¿¿ (caml2html: emit_gprime) *)
   | NonTail(z), IfFLE(x, y, e1, e2) ->
       Printf.fprintf oc "\tcomisd\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info);
       g'_non_tail_if oc (NonTail(z)) e1 e2 "jbe" "ja" info
-  (* ¿¿¿¿¿¿¿¿¿¿¿¿¿¿ (caml2html: emit_call) *)
-  | Tail, CallCls(x, ys, zs) -> (* ¿¿¿¿¿¿ (caml2html: emit_tailcall) *)
+  (* ´Ø¿ô¸Æ¤Ó½Ð¤·¤Î²¾ÁÛÌ¿Îá¤Î¼ÂÁõ (caml2html: emit_call) *)
+  | Tail, CallCls(x, ys, zs) -> (* ËöÈø¸Æ¤Ó½Ð¤· (caml2html: emit_tailcall) *)
       g'_args oc [(x, reg_cl)] ys zs;
       Printf.fprintf oc "\tjmp\t*(%s)\t#%s\n" (Id.to_string_core reg_cl) (Info.to_string info);
-  | Tail, CallDir(Id.L(x, _), ys, zs) -> (* ¿¿¿¿¿¿ *)
+  | Tail, CallDir(Id.L(x, _), ys, zs) -> (* ËöÈø¸Æ¤Ó½Ð¤· *)
       g'_args oc [] ys zs;
       Printf.fprintf oc "\tjmp\t%s\t#%s\n" x (Info.to_string info);
   | NonTail(a), CallCls(x, ys, zs) ->

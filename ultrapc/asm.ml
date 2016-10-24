@@ -42,22 +42,8 @@ let fletd(x, e1, e2, info) = Let((x, Type.Float info), e1, e2, info)
 let seq(e1, e2, info) = Let((Id.gentmp (Type.Unit info) info, Type.Unit info), e1, e2, info)
 
 let regs = (* Array.init 16 (fun i -> Printf.sprintf "%%r%d" i) *)
-  [|
-      "%r1", Info.dump();
-      "%r2", Info.dump();
-      "%r3", Info.dump();
-      "%r4", Info.dump();
-      "%r5", Info.dump();
-      "%r6", Info.dump();
-      "%r7", Info.dump();
-      "%r8", Info.dump();
-      "%r9", Info.dump();
-      "%r10", Info.dump();
-      "%r11", Info.dump();
-      "%r12", Info.dump();
-      "%r13", Info.dump();
-  |]
-let fregs = Array.init 16 (fun i -> Printf.sprintf "%%xmm%d" i, Info.dump())
+  [| "%eax", Info.dump(); "%ebx", Info.dump(); "%ecx", Info.dump(); "%edx", Info.dump(); "%esi", Info.dump(); "%edi", Info.dump() |]
+let fregs = Array.init 8 (fun i -> Printf.sprintf "%%xmm%d" i, Info.dump())
 let allregs = Array.to_list regs
 let allfregs = Array.to_list fregs
 let reg_cl = regs.(Array.length regs - 1) (* closure address (caml2html: sparcasm_regcl) *)
@@ -65,8 +51,7 @@ let reg_cl = regs.(Array.length regs - 1) (* closure address (caml2html: sparcas
 let reg_sw = regs.(Array.length regs - 1) (* temporary for swap *)
 let reg_fsw = fregs.(Array.length fregs - 1) (* temporary for swap *)
 *)
-let reg_sp = "%sp", Info.dump() (* stack pointer *)
-let link_reg = "%link", Info.dump()
+let reg_sp = "%ebp", Info.dump() (* stack pointer *)
 let reg_hp = "min_caml_hp", Info.dump() (* heap pointer (caml2html: sparcasm_reghp) *)
 (* let reg_ra = "%eax" (* return address *) *)
 let is_reg x = ((fst x).[0] = '%' || fst x = fst reg_hp)
@@ -80,15 +65,15 @@ let rec remove_and_uniq xs = function
 (* free variables in the order of use (for spilling) (caml2html: sparcasm_fv) *)
 let fv_id_or_imm = function V(x) -> [x] | _ -> []
 let rec fv_exp = function
-  | Nop _ | Set(_) | SetL(_) | Comment(_) | Restore(_) -> []
-  | Mov(x, info) | Neg(x, info) | FMovD(x, info) | FNegD(x, info) | Save(x, _, info) -> [x]
-  | Add(x, y', info) | Sub(x, y', info) | Ld(x, y', _, info) | LdDF(x, y', _, info) -> x :: fv_id_or_imm y'
-  | St(x, y, z', _, info) | StDF(x, y, z', _, info) -> x :: y :: fv_id_or_imm z'
-  | FAddD(x, y, info) | FSubD(x, y, info) | FMulD(x, y, info) | FDivD(x, y, info) -> [x; y]
-  | IfEq(x, y', e1, e2, info) | IfLE(x, y', e1, e2, info) | IfGE(x, y', e1, e2, info) -> x :: fv_id_or_imm y' @ remove_and_uniq S.empty (fv e1 @ fv e2) (* uniq here just for efficiency *)
-  | IfFEq(x, y, e1, e2, info) | IfFLE(x, y, e1, e2, info) -> x :: y :: remove_and_uniq S.empty (fv e1 @ fv e2) (* uniq here just for efficiency *)
-  | CallCls(x, ys, zs, info) -> x :: ys @ zs
-  | CallDir(_, ys, zs, info) -> ys @ zs
+  | Nop | Set(_) | SetL(_) | Comment(_) | Restore(_) -> []
+  | Mov(x) | Neg(x) | FMovD(x) | FNegD(x) | Save(x, _) -> [x]
+  | Add(x, y') | Sub(x, y') | Ld(x, y', _) | LdDF(x, y', _) -> x :: fv_id_or_imm y'
+  | St(x, y, z', _) | StDF(x, y, z', _) -> x :: y :: fv_id_or_imm z'
+  | FAddD(x, y) | FSubD(x, y) | FMulD(x, y) | FDivD(x, y) -> [x; y]
+  | IfEq(x, y', e1, e2) | IfLE(x, y', e1, e2) | IfGE(x, y', e1, e2) -> x :: fv_id_or_imm y' @ remove_and_uniq S.empty (fv e1 @ fv e2) (* uniq here just for efficiency *)
+  | IfFEq(x, y, e1, e2) | IfFLE(x, y, e1, e2) -> x :: y :: remove_and_uniq S.empty (fv e1 @ fv e2) (* uniq here just for efficiency *)
+  | CallCls(x, ys, zs) -> x :: ys @ zs
+  | CallDir(_, ys, zs) -> ys @ zs
 and fv = function
   | Ans(exp, info) -> fv_exp exp
   | Let((x, t), exp, e, info) ->
@@ -101,35 +86,6 @@ let rec concat e1 xt e2 =
   | Let(yt, exp, e1', info) -> Let(yt, exp, concat e1' xt e2, info)
 
 let align i = (if i mod 8 = 0 then i else i + 4)
-let get_info_exp = function
-  | Nop info
-  | Set (_, info)
-  | SetL (_, info)
-  | Mov (_, info)
-  | Neg (_, info)
-  | Add (_, _, info)
-  | Sub (_, _, info)
-  | Ld (_, _, _, info)
-  | St (_, _, _, _, info)
-  | FMovD (_, info)
-  | FNegD (_, info)
-  | FAddD (_, _, info)
-  | FSubD (_, _, info)
-  | FMulD (_, _, info)
-  | FDivD (_, _, info)
-  | LdDF (_, _, _, info)
-  | StDF (_, _, _, _, info)
-  | Comment (_, info)
-  (* virtual instructions *)
-  | IfEq (_, _, _, _, info)
-  | IfLE (_, _, _, _, info)
-  | IfGE (_, _, _, _, info)
-  | IfFEq (_, _, _, _, info)
-  | IfFLE (_, _, _, _, info)
-  | CallCls (_, _, _, info)
-  | CallDir (_, _, _, info)
-  | Save (_, _, info)
-  | Restore (_, info) -> info
-let get_info_t = function
+let get_info = function
   | Ans (_, info)
   | Let (_, _, _, info) -> info
