@@ -1,4 +1,5 @@
 open Asm
+open Cmd
 
 external gethi : float -> int32 = "gethi"
 external getlo : float -> int32 = "getlo"
@@ -44,38 +45,47 @@ let rec shuffle sw xys =
   | xys, acyc -> acyc @ shuffle sw xys
 
 type dest = Tail | NonTail of Id.t (* 末尾かどうかを表すデータ型 (caml2html: emit_dest) *)
-let rec g output_chanel = function (* 命令列のアセンブリ生成 (caml2html: emit_g) *)
-  | dest, Ans(exp, info) -> g' output_chanel info (dest, exp)
+let rec g = function (* 命令列のアセンブリ生成 (caml2html: emit_g) *)
+  | dest, Ans(exp, info) -> g' info (dest, exp)
   | dest, Let((x, t), exp, e, info) ->
-      g' output_chanel info (NonTail(x), exp);
-      g output_chanel (dest, e)
-and g' oc info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
+      g' info (NonTail(x), exp);
+      g (dest, e)
+and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
   (* 末尾でなかったら計算結果をdestにセット (caml2html: emit_nontail) *)
   | NonTail(_), Nop -> ()
 
   (*set imm value i to reg x*)
   | NonTail(x), Set(i) ->
-          Printf.fprintf oc "\taddi\t %s, %%r0, $%d\t#%s\n" (Id.to_string_core x) i (Info.to_string info)
+	append_cmd cmd_addi [Id.to_string_core x; "%r0"; (string_of_int i)] info;
 
   (*set label y to reg x*)
   | NonTail(x), SetL(Id.L(y, _)) ->
-          Printf.fprintf oc "\taddi\t$%s, %%r0, %s\t#%s\n" (Id.to_string_core x) y (Info.to_string info)
+	append_cmd cmd_addi [Id.to_string_core x; "%r0"; y] info;
+
+(*load int from data section*)
+  | NonTail(dest), LdL(Id.L(label, _)) ->
+    append_cmd cmd_ld [Id.to_string_core dest; "$" ^ label ^ "(%r0)"] info;
+
+(*load real from data section*)
+  | NonTail(dest), LdDFL(Id.L(label, _)) ->
+    append_cmd cmd_fld [Id.to_string_core dest; "$" ^ label ^ "(%r0)"] info;
 
   (*move from reg y to reg x*)
   | NonTail(x), Mov(y) ->
       if x <> y then
-          Printf.fprintf oc "\taddi\t%s, %%r0, %s\t#%s\n" (Id.to_string_core x) (Id.to_string_core y) (Info.to_string info)
+		append_cmd cmd_addi [Id.to_string_core x; "%r0"; Id.to_string_core y] info;
 
   | NonTail(x), Neg(y) ->
       if x <> y then
-          Printf.fprintf oc "\tmov\t%s, %s\t#%s\n" (Id.to_string_core x) (Id.to_string_core y) (Info.to_string info);
-      Printf.fprintf oc "\tnegl\t%s\t#%s\n" (Id.to_string_core x) (Info.to_string info)
+		append_cmd cmd_sub [Id.to_string_core x; "%r0"; Id.to_string_core y] info;
+
   | NonTail(x), Add(y, z') ->
       if V(x) = z' then
-	Printf.fprintf oc "\taddl\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info)
+		Printf.fprintf oc "\taddl\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info)
       else
-	(if x <> y then Printf.fprintf oc "\tmov\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info);
-	 Printf.fprintf oc "\taddl\t%s, %s\t#%s\n" (pp_id_or_imm z') (Id.to_string_core x) (Info.to_string info))
+		(if x <> y then
+			Printf.fprintf oc "\tmov\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info);
+		 Printf.fprintf oc "\taddl\t%s, %s\t#%s\n" (pp_id_or_imm z') (Id.to_string_core x) (Info.to_string info))
   | NonTail(x), Sub(y, z') ->
       if V(x) = z' then
           (Printf.fprintf oc "\tsubl\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info);
@@ -261,60 +271,64 @@ and g'_args oc x_reg_cl ys zs =
     (shuffle sw (List.map (fun(x, y) ->Id.to_string_core x, Id.to_string_core y )zfrs))
 
 let h oc { name = Id.L(x, _); args = _; fargs = _; body = e; ret = _ } =
-  Printf.fprintf oc "%s:\n" x;
+    append (Label (x, None));
   stackset := S.empty;
   stackmap := [];
-  g oc (Tail, e)
+  g (Tail, e)
 
 (* type prog = Prog of (Id.l * float) list * fundef list * t *)
-let f oc (Prog(idata, data, fundefs, e)) =
+let f (Prog(idata, data, fundefs, e)) =
   Format.eprintf "generating assembly...@.";
 
-  (*.start label: starting point*)
+    (*.start label: starting point*)
+    append (Directive (start_directive, Some entry_label, None));
 
-  Printf.fprintf oc ".start\tmin_caml_start\n";
+    (*data section*)
+    append (Directive (data_directive, None, None));
+    append (Directive (align_directive, align_length, None));
 
-  (*data section*)
-  Printf.fprintf oc ".data\n";
-  Printf.fprintf oc ".align\t8\n";
-
-  (*print double floating point constant labels*)
-  List.iter
-    (fun (Id.L(x, _), d) ->
-      Printf.fprintf oc "%s:\t# %f\n" x d;
-      Printf.fprintf oc "\t.long\t0x%lx\n" (gethi d);
-      Printf.fprintf oc "\t.long\t0x%lx\n" (getlo d))
-    data;
+    (*print double floating point constant labels*)
+    (*use fold_left by flavor of tail recursive optimization*)
+    List.iter
+        (fun cmd_list (Id.L(x, _), d) ->
+            append (Label (x, Printf.sprintf "%f" d));
+            append (Data (gethi d));
+            append (Data (getlo d));
+        )
+        data;
 
   (*print int constant labels*)
   List.iter
     (fun (Id.L(x, _), d) ->
-        Printf.fprintf oc "%s:\t# %d\n" x d;
-        Printf.fprintf oc "\t.long\t0x%x\n" d;
+        append (Label (x, string_of_int d));
+        append (Data d);
     )
     idata;
-  Printf.fprintf oc ".align\t8\n";
+
+    append (Directive (align_directive, Some "8", None));
   (*end of data section*)
 
   (*begin coding section*)
-  Printf.fprintf oc ".text\n";
+  append (Directive (text_directive, None, None));
   (*fun def*)
-  List.iter (fun fundef -> h oc fundef) fundefs;
+  List.iter (fun fundef -> h fundef) fundefs;
 
-  Printf.fprintf oc "min_caml_start:\n";
-  (*backup all regs*)
-  Printf.fprintf oc "\tpush\t%%r9\n";
-  Printf.fprintf oc "\tpush\t%%r10\n";
-  Printf.fprintf oc "\tpush\t%%r11\n";
-  Printf.fprintf oc "\tpush\t%%r12\n";
-  Printf.fprintf oc "\tpush\t%%r13\n";
-  stackset := S.empty;
-  stackmap := [];
-  g oc (NonTail(regs.(0)), e);
-  (*restore all regs*)
-  Printf.fprintf oc "\tpop\t%%r9\n";
-  Printf.fprintf oc "\tpop\t%%r10\n";
-  Printf.fprintf oc "\tpop\t%%r11\n";
-  Printf.fprintf oc "\tpop\t%%r12\n";
-  Printf.fprintf oc "\tpop\t%%r13\n";
-  Printf.fprintf oc "\tout\n";
+  append (Label (entry_label, None));
+
+	(*backup all regs*)
+	append_cmd_noinfo cmd_push ["%r9"] None;
+	append_cmd_noinfo cmd_push ["%r10"] None;
+	append_cmd_noinfo cmd_push ["%r11"] None;
+	append_cmd_noinfo cmd_push ["%r12"] None;
+	append_cmd_noinfo cmd_push ["%r13"] None;
+	stackset := S.empty;
+	stackmap := [];
+	g (NonTail(regs.(0)), e);
+
+	(*restore all regs*)
+	append_cmd_noinfo cmd_pop ["%r9"];
+	append_cmd_noinfo cmd_pop ["%r10"];
+	append_cmd_noinfo cmd_pop ["%r11"];
+	append_cmd_noinfo cmd_pop ["%r12"];
+	append_cmd_noinfo cmd_pop ["%r13"];
+	append_cmd cmd_out [] None;

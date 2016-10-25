@@ -49,8 +49,7 @@ let rec g env = function (* 式の仮想マシンコード生成 (caml2html: virtual_g) *)
           idata := (l, i) :: !idata;
           l
       in
-          let x = Id.genid( "l", info) in
-          Let((x, Type.Int info), SetL(l), Ans(Ld(x, C(0), 1), info), info)
+        LdL(l)
   | Closure.Float(d, info) ->
       let l =
         try
@@ -62,8 +61,7 @@ let rec g env = function (* 式の仮想マシンコード生成 (caml2html: virtual_g) *)
           data := (l, d) :: !data;
           l
       in
-          let x = Id.genid( "l", info) in
-          Let((x, Type.Int info), SetL(l), Ans(LdDF(x, C(0), 1), info), info)
+        LdDFL(l)
   | Closure.Neg(x, info) -> Ans(Neg(x), info)
   | Closure.Add(x, y, info) -> Ans(Add(x, V(y)), info)
   | Closure.Sub(x, y, info) -> Ans(Sub(x, V(y)), info)
