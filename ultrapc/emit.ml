@@ -44,38 +44,49 @@ let rec shuffle sw xys =
   | xys, acyc -> acyc @ shuffle sw xys
 
 type dest = Tail | NonTail of Id.t (* 末尾かどうかを表すデータ型 (caml2html: emit_dest) *)
-let rec g oc = function (* 命令列のアセンブリ生成 (caml2html: emit_g) *)
-  | dest, Ans(exp, info) -> g' oc info (dest, exp)
+let rec g output_chanel = function (* 命令列のアセンブリ生成 (caml2html: emit_g) *)
+  | dest, Ans(exp, info) -> g' output_chanel info (dest, exp)
   | dest, Let((x, t), exp, e, info) ->
-      g' oc info (NonTail(x), exp);
-      g oc (dest, e)
+      g' output_chanel info (NonTail(x), exp);
+      g output_chanel (dest, e)
 and g' oc info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
   (* 末尾でなかったら計算結果をdestにセット (caml2html: emit_nontail) *)
   | NonTail(_), Nop -> ()
-  | NonTail(x), Set(i) -> Printf.fprintf oc "\tmovl\t$%d, %s\t#%s\n" i (Id.to_string_core x) (Info.to_string info)
-  | NonTail(x), SetL(Id.L(y, _)) -> Printf.fprintf oc "\tmovl\t$%s, %s\t#%s\n" y (Id.to_string_core x) (Info.to_string info)
+
+  (*set imm value i to reg x*)
+  | NonTail(x), Set(i) ->
+          Printf.fprintf oc "\taddi\t %s, %%r0, $%d\t#%s\n" (Id.to_string_core x) i (Info.to_string info)
+
+  (*set label y to reg x*)
+  | NonTail(x), SetL(Id.L(y, _)) ->
+          Printf.fprintf oc "\taddi\t$%s, %%r0, %s\t#%s\n" (Id.to_string_core x) y (Info.to_string info)
+
+  (*move from reg y to reg x*)
   | NonTail(x), Mov(y) ->
-      if x <> y then Printf.fprintf oc "\tmovl\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info)
+      if x <> y then
+          Printf.fprintf oc "\taddi\t%s, %%r0, %s\t#%s\n" (Id.to_string_core x) (Id.to_string_core y) (Info.to_string info)
+
   | NonTail(x), Neg(y) ->
-      if x <> y then Printf.fprintf oc "\tmovl\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info);
+      if x <> y then
+          Printf.fprintf oc "\tmov\t%s, %s\t#%s\n" (Id.to_string_core x) (Id.to_string_core y) (Info.to_string info);
       Printf.fprintf oc "\tnegl\t%s\t#%s\n" (Id.to_string_core x) (Info.to_string info)
   | NonTail(x), Add(y, z') ->
       if V(x) = z' then
 	Printf.fprintf oc "\taddl\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info)
       else
-	(if x <> y then Printf.fprintf oc "\tmovl\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info);
+	(if x <> y then Printf.fprintf oc "\tmov\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info);
 	 Printf.fprintf oc "\taddl\t%s, %s\t#%s\n" (pp_id_or_imm z') (Id.to_string_core x) (Info.to_string info))
   | NonTail(x), Sub(y, z') ->
       if V(x) = z' then
           (Printf.fprintf oc "\tsubl\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info);
          Printf.fprintf oc "\tnegl\t%s\t#%s\n" (Id.to_string_core x) (Info.to_string info))
       else
-	(if x <> y then Printf.fprintf oc "\tmovl\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info);
+	(if x <> y then Printf.fprintf oc "\tmov\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info);
 	 Printf.fprintf oc "\tsubl\t%s, %s\t#%s\n" (pp_id_or_imm z') (Id.to_string_core x) (Info.to_string info))
-  | NonTail(x), Ld(y, V(z), i) -> Printf.fprintf oc "\tmovl\t(%s,%s,%d), %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core z) i (Id.to_string_core x) (Info.to_string info)
-  | NonTail(x), Ld(y, C(j), i) -> Printf.fprintf oc "\tmovl\t%d(%s), %s\t#%s\n" (j * i) (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info)
-  | NonTail(_), St(x, y, V(z), i) -> Printf.fprintf oc "\tmovl\t%s, (%s,%s,%d)\t#%s\n" (Id.to_string_core x) (Id.to_string_core y) (Id.to_string_core z) i (Info.to_string info)
-  | NonTail(_), St(x, y, C(j), i) -> Printf.fprintf oc "\tmovl\t%s, %d(%s)\t#%s\n" (Id.to_string_core x) (j * i) (Id.to_string_core y) (Info.to_string info)
+  | NonTail(x), Ld(y, V(z), i) -> Printf.fprintf oc "\tmov\t(%s,%s,%d), %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core z) i (Id.to_string_core x) (Info.to_string info)
+  | NonTail(x), Ld(y, C(j), i) -> Printf.fprintf oc "\tld\t %s, %d(%s)\t#%s\n"  (Id.to_string_core x) (j * i) (Id.to_string_core y) (Info.to_string info)
+  | NonTail(_), St(x, y, V(z), i) -> Printf.fprintf oc "\tmov\t%s, (%s,%s,%d)\t#%s\n" (Id.to_string_core x) (Id.to_string_core y) (Id.to_string_core z) i (Info.to_string info)
+  | NonTail(_), St(x, y, C(j), i) -> Printf.fprintf oc "\tmov\t%s, %d(%s)\t#%s\n" (Id.to_string_core x) (j * i) (Id.to_string_core y) (Info.to_string info)
   | NonTail(x), FMovD(y) ->
       if x <> y then Printf.fprintf oc "\tmovsd\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info)
   | NonTail(x), FNegD(y) ->
@@ -112,6 +123,9 @@ and g' oc info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
 	(if x <> y then Printf.fprintf oc "\tmovsd\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info);
 	 Printf.fprintf oc "\tdivsd\t%s, %s\t#%s\n" (Id.to_string_core z) (Id.to_string_core x) (Info.to_string info))
   | NonTail(x), LdDF(y, V(z), i) -> Printf.fprintf oc "\tmovsd\t(%s,%s,%d), %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core z) i (Id.to_string_core x) (Info.to_string info)
+  (*move from y to x with offset is i * j (constant)
+   * movsd: move scalar double precision floating point
+   * *)
   | NonTail(x), LdDF(y, C(j), i) -> Printf.fprintf oc "\tmovsd\t%d(%s), %s\t#%s\n" (j * i) (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info)
   | NonTail(_), StDF(x, y, V(z), i) -> Printf.fprintf oc "\tmovsd\t%s, (%s,%s,%d)\t#%s\n" (Id.to_string_core x) (Id.to_string_core y) (Id.to_string_core z) i (Info.to_string info)
   | NonTail(_), StDF(x, y, C(j), i) -> Printf.fprintf oc "\tmovsd\t%s, %d(%s)\t#%s\n" (Id.to_string_core x) (j * i) (Id.to_string_core y) (Info.to_string info)
@@ -119,14 +133,14 @@ and g' oc info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
   (* 退避の仮想命令の実装 (caml2html: emit_save) *)
   | NonTail(_), Save(x, y) when List.mem x allregs && not (S.mem y !stackset) ->
       save y;
-      Printf.fprintf oc "\tmovl\t%s, %d(%s)\t#%s\n" (Id.to_string_core x) (offset y) (Id.to_string_core reg_sp) (Info.to_string info)
+      Printf.fprintf oc "\tmov\t%s, %d(%s)\t#%s\n" (Id.to_string_core x) (offset y) (Id.to_string_core reg_sp) (Info.to_string info)
   | NonTail(_), Save(x, y) when List.mem x allfregs && not (S.mem y !stackset) ->
       savef y info;
       Printf.fprintf oc "\tmovsd\t%s, %d(%s)\t#%s\n" (Id.to_string_core x) (offset y) (Id.to_string_core reg_sp) (Info.to_string info)
   | NonTail(_), Save(x, y) -> assert (S.mem y !stackset); ()
   (* 復帰の仮想命令の実装 (caml2html: emit_restore) *)
   | NonTail(x), Restore(y) when List.mem x allregs ->
-      Printf.fprintf oc "\tmovl\t%d(%s), %s\t#%s\n" (offset y) (Id.to_string_core reg_sp) (Id.to_string_core x) (Info.to_string info)
+      Printf.fprintf oc "\tmov\t%d(%s), %s\t#%s\n" (offset y) (Id.to_string_core reg_sp) (Id.to_string_core x) (Info.to_string info)
   | NonTail(x), Restore(y) ->
       assert (List.mem x allfregs);
       Printf.fprintf oc "\tmovsd\t%d(%s), %s\t#%s\n" (offset y) (Id.to_string_core reg_sp) (Id.to_string_core x) (Info.to_string info)
@@ -190,7 +204,7 @@ and g' oc info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
       Printf.fprintf oc "\tcall\t*(%s)\t#%s\n" (Id.to_string_core reg_cl) (Info.to_string info);
       if ss > 0 then Printf.fprintf oc "\tsubl\t$%d, %s\t#%s\n" ss (Id.to_string_core reg_sp) (Info.to_string info);
       if List.mem a allregs && a <> regs.(0) then
-        Printf.fprintf oc "\tmovl\t%s, %s\t#%s\n" (Id.to_string_core regs.(0)) (Id.to_string_core a) (Info.to_string info)
+        Printf.fprintf oc "\tmov\t%s, %s\t#%s\n" (Id.to_string_core regs.(0)) (Id.to_string_core a) (Info.to_string info)
       else if List.mem a allfregs && a <> fregs.(0) then
         Printf.fprintf oc "\tmovsd\t%s, %s\t#%s\n" (Id.to_string_core fregs.(0)) (Id.to_string_core a) (Info.to_string info)
   | NonTail(a), CallDir(Id.L(x, _), ys, zs) ->
@@ -200,7 +214,7 @@ and g' oc info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
       Printf.fprintf oc "\tcall\t%s\t#%s\n" x (Info.to_string info);
       if ss > 0 then Printf.fprintf oc "\tsubl\t$%d, %s\t#%s\n" ss (Id.to_string_core reg_sp) (Info.to_string info);
       if List.mem a allregs && a <> regs.(0) then
-        Printf.fprintf oc "\tmovl\t%s, %s\t#%s\n" (Id.to_string_core regs.(0)) (Id.to_string_core a) (Info.to_string info)
+        Printf.fprintf oc "\tmov\t%s, %s\t#%s\n" (Id.to_string_core regs.(0)) (Id.to_string_core a) (Info.to_string info)
       else if List.mem a allfregs && a <> fregs.(0) then
         Printf.fprintf oc "\tmovsd\t%s, %s\t#%s\n" (Id.to_string_core fregs.(0)) (Id.to_string_core a) (Info.to_string info)
 and g'_tail_if oc e1 e2 b bn info=
@@ -235,7 +249,7 @@ and g'_args oc x_reg_cl ys zs =
       (0, x_reg_cl)
       ys in
   List.iter
-    (fun (y, r) -> Printf.fprintf oc "\tmovl\t%s, %s\n" y r)
+    (fun (y, r) -> Printf.fprintf oc "\tmov\t%s, %s\n" y r)
     (shuffle sw  (List.map (fun (x, y) -> Id.to_string_core  x, Id.to_string_core y) yrs));
   let (d, zfrs) =
     List.fold_left
@@ -253,40 +267,54 @@ let h oc { name = Id.L(x, _); args = _; fargs = _; body = e; ret = _ } =
   g oc (Tail, e)
 
 (* type prog = Prog of (Id.l * float) list * fundef list * t *)
-let f oc (Prog(data, fundefs, e)) =
+let f oc (Prog(idata, data, fundefs, e)) =
   Format.eprintf "generating assembly...@.";
+
+  (*.start label: starting point*)
+
+  Printf.fprintf oc ".start\tmin_caml_start\n";
+
+  (*data section*)
   Printf.fprintf oc ".data\n";
-  Printf.fprintf oc ".balign\t8\n";
+  Printf.fprintf oc ".align\t8\n";
+
+  (*print double floating point constant labels*)
   List.iter
     (fun (Id.L(x, _), d) ->
       Printf.fprintf oc "%s:\t# %f\n" x d;
       Printf.fprintf oc "\t.long\t0x%lx\n" (gethi d);
       Printf.fprintf oc "\t.long\t0x%lx\n" (getlo d))
     data;
+
+  (*print int constant labels*)
+  List.iter
+    (fun (Id.L(x, _), d) ->
+        Printf.fprintf oc "%s:\t# %d\n" x d;
+        Printf.fprintf oc "\t.long\t0x%x\n" d;
+    )
+    idata;
+  Printf.fprintf oc ".align\t8\n";
+  (*end of data section*)
+
+  (*begin coding section*)
   Printf.fprintf oc ".text\n";
+  (*fun def*)
   List.iter (fun fundef -> h oc fundef) fundefs;
-  Printf.fprintf oc ".globl\tmin_caml_start\n";
+
   Printf.fprintf oc "min_caml_start:\n";
-  Printf.fprintf oc ".globl\t_min_caml_start\n";
-  Printf.fprintf oc "_min_caml_start: # for cygwin\n";
-  Printf.fprintf oc "\tpushl\t%%eax\n";
-  Printf.fprintf oc "\tpushl\t%%ebx\n";
-  Printf.fprintf oc "\tpushl\t%%ecx\n";
-  Printf.fprintf oc "\tpushl\t%%edx\n";
-  Printf.fprintf oc "\tpushl\t%%esi\n";
-  Printf.fprintf oc "\tpushl\t%%edi\n";
-  Printf.fprintf oc "\tpushl\t%%ebp\n";
-  Printf.fprintf oc "\tmovl\t32(%%esp),%s\n" (Id.to_string_core reg_sp);
-  Printf.fprintf oc "\tmovl\t36(%%esp),%s\n" (Id.to_string_core regs.(0));
-  Printf.fprintf oc "\tmovl\t%s,%s\n" (Id.to_string_core regs.(0)) (Id.to_string_core reg_hp);
+  (*backup all regs*)
+  Printf.fprintf oc "\tpush\t%%r9\n";
+  Printf.fprintf oc "\tpush\t%%r10\n";
+  Printf.fprintf oc "\tpush\t%%r11\n";
+  Printf.fprintf oc "\tpush\t%%r12\n";
+  Printf.fprintf oc "\tpush\t%%r13\n";
   stackset := S.empty;
   stackmap := [];
   g oc (NonTail(regs.(0)), e);
-  Printf.fprintf oc "\tpopl\t%%ebp\n";
-  Printf.fprintf oc "\tpopl\t%%edi\n";
-  Printf.fprintf oc "\tpopl\t%%esi\n";
-  Printf.fprintf oc "\tpopl\t%%edx\n";
-  Printf.fprintf oc "\tpopl\t%%ecx\n";
-  Printf.fprintf oc "\tpopl\t%%ebx\n";
-  Printf.fprintf oc "\tpopl\t%%eax\n";
-  Printf.fprintf oc "\tret\n";
+  (*restore all regs*)
+  Printf.fprintf oc "\tpop\t%%r9\n";
+  Printf.fprintf oc "\tpop\t%%r10\n";
+  Printf.fprintf oc "\tpop\t%%r11\n";
+  Printf.fprintf oc "\tpop\t%%r12\n";
+  Printf.fprintf oc "\tpop\t%%r13\n";
+  Printf.fprintf oc "\tout\n";

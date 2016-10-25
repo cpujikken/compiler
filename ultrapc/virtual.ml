@@ -3,6 +3,8 @@
 open Asm
 
 let data = ref [] (* 浮動小数点数の定数テーブル (caml2html: virtual_data) *)
+let idata = ref [] (*list of big int value - bigger than 16bit*)
+let int_imm_const_size = 16
 
 let classify xts ini addf addi =
   List.fold_left
@@ -33,19 +35,35 @@ let expand xts ini addf addi =
 
 let rec g env = function (* 式の仮想マシンコード生成 (caml2html: virtual_g) *)
   | Closure.Unit info -> Ans(Nop, info)
-  | Closure.Int(i, info) -> Ans(Set(i), info)
+  | Closure.Int(i, info) ->
+      if (Pervasives.abs i) < (1 lsl (int_imm_const_size - 1)) then
+          Ans(Set(i), info)
+      else
+      let l =
+        try
+          (* すでに定数テーブルにあったら再利用 *)
+          let (l, _) = List.find (fun (_, i') -> i = i') !idata in
+          l
+        with Not_found ->
+          let l = Id.to_L(Id.genid ("l", info)) in
+          idata := (l, i) :: !idata;
+          l
+      in
+          let x = Id.genid( "l", info) in
+          Let((x, Type.Int info), SetL(l), Ans(Ld(x, C(0), 1), info), info)
   | Closure.Float(d, info) ->
       let l =
-	try
-	  (* すでに定数テーブルにあったら再利用 *)
-	  let (l, _) = List.find (fun (_, d') -> d = d') !data in
-	  l
-	with Not_found ->
-	  let l = Id.to_L(Id.genid ("l", info)) in
-	  data := (l, d) :: !data;
-	  l in
-      let x = Id.genid( "l", info) in
-      Let((x, Type.Int info), SetL(l), Ans(LdDF(x, C(0), 1), info), info)
+        try
+          (* すでに定数テーブルにあったら再利用 *)
+          let (l, _) = List.find (fun (_, d') -> d = d') !data in
+          l
+        with Not_found ->
+          let l = Id.to_L(Id.genid ("l", info)) in
+          data := (l, d) :: !data;
+          l
+      in
+          let x = Id.genid( "l", info) in
+          Let((x, Type.Int info), SetL(l), Ans(LdDF(x, C(0), 1), info), info)
   | Closure.Neg(x, info) -> Ans(Neg(x), info)
   | Closure.Add(x, y, info) -> Ans(Add(x, V(y)), info)
   | Closure.Sub(x, y, info) -> Ans(Sub(x, V(y)), info)
@@ -172,4 +190,4 @@ let f (Closure.Prog(fundefs, e)) =
   data := [];
   let fundefs = List.map h fundefs in
   let e = g M.empty e in
-  Prog(!data, fundefs, e)
+  Prog(!idata, !data, fundefs, e)

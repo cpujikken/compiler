@@ -1,18 +1,6 @@
-let x = 1
+let x = 123456789123
 in
-let y = 2
+let y = -10
 in
-let rec t k =
-    let arg = k in
-    let rec f a = a + arg
-    in
-    f
-in
-let f1 = t x
-in
-let f2 = t y
-in
-let z = f2 3
-in
-let m = f2 4
-in print m
+print y;
+print x

@@ -36,14 +36,28 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *)
   | Restore of Id.t (* スタック変数から値を復元 (caml2html: sparcasm_restore) *)
 type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }
 (* プログラム全体 = 浮動小数点数テーブル + トップレベル関数 + メインの式 (caml2html: sparcasm_prog) *)
-type prog = Prog of (Id.l * float) list * fundef list * t
+type prog = Prog of (Id.l * int) list * (Id.l * float) list * fundef list * t
 
 let fletd(x, e1, e2, info) = Let((x, Type.Float info), e1, e2, info)
 let seq(e1, e2, info) = Let((Id.gentmp (Type.Unit info) info, Type.Unit info), e1, e2, info)
 
 let regs = (* Array.init 16 (fun i -> Printf.sprintf "%%r%d" i) *)
-  [| "%eax", Info.dump(); "%ebx", Info.dump(); "%ecx", Info.dump(); "%edx", Info.dump(); "%esi", Info.dump(); "%edi", Info.dump() |]
-let fregs = Array.init 8 (fun i -> Printf.sprintf "%%xmm%d" i, Info.dump())
+  [|
+      "%r01", Info.dump();
+      "%r02", Info.dump();
+      "%r03", Info.dump();
+      "%r04", Info.dump();
+      "%r05", Info.dump();
+      "%r06", Info.dump();
+      "%r07", Info.dump();
+      "%r08", Info.dump();
+      "%r09", Info.dump();
+      "%r10", Info.dump();
+      "%r11", Info.dump();
+      "%r12", Info.dump();
+      "%r13", Info.dump()
+  |]
+let fregs = Array.init 16 (fun i -> Printf.sprintf "%%fr%d" i, Info.dump())
 let allregs = Array.to_list regs
 let allfregs = Array.to_list fregs
 let reg_cl = regs.(Array.length regs - 1) (* closure address (caml2html: sparcasm_regcl) *)
@@ -51,8 +65,8 @@ let reg_cl = regs.(Array.length regs - 1) (* closure address (caml2html: sparcas
 let reg_sw = regs.(Array.length regs - 1) (* temporary for swap *)
 let reg_fsw = fregs.(Array.length fregs - 1) (* temporary for swap *)
 *)
-let reg_sp = "%ebp", Info.dump() (* stack pointer *)
-let reg_hp = "min_caml_hp", Info.dump() (* heap pointer (caml2html: sparcasm_reghp) *)
+let reg_sp = "%rsp", Info.dump() (* stack pointer *)
+let reg_hp = "%rhp", Info.dump() (* heap pointer (caml2html: sparcasm_reghp) *)
 (* let reg_ra = "%eax" (* return address *) *)
 let is_reg x = ((fst x).[0] = '%' || fst x = fst reg_hp)
 
