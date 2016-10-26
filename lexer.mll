@@ -88,14 +88,14 @@ rule token = parse
 | _
     { failwith
 	(Printf.sprintf "\"%s\": unknown token %s near characters %d-%d, i.e. %d:%d to %d:%d (line:column format)"
-       (Lexing.lexeme_start_p lexbuf).pos_fname
+       (Lexing.lexeme_start_p lexbuf).Lexing.pos_fname
 	   (Lexing.lexeme lexbuf)
 	   (Lexing.lexeme_start lexbuf)
 	   (Lexing.lexeme_end lexbuf)
-       (Lexing.lexeme_start_p lexbuf).pos_lnum
-       ((Lexing.lexeme_start_p lexbuf).pos_cnum - (Lexing.lexeme_start_p lexbuf).pos_bol + 1)
-       (Lexing.lexeme_end_p lexbuf).pos_lnum
-       ((Lexing.lexeme_end_p lexbuf).pos_cnum - (Lexing.lexeme_end_p lexbuf).pos_bol + 1)
+       (Lexing.lexeme_start_p lexbuf).Lexing.pos_lnum
+       ((Lexing.lexeme_start_p lexbuf).Lexing.pos_cnum - (Lexing.lexeme_start_p lexbuf).Lexing.pos_bol + 1)
+       (Lexing.lexeme_end_p lexbuf).Lexing.pos_lnum
+       ((Lexing.lexeme_end_p lexbuf).Lexing.pos_cnum - (Lexing.lexeme_end_p lexbuf).Lexing.pos_bol + 1)
        ) }
 and comment = parse
 | "*)"

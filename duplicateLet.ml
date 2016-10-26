@@ -24,7 +24,7 @@ let rec has_side_effect = function
   -> (has_side_effect t1) || (has_side_effect t2)
 
   | KNormal.LetRec (f, t1, _)
-  -> (has_side_effect (f.body)) || (has_side_effect t1)
+  -> (has_side_effect (f.KNormal.body)) || (has_side_effect t1)
 
   | KNormal.App _
   | KNormal.Put _
@@ -94,12 +94,11 @@ let rec g env exp = match exp with
   | KNormal.IfLE (id1, id2, t1, t2, info)
   -> KNormal.IfLE(id1, id2, fst (g env t1), fst (g env t2), info), env
 
-  | KNormal.Let (idtype, t1, t2, info)
-  -> KNormal.Let(idtype, fst (g env t1), fst (g env t2), info), env
-
   | KNormal.LetRec (f, e, info)
   -> 
-      KNormal.LetRec({name = f.name; args = f.args; body = fst (g env (f.body))}, fst (g env e), info), env
+      KNormal.LetRec({
+          KNormal.name = f.KNormal.name; KNormal.args = f.KNormal.args; KNormal.body = fst (g env (f.KNormal.body))
+      }, fst (g env e), info), env
 
     (*env maps expression to variable (Syntax.Var type)*)
 let f e =

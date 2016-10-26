@@ -158,10 +158,11 @@ let f e =
   | _ -> Format.eprintf "warning: final result does not have type unit@.");
 *)
   (try
-          (g M.empty e);
+      let _ = g M.empty e
+      in
           ()
   with
-    | Error(e, t1, t2) as ex->
+    | Error(e, t1, t2) ->
             Format.eprintf "type\n%s\nis not compatible with type\n%s\nwhile evaluating\n%s" (Type.to_string t2) (Type.to_string t1) (Syntax.to_string e);
       exit 1
   );

@@ -136,13 +136,13 @@ exp: /* (* ∞Ï»Ã§Œº∞ (caml2html: parser_exp) *) */
 | error
     { failwith
 	(Printf.sprintf "\"%s\": parse error near characters %d-%d, i.e. %d:%d to %d:%d (file:row:column format)"
-       (Parsing.symbol_start_pos ()).pos_fname
+       (Parsing.symbol_start_pos ()).Lexing.pos_fname
 	   (Parsing.symbol_start ())
 	   (Parsing.symbol_end ())
-       (Parsing.symbol_start_pos ()).pos_lnum
-       ((Parsing.symbol_start_pos ()).pos_cnum - (Parsing.symbol_start_pos ()).pos_bol + 1)
-       (Parsing.symbol_end_pos ()).pos_lnum
-       ((Parsing.symbol_end_pos ()).pos_cnum - (Parsing.symbol_end_pos ()).pos_bol + 1)
+       (Parsing.symbol_start_pos ()).Lexing.pos_lnum
+       ((Parsing.symbol_start_pos ()).Lexing.pos_cnum - (Parsing.symbol_start_pos ()).Lexing.pos_bol + 1)
+       (Parsing.symbol_end_pos ()).Lexing.pos_lnum
+       ((Parsing.symbol_end_pos ()).Lexing.pos_cnum - (Parsing.symbol_end_pos ()).Lexing.pos_bol + 1)
        ) }
 
 fundef:

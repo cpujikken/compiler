@@ -31,7 +31,9 @@ let file f = (* ファイルをコンパイルしてファイルに出力する (caml2html: main_file
   try
       let lbuf = Lexing.from_channel inchan
       in
-      lbuf.lex_curr_p <- {lbuf.lex_curr_p with pos_fname = f ^ ".ml"};
+      lbuf.Lexing.lex_curr_p <- {
+          lbuf.Lexing.lex_curr_p with Lexing.pos_fname = f ^ ".ml"
+      };
     lexbuf outchan lbuf;
     close_in inchan;
     close_out outchan;
