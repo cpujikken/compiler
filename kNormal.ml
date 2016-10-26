@@ -155,7 +155,7 @@ let rec g env = function (* K正規化ルーチン本体 (caml2html: knormal_g) *)
   | Syntax.Var(x, info) -> (* 外部配列の参照 (caml2html: knormal_extarray) *)
       (match M.find x !Typing.extenv with
       | Type.Array(_, _) as t -> ExtArray(x, info), t
-      | _ -> Info.error info (Printf.sprintf "external variable %s does not have an array type" (Id.to_string x)))
+      | _ -> Info.exit info (Printf.sprintf "external variable %s does not have an array type" (Id.to_string x)))
   | Syntax.LetRec({ Syntax.name = (x, t); Syntax.args = yts; Syntax.body = e1 }, e2, info) ->
       let env' = M.add x t env in
       let e2', t2 = g env' e2 in
@@ -170,7 +170,7 @@ let rec g env = function (* K正規化ルーチン本体 (caml2html: knormal_g) *)
 		insert_let (g env e2)
 		  (fun x -> bind (xs @ [x]) e2s) info in
 	  bind [] e2s (* left-to-right evaluation *)
-      | _ -> Info.error info (Printf.sprintf "%s is not a function" (Syntax.to_string f_with_info))
+      | _ -> Info.exit info (Printf.sprintf "%s is not a function" (Syntax.to_string f_with_info))
       )
   | Syntax.App(e1, e2s, info) ->
       (match g env e1 with
@@ -183,7 +183,7 @@ let rec g env = function (* K正規化ルーチン本体 (caml2html: knormal_g) *)
 		    insert_let (g env e2)
 		      (fun x -> bind (xs @ [x]) e2s) info in
 	      bind [] e2s) info (* left-to-right evaluation *)
-      | _ -> Info.error info (Printf.sprintf "%s is not a function" (Syntax.to_string e1)))
+      | _ -> Info.exit info (Printf.sprintf "%s is not a function" (Syntax.to_string e1)))
   | Syntax.Tuple(es, info) ->
       let rec bind xs ts = function (* "xs" and "ts" are identifiers and types for the elements *)
 	| [] -> Tuple(xs, info), Type.Tuple(ts, info)
@@ -214,7 +214,7 @@ let rec g env = function (* K正規化ルーチン本体 (caml2html: knormal_g) *)
 	  insert_let g_e1
 	    (fun x -> insert_let (g env e2)
 		(fun y -> Get(x, y, info), t) info) info
-      | _ -> Info.error info (Printf.sprintf "cannot get element from non-array type (%s)" (Syntax.to_string e1)))
+      | _ -> Info.exit info (Printf.sprintf "cannot get element from non-array type (%s)" (Syntax.to_string e1)))
   | Syntax.Put(e1, e2, e3, info) ->
       insert_let (g env e1)
 	(fun x -> insert_let (g env e2)

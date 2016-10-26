@@ -299,8 +299,8 @@ let f (Prog(idata, data, fundefs, e)) =
 
   (*print int constant labels*)
   List.iter
-    (fun (Id.L(x, _), d) ->
-        append (Label (x, string_of_int d));
+    (fun (Id.L(x, info), d) ->
+        append (Label (x, Printf.sprintf "%d %s" d (Info.to_string info)))
         append (Data d);
     )
     idata;

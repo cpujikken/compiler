@@ -167,7 +167,7 @@ let rec g env known = function (* クロージャ変換ルーチン本体 (caml2html: closure
   | KNormal.Get(x, y, info) -> Get(x, y, info)
   | KNormal.Put(x, y, z, info) -> Put(x, y, z, info)
   | KNormal.ExtArray(x, info) -> ExtArray(Id.to_L(x), info)
-  | KNormal.ExtFunApp(x, ys, info) -> AppDir(Id.L("min_caml_" ^ (fst x), snd x), ys, info)
+  | KNormal.ExtFunApp(x, ys, info) -> AppDir(("min_caml_" ^ (fst x), snd x), ys, info)
 
 let f e =
   toplevel := [];

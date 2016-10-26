@@ -1,5 +1,5 @@
 type t =
-    | Directive of string * directive_param * option * comment option
+    | Directive of string * directive_param option * comment option
     | Label of string * comment option
     | Command of opcode * operand list * Info.t option
     | Data of int
@@ -13,14 +13,14 @@ comment = string
 and
 directive_param = string
 
-cmd_list = [] ref
+let cmd_list = ref []
   (*note: append each command in reserved order*)
   (*append command to current asm program*)
 let append cmd =
     cmd_list := cmd :: !cmd_list
 
     (*convert one cmd to string*) (*one line*)
-let to_string (opcode, operand_list, info) =
+let to_string (opcode, operand_list, info_o) =
     let operand_list_to_string operand_list =
         let rec loop current = function
             | [] -> current
@@ -30,28 +30,42 @@ let to_string (opcode, operand_list, info) =
         match operand_list with
         | [] -> ""
         | first::remain ->
-                "\t" ^ first ^ (loop remain)
+                "\t" ^ first ^ (loop "" remain)
     in
-    Printf.sprintf "\t%s%s\t%s" opcode (operand_list_to_string operand_list)  (Info.to_string info)
+    match info_o with
+    | Some info ->
+        Printf.sprintf "\t%s%s\t# %s" opcode (operand_list_to_string operand_list)  (Info.to_string info)
+    | None ->
+        Printf.sprintf "\t%s%s" opcode (operand_list_to_string operand_list)
 
 let rec f output =
     let g = function
-        | [] -> Unit
+        | [] -> ()
         | ins :: alist ->
                 match ins with
 
                 | Directive (directive, param_o, comment_o)->
                         Printf.fprintf output "%s" directive;
-                        (match param_o with Some param -> Printf.fprintf output "\t%s" param);
-                        (match comment_o with Some comment -> Printf.fprintf output "\t#%s" comment);
+                        (
+                            match param_o with
+                             | Some param -> Printf.fprintf output "\t%s" param
+                             | None -> ()
+                        );
+                        (match comment_o with Some comment ->
+                            Printf.fprintf output "\t#%s" comment
+                             | None -> ()
+                        );
                         Printf.fprintf output "\n"
 
                 | Label(label, comment_o) ->
-                        Printf.fprintf output "%s:" comment;
-                        (match comment_o with Some comment -> Printf.fprintf output "\t%s" comment);
+                        Printf.fprintf output "%s:" label;
+                        (match comment_o with
+                            Some comment -> Printf.fprintf output "\t%s" comment
+                            | None -> ()
+                        );
                         Printf.fprintf output "\n"
-                | Command cmd ->
-                        Printf.fprintf output "%s\n" (to_string cmd)
+                | Command (a, b, c) ->
+                        Printf.fprintf output "%s\n" (to_string (a, b, c))
                 | Data i ->
                         Printf.fprintf output "\t.long\t%x" i
     in
@@ -71,10 +85,9 @@ let cmd_sub = "SUB"
 let cmd_addi = "ADDI"
 let cmd_shiftL = "SHIFTL"
 let cmd_shiftR = "SHIFTR"
-let cmd_branch = "B"
-let cmd_branchEQ = "BEQ"
 let cmd_jump = "J"
 let cmd_jumpEQ = "JEQ"
+let cmd_jumpLT = "JLT"
 let cmd_load = "LD"
 let cmd_store = "ST"
 
@@ -83,7 +96,6 @@ let cmd_fSub = "FSUB"
 let cmd_fMul = "FMUL"
 let cmd_fDiv = "FDIV"
 let cmd_fCmp = "FCMP"
-let cmd_fBranch = "FB"
 let cmd_fJump = "FJ"
 let cmd_fLoad = "FLD"
 let cmd_fStore = "FSD"

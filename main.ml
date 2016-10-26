@@ -21,7 +21,7 @@ let lexbuf outchan l = (* バッファをコンパイルしてチャンネルへ出力する (caml2htm
 		      (KNormal.f
 			 (Typing.f
                 (Parser.exp Lexer.token l))))))))));
-    cmd.f outchan;
+    Cmd.f outchan
 
 let string s = lexbuf stdout (Lexing.from_string s) (* 文字列をコンパイルして標準出力に表示する (caml2html: main_string) *)
 

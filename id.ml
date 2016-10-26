@@ -1,8 +1,8 @@
 type t = string * Info.t (* 変数の名前 (caml2html: id_t) *)
-type l = L of string * Info.t (* トップレベル関数やグローバル配列のラベル (caml2html: id_l) *)
+type l = string * Info.t (* トップレベル関数やグローバル配列のラベル (caml2html: id_l) *)
 
-let to_L x = L (fst x, snd x)
-let to_t( L(x, y)) = x, y
+let to_L x = x
+let to_t x = x
 
 let to_string (id, info) = Printf.sprintf "ID(%s,%s)" id (Info.to_string info)
 
@@ -15,6 +15,8 @@ let counter = ref 0
 let genid (s, info) =
   incr counter;
   Printf.sprintf "%s.%d" s !counter, info
+let genlabel info =
+    to_L (genid("l", info))
 
 let rec id_of_typ = function
   | Type.Unit _-> "u"

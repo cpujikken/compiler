@@ -19,13 +19,14 @@ clean:: nobackup
 
 # ↓もし実装を改造したら、それに合わせて変える
 SOURCES = float.c common.ml info.ml cmd.ml type.ml id.ml m.ml s.ml \
-syntax.ml parser.mly lexer.mll typing.mli typing.ml kNormal.mli kNormal.ml \
-m1.ml duplicateLet.ml \
-alpha.mli alpha.ml beta.mli beta.ml assoc.mli assoc.ml \
-inline.mli inline.ml constFold.mli constFold.ml elim.mli elim.ml \
-closure.mli closure.ml asm.mli asm.ml virtual.mli virtual.ml \
-simm.mli simm.ml regAlloc.mli regAlloc.ml emit.mli emit.ml \
-main.mli main.ml
+		  reg.ml regSet.ml \
+		syntax.ml parser.mly lexer.mll typing.mli typing.ml kNormal.mli kNormal.ml \
+		m1.ml duplicateLet.ml \
+		alpha.mli alpha.ml beta.mli beta.ml assoc.mli assoc.ml \
+		inline.mli inline.ml constFold.mli constFold.ml elim.mli elim.ml \
+		closure.mli closure.ml asm.ml virtual.mli virtual.ml \
+		simm.mli simm.ml regAlloc.mli regAlloc.ml emit.mli emit.ml \
+		main.mli main.ml
 
 # ↓テストプログラムが増えたら、これも増やす
 TESTS = print sum-tail gcd sum fib ack even-odd \
@@ -54,9 +55,9 @@ min-caml.html: main.mli main.ml id.ml m.ml s.ml \
 		syntax.ml type.ml parser.mly lexer.mll typing.mli typing.ml kNormal.mli kNormal.ml \
 		alpha.mli alpha.ml beta.mli beta.ml assoc.mli assoc.ml \
 		inline.mli inline.ml constFold.mli constFold.ml elim.mli elim.ml \
-		closure.mli closure.ml asm.mli asm.ml virtual.mli virtual.ml \
+		closure.mli closure.ml asm.ml virtual.mli virtual.ml \
 		simm.mli simm.ml regAlloc.mli regAlloc.ml emit.mli emit.ml info.ml \
-		duplicateLet.ml common.ml m1.ml cmd.ml
+		duplicateLet.ml common.ml m1.ml cmd.ml regSet.ml reg.ml
 	./to_sparc
 	caml2html -o min-caml.html $^
 	sed 's/.*<\/title>/MinCaml Source Code<\/title>/g' < min-caml.html > min-caml.tmp.html
