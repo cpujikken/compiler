@@ -1,14 +1,16 @@
 (* 2オペランドではなく3オペランドのx86アセンブリもどき *)
 
-type reg = string
-type const16 = Label of Id.l | Constant of int
+type reg = Reg of string | ID of Id.t
+type label_or_const = Label of string | Constant of int
 type bits5 = int
-type off26 = int
 type addr26 = int
 type off26 = int
 type const3 = int
 type off21 = int
 type ret2 = int
+type off15 = int
+type size4 = int
+type addr = Relative of reg * label_or_const | Dynamic of reg * size4 * reg | Absolute of label_or_const * label_or_const option
 let loi_to_string = function
 	| Label label -> "$" ^ label
 	| Constant i -> "$" ^ (string_of_int i)
@@ -20,15 +22,13 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *)
     | Nop
     | Add of reg * reg
     | Sub of reg * reg
-    | Addi of  reg * const16
+    | Addi of  reg * label_or_const
     | ShiftL of  reg * bits5
     | ShiftR of reg * bits5
-    | Branch of off26
-    | BranchEQ of off26
     | Jump of addr26
     | JumpEQ of addr26
-    | Load of reg * off16
-    | Store of reg * off16
+    | Load of addr
+    | Store of reg * addr
 
     | FAdd of reg * reg
     | FSub of reg * reg
@@ -37,54 +37,71 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *)
     | FCmp of reg * reg * const3
     | FBranch of off21 * ret2 * const3
     | FJump of reg * ret2 * const3
-    | FLoad of reg * off16
-    | FStore of reg * off16
+    | FLoad of addr
+    | FStore of reg * addr
 
     | JLink of addr26
     | Link
     | Push of reg
     | Pop
     | Out
+
+    | IfEq of reg * reg * exp * exp
+    | FIfEq of reg * reg * exp * exp
+    | IfLE of reg * reg * exp * exp
+    | FIfLE of reg * reg * exp * exp
 type fundef = { name : Id.l; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t }
 (* プログラム全体 = 浮動小数点数テーブル + トップレベル関数 + メインの式 (caml2html: sparcasm_prog) *)
 type prog = Prog of (Id.l * int) list * (Id.l * float) list * fundef list * t
 
-let fletd(x, e1, e2, info) = Let((x, Type.Float info), e1, e2, info)
-let seq(e1, e2, info) = Let((Id.gentmp (Type.Unit info) info, Type.Unit info), e1, e2, info)
+let fletd(x, e1, e2, info) =
+    Let(
+        (x, Type.Float info),
+        e1,
+        e2,
+        info)
+(*connect 2 expression into 1*)
+let seq(e1, e2, info) =
+    Let(
+        (Id.gentmp (Type.Unit info) info, Type.Unit info),
+        e1,
+        e2,
+        info
+        )
 
 let regs = (* Array.init 16 (fun i -> Printf.sprintf "%%r%d" i) *)
   [|
-      "%r01"
-      "%r02"
-      "%r03"
-      "%r04"
-      "%r05"
-      "%r06"
-      "%r07"
-      "%r08"
-      "%r09"
-      "%r10"
-      "%r11"
-      "%r12"
-      "%r13"
-      "%r14"
-      "%r15"
-      "%r16"
-      "%r17"
-      "%r18"
-      "%r19"
-      "%r20"
-      "%r21"
-      "%r22"
-      "%r23"
-      "%r24"
-      "%r25"
-      "%r26"
-      "%r27"
-      "%r28"
-      "%r29"
+      Reg "%r01";
+      Reg "%r02";
+      Reg "%r03";
+      Reg "%r04";
+      Reg "%r05";
+      Reg "%r06";
+      Reg "%r07";
+      Reg "%r08";
+      Reg "%r09";
+      Reg "%r10";
+      Reg "%r11";
+      Reg "%r12";
+      Reg "%r13";
+      Reg "%r14";
+      Reg "%r15";
+      Reg "%r16";
+      Reg "%r17";
+      Reg "%r18";
+      Reg "%r19";
+      Reg "%r20";
+      Reg "%r21";
+      Reg "%r22";
+      Reg "%r23";
+      Reg "%r24";
+      Reg "%r25";
+      Reg "%r26";
+      Reg "%r27";
+      Reg "%r28";
+      Reg "%r29"
   |]
-let fregs = Array.init 32 (fun i -> Printf.sprintf "%%fr%d" i)
+let fregs = Array.init 32 (fun i -> Reg (Printf.sprintf "%%fr%d" i))
 let allregs = Array.to_list regs
 let allfregs = Array.to_list fregs
 let reg_cl = regs.(Array.length regs - 1) (* closure address (caml2html: sparcasm_regcl) *)
@@ -92,10 +109,10 @@ let reg_cl = regs.(Array.length regs - 1) (* closure address (caml2html: sparcas
 let reg_sw = regs.(Array.length regs - 1) (* temporary for swap *)
 let reg_fsw = fregs.(Array.length fregs - 1) (* temporary for swap *)
 *)
-let reg_sp = "%rsp" (* stack pointer *)
-let reg_hp = "%rhp" (* heap pointer (caml2html: sparcasm_reghp) *)
-let reg_link = "%rlink"
-let reg_zero = "%r0"
+let reg_sp = Reg "%rsp" (* stack pointer *)
+let reg_hp = Reg "%rhp" (* heap pointer (caml2html: sparcasm_reghp) *)
+let reg_link = Reg "%rlink"
+let reg_zero = Reg "%r0"
 (* let reg_ra = "%eax" (* return address *) *)
 let is_reg x = ((fst x).[0] = '%' || fst x = fst reg_hp)
 
