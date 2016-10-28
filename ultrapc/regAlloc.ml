@@ -1,5 +1,6 @@
 open Asm
 open Operand
+open Loc
 open Reg
 
 (* for register coalescing *)
@@ -66,53 +67,53 @@ let rec target' src (dest, t) = function
 (* "register sourcing" (?) as opposed to register targeting *)
 (* （x86の2オペランド命令のためのregister coalescing） *)
 let rec source t = function
-    | Ans(exp, info) -> source' t exp
-    | Let(_, _, e, info) -> source t e
+    | AsmReg.Ans(exp, info) -> source' t exp
+    | AsmReg.Let(_, _, e, info) -> source t e
 
 and source' t = function
 
-    | Add(x, y)
-    | Sub (x, y)
-    | FAdd (x, y)
-    | FSub (x, y)
-    | FMul (x, y)
-    | FDiv (x, y)
-    | FCmp (x, y, _)
+    | AsmReg.Add(x, y)
+    | AsmReg.Sub (x, y)
+    | AsmReg.FAdd (x, y)
+    | AsmReg.FSub (x, y)
+    | AsmReg.FMul (x, y)
+    | AsmReg.FDiv (x, y)
+    | AsmReg.FCmp (x, y, _)
     -> [x; y]
 
-    | Addi (x, _)
-    | ShiftL (x, _)
-    | ShiftR (x, _)
-    | FJump(x, _, _)
-    | Push(x)
+    | AsmReg.Addi (x, _)
+    | AsmReg.ShiftL (x, _)
+    | AsmReg.ShiftR (x, _)
+    | AsmReg.FJump(x, _, _)
+    | AsmReg.Push(x)
     -> [x]
 
-    | Load (addr)
-    | FLoad(addr)
+    | AsmReg.Load (addr)
+    | AsmReg.FLoad(addr)
     -> source_addr addr
 
-    | Store (x, addr)
-    | FStore (x, addr)
+    | AsmReg.Store (x, addr)
+    | AsmReg.FStore (x, addr)
     -> (source_addr addr) @ [x]
 
-    | IfEQ (_, _, e1, e2)
-    | FIfEQ (_, _, e1, e2)
-    | IfLT (_, _, e1, e2)
-    | FIfLT (_, _, e1, e2)
+    | AsmReg.IfEQ (_, _, e1, e2)
+    | AsmReg.FIfEQ (_, _, e1, e2)
+    | AsmReg.IfLT (_, _, e1, e2)
+    | AsmReg.FIfLT (_, _, e1, e2)
     -> source t e1 @ source t e2
 
-    | CallCls _
-    | CallDir _
+    | AsmReg.CallCls _
+    | AsmReg.CallDir _
     ->( match t with
         | Type.Unit _ -> []
-        | Type.Float _ -> [Reg fregs.(0)]
-        | _ -> [Reg regs.(0)]
+        | Type.Float _ -> [fregs.(0)]
+        | _ -> [regs.(0)]
     )
     | _ -> []
 
 and source_addr = function
-    | Relative (reg, _) -> [reg]
-    | Dynamic(reg1, _, reg2) -> [reg1; reg2]
+    | AsmReg.Relative (reg, _) -> [reg]
+    | AsmReg.Dynamic(reg1, _, reg2) -> [reg1; reg2]
     | _ -> []
 
 type alloc_result = (* allocにおいてspillingがあったかどうかを表すデータ型 *)
@@ -223,10 +224,10 @@ let rec generate dest cont regenv = function (* 命令列のレジスタ割り当て (caml2h
                   let save =
                       try AsmReg.Save(M.find id regenv, id)
                       with Not_found -> AsmReg.Nop in
-                  (seq(save, concat e1' (r, var_type) e2', info), regenv2)
+                  (AsmReg.seq(save, AsmReg.concat e1' (r, var_type) e2', info), regenv2)
           | Alloc(reg) ->
                   let (e2', regenv2) = generate dest cont (add let_var reg regenv1) body_exp in
-                  concat e1' (reg, var_type) e2', regenv2
+                  AsmReg.concat e1' (reg, var_type) e2', regenv2
       )
 and generate'_and_restore dest cont regenv exp info = (* 使用される変数をスタックからレジスタへRestore (caml2html: regalloc_unspill) *)
   try generate' dest cont regenv info exp
@@ -250,72 +251,83 @@ and generate' dest cont regenv info exp = (* 各命令のレジスタ割り当て (caml2html
     in
     match exp with
     | Nop
-    | Jump _
-    | JumpEQ _
-    | JumpLT _
-    | JLink _
+    -> AsmReg.Ans(AsmReg.Nop, info), regenv
+
+    | Jump x
+    -> AsmReg.Ans(AsmReg.Jump x, info), regenv
+
+    | JumpEQ x
+    -> AsmReg.Ans(AsmReg.JumpEQ x, info), regenv
+    | JumpLT x
+    -> AsmReg.Ans(AsmReg.JumpLT x, info), regenv
+    | JLink x
+    -> AsmReg.Ans(AsmReg.JLink x, info), regenv
     | Link
+    -> AsmReg.Ans(AsmReg.Link, info), regenv
     | Pop
+    -> AsmReg.Ans(AsmReg.Pop, info), regenv
     | Out ->
-        AsmReg.Ans(exp, info), regenv
+        AsmReg.Ans(AsmReg.Out, info), regenv
+    | Restore x ->
+            AsmReg.Ans(AsmReg.Restore x, info), regenv
     | Addi(reg, loc) ->
             AsmReg.Ans(AsmReg.Addi (reg_finder reg, loc), info), regenv
 
     | Add (reg1, reg2) ->
-            Ans(Add(
+            AsmReg.Ans(AsmReg.Add(
                 reg_finder reg1,
             reg_finder reg2
     ), info), regenv
     | Sub (reg1, reg2) ->
-            Ans(Sub(
+            AsmReg.Ans(AsmReg.Sub(
                 reg_finder reg1,
             reg_finder reg2
     ), info), regenv
     | ShiftL (reg, b5) ->
-            Ans(ShiftL(reg_finder reg, b5), info), regenv
+            AsmReg.Ans(AsmReg.ShiftL(reg_finder reg, b5), info), regenv
     | ShiftR (reg, b5) ->
-            Ans(ShiftR(reg_finder reg, b5), info), regenv
-    | Load addr -> Ans( Load(addr_finder addr), info), regenv
-    | FLoad addr -> Ans( FLoad(addr_finder addr), info), regenv
-    | Store (reg, addr) -> Ans(Store(reg_finder reg, addr_finder addr), info), regenv
-    | FStore (reg, addr) -> Ans(FStore(reg_finder reg, addr_finder addr), info), regenv
+            AsmReg.Ans(AsmReg.ShiftR(reg_finder reg, b5), info), regenv
+    | Load addr -> AsmReg.Ans( AsmReg.Load(addr_finder addr), info), regenv
+    | FLoad addr -> AsmReg.Ans( AsmReg.FLoad(addr_finder addr), info), regenv
+    | Store (reg, addr) -> AsmReg.Ans(AsmReg.Store(reg_finder reg, addr_finder addr), info), regenv
+    | FStore (reg, addr) -> AsmReg.Ans(AsmReg.FStore(reg_finder reg, addr_finder addr), info), regenv
 
-    | FAdd (reg1, reg2) -> Ans(FAdd(freg_finder reg1, freg_finder reg2), info), regenv
-    | FSub (reg1, reg2) -> Ans(FSub(freg_finder reg1, freg_finder reg2), info), regenv
-    | FMul (reg1, reg2) -> Ans(FMul(freg_finder reg1, freg_finder reg2), info), regenv
-    | FDiv (reg1, reg2) -> Ans(FDiv(freg_finder reg1, freg_finder reg2), info), regenv
-    | FCmp(reg1, reg2, c3) -> Ans(FCmp(freg_finder reg1, freg_finder reg2, c3), info), regenv
-    | FJump(reg, r2, c3) -> Ans(FJump(freg_finder reg, r2, c3), info), regenv
-    | Push reg -> Ans(Push(reg_finder reg), info), regenv
+    | FAdd (reg1, reg2) -> AsmReg.Ans(AsmReg.FAdd(freg_finder reg1, freg_finder reg2), info), regenv
+    | FSub (reg1, reg2) -> AsmReg.Ans(AsmReg.FSub(freg_finder reg1, freg_finder reg2), info), regenv
+    | FMul (reg1, reg2) -> AsmReg.Ans(AsmReg.FMul(freg_finder reg1, freg_finder reg2), info), regenv
+    | FDiv (reg1, reg2) -> AsmReg.Ans(AsmReg.FDiv(freg_finder reg1, freg_finder reg2), info), regenv
+    | FCmp(reg1, reg2, c3) -> AsmReg.Ans(AsmReg.FCmp(freg_finder reg1, freg_finder reg2, c3), info), regenv
+    | FJump(reg, r2, c3) -> AsmReg.Ans(AsmReg.FJump(freg_finder reg, r2, c3), info), regenv
+    | Push reg -> AsmReg.Ans(AsmReg.Push(reg_finder reg), info), regenv
 
     | IfEQ(reg1, reg2, e1, e2) ->
             generate'_if dest cont regenv exp (fun e1' e2' ->
-                IfEQ(reg_finder reg1, reg_finder reg2, e1', e2')
-                )
+                AsmReg.IfEQ(reg_finder reg1, reg_finder reg2, e1', e2')
+                ) e1 e2 info
     | IfLT(reg1, reg2, e1, e2) ->
             generate'_if dest cont regenv exp (fun e1' e2' ->
-                IfLT(reg_finder reg1, reg_finder reg2, e1', e2')
-                )
+                AsmReg.IfLT(reg_finder reg1, reg_finder reg2, e1', e2')
+                ) e1 e2 info
     | FIfEQ(reg1, reg2, e1, e2) ->
             generate'_if dest cont regenv exp (fun e1' e2' ->
-                FIfEQ(freg_finder reg1, freg_finder reg2, e1', e2')
-                )
+                AsmReg.FIfEQ(freg_finder reg1, freg_finder reg2, e1', e2')
+                ) e1 e2 info
     | FIfLT(reg1, reg2, e1, e2) ->
             generate'_if dest cont regenv exp (fun e1' e2' ->
-                FIfLT(freg_finder reg1, freg_finder reg2, e1', e2')
-                )
+                AsmReg.FIfLT(freg_finder reg1, freg_finder reg2, e1', e2')
+                ) e1 e2 info
     | CallCls(reg, reg_list1, reg_list2) ->
             generate'_call dest cont regenv exp (fun ys zs ->
-                CallCls(reg_finder reg, ys, zs)) reg_list1 reg_list2 info
+                AsmReg.CallCls(reg_finder reg, ys, zs)) reg_list1 reg_list2 info
     | CallDir (loc, reg_list1, reg_list2) ->
-            generate'_call dest cont regenv exp (fun ys zs -> CallDir(loc, ys, zs)) reg_list1 reg_list2 info
-        and generate'_if dest cont regenv exp constr e1 e2 info = (* ifのレジスタ割り当て (caml2html: regalloc_if) *)
-            let (e1', regenv1) = generate dest cont regenv e1 in
-            let (e2', regenv2) = generate dest cont regenv e2 in
-            let regenv' = (* 両方に共通のレジスタ変数だけ利用 *)
-                List.fold_left
-      (fun regenv' x ->
-          try
+            generate'_call dest cont regenv exp (fun ys zs -> AsmReg.CallDir(loc, ys, zs)) reg_list1 reg_list2 info
+and generate'_if dest cont regenv exp constr e1 e2 info = (* ifのレジスタ割り当て (caml2html: regalloc_if) *)
+    let (e1', regenv1) = generate dest cont regenv e1 in
+    let (e2', regenv2) = generate dest cont regenv e2 in
+    let regenv' = (* 両方に共通のレジスタ変数だけ利用 *)
+        List.fold_left
+          (fun regenv' x ->
+           try
               match x with
             | Reg _ -> regenv'
             | ID id ->
@@ -323,19 +335,25 @@ and generate' dest cont regenv info exp = (* 各命令のレジスタ割り当て (caml2html
                     let r2 = M.find id  regenv2 in
                     if r1 <> r2 then regenv' else
                         M.add id r1 regenv'
-              with Not_found -> regenv')
-      M.empty
-      (get_free_vars cont)
+              with Not_found -> regenv'
+          )
+          M.empty
+          (get_free_vars cont)
       in
         (
             List.fold_left
                  (fun e x ->
-                     if x = fst dest || not (M.mem x regenv) || M.mem x regenv' then
+                     if x = fst dest then
                          e
                      else
-                         seq(Save(M.find x regenv, x), e, info)
+                         match x with
+                         | ID id when M.mem id regenv' -> e
+                         | ID id when not (M.mem id regenv) -> e
+                         | ID id ->
+                             AsmReg.seq(AsmReg.Save(M.find id regenv, id), e, info)
+                         | _ -> failwith "error while allocating register"
                  ) (* そうでない変数は分岐直前にセーブ *)
-                 (Ans(constr e1' e2', info))
+                 (AsmReg.Ans(constr e1' e2', info))
                  (get_free_vars cont)
             ,
            regenv'
@@ -343,17 +361,24 @@ and generate' dest cont regenv info exp = (* 各命令のレジスタ割り当て (caml2html
 and generate'_call dest cont regenv exp constr ys zs info = (* 関数呼び出しのレジスタ割り当て (caml2html: regalloc_call) *)
     (List.fold_left
      (fun e x ->
-         if x = fst dest || not (M.mem x regenv) then e else
-             seq(Save(M.find x regenv, x), e, info))
-     (Ans(constr
+         if x = fst dest then
+             e
+         else
+             match x with
+             | ID id when not (M.mem id regenv) -> e
+             | ID id ->
+                 AsmReg.seq(AsmReg.Save(M.find id regenv, id), e, info)
+             | _ -> failwith "error while reallocating register"
+     )
+     (AsmReg.Ans(constr
         (List.map (fun y -> find y (Type.Int info) regenv) ys)
         (List.map (fun z -> find z (Type.Float info) regenv) zs), info))
      (get_free_vars cont),
    M.empty)
 
     (*assign register for func*)
-let process_def { name = (Label def_name_s) as def_name; args = args; fargs = float_args; body = body; ret = t ; info = info} = (* 関数のレジスタ割り当て (caml2html: regalloc_h) *)
-    let regenv = M.add (def_name_s, info) reg_cl M.empty
+let process_def { Asm.name = def_name; Asm.args = args; Asm.fargs = float_args; Asm.body = body; Asm.ret = t ; Asm.info = info} = (* 関数のレジスタ割り当て (caml2html: regalloc_h) *)
+    let regenv = M.add (def_name, info) reg_cl M.empty
     in
     let (i, arg_regs, regenv) =
         List.fold_left

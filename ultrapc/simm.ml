@@ -1,6 +1,7 @@
 open Asm
 open Operand
 open Reg
+open Loc
 
 (*remove unused let if all of place can be replacable*)
 let rec g env = function (* 命令列の即値最適化 (caml2html: simm13_g) *)

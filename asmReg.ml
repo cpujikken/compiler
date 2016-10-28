@@ -1,9 +1,11 @@
 (* 2オペランドではなく3オペランドのx86アセンブリもどき *)
 open Loc
+open Reg
 type bits5 = int
 type addr26 = int
 type off26 = int
 type const3 = int
+type label = string
 type off21 = int
 type ret2 = int
 type off15 = int
@@ -60,6 +62,19 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *)
     | CallDir of Loc.t * Reg.t list * Reg.t list
     | Restore of Loc.t
     | Save of Reg.t * Id.t
-type fundef = { name : Loc.t; args : Reg.t list; fargs : Reg.t list; body : t; ret : Type.t ; info: Info.t}
+type fundef = { name : label; args : Reg.t list; fargs : Reg.t list; body : t; ret : Type.t ; info: Info.t}
 (* プログラム全体 = 浮動小数点数テーブル + トップレベル関数 + メインの式 (caml2html: sparcasm_prog) *)
-type prog = Prog_reg of (Id.l * int) list * (Id.l * float) list * fundef list * t
+type prog = Prog of (Id.l * int) list * (Id.l * float) list * fundef list * t
+
+let seq(e1, e2, info) =
+    Let(
+        (reg_zero, Type.Unit info),
+        e1,
+        e2,
+        info
+        )
+
+let rec concat e1 xt e2 =
+  match e1 with
+  | Ans(exp, info) -> Let(xt, exp, e2, info)
+  | Let(yt, exp, e1', info) -> Let(yt, exp, concat e1' xt e2, info)

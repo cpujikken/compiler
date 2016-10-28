@@ -246,7 +246,7 @@ let fun_converter { Closure.name = (x , t); Closure.args = yts; Closure.formal_f
   in
   match t with
   | Type.Fun(_, t2, _) ->
-          { name = Label (fst x); args = ints; fargs = floats; body = load; ret = t2 ; info = info}
+          { name = fst x; args = ints; fargs = floats; body = load; ret = t2 ; info = info}
   | _ -> Info.exit info "Cannot apply non-function type"
 
 (* プログラム全体の仮想マシンコード生成 (caml2html: virtual_f) *)

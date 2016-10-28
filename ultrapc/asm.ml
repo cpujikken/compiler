@@ -7,6 +7,7 @@ type off26 = int
 type const3 = int
 type off21 = int
 type ret2 = int
+type label = string
 type off15 = int
 type size4 = int
 
@@ -60,8 +61,7 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *)
     | CallCls of Operand.t * Operand.t list * Operand.t list
     | CallDir of Loc.t * Operand.t list * Operand.t list
     | Restore of Loc.t
-    | Save of Operand.t
-type fundef = { name : Loc.t; args : Operand.t list; fargs : Operand.t list; body : t; ret : Type.t ; info: Info.t}
+type fundef = { name : label; args : Operand.t list; fargs : Operand.t list; body : t; ret : Type.t ; info: Info.t}
 (* プログラム全体 = 浮動小数点数テーブル + トップレベル関数 + メインの式 (caml2html: sparcasm_prog) *)
 type prog = Prog of (Id.l * int) list * (Id.l * float) list * fundef list * t
 
@@ -99,7 +99,6 @@ let rec fv_exp = function
     | FLoad (Absolute _)
     | JLink _
     | Restore _
-    | Save _
         -> []
 
     | Add (a, b)
