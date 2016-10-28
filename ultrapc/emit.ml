@@ -28,19 +28,31 @@ let offset x = 4 * List.hd (locate x)
 let stacksize () = align (List.length !stackmap * 4)
 
 (* 関数呼び出しのために引数を並べ替える(register shuffling) (caml2html: emit_shuffle) *)
-let rec shuffle sw xys =
+type param = Go of Reg.t | Hide
+let rec shuffle regs =
   (* remove identical moves *)
-  let _, xys = List.partition (fun (x, y) -> x = y) xys in
+  let _, regs = List.partition (fun (x, y) -> x = y) regs in
   (* find acyclic moves *)
-  match List.partition (fun (_, y) -> List.mem_assoc y xys) xys with
+  (* regs = array of (x, y) format
+   * check all y registers those have another register points to it (_, y)
+   *)
+  match List.partition (fun (_, y) -> List.mem_assoc y regs ) regs with
   | [], [] -> []
-  | (x, y) :: xys, [] -> (* no acyclic moves; resolve a cyclic move *)
-      (y, sw) :: (x, y) :: shuffle sw (List.map
-                     (function
-                       | (y', z) when y = y' -> (sw, z)
-                       | yz -> yz)
-                     xys)
-  | xys, acyc -> acyc @ shuffle sw xys
+  (*x points to y, and y points to someone else*)
+  | (x, y) :: regs, [] -> (* no acyclic moves; resolve a cyclic move *)
+          (*prepend new assignment
+           * y points to stack top
+           *)
+      (y, Hide) :: (x, y) :: shuffle (List.map
+         (function
+             (*find the place where y points to
+              * something like: (x -> y) & (y -> z) ==> (x -> y) (y -> sw) (sw -> z)
+              * *)
+           | (y', z) when y = y' -> (Hide, z)
+           | other -> other
+         )
+         regs)
+  | regs, acyc -> acyc  @ shuffle regs
 
 type dest = Tail | NonTail of Reg.t (* 末尾かどうかを表すデータ型 (caml2html: emit_dest) *)
 let rec g = function (* 命令列のアセンブリ生成 (caml2html: emit_g) *)
@@ -86,10 +98,6 @@ and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
         append_cmd cmd_fMul [rd; ra; rb] info
     | NonTail rd, FDiv (ra, rb) ->
         append_cmd cmd_fDiv [rd; ra; rb] info
-    | NonTail _,  FCmp(r1, r2, c3) ->
-            append_cmd cmd_fCmp [r1; r2; int_to_string c3] info
-    | NonTail _, FJump (addr26, r2, c3) ->
-            append_cmd cmd_fJump [int_to_string addr26; int_to_string r2; int_to_string c3] info
     | NonTail rd, FLoad addr ->
             append_cmd cmd_fLoad (addr_to_param rd addr) info
     | NonTail _, FStore (rd, addr) ->
@@ -124,9 +132,9 @@ and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
                 g' info (NonTail rd, FLoad (Relative (reg_sp, Constant (offset id))))
             else
                 failwith "invalid register for restore"
-    | Tail, (Nop | Add _ | Sub _ | Addi _ | ShiftL _ | ShiftR _ | JumpEQ _ | JumpLT _ | Load _ | Store _ | JLink _ | Link | Push _ | Pop | Out as exp) ->
+    | Tail, (Nop | Add _ | Sub _ | Addi _ | ShiftL _ | ShiftR _ | JumpEQ _ | JumpLT _ | Load _ | Store _ | JLink _ | Link | Push _ | Pop | Out | Jump _ | Save _ as exp) ->
             g' info (NonTail reg_zero, exp)
-    | Tail, (FMul _ | FSub _ | FDiv _ | FAdd _  | FCmp _ | FLoad _ | FStore _ as exp )->
+    | Tail, (FMul _ | FSub _ | FDiv _ | FAdd _  | FLoad _ | FStore _ as exp )->
             g' info (NonTail freg_zero, exp)
     | Tail, (Restore (id) as exp )->
             ((match locate id with
@@ -137,38 +145,150 @@ and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
             append_cmd cmd_link [] info
             )
     | Tail, IfEQ(r1, r2, e1, e2) ->
-            append_cmd cmd_sub [reg_zero; r1; r2] info;
-            g'_tail_if_eq e1 e2 info
+          append_cmd cmd_sub [reg_zero; r1; r2] info;
+          let b_eq = fst (Id.genid("if_eq", info))
+          in
+            append_cmd cmd_jumpEQ [Cmd.label_to_string b_eq] info;
+            let stackset_backup = !stackset
+            in
+                g (Tail, e2);
+                append (Label (b_eq, None));
+                stackset := stackset_backup;
+                g (Tail, e1);
     | Tail, IfLT(r1, r2, e1, e2) ->
-            append_cmd cmd_sub [reg_zero; r1; r2] info;
-            g'_tail_if_lt e1 e2 info
+          append_cmd cmd_sub [reg_zero; r1; r2] info;
+          let b_lt = fst (Id.genid("if_lt", info))
+          in
+            append_cmd cmd_jumpLT [Cmd.label_to_string b_lt] info;
+            let stackset_backup = !stackset
+            in
+                g (Tail, e2);
+                append (Label (b_lt, None));
+                stackset := stackset_backup;
+                g (Tail, e1);
     | Tail, FIfEQ(r1, r2, e1, e2) ->
-            append_cmd cmd_fCmp [r1; r2] info;
-            g'_tail_fif_eq e1 e2 info
+            append_cmd cmd_fCmp [r1; r2; int_to_string 0] info;
+          let b_eq = fst (Id.genid("if_eq", info))
+          in
+            append_cmd cmd_fJumpEQ [Cmd.label_to_string b_eq] info;
+            let stackset_backup = !stackset
+            in
+                g (Tail, e2);
+                append (Label (b_eq, None));
+                stackset := stackset_backup;
+                g (Tail, e1);
     | Tail, FIfLT(r1, r2, e1, e2) ->
             append_cmd cmd_fCmp [r1; r2] info;
-            g'_tail_fif_lt e1 e2 info
-    | NonTail rd, IfEQ(r1, r2, e1, e2) ->
-            append_cmd cmd_sub [reg_zero; r1; r2] info;
-            g'_nontail_if_eq e1 e2 info
-    | NonTail rd, IfLT(r1, r2, e1, e2) ->
-            append_cmd cmd_sub [reg_zero; r1; r2] info;
-            g'_nontail_if_lt e1 e2 info
-    | NonTail rd, FIfEQ(r1, r2, e1, e2) ->
-            append_cmd cmd_fCmp [r1; r2] info;
-            g'_nontail_fif_eq e1 e2 info
-    | NonTail rd, FIfLT(r1, r2, e1, e2) ->
-            append_cmd cmd_fCmp [r1; r2] info;
-            g'_nontail_fif_lt e1 e2 info
-    | Tail, CallCls(rcls, rparam, rvalue) ->
-            g'_args [(rcls, reg_cl)] rparam rvalue info;
-            append_cmd cmd_JumpCls [] info
-    | Tail, CallDir(l, rparam, rvalue) ->
-            g'_args [] rparam rvalue info;
+          let b_flt = fst (Id.genid("if_flt", info))
+          in
+            append_cmd cmd_fJumpLT [Cmd.label_to_string b_flt] info;
+            let stackset_backup = !stackset
+            in
+                g (Tail, e2);
+                append (Label (b_flt, None));
+                stackset := stackset_backup;
+                g (Tail, e1);
+    | NonTail rd as dest, IfEQ(r1, r2, e1, e2) ->
+          append_cmd cmd_sub [reg_zero; r1; r2] info;
+          let b_eq = fst (Id.genid("if_eq", info))
+          in
+          let b_cont = fst (Id.genid("if_eq_cont", info))
+          in
+            append_cmd cmd_jumpEQ [Cmd.label_to_string b_eq] info;
+            let stackset_backup = !stackset
+            in
+                g (dest, e2);
+                let stackset1 = !stackset
+                in
+                    (*continue after comparison*)
+                    append_cmd cmd_jump [Cmd.label_to_string b_cont] info;
+                    (*print "if equal" label*)
+                    append (Label (b_eq, None));
+                    stackset := stackset_backup;
+                    (*if equal*)
+                    g (dest, e1);
+                    append (Label (b_cont, None));
+                    let stackset2 = !stackset
+                    in
+                    stackset := S.inter stackset1 stackset2;
+    | NonTail rd as dest, IfLT(r1, r2, e1, e2) ->
+          append_cmd cmd_sub [reg_zero; r1; r2] info;
+          let b_lt = fst (Id.genid("if_lt", info))
+          in
+          let b_cont = fst (Id.genid("if_lt_cont", info))
+          in
+            append_cmd cmd_jumpEQ [Cmd.label_to_string b_lt] info;
+            let stackset_backup = !stackset
+            in
+                g (dest, e2);
+                let stackset1 = !stackset
+                in
+                    (*continue after comparison*)
+                    append_cmd cmd_jump [Cmd.label_to_string b_cont] info;
+                    (*print "if less than" label*)
+                    append (Label (b_lt, None));
+                    stackset := stackset_backup;
+                    (*if equal*)
+                    g (dest, e1);
+                    append (Label (b_cont, None));
+                    let stackset2 = !stackset
+                    in
+                    stackset := S.inter stackset1 stackset2;
+    | NonTail rd as dest, FIfEQ(r1, r2, e1, e2) ->
+          append_cmd cmd_fCmp [r1; r2] info;
+          let b_feq = fst (Id.genid("if_feq", info))
+          in
+          let b_cont = fst (Id.genid("if_feq_cont", info))
+          in
+            append_cmd cmd_jumpEQ [Cmd.label_to_string b_feq] info;
+            let stackset_backup = !stackset
+            in
+                g (dest, e2);
+                let stackset1 = !stackset
+                in
+                    (*continue after comparison*)
+                    append_cmd cmd_jump [Cmd.label_to_string b_cont] info;
+                    (*print "if equal" label*)
+                    append (Label (b_feq, None));
+                    stackset := stackset_backup;
+                    (*if equal*)
+                    g (dest, e1);
+                    append (Label (b_cont, None));
+                    let stackset2 = !stackset
+                    in
+                    stackset := S.inter stackset1 stackset2;
+    | NonTail rd as dest, FIfLT(r1, r2, e1, e2) ->
+          append_cmd cmd_fCmp [r1; r2] info;
+          let b_flt = fst (Id.genid("if_flt", info))
+          in
+          let b_cont = fst (Id.genid("if_flt_cont", info))
+          in
+            append_cmd cmd_jumpEQ [Cmd.label_to_string b_flt] info;
+            let stackset_backup = !stackset
+            in
+                g (dest, e2);
+                let stackset1 = !stackset
+                in
+                    (*continue after comparison*)
+                    append_cmd cmd_jump [Cmd.label_to_string b_cont] info;
+                    (*print "if less than" label*)
+                    append (Label (b_flt, None));
+                    stackset := stackset_backup;
+                    (*if equal*)
+                    g (dest, e1);
+                    append (Label (b_cont, None));
+                    let stackset2 = !stackset
+                    in
+                    stackset := S.inter stackset1 stackset2;
+    | Tail, CallCls(rcls, params, fparams) ->
+            g'_args [(rcls, reg_cl)] params fparams info;
+            append_cmd cmd_jumpCls [] info
+    | Tail, CallDir(l, params, fparams) ->
+            g'_args [] params fparams info;
             append_cmd cmd_jump [Loc.to_string l] info
-    | NonTail rd, CallCls(rcls, rparam, rvalue) ->
+    | NonTail rd, CallCls(rcls, params, fparams) ->
             (*set param*)
-            g'_args [(rcls, reg_cl)] rparam, rvalue;
+            g'_args [(rcls, reg_cl)] params fparams info;
             let ss = stacksize ()
             in
             if ss > 0 then
@@ -185,10 +305,10 @@ and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
                 append_cmd cmd_add [rd; reg_zero; reg_ret] info
             else
                 if List.mem rd allfregs && rd <> freg_ret then
-                    append_cmd cmd_fAdd [rd; ferg_zero; freg_ret] info
-    | NonTail rd, CallDir(l, rparam, rvalue) ->
+                    append_cmd cmd_fAdd [rd; freg_zero; freg_ret] info
+    | NonTail rd, CallDir(l, params, fparams) ->
             (*set param*)
-            g'_args [] rparam, rvalue;
+            g'_args [] params fparams info;
             let ss = stacksize()
             in
             (*increase stack*)
@@ -205,57 +325,62 @@ and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
             else
                 if List.mem rd allfregs && rd <> freg_ret then
                     append_cmd cmd_add [rd;freg_zero; freg_ret] info
-and g'_tail_if oc e1 e2 b bn info=
-  let b_else = Id.genid((b ^ "_else"), info) in
-  Printf.fprintf oc "\t%s\t%s\n" bn (Id.to_string_core b_else);
-  let stackset_back = !stackset in
-  g oc (Tail, e1);
-  Printf.fprintf oc "%s:\n" (Id.to_string_core b_else);
-  stackset := stackset_back;
-  g oc (Tail, e2)
-and g'_non_tail_if oc dest e1 e2 b bn info =
-  let b_else = Id.genid((b ^ "_else"),info) in
-  let b_cont = Id.genid((b ^ "_cont"),info) in
-  Printf.fprintf oc "\t%s\t%s\n" bn (Id.to_string_core b_else);
-  let stackset_back = !stackset in
-  g oc (dest, e1);
-  let stackset1 = !stackset in
-  Printf.fprintf oc "\tjmp\t%s\n" (Id.to_string_core b_cont);
-  Printf.fprintf oc "%s:\n" (Id.to_string_core b_else);
-  stackset := stackset_back;
-  g oc (dest, e2);
-  Printf.fprintf oc "%s:\n" (Id.to_string_core b_cont);
-  let stackset2 = !stackset in
-  stackset := S.inter stackset1 stackset2
-and g'_args oc x_reg_cl ys zs =
-  assert (List.length ys <= Array.length regs - List.length x_reg_cl);
-  assert (List.length zs <= Array.length fregs);
-  let sw = Printf.sprintf "%d(%s)" (stacksize ()) (Id.to_string_core reg_sp) in
-  let (i, yrs) =
-    List.fold_left
-      (fun (i, yrs) y -> (i + 1, (y, regs.(i)) :: yrs))
-      (0, x_reg_cl)
-      ys in
-  List.iter
-    (fun (y, r) -> Printf.fprintf oc "\tmov\t%s, %s\n" y r)
-    (shuffle sw  (List.map (fun (x, y) -> Id.to_string_core  x, Id.to_string_core y) yrs));
-  let (d, zfrs) =
-    List.fold_left
-      (fun (d, zfrs) z -> (d + 1, (z, fregs.(d)) :: zfrs))
-      (0, [])
-      zs in
-  List.iter
-    (fun (z, fr) -> Printf.fprintf oc "\tmovsd\t%s, %s\n" z fr)
-    (shuffle sw (List.map (fun(x, y) ->Id.to_string_core x, Id.to_string_core y )zfrs))
+and g'_args x_reg_cl params fparams info =
+    (*quick assertion*)
+    if List.length params > Array.length regs - List.length x_reg_cl then
+        failwith "number of parameter is larger than number of available registers";
+  if List.length fparams > Array.length fregs then
+      failwith "number of float params is larger than number of available float registers";
 
-let h oc { name = Id.L(x, _); args = _; fargs = _; body = e; ret = _ } =
+  let stacksize_backup = stacksize()
+  in
+  (*let sw = Printf.sprintf "%d(%s)" (stacksize ()) (Id.to_string_core reg_sp)*)
+  (*in*)
+  let (i, param_regs) =
+    List.fold_left
+      (fun (i, param_regs) y -> (i + 1, (y, regs.(i)) :: param_regs))
+      (0, x_reg_cl)
+      params
+  in
+  List.iter
+    (fun (y, r) ->
+        match y, r with
+        | Go reg, Hide ->
+                append_cmd cmd_store [reg; int_to_string addr_mode_relative; int_to_string stacksize_backup; reg_sp] info
+        | Hide, Go reg ->
+                append_cmd cmd_load [reg; int_to_string addr_mode_relative; int_to_string stacksize_backup; reg_sp] info
+        | Go r1, Go r2 ->
+                append_cmd cmd_add [r1; reg_zero; r2] info
+        | _ -> ()
+    )
+    (shuffle (List.map (fun (x, y) -> Go x, Go y) param_regs));
+
+  let (d, param_fregs) =
+    List.fold_left
+      (fun (d, param_fregs) z -> (d + 1, (z, fregs.(d)) :: param_fregs))
+      (0, [])
+      fparams in
+  List.iter
+    (fun (y, fr) ->
+        match y, fr with
+        | Go reg, Hide ->
+                append_cmd cmd_fStore [reg; int_to_string addr_mode_relative; int_to_string stacksize_backup; reg_sp] info
+        | Hide, Go reg ->
+                append_cmd cmd_fLoad [reg; int_to_string addr_mode_relative; int_to_string stacksize_backup; reg_sp] info
+        | Go r1, Go r2 ->
+                append_cmd cmd_fAdd [r1; reg_zero; r2] info
+        | _ -> ()
+    )
+    (shuffle (List.map (fun (x, y) -> Go x, Go y)  param_fregs))
+
+let h { name = x; args = _; fargs = _; body = e; ret = _ } =
     append (Label (x, None));
   stackset := S.empty;
   stackmap := [];
   g (Tail, e)
 
 (* type prog = Prog of (Id.l * float) list * fundef list * t *)
-let f (Prog(idata, data, fundefs, e)) =
+let f (Prog(idata, fdata, fundefs, e)) =
   Format.eprintf "generating assembly...@.";
 
     (*.start label: starting point*)
@@ -263,23 +388,22 @@ let f (Prog(idata, data, fundefs, e)) =
 
     (*data section*)
     append (Directive (data_directive, None, None));
-    append (Directive (align_directive, align_length, None));
+    append (Directive (align_directive, Some (string_of_int align_length), None));
 
     (*print double floating point constant labels*)
     (*use fold_left by flavor of tail recursive optimization*)
     List.iter
-        (fun cmd_list (Id.L(x, _), d) ->
-            append (Label (x, Printf.sprintf "%f" d));
-            append (Data (gethi d));
-            append (Data (getlo d));
+        (fun ((id, info), d) ->
+            append (Label (id, Some (Printf.sprintf "%f %s" d (Info.to_string info) )));
+            append (FData d)
         )
-        data;
+        fdata;
 
   (*print int constant labels*)
   List.iter
-    (fun (Id.L(x, info), d) ->
-        append (Label (x, Printf.sprintf "%d %s" d (Info.to_string info)))
-        append (Data d);
+    (fun ((x, info), d) ->
+        append (Label (x, Some (Printf.sprintf "%d %s" d (Info.to_string info))));
+        append (IData d)
     )
     idata;
 
@@ -294,19 +418,9 @@ let f (Prog(idata, data, fundefs, e)) =
   append (Label (entry_label, None));
 
     (*backup all regs*)
-    append_cmd_noinfo cmd_push ["%r9"] None;
-    append_cmd_noinfo cmd_push ["%r10"] None;
-    append_cmd_noinfo cmd_push ["%r11"] None;
-    append_cmd_noinfo cmd_push ["%r12"] None;
-    append_cmd_noinfo cmd_push ["%r13"] None;
     stackset := S.empty;
     stackmap := [];
     g (NonTail(reg_ret), e);
 
     (*restore all regs*)
-    append_cmd_noinfo cmd_pop ["%r9"];
-    append_cmd_noinfo cmd_pop ["%r10"];
-    append_cmd_noinfo cmd_pop ["%r11"];
-    append_cmd_noinfo cmd_pop ["%r12"];
-    append_cmd_noinfo cmd_pop ["%r13"];
-    append_cmd cmd_out [] None;
+    append_cmd_noinfo cmd_out [] ;

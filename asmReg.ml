@@ -20,8 +20,8 @@ type addr =
 | Absolute of Loc.t * Loc.t option
 
 let loi_to_string = function
-	| Label label -> "$" ^ label
-	| Constant i -> "$" ^ (string_of_int i)
+    | Label label -> "$" ^ label
+    | Constant i -> "$" ^ (string_of_int i)
 
 type t = (* 命令の列 (caml2html: sparcasm_t) *)
   | Ans of exp * Info.t
@@ -43,8 +43,8 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *)
     | FSub of Reg.t * Reg.t
     | FMul of Reg.t * Reg.t
     | FDiv of Reg.t * Reg.t
-    | FCmp of Reg.t * Reg.t * const3
-    | FJump of addr26 * ret2 * const3
+    (*| FCmp of Reg.t * Reg.t * const3*)
+    (*| FJump of addr26 * ret2 * const3*)
     | FLoad of addr
     | FStore of Reg.t * addr
 
@@ -81,8 +81,8 @@ let rec concat e1 xt e2 =
 let align i = (if i mod 8 = 0 then i else i + 4)
 
 let addr_to_param rd = function
-    | Relative (r, loc) -> [rd; r; Loc.to_string loc]
-    | Dynamic(r1, s4, r2) -> [rd; r1; Cmd.int_to_string s4; r2]
+    | Relative (r, loc) -> [ r; Cmd.int_to_string Cmd.addr_mode_relative; rd; Loc.to_string loc]
+    | Dynamic(r1, s4, r2) -> [ rd;Cmd.int_to_string Cmd.addr_mode_dynamic; r1; Cmd.int_to_string s4; r2]
     | Absolute(l1, l2_o) -> match l2_o with
         None -> [rd; Loc.to_string l1]
-        | Some l2 -> [rd; Loc.to_string l1; Loc.to_string l2]
+        | Some l2 -> [rd; Cmd.int_to_string Cmd.addr_mode_absolute; Loc.to_string l1; Loc.to_string l2]

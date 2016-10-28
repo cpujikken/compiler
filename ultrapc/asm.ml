@@ -20,8 +20,8 @@ type addr =
 | Absolute of Loc.t * Loc.t option
 
 let loi_to_string = function
-	| Label label -> "$" ^ label
-	| Constant i -> "$" ^ (string_of_int i)
+    | Label label -> "$" ^ label
+    | Constant i -> "$" ^ (string_of_int i)
 
 type t = (* 命令の列 (caml2html: sparcasm_t) *)
   | Ans of exp * Info.t
@@ -43,8 +43,8 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *)
     | FSub of Operand.t * Operand.t
     | FMul of Operand.t * Operand.t
     | FDiv of Operand.t * Operand.t
-    | FCmp of Operand.t * Operand.t * const3
-    | FJump of addr26 * ret2 * const3
+    (*| FCmp of Operand.t * Operand.t * const3*)
+    (*| FJump of addr26 * ret2 * const3*)
     | FLoad of addr
     | FStore of Operand.t * addr
 
@@ -90,7 +90,7 @@ let rec remove_dup xs = function
 let rec fv_exp = function
     | Nop
     | Jump _
-    | FJump _
+    (*| FJump _*)
     | JumpEQ _
     | JumpLT _
     | Link
@@ -112,7 +112,7 @@ let rec fv_exp = function
     | FDiv(a, b)
     | Store(a, Relative (b, _))
     | FStore(a, Relative (b, _))
-    | FCmp(a, b, _)
+    (*| FCmp(a, b, _)*)
         -> [a; b]
 
     | Addi (r, _)

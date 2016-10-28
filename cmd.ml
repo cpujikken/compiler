@@ -2,7 +2,8 @@ type t =
     | Directive of string * directive_param option * comment option
     | Label of string * comment option
     | Command of opcode * operand list * Info.t option
-    | Data of int
+    | IData of int
+    | FData of float
 
 and
 opcode = string
@@ -66,8 +67,10 @@ let rec f output =
                         Printf.fprintf output "\n"
                 | Command (a, b, c) ->
                         Printf.fprintf output "%s\n" (to_string (a, b, c))
-                | Data i ->
+                | IData i ->
                         Printf.fprintf output "\t.long\t%x" i
+                | FData i ->
+                        Printf.fprintf output "\t.long\t%x" (Int32.to_int (Int32.bits_of_float i))
     in
     g !cmd_list
 
@@ -96,7 +99,8 @@ let cmd_fSub = "FSUB"
 let cmd_fMul = "FMUL"
 let cmd_fDiv = "FDIV"
 let cmd_fCmp = "FCMP"
-let cmd_fJump = "FJ"
+let cmd_fJumpEQ = "FJEQ"
+let cmd_fJumpLT = "FJLT"
 let cmd_fLoad = "FLD"
 let cmd_fStore = "FSD"
 
@@ -115,3 +119,7 @@ let append_cmd opcode operand_list info =
 
 let label_to_string label = "$" ^ label
 let int_to_string i = "$" ^ string_of_int i
+let align_length = 8
+let addr_mode_relative = 0
+let addr_mode_dynamic = 2
+let addr_mode_absolute = 3
