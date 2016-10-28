@@ -1,5 +1,6 @@
 (* translation into assembly with infinite number of virtual registers *)
 
+open Operand
 open Asm
 open Reg
 
@@ -44,7 +45,7 @@ let rec generate env = function (* 式の仮想マシンコード生成 (caml2html: virtual_
   (*int*)
   | Closure.Int(i, info) ->
       if Pervasives.abs i < (1 lsl 15) then
-          Ans(Addi(reg_zero, Constant i), info)
+          Ans(Addi(Reg reg_zero, Constant i), info)
       else
       let l =
         try
@@ -72,13 +73,13 @@ let rec generate env = function (* 式の仮想マシンコード生成 (caml2html: virtual_
         Ans(FLoad(Absolute (Label l, None)), info)
         (*negative*)
   | Closure.Neg(x, info) ->
-          Ans(Sub(reg_zero, ID x), info)
+          Ans(Sub(Reg reg_zero, ID x), info)
   | Closure.Add(x, y, info) ->
           Ans(Add(ID x, ID y), info)
   | Closure.Sub(x, y, info) ->
           Ans(Sub(ID x, ID y), info)
   | Closure.FNeg(x, info) ->
-          Ans(FSub(reg_zero, ID x), info)
+          Ans(FSub(Reg reg_zero, ID x), info)
   | Closure.FAdd(x, y, info) ->
           Ans(FAdd(ID x, ID y), info)
   | Closure.FSub(x, y, info) ->
@@ -124,11 +125,11 @@ let rec generate env = function (* 式の仮想マシンコード生成 (caml2html: virtual_
       Let(
           (ID start, t),
           (*move heap pointer to start variable*)
-          Add(reg_zero, reg_hp),
+          Add(Reg reg_zero, Reg reg_hp),
           Let(
               (*increase heap pointer*)
-              (reg_hp, Type.Int info),
-              Addi(reg_hp, Constant (align offset)),
+              (Reg reg_hp, Type.Int info),
+              Addi(Reg reg_hp, Constant (align offset)),
 
               (
                   (*make new var*)
@@ -136,7 +137,7 @@ let rec generate env = function (* 式の仮想マシンコード生成 (caml2html: virtual_
               in
               Let(
                   (new_var, Type.Int info),
-                  Addi(reg_zero, Label (fst entry)),
+                  Addi(Reg reg_zero, Label (fst entry)),
                   seq(
                       Store(new_var, Absolute(Label (fst start), None)),
                       store_fv,
@@ -168,7 +169,7 @@ let rec generate env = function (* 式の仮想マシンコード生成 (caml2html: virtual_
         (*gen id-type list*)
           (List.map (fun x -> (x, M.find x env)) id_list)
           (*last instruction is to move the result (tuple) to somewhere it is used*)
-          (0, Ans(Add(reg_zero, tuple), info))
+          (0, Ans(Add(Reg reg_zero, tuple), info))
           (*float handler*)
           (*store ID take from current being scanned element to the memory at offset from tuple*)
           (fun x offset store -> seq(FStore(ID x, Relative(tuple, Constant offset)), store, info))
@@ -179,11 +180,11 @@ let rec generate env = function (* 式の仮想マシンコード生成 (caml2html: virtual_
           Let(
               (*firstly, move heap pointer to tuple variable*)
               (tuple, Type.Tuple(List.map (fun x -> M.find x env) id_list, info)),
-              Add(reg_zero, reg_hp),
+              Add(Reg reg_zero, Reg reg_hp),
               (*after that, increase heap pointer to make space*)
               Let(
-                  (reg_hp, Type.Int info),
-                  Addi(reg_hp, Constant (align offset)),
+                  (Reg reg_hp, Type.Int info),
+                  Addi(Reg reg_hp, Constant (align offset)),
                   store,
                   info
                   ),
@@ -232,7 +233,7 @@ let rec generate env = function (* 式の仮想マシンコード生成 (caml2html: virtual_
           )
 
 (* 関数の仮想マシンコード生成 (caml2html: virtual_h) *)
-let h { Closure.name = (x , t); Closure.args = yts; Closure.formal_fv = zts; Closure.body = e } =
+let fun_converter { Closure.name = (x , t); Closure.args = yts; Closure.formal_fv = zts; Closure.body = e; Closure.info = info } =
     let info = Closure.get_info e in
   let (int, float) = separate yts in
   let (offset, load) =
@@ -244,12 +245,12 @@ let h { Closure.name = (x , t); Closure.args = yts; Closure.formal_fv = zts; Clo
   in
   match t with
   | Type.Fun(_, t2, _) ->
-      { name = Label (fst x); args = int; fargs = float; body = load; ret = t2 }
+          { name = Label (fst x); args = int; fargs = float; body = load; ret = t2 ; info = info}
   | _ -> Info.exit info "Cannot apply non-function type"
 
 (* プログラム全体の仮想マシンコード生成 (caml2html: virtual_f) *)
 let f (Closure.Prog(fundefs, e)) =
   data := [];
-  let fundefs = List.map h fundefs in
+  let fundefs = List.map fun_converter fundefs in
   let e = generate M.empty e in
   Prog(!idata, !data, fundefs, e)

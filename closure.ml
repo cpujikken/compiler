@@ -26,7 +26,8 @@ type t = (* クロージャ変換後の式 (caml2html: closure_t) *)
 type fundef = { name : Id.l * Type.t;
 		args : (Id.t * Type.t) list;
 		formal_fv : (Id.t * Type.t) list;
-		body : t }
+        body : t;
+        info: Info.t }
 type prog = Prog of fundef list * t
 
 let rec fv = function
@@ -146,7 +147,7 @@ let rec g env known = function (* クロージャ変換ルーチン本体 (caml2html: closure
             (*for all free variables*)
             external_variables
     in (* ここで自由変数zの型を引くために引数envが必要 *)
-        toplevel := { name = (Id.to_L fun_name, fun_type); args = param_list; formal_fv = external_variable_with_type; body = fun_body' } :: !toplevel; (* トップレベル関数を追加 *)
+        toplevel := { name = (Id.to_L fun_name, fun_type); args = param_list; formal_fv = external_variable_with_type; body = fun_body'; info = info } :: !toplevel; (* トップレベル関数を追加 *)
         (*parse let_body*)
         let let_body' = g env' known' let_body
         in

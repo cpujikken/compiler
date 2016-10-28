@@ -1,4 +1,5 @@
 open Asm
+open Operand
 open Reg
 
 (*remove unused let if all of place can be replacable*)
@@ -29,8 +30,8 @@ and g' env = function (* 各命令の即値最適化 (caml2html: simm13_gprime) *)
   | FIfEQ(reg1, reg2, asm1, asm2) -> FIfEQ(reg1, reg2, g env asm1, g env asm2)
   | e -> e
 
-let h { name = l; args = xs; fargs = ys; body = e; ret = t } = (* トップレベル関数の即値最適化 *)
-  { name = l; args = xs; fargs = ys; body = g M.empty e; ret = t }
+let fun_converter { name = l; args = xs; fargs = ys; body = e; ret = t ; info = info} = (* トップレベル関数の即値最適化 *)
+    { name = l; args = xs; fargs = ys; body = g M.empty e; ret = t; info = info }
 
 let f (Prog(idata, data, fundefs, e)) = (* プログラム全体の即値最適化 *)
-  Prog(idata, data, List.map h fundefs, g M.empty e)
+  Prog(idata, data, List.map fun_converter fundefs, g M.empty e)

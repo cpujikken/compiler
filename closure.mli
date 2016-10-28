@@ -26,7 +26,8 @@ type t =
 type fundef = { name : Id.l * Type.t;
 		args : (Id.t * Type.t) list;
 		formal_fv : (Id.t * Type.t) list;
-		body : t }
+        body : t ;
+        info: Info.t}
 type prog = Prog of fundef list * t
 
 val fv : t -> S.t
