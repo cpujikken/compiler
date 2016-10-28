@@ -84,7 +84,6 @@ and source' t = function
     | AsmReg.Addi (x, _)
     | AsmReg.ShiftL (x, _)
     | AsmReg.ShiftR (x, _)
-    | AsmReg.FJump(x, _, _)
     | AsmReg.Push(x)
     -> [x]
 
@@ -235,7 +234,7 @@ and generate'_and_restore dest cont regenv exp info = (* »ÈÍÑ¤µ¤ì¤ëÊÑ¿ô¤ò¥¹¥¿¥Ã¥
   with NoReg(x, t, info) ->
       (*if out of register, assign to new var*)
       ((* Format.eprintf "restoring %s@." x; *)
-          generate dest cont regenv (Let((ID x, t), Restore(Label (fst x)), Ans(exp, info), info))
+          generate dest cont regenv (Let((ID x, t), Restore(x), Ans(exp, info), info))
           )
 and generate' dest cont regenv info exp = (* ³ÆÌ¿Îá¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: regalloc_gprime) *)
     let reg_finder reg =
@@ -255,6 +254,7 @@ and generate' dest cont regenv info exp = (* ³ÆÌ¿Îá¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html
 
     | Jump x
     -> AsmReg.Ans(AsmReg.Jump x, info), regenv
+    | FJump(x, r2, c3) -> AsmReg.Ans(AsmReg.FJump(x, r2, c3), info), regenv
 
     | JumpEQ x
     -> AsmReg.Ans(AsmReg.JumpEQ x, info), regenv
@@ -297,7 +297,6 @@ and generate' dest cont regenv info exp = (* ³ÆÌ¿Îá¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html
     | FMul (reg1, reg2) -> AsmReg.Ans(AsmReg.FMul(freg_finder reg1, freg_finder reg2), info), regenv
     | FDiv (reg1, reg2) -> AsmReg.Ans(AsmReg.FDiv(freg_finder reg1, freg_finder reg2), info), regenv
     | FCmp(reg1, reg2, c3) -> AsmReg.Ans(AsmReg.FCmp(freg_finder reg1, freg_finder reg2, c3), info), regenv
-    | FJump(reg, r2, c3) -> AsmReg.Ans(AsmReg.FJump(freg_finder reg, r2, c3), info), regenv
     | Push reg -> AsmReg.Ans(AsmReg.Push(reg_finder reg), info), regenv
 
     | IfEQ(reg1, reg2, e1, e2) ->

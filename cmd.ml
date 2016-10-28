@@ -105,8 +105,13 @@ let cmd_link = "LINK"
 let cmd_push = "PUSH"
 let cmd_pop = "POP"
 let cmd_out = "OUT"
+let cmd_jumpCls = "JC"
+let cmd_jLinkCls = "JLINKC"
 
 let append_cmd_noinfo opcode operand_list =
     append (Command (opcode, operand_list, None))
 let append_cmd opcode operand_list info =
     append (Command (opcode, operand_list, Some info))
+
+let label_to_string label = "$" ^ label
+let int_to_string i = "$" ^ string_of_int i

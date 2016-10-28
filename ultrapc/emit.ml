@@ -1,5 +1,7 @@
-open Asm
+open AsmReg
+open Loc
 open Cmd
+open Reg
 
 external gethi : float -> int32 = "gethi"
 external getlo : float -> int32 = "getlo"
@@ -25,10 +27,6 @@ let locate x =
 let offset x = 4 * List.hd (locate x)
 let stacksize () = align (List.length !stackmap * 4)
 
-let pp_id_or_imm = function
-  | V(x, _) -> x
-  | C(i) -> "$" ^ string_of_int i
-
 (* 関数呼び出しのために引数を並べ替える(register shuffling) (caml2html: emit_shuffle) *)
 let rec shuffle sw xys =
   (* remove identical moves *)
@@ -38,195 +36,175 @@ let rec shuffle sw xys =
   | [], [] -> []
   | (x, y) :: xys, [] -> (* no acyclic moves; resolve a cyclic move *)
       (y, sw) :: (x, y) :: shuffle sw (List.map
-					 (function
-					   | (y', z) when y = y' -> (sw, z)
-					   | yz -> yz)
-					 xys)
+                     (function
+                       | (y', z) when y = y' -> (sw, z)
+                       | yz -> yz)
+                     xys)
   | xys, acyc -> acyc @ shuffle sw xys
 
-type dest = Tail | NonTail of Id.t (* 末尾かどうかを表すデータ型 (caml2html: emit_dest) *)
+type dest = Tail | NonTail of Reg.t (* 末尾かどうかを表すデータ型 (caml2html: emit_dest) *)
 let rec g = function (* 命令列のアセンブリ生成 (caml2html: emit_g) *)
   | dest, Ans(exp, info) -> g' info (dest, exp)
   | dest, Let((x, t), exp, e, info) ->
       g' info (NonTail(x), exp);
       g (dest, e)
 and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
-  (* 末尾でなかったら計算結果をdestにセット (caml2html: emit_nontail) *)
-  | NonTail(_), Nop -> ()
+    (* 末尾でなかったら計算結果をdestにセット (caml2html: emit_nontail) *)
+    | NonTail _, Nop -> ()
 
-  (*set imm value i to reg x*)
-  | NonTail(x), Set(i) ->
-	append_cmd cmd_addi [Id.to_string_core x; "%r0"; (string_of_int i)] info;
+    | NonTail rd, Add (ra, rb) ->
+        if rd = ra && rb = reg_zero || rd = rb && ra = reg_zero then
+            ()
+        else
+            append_cmd cmd_add [rd; ra; rb] info
+    | NonTail rd, Sub (ra, rb) ->
+            if rb = reg_zero  && rd = ra then
+                ()
+            else
+                append_cmd cmd_sub [rd; ra; rb] info
+    | NonTail rd, Addi (ra, loc) ->
+        append_cmd cmd_addi  [rd; ra; Loc.to_string loc] info
+    | NonTail rd, ShiftL (r, b5) ->
+            append_cmd cmd_shiftL [rd; r; int_to_string b5] info
+    |NonTail rd, ShiftR (r, b5) ->
+            append_cmd cmd_shiftR [rd; r; int_to_string b5] info
+    | NonTail _, Jump addr26 ->
+            append_cmd cmd_jump [int_to_string addr26] info
+    | NonTail _, JumpEQ addr26 ->
+            append_cmd cmd_jumpEQ [int_to_string addr26] info
+    | NonTail _, JumpLT addr26 ->
+            append_cmd cmd_jumpLT [int_to_string addr26] info
+    | NonTail rd, Load addr ->
+            append_cmd cmd_load (addr_to_param rd addr) info
+    | NonTail _, Store (rd, addr)->
+            append_cmd cmd_store (addr_to_param rd addr) info
+    | NonTail rd, FAdd (ra, rb) ->
+        append_cmd cmd_fAdd [rd; ra; rb] info
+    | NonTail rd, FSub (ra, rb) ->
+        append_cmd cmd_fSub [rd; ra; rb] info
+    | NonTail rd, FMul (ra, rb) ->
+        append_cmd cmd_fMul [rd; ra; rb] info
+    | NonTail rd, FDiv (ra, rb) ->
+        append_cmd cmd_fDiv [rd; ra; rb] info
+    | NonTail _,  FCmp(r1, r2, c3) ->
+            append_cmd cmd_fCmp [r1; r2; int_to_string c3] info
+    | NonTail _, FJump (addr26, r2, c3) ->
+            append_cmd cmd_fJump [int_to_string addr26; int_to_string r2; int_to_string c3] info
+    | NonTail rd, FLoad addr ->
+            append_cmd cmd_fLoad (addr_to_param rd addr) info
+    | NonTail _, FStore (rd, addr) ->
+            append_cmd cmd_fStore (addr_to_param rd addr) info
+    | NonTail _, JLink addr26 ->
+            append_cmd cmd_jLink [int_to_string addr26] info
+    | NonTail _, Link ->
+            append_cmd cmd_link [] info
+    | NonTail _, Push r ->
+            append_cmd cmd_push [r] info
+    | NonTail _, Pop ->
+            append_cmd cmd_pop [] info
+    | NonTail _, Out ->
+            append_cmd cmd_out [] info
 
-  (*set label y to reg x*)
-  | NonTail(x), SetL(Id.L(y, _)) ->
-	append_cmd cmd_addi [Id.to_string_core x; "%r0"; y] info;
+    | (NonTail _) as dest, Save(r, id) when List.mem r allregs && not (S.mem id !stackset) ->
+            save id;
+            g' info (NonTail r, Load (Relative (reg_sp, Constant (offset id ))))
+    | NonTail _ as dest, Save(r, id) when List.mem r allfregs && not (S.mem id !stackset) ->
+            save id;
+            g' info (NonTail r, FLoad (Relative (reg_sp, Constant (offset id ))))
+    | NonTail _, Save(r, id) ->
+            if S.mem id !stackset then
+                ()
+            else
+                failwith "invalid register for saving"
 
-(*load int from data section*)
-  | NonTail(dest), LdL(Id.L(label, _)) ->
-    append_cmd cmd_ld [Id.to_string_core dest; "$" ^ label ^ "(%r0)"] info;
-
-(*load real from data section*)
-  | NonTail(dest), LdDFL(Id.L(label, _)) ->
-    append_cmd cmd_fld [Id.to_string_core dest; "$" ^ label ^ "(%r0)"] info;
-
-  (*move from reg y to reg x*)
-  | NonTail(x), Mov(y) ->
-      if x <> y then
-		append_cmd cmd_addi [Id.to_string_core x; "%r0"; Id.to_string_core y] info;
-
-  | NonTail(x), Neg(y) ->
-      if x <> y then
-		append_cmd cmd_sub [Id.to_string_core x; "%r0"; Id.to_string_core y] info;
-
-  | NonTail(x), Add(y, z') ->
-      if V(x) = z' then
-		Printf.fprintf oc "\taddl\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info)
-      else
-		(if x <> y then
-			Printf.fprintf oc "\tmov\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info);
-		 Printf.fprintf oc "\taddl\t%s, %s\t#%s\n" (pp_id_or_imm z') (Id.to_string_core x) (Info.to_string info))
-  | NonTail(x), Sub(y, z') ->
-      if V(x) = z' then
-          (Printf.fprintf oc "\tsubl\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info);
-         Printf.fprintf oc "\tnegl\t%s\t#%s\n" (Id.to_string_core x) (Info.to_string info))
-      else
-	(if x <> y then Printf.fprintf oc "\tmov\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info);
-	 Printf.fprintf oc "\tsubl\t%s, %s\t#%s\n" (pp_id_or_imm z') (Id.to_string_core x) (Info.to_string info))
-  | NonTail(x), Ld(y, V(z), i) -> Printf.fprintf oc "\tmov\t(%s,%s,%d), %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core z) i (Id.to_string_core x) (Info.to_string info)
-  | NonTail(x), Ld(y, C(j), i) -> Printf.fprintf oc "\tld\t %s, %d(%s)\t#%s\n"  (Id.to_string_core x) (j * i) (Id.to_string_core y) (Info.to_string info)
-  | NonTail(_), St(x, y, V(z), i) -> Printf.fprintf oc "\tmov\t%s, (%s,%s,%d)\t#%s\n" (Id.to_string_core x) (Id.to_string_core y) (Id.to_string_core z) i (Info.to_string info)
-  | NonTail(_), St(x, y, C(j), i) -> Printf.fprintf oc "\tmov\t%s, %d(%s)\t#%s\n" (Id.to_string_core x) (j * i) (Id.to_string_core y) (Info.to_string info)
-  | NonTail(x), FMovD(y) ->
-      if x <> y then Printf.fprintf oc "\tmovsd\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info)
-  | NonTail(x), FNegD(y) ->
-          if x <> y then Printf.fprintf oc "\tmovsd\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info);
-      Printf.fprintf oc "\txorpd\tmin_caml_fnegd, %s\t#%s\n" (Id.to_string_core x) (Info.to_string info)
-  | NonTail(x), FAddD(y, z) ->
-      if x = z then
-        Printf.fprintf oc "\taddsd\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info)
-      else
-        (if x <> y then Printf.fprintf oc "\tmovsd\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info);
-	 Printf.fprintf oc "\taddsd\t%s, %s\t#%s\n" (Id.to_string_core z) (Id.to_string_core x) (Info.to_string info))
-  | NonTail(x), FSubD(y, z) ->
-      if x = z then (* [XXX] ugly *)
-	let ss = stacksize () in
-    Printf.fprintf oc "\tmovsd\t%s, %d(%s)\t#%s\n" (Id.to_string_core z) ss (Id.to_string_core reg_sp) (Info.to_string info);
-	if x <> y then Printf.fprintf oc "\tmovsd\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info);
-	Printf.fprintf oc "\tsubsd\t%d(%s), %s\t#%s\n" ss (Id.to_string_core reg_sp) (Id.to_string_core x) (Info.to_string info)
-      else
-	(if x <> y then Printf.fprintf oc "\tmovsd\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info);
-	 Printf.fprintf oc "\tsubsd\t%s, %s\t#%s\n" (Id.to_string_core z) (Id.to_string_core x) (Info.to_string info))
-  | NonTail(x), FMulD(y, z) ->
-      if x = z then
-        Printf.fprintf oc "\tmulsd\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info)
-      else
-        (if x <> y then Printf.fprintf oc "\tmovsd\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info);
-	 Printf.fprintf oc "\tmulsd\t%s, %s\t#%s\n" (Id.to_string_core z) (Id.to_string_core x) (Info.to_string info))
-  | NonTail(x), FDivD(y, z) ->
-      if x = z then (* [XXX] ugly *)
-	let ss = stacksize () in
-	Printf.fprintf oc "\tmovsd\t%s, %d(%s)\t#%s\n" (Id.to_string_core z) ss (Id.to_string_core reg_sp) (Info.to_string info);
-	if x <> y then Printf.fprintf oc "\tmovsd\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info);
-	Printf.fprintf oc "\tdivsd\t%d(%s), %s\t#%s\n" ss (Id.to_string_core reg_sp) (Id.to_string_core x) (Info.to_string info)
-      else
-	(if x <> y then Printf.fprintf oc "\tmovsd\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info);
-	 Printf.fprintf oc "\tdivsd\t%s, %s\t#%s\n" (Id.to_string_core z) (Id.to_string_core x) (Info.to_string info))
-  | NonTail(x), LdDF(y, V(z), i) -> Printf.fprintf oc "\tmovsd\t(%s,%s,%d), %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core z) i (Id.to_string_core x) (Info.to_string info)
-  (*move from y to x with offset is i * j (constant)
-   * movsd: move scalar double precision floating point
-   * *)
-  | NonTail(x), LdDF(y, C(j), i) -> Printf.fprintf oc "\tmovsd\t%d(%s), %s\t#%s\n" (j * i) (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info)
-  | NonTail(_), StDF(x, y, V(z), i) -> Printf.fprintf oc "\tmovsd\t%s, (%s,%s,%d)\t#%s\n" (Id.to_string_core x) (Id.to_string_core y) (Id.to_string_core z) i (Info.to_string info)
-  | NonTail(_), StDF(x, y, C(j), i) -> Printf.fprintf oc "\tmovsd\t%s, %d(%s)\t#%s\n" (Id.to_string_core x) (j * i) (Id.to_string_core y) (Info.to_string info)
-  | NonTail(_), Comment(s) -> Printf.fprintf oc "\t# %s\t#%s\n" s (Info.to_string info)
-  (* 退避の仮想命令の実装 (caml2html: emit_save) *)
-  | NonTail(_), Save(x, y) when List.mem x allregs && not (S.mem y !stackset) ->
-      save y;
-      Printf.fprintf oc "\tmov\t%s, %d(%s)\t#%s\n" (Id.to_string_core x) (offset y) (Id.to_string_core reg_sp) (Info.to_string info)
-  | NonTail(_), Save(x, y) when List.mem x allfregs && not (S.mem y !stackset) ->
-      savef y info;
-      Printf.fprintf oc "\tmovsd\t%s, %d(%s)\t#%s\n" (Id.to_string_core x) (offset y) (Id.to_string_core reg_sp) (Info.to_string info)
-  | NonTail(_), Save(x, y) -> assert (S.mem y !stackset); ()
-  (* 復帰の仮想命令の実装 (caml2html: emit_restore) *)
-  | NonTail(x), Restore(y) when List.mem x allregs ->
-      Printf.fprintf oc "\tmov\t%d(%s), %s\t#%s\n" (offset y) (Id.to_string_core reg_sp) (Id.to_string_core x) (Info.to_string info)
-  | NonTail(x), Restore(y) ->
-      assert (List.mem x allfregs);
-      Printf.fprintf oc "\tmovsd\t%d(%s), %s\t#%s\n" (offset y) (Id.to_string_core reg_sp) (Id.to_string_core x) (Info.to_string info)
-  (* 末尾だったら計算結果を第一レジスタにセットしてret (caml2html: emit_tailret) *)
-  | Tail, (Nop| St (_) | StDF (_) | Comment( _) | Save( _) as exp) ->
-      g' oc info (NonTail(Id.gentmp (Type.Unit info) info), exp);
-      Printf.fprintf oc "\tret\t#%s\n" (Info.to_string info);
-  | Tail, (Set(_) | SetL(_) | Mov(_) | Neg(_) | Add(_) | Sub(_) | Ld(_) as exp) ->
-      g' oc info (NonTail(regs.(0)), exp);
-      Printf.fprintf oc "\tret\n";
-  | Tail, (FMovD _ | FNegD _ | FAddD _ | FSubD _ | FMulD _ | FDivD _ | LdDF _  as exp) ->
-      g' oc info (NonTail(fregs.(0)), exp);
-      Printf.fprintf oc "\tret\n";
-  | Tail, (Restore(x) as exp) ->
-      (match locate x with
-      | [i] -> g' oc info (NonTail(regs.(0)), exp)
-      | [i; j] when i + 1 = j -> g' oc info (NonTail(fregs.(0)), exp)
-      | _ -> assert false);
-      Printf.fprintf oc "\tret\n";
-  | Tail, IfEq(x, y', e1, e2) ->
-      Printf.fprintf oc "\tcmpl\t%s, %s\t#%s\n" (pp_id_or_imm y') (Id.to_string_core x) (Info.to_string info);
-      g'_tail_if oc e1 e2 "je" "jne" info
-  | Tail, IfLE(x, y', e1, e2) ->
-      Printf.fprintf oc "\tcmpl\t%s, %s\t#%s\n" (pp_id_or_imm y') (Id.to_string_core x) (Info.to_string info);
-      g'_tail_if oc e1 e2 "jle" "jg" info
-  | Tail, IfGE(x, y', e1, e2) ->
-      Printf.fprintf oc "\tcmpl\t%s, %s\t#%s\n" (pp_id_or_imm y') (Id.to_string_core x) (Info.to_string info);
-      g'_tail_if oc e1 e2 "jge" "jl" info
-  | Tail, IfFEq(x, y, e1, e2) ->
-      Printf.fprintf oc "\tcomisd\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info);
-      g'_tail_if oc e1 e2 "je" "jne" info
-  | Tail, IfFLE(x, y, e1, e2) ->
-      Printf.fprintf oc "\tcomisd\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info);
-      g'_tail_if oc e1 e2 "jbe" "ja" info
-  | NonTail(z), IfEq(x, y', e1, e2) ->
-      Printf.fprintf oc "\tcmpl\t%s, %s\t#%s\n" (pp_id_or_imm y') (Id.to_string_core x) (Info.to_string info);
-      g'_non_tail_if oc (NonTail(z)) e1 e2 "je" "jne" info
-  | NonTail(z), IfLE(x, y', e1, e2) ->
-      Printf.fprintf oc "\tcmpl\t%s, %s\t#%s\n" (pp_id_or_imm y') (Id.to_string_core x) (Info.to_string info);
-      g'_non_tail_if oc (NonTail(z)) e1 e2 "jle" "jg" info
-  | NonTail(z), IfGE(x, y', e1, e2) ->
-      Printf.fprintf oc "\tcmpl\t%s, %s\t#%s\n" (pp_id_or_imm y') (Id.to_string_core x) (Info.to_string info);
-      g'_non_tail_if oc (NonTail(z)) e1 e2 "jge" "jl" info
-  | NonTail(z), IfFEq(x, y, e1, e2) ->
-      Printf.fprintf oc "\tcomisd\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info);
-      g'_non_tail_if oc (NonTail(z)) e1 e2 "je" "jne" info
-  | NonTail(z), IfFLE(x, y, e1, e2) ->
-      Printf.fprintf oc "\tcomisd\t%s, %s\t#%s\n" (Id.to_string_core y) (Id.to_string_core x) (Info.to_string info);
-      g'_non_tail_if oc (NonTail(z)) e1 e2 "jbe" "ja" info
-  (* 関数呼び出しの仮想命令の実装 (caml2html: emit_call) *)
-  | Tail, CallCls(x, ys, zs) -> (* 末尾呼び出し (caml2html: emit_tailcall) *)
-      g'_args oc [(x, reg_cl)] ys zs;
-      Printf.fprintf oc "\tjmp\t*(%s)\t#%s\n" (Id.to_string_core reg_cl) (Info.to_string info);
-  | Tail, CallDir(Id.L(x, _), ys, zs) -> (* 末尾呼び出し *)
-      g'_args oc [] ys zs;
-      Printf.fprintf oc "\tjmp\t%s\t#%s\n" x (Info.to_string info);
-  | NonTail(a), CallCls(x, ys, zs) ->
-      g'_args oc [(x, reg_cl)] ys zs;
-      let ss = stacksize () in
-      if ss > 0 then Printf.fprintf oc "\taddl\t$%d, %s\t#%s\n" ss (Id.to_string_core reg_sp) (Info.to_string info);
-      Printf.fprintf oc "\tcall\t*(%s)\t#%s\n" (Id.to_string_core reg_cl) (Info.to_string info);
-      if ss > 0 then Printf.fprintf oc "\tsubl\t$%d, %s\t#%s\n" ss (Id.to_string_core reg_sp) (Info.to_string info);
-      if List.mem a allregs && a <> regs.(0) then
-        Printf.fprintf oc "\tmov\t%s, %s\t#%s\n" (Id.to_string_core regs.(0)) (Id.to_string_core a) (Info.to_string info)
-      else if List.mem a allfregs && a <> fregs.(0) then
-        Printf.fprintf oc "\tmovsd\t%s, %s\t#%s\n" (Id.to_string_core fregs.(0)) (Id.to_string_core a) (Info.to_string info)
-  | NonTail(a), CallDir(Id.L(x, _), ys, zs) ->
-      g'_args oc [] ys zs;
-      let ss = stacksize () in
-      if ss > 0 then Printf.fprintf oc "\taddl\t$%d, %s\t#%s\n" ss (Id.to_string_core reg_sp) (Info.to_string info);
-      Printf.fprintf oc "\tcall\t%s\t#%s\n" x (Info.to_string info);
-      if ss > 0 then Printf.fprintf oc "\tsubl\t$%d, %s\t#%s\n" ss (Id.to_string_core reg_sp) (Info.to_string info);
-      if List.mem a allregs && a <> regs.(0) then
-        Printf.fprintf oc "\tmov\t%s, %s\t#%s\n" (Id.to_string_core regs.(0)) (Id.to_string_core a) (Info.to_string info)
-      else if List.mem a allfregs && a <> fregs.(0) then
-        Printf.fprintf oc "\tmovsd\t%s, %s\t#%s\n" (Id.to_string_core fregs.(0)) (Id.to_string_core a) (Info.to_string info)
+    | NonTail rd, Restore id when List.mem rd allregs ->
+            g' info (NonTail rd, Load (Relative (reg_sp, Constant(offset id))))
+    | NonTail rd, Restore id ->
+            if  List.mem rd allfregs then
+                g' info (NonTail rd, FLoad (Relative (reg_sp, Constant (offset id))))
+            else
+                failwith "invalid register for restore"
+    | Tail, (Nop | Add _ | Sub _ | Addi _ | ShiftL _ | ShiftR _ | JumpEQ _ | JumpLT _ | Load _ | Store _ | JLink _ | Link | Push _ | Pop | Out as exp) ->
+            g' info (NonTail reg_zero, exp)
+    | Tail, (FMul _ | FSub _ | FDiv _ | FAdd _  | FCmp _ | FLoad _ | FStore _ as exp )->
+            g' info (NonTail freg_zero, exp)
+    | Tail, (Restore (id) as exp )->
+            ((match locate id with
+            | [i] -> g' info (NonTail(reg_zero), exp)
+            | [i; j] when i + 1 = j -> g' info (NonTail (freg_zero), exp)
+            | _ -> failwith "invalid register for restore"
+            );
+            append_cmd cmd_link [] info
+            )
+    | Tail, IfEQ(r1, r2, e1, e2) ->
+            append_cmd cmd_sub [reg_zero; r1; r2] info;
+            g'_tail_if_eq e1 e2 info
+    | Tail, IfLT(r1, r2, e1, e2) ->
+            append_cmd cmd_sub [reg_zero; r1; r2] info;
+            g'_tail_if_lt e1 e2 info
+    | Tail, FIfEQ(r1, r2, e1, e2) ->
+            append_cmd cmd_fCmp [r1; r2] info;
+            g'_tail_fif_eq e1 e2 info
+    | Tail, FIfLT(r1, r2, e1, e2) ->
+            append_cmd cmd_fCmp [r1; r2] info;
+            g'_tail_fif_lt e1 e2 info
+    | NonTail rd, IfEQ(r1, r2, e1, e2) ->
+            append_cmd cmd_sub [reg_zero; r1; r2] info;
+            g'_nontail_if_eq e1 e2 info
+    | NonTail rd, IfLT(r1, r2, e1, e2) ->
+            append_cmd cmd_sub [reg_zero; r1; r2] info;
+            g'_nontail_if_lt e1 e2 info
+    | NonTail rd, FIfEQ(r1, r2, e1, e2) ->
+            append_cmd cmd_fCmp [r1; r2] info;
+            g'_nontail_fif_eq e1 e2 info
+    | NonTail rd, FIfLT(r1, r2, e1, e2) ->
+            append_cmd cmd_fCmp [r1; r2] info;
+            g'_nontail_fif_lt e1 e2 info
+    | Tail, CallCls(rcls, rparam, rvalue) ->
+            g'_args [(rcls, reg_cl)] rparam rvalue info;
+            append_cmd cmd_JumpCls [] info
+    | Tail, CallDir(l, rparam, rvalue) ->
+            g'_args [] rparam rvalue info;
+            append_cmd cmd_jump [Loc.to_string l] info
+    | NonTail rd, CallCls(rcls, rparam, rvalue) ->
+            (*set param*)
+            g'_args [(rcls, reg_cl)] rparam, rvalue;
+            let ss = stacksize ()
+            in
+            if ss > 0 then
+                (*increase stack*)
+                append_cmd cmd_addi [reg_sp; reg_zero; int_to_string ss] info;
+            (*jump and link to closure register*)
+            append_cmd cmd_jLinkCls [] info;
+            (*the subroutines will automatically jump back here*)
+            if ss > 0 then
+                (*decrease stack*)
+                append_cmd cmd_addi [reg_sp; reg_zero; int_to_string (-ss)] info;
+            (*returned value is set to reg_ret by convention*)
+            if List.mem rd allregs && rd <> reg_ret then
+                append_cmd cmd_add [rd; reg_zero; reg_ret] info
+            else
+                if List.mem rd allfregs && rd <> freg_ret then
+                    append_cmd cmd_fAdd [rd; ferg_zero; freg_ret] info
+    | NonTail rd, CallDir(l, rparam, rvalue) ->
+            (*set param*)
+            g'_args [] rparam, rvalue;
+            let ss = stacksize()
+            in
+            (*increase stack*)
+            if ss > 0 then
+                append_cmd cmd_addi [reg_sp; reg_zero; int_to_string ss] info;
+            (*call*)
+            append_cmd cmd_jLink [Loc.to_string l] info;
+            (*resstore stack*)
+            if ss > 0 then
+                append_cmd cmd_addi [reg_sp; reg_zero; int_to_string (-ss)] info;
+            (*save returned value*)
+            if List.mem rd allregs && rd <> reg_ret then
+                append_cmd cmd_add [rd; reg_zero; reg_ret] info
+            else
+                if List.mem rd allfregs && rd <> freg_ret then
+                    append_cmd cmd_add [rd;freg_zero; freg_ret] info
 and g'_tail_if oc e1 e2 b bn info=
   let b_else = Id.genid((b ^ "_else"), info) in
   Printf.fprintf oc "\t%s\t%s\n" bn (Id.to_string_core b_else);
@@ -277,7 +255,7 @@ let h oc { name = Id.L(x, _); args = _; fargs = _; body = e; ret = _ } =
   g (Tail, e)
 
 (* type prog = Prog of (Id.l * float) list * fundef list * t *)
-let f (Prog_reg(idata, data, fundefs, e)) =
+let f (Prog(idata, data, fundefs, e)) =
   Format.eprintf "generating assembly...@.";
 
     (*.start label: starting point*)
@@ -315,20 +293,20 @@ let f (Prog_reg(idata, data, fundefs, e)) =
 
   append (Label (entry_label, None));
 
-	(*backup all regs*)
-	append_cmd_noinfo cmd_push ["%r9"] None;
-	append_cmd_noinfo cmd_push ["%r10"] None;
-	append_cmd_noinfo cmd_push ["%r11"] None;
-	append_cmd_noinfo cmd_push ["%r12"] None;
-	append_cmd_noinfo cmd_push ["%r13"] None;
-	stackset := S.empty;
-	stackmap := [];
-	g (NonTail(regs.(0)), e);
+    (*backup all regs*)
+    append_cmd_noinfo cmd_push ["%r9"] None;
+    append_cmd_noinfo cmd_push ["%r10"] None;
+    append_cmd_noinfo cmd_push ["%r11"] None;
+    append_cmd_noinfo cmd_push ["%r12"] None;
+    append_cmd_noinfo cmd_push ["%r13"] None;
+    stackset := S.empty;
+    stackmap := [];
+    g (NonTail(reg_ret), e);
 
-	(*restore all regs*)
-	append_cmd_noinfo cmd_pop ["%r9"];
-	append_cmd_noinfo cmd_pop ["%r10"];
-	append_cmd_noinfo cmd_pop ["%r11"];
-	append_cmd_noinfo cmd_pop ["%r12"];
-	append_cmd_noinfo cmd_pop ["%r13"];
-	append_cmd cmd_out [] None;
+    (*restore all regs*)
+    append_cmd_noinfo cmd_pop ["%r9"];
+    append_cmd_noinfo cmd_pop ["%r10"];
+    append_cmd_noinfo cmd_pop ["%r11"];
+    append_cmd_noinfo cmd_pop ["%r12"];
+    append_cmd_noinfo cmd_pop ["%r13"];
+    append_cmd cmd_out [] None;

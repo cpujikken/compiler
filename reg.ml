@@ -43,4 +43,7 @@ let reg_sp = "%rsp" (* stack pointer *)
 let reg_hp = "%rhp" (* heap pointer (caml2html: sparcasm_reghp) *)
 let reg_link = "%rlink"
 let reg_zero = "%r0"
+let freg_zero = "%fr0"
+let reg_ret = regs.(0)
+let freg_ret = fregs.(0)
 (* let reg_ra = "%eax" (* return address *) *)

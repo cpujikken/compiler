@@ -44,7 +44,7 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *)
     | FMul of Operand.t * Operand.t
     | FDiv of Operand.t * Operand.t
     | FCmp of Operand.t * Operand.t * const3
-    | FJump of Operand.t * ret2 * const3
+    | FJump of addr26 * ret2 * const3
     | FLoad of addr
     | FStore of Operand.t * addr
 
@@ -60,7 +60,7 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *)
     | FIfLT of Operand.t * Operand.t * t * t
     | CallCls of Operand.t * Operand.t list * Operand.t list
     | CallDir of Loc.t * Operand.t list * Operand.t list
-    | Restore of Loc.t
+    | Restore of Id.t
 type fundef = { name : label; args : Operand.t list; fargs : Operand.t list; body : t; ret : Type.t ; info: Info.t}
 (* プログラム全体 = 浮動小数点数テーブル + トップレベル関数 + メインの式 (caml2html: sparcasm_prog) *)
 type prog = Prog of (Id.l * int) list * (Id.l * float) list * fundef list * t
@@ -90,6 +90,7 @@ let rec remove_dup xs = function
 let rec fv_exp = function
     | Nop
     | Jump _
+    | FJump _
     | JumpEQ _
     | JumpLT _
     | Link
@@ -121,7 +122,6 @@ let rec fv_exp = function
     | FLoad (Relative(r, _))
     | Store(r, Absolute _)
     | FStore(r, Absolute _)
-    | FJump(r, _, _)
     | Push r
         ->  [r]
 

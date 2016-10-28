@@ -44,7 +44,7 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *)
     | FMul of Reg.t * Reg.t
     | FDiv of Reg.t * Reg.t
     | FCmp of Reg.t * Reg.t * const3
-    | FJump of Reg.t * ret2 * const3
+    | FJump of addr26 * ret2 * const3
     | FLoad of addr
     | FStore of Reg.t * addr
 
@@ -60,7 +60,7 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *)
     | FIfLT of Reg.t * Reg.t * t * t
     | CallCls of Reg.t * Reg.t list * Reg.t list
     | CallDir of Loc.t * Reg.t list * Reg.t list
-    | Restore of Loc.t
+    | Restore of Id.t
     | Save of Reg.t * Id.t
 type fundef = { name : label; args : Reg.t list; fargs : Reg.t list; body : t; ret : Type.t ; info: Info.t}
 (* プログラム全体 = 浮動小数点数テーブル + トップレベル関数 + メインの式 (caml2html: sparcasm_prog) *)
@@ -78,3 +78,11 @@ let rec concat e1 xt e2 =
   match e1 with
   | Ans(exp, info) -> Let(xt, exp, e2, info)
   | Let(yt, exp, e1', info) -> Let(yt, exp, concat e1' xt e2, info)
+let align i = (if i mod 8 = 0 then i else i + 4)
+
+let addr_to_param rd = function
+    | Relative (r, loc) -> [rd; r; Loc.to_string loc]
+    | Dynamic(r1, s4, r2) -> [rd; r1; Cmd.int_to_string s4; r2]
+    | Absolute(l1, l2_o) -> match l2_o with
+        None -> [rd; Loc.to_string l1]
+        | Some l2 -> [rd; Loc.to_string l1; Loc.to_string l2]
