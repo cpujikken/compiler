@@ -19,12 +19,13 @@ clean:: nobackup
 
 # ↓もし実装を改造したら、それに合わせて変える
 SOURCES = float.c common.ml info.ml cmd.ml type.ml id.ml stringSet.ml m.ml s.ml \
+		  loc.ml\
 		  reg.ml operand.ml operandSet.ml \
 		syntax.ml parser.mly lexer.mll typing.mli typing.ml kNormal.mli kNormal.ml \
 		m1.ml duplicateLet.ml \
 		alpha.mli alpha.ml beta.mli beta.ml assoc.mli assoc.ml \
 		inline.mli inline.ml constFold.mli constFold.ml elim.mli elim.ml \
-		closure.mli closure.ml asm.ml virtual.mli virtual.ml \
+		closure.mli closure.ml asmReg.ml asm.ml virtual.mli virtual.ml \
 		simm.mli simm.ml regAlloc.mli regAlloc.ml emit.mli emit.ml \
 		main.mli main.ml
 
@@ -52,10 +53,11 @@ test/%.cmp: test/%.res test/%.ans
 	diff $^ > $@
 
 min-caml.html: main.mli main.ml id.ml m.ml stringSet.ml s.ml \
+	loc.ml\
 		syntax.ml type.ml parser.mly lexer.mll typing.mli typing.ml kNormal.mli kNormal.ml \
 		alpha.mli alpha.ml beta.mli beta.ml assoc.mli assoc.ml \
 		inline.mli inline.ml constFold.mli constFold.ml elim.mli elim.ml \
-		closure.mli closure.ml asm.ml virtual.mli virtual.ml \
+		closure.mli closure.ml asmReg.ml asm.ml virtual.mli virtual.ml \
 		simm.mli simm.ml regAlloc.mli regAlloc.ml emit.mli emit.ml info.ml \
 		duplicateLet.ml common.ml m1.ml cmd.ml operand.ml operandSet.ml reg.ml
 	./to_sparc

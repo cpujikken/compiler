@@ -6,34 +6,51 @@ open Reg
 (* [XXX] Callがあったら、そこから先は無意味というか逆効果なので追わない。
          そのために「Callがあったかどうか」を返り値の第1要素に含める。 *)
 let rec target' src (dest, t) = function
-    | Mov(x) when x = src && is_reg dest ->
+    | Add(Reg reg_zero, reg2) when reg2 = src ->
+        (match dest with
+        | Reg dest_reg ->
+            (
             (
                 match t with
-            | Type.Unit _ -> assert false
-            | Type.Float _ -> assert false
-              | _ -> ()
-              );
+                | Type.Unit _ -> failwith "invalid type when allocating register"
+                | Type.Float _ -> failwith "invalid type when allocating register"
+                | _ -> ()
+            );
 
-      false, [dest]
-              | FMovD(x) when x = src && is_reg dest ->
-                      (match t with
-          | Type.Float _ -> ()
-          | _ -> assert false
-          );
-      false, [dest]
-          | IfEq(_, _, e1, e2) | IfLE(_, _, e1, e2) | IfGE(_, _, e1, e2)
-          | IfFEq(_, _, e1, e2) | IfFLE(_, _, e1, e2) ->
-                  let c1, rs1 = target src (dest, t) e1 in
-                  let c2, rs2 = target src (dest, t) e2 in
-                  c1 && c2, rs1 @ rs2
-          | CallCls(x, ys, zs) ->
-                  true, (target_args src regs 0 ys @
-         target_args src fregs 0 zs @
+              false, [dest_reg]
+            )
+        |_ -> false, []
+        )
+
+    | FAdd(Reg reg_zero, reg) when reg = src ->
+        (
+            match dest with
+            | Reg dest_reg ->(
+                  (match t with
+                  | Type.Float _ -> ()
+                  | _ -> failwith "invalid type when allocating register"
+                  );
+              false, [dest_reg]
+            )
+            | _ -> false, []
+        )
+    | IfEQ(_, _, e1, e2)
+    | IfLT(_, _, e1, e2)
+    | FIfEQ(_, _, e1, e2)
+    | FIfLT(_, _, e1, e2)
+    ->
+          let c1, rs1 = target src (dest, t) e1 in
+          let c2, rs2 = target src (dest, t) e2 in
+          c1 && c2, rs1 @ rs2
+    | CallCls(x, ys, zs) ->
+          true, (target_args src regs 0 ys @
+             target_args src fregs 0 zs @
              if x = src then [reg_cl] else [])
-          | CallDir(_, ys, zs) ->
-                  true, (target_args src regs 0 ys @
-         target_args src fregs 0 zs)
-          | _ -> false, []
+    | CallDir(_, ys, zs) ->
+          true, (target_args src regs 0 ys @
+            target_args src fregs 0 zs)
+    | _ -> false, []
+
       and target src dest = function (* register targeting (caml2html: regalloc_target) *)
           | Ans(exp, info) -> target' src dest exp
   | Let(xt, exp, e, info) ->
@@ -88,8 +105,8 @@ and source' t = function
     | CallDir _
     ->( match t with
         | Type.Unit _ -> []
-        | Type.Float _ -> [fregs.(0)]
-        | _ -> [regs.(0)]
+        | Type.Float _ -> [Reg fregs.(0)]
+        | _ -> [Reg regs.(0)]
     )
     | _ -> []
 
@@ -121,7 +138,7 @@ let rec alloc cont regenv var var_type prefer =
         match var with
         | Reg reg -> Alloc(reg)
         | ID id ->
-            let free = fv cont
+            let free = get_free_vars cont
             in
                 try
                     (*list of beging used regs*)
@@ -168,25 +185,31 @@ let add x r regenv =
 
         (* auxiliary functions for generate' *)
 exception NoReg of Id.t * Type.t * Info.t
+
+(*find a register which operand x is bound to
+ * or return the register if it is already a register itself
+ * *)
 let find x t regenv =
     match x with
-    | Reg _ -> x
+    | Reg reg -> reg
     | ID id ->
             try
                 M.find id regenv
-    with Not_found -> raise (NoReg(id, t, Type.get_info t))
+            with Not_found -> raise (NoReg(id, t, Type.get_info t))
 
-let find' x' regenv info =
-    match x' with
-  | V(x) -> V(find x (Type.Int info) regenv info)
-  | c -> c
+(*let find' x' regenv info =*)
+    (*match x' with*)
+  (*| V(x) -> V(find x (Type.Int info) regenv info)*)
+  (*| c -> c*)
 
 let rec generate dest cont regenv = function (* 命令列のレジスタ割り当て (caml2html: regalloc_g) *)
     | Ans(exp, info) -> generate'_and_restore dest cont regenv exp info
     | Let((let_var, var_type) as id_type, let_exp, body_exp, info) ->
+        (
             match let_var with
             | ID id -> if M.mem id regenv then () else Info.exit info "let variable is not bound"
             | _ -> ()
+        )
             ;
       let cont' = concat body_exp dest cont in
       let (e1', regenv1) = generate'_and_restore id_type cont' regenv let_exp info in
@@ -194,16 +217,16 @@ let rec generate dest cont regenv = function (* 命令列のレジスタ割り当て (caml2h
       let sources = source var_type e1' in
       (* レジスタ間のmovよりメモリを介するswapのほうが問題なので、sourcesよりtargetsを優先 *)
       (match alloc cont' regenv1 let_var var_type (targets @ sources) with
-          | Spill(id) ->
+          | Spill id ->
                   let r = M.find id regenv1 in
                   let (e2', regenv2) = generate dest cont (add let_var r (M.remove id regenv1)) body_exp in
                   let save =
-                      try Save(M.find id regenv, id)
-                      with Not_found -> Nop in
+                      try AsmReg.Save(M.find id regenv, id)
+                      with Not_found -> AsmReg.Nop in
                   (seq(save, concat e1' (r, var_type) e2', info), regenv2)
           | Alloc(reg) ->
                   let (e2', regenv2) = generate dest cont (add let_var reg regenv1) body_exp in
-                  concat e1' (ID reg, var_type) e2', regenv2
+                  concat e1' (reg, var_type) e2', regenv2
       )
 and generate'_and_restore dest cont regenv exp info = (* 使用される変数をスタックからレジスタへRestore (caml2html: regalloc_unspill) *)
   try generate' dest cont regenv info exp
@@ -221,9 +244,9 @@ and generate' dest cont regenv info exp = (* 各命令のレジスタ割り当て (caml2html
         find reg (Type.Float info) regenv
           in
     let addr_finder = function
-        | Relative(reg, loc) -> Relative(reg_finder reg, loc)
-        | Dynamic(reg1, s4, reg2) -> Dynamic(reg_finder reg1, s4, reg_finder reg2)
-        | other -> other
+        | Relative(reg, loc) -> AsmReg.Relative(reg_finder reg, loc)
+        | Dynamic(reg1, s4, reg2) -> AsmReg.Dynamic(reg_finder reg1, s4, reg_finder reg2)
+        | Absolute (u, v) -> AsmReg.Absolute (u, v)
     in
     match exp with
     | Nop
@@ -233,27 +256,26 @@ and generate' dest cont regenv info exp = (* 各命令のレジスタ割り当て (caml2html
     | JLink _
     | Link
     | Pop
-    | Out
-    ->
-        Ans(exp, info), regenv
-        | Addi(reg, loc) ->
-                Ans(Addi (reg_finder reg, loc), info), regenv
+    | Out ->
+        AsmReg.Ans(exp, info), regenv
+    | Addi(reg, loc) ->
+            AsmReg.Ans(AsmReg.Addi (reg_finder reg, loc), info), regenv
 
-        | Add (reg1, reg2) ->
-                Ans(Add(
-                    reg_finder reg1,
-                reg_finder reg2
-        ), info), regenv
-        | Sub (reg1, reg2) ->
-                Ans(Sub(
-                    reg_finder reg1,
-                reg_finder reg2
-        ), info), regenv
-        | ShiftL (reg, b5) ->
-                Ans(ShiftL(reg_finder reg, b5), info), regenv
-        | ShiftR (reg, b5) ->
-                Ans(ShiftR(reg_finder reg, b5), info), regenv
-        | Load addr -> Ans( Load(addr_finder addr), info), regenv
+    | Add (reg1, reg2) ->
+            Ans(Add(
+                reg_finder reg1,
+            reg_finder reg2
+    ), info), regenv
+    | Sub (reg1, reg2) ->
+            Ans(Sub(
+                reg_finder reg1,
+            reg_finder reg2
+    ), info), regenv
+    | ShiftL (reg, b5) ->
+            Ans(ShiftL(reg_finder reg, b5), info), regenv
+    | ShiftR (reg, b5) ->
+            Ans(ShiftR(reg_finder reg, b5), info), regenv
+    | Load addr -> Ans( Load(addr_finder addr), info), regenv
     | FLoad addr -> Ans( FLoad(addr_finder addr), info), regenv
     | Store (reg, addr) -> Ans(Store(reg_finder reg, addr_finder addr), info), regenv
     | FStore (reg, addr) -> Ans(FStore(reg_finder reg, addr_finder addr), info), regenv
@@ -303,23 +325,30 @@ and generate' dest cont regenv info exp = (* 各命令のレジスタ割り当て (caml2html
                         M.add id r1 regenv'
               with Not_found -> regenv')
       M.empty
-      (fv cont) in
-            (List.fold_left
-     (fun e x ->
-         if x = fst dest || not (M.mem x regenv) || M.mem x regenv' then e else
-             seq(Save(M.find x regenv, x), e, info)) (* そうでない変数は分岐直前にセーブ *)
-            (Ans(constr e1' e2', info))
-            (fv cont),
-   regenv')
+      (get_free_vars cont)
+      in
+        (
+            List.fold_left
+                 (fun e x ->
+                     if x = fst dest || not (M.mem x regenv) || M.mem x regenv' then
+                         e
+                     else
+                         seq(Save(M.find x regenv, x), e, info)
+                 ) (* そうでない変数は分岐直前にセーブ *)
+                 (Ans(constr e1' e2', info))
+                 (get_free_vars cont)
+            ,
+           regenv'
+        )
 and generate'_call dest cont regenv exp constr ys zs info = (* 関数呼び出しのレジスタ割り当て (caml2html: regalloc_call) *)
     (List.fold_left
      (fun e x ->
          if x = fst dest || not (M.mem x regenv) then e else
              seq(Save(M.find x regenv, x), e, info))
      (Ans(constr
-        (List.map (fun y -> find y (Type.Int info) regenv info) ys)
-        (List.map (fun z -> find z (Type.Float info) regenv info) zs), info))
-     (fv cont),
+        (List.map (fun y -> find y (Type.Int info) regenv) ys)
+        (List.map (fun z -> find z (Type.Float info) regenv) zs), info))
+     (get_free_vars cont),
    M.empty)
 
     (*assign register for func*)
@@ -357,16 +386,16 @@ let process_def { name = (Label def_name_s) as def_name; args = args; fargs = fl
         float_args
     in
     let a = match t with
-        | Type.Unit info -> ID (Id.gentmp (Type.Unit info) info)
+        | Type.Unit info -> reg_zero
         | Type.Float info -> fregs.(0)
         | _ -> regs.(0)
     in
     let info = Asm.get_info body
     in
     let (body', regenv') =
-        generate (a, t) (Ans(Add(reg_zero, a), info)) regenv body
+        generate (Reg a, t) (Ans(Add(Reg reg_zero, Reg a), info)) regenv body
     in
-        { name = def_name; args = arg_regs; fargs = farg_regs; body = body'; ret = t; info = info }
+        { AsmReg.name = def_name; AsmReg.args =  arg_regs; AsmReg.fargs = farg_regs; AsmReg.body = body'; AsmReg.ret = t; AsmReg.info = info }
 
 (*assign register*)
 let f (Prog(idata, data, fundefs, e)) = (* プログラム全体のレジスタ割り当て (caml2html: regalloc_f) *)
@@ -374,4 +403,4 @@ Format.eprintf "register allocation: may take some time (up to a few minutes, de
   let fundefs' = List.map process_def fundefs in
   let info = Asm.get_info e in
   let e', regenv' = generate (ID (Id.gentmp (Type.Unit info) info), Type.Unit info) (Ans(Nop, info)) M.empty e in
-  Prog(idata, data, fundefs', e')
+  AsmReg.Prog(idata, data, fundefs', e')

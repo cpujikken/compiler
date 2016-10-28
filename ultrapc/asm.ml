@@ -1,6 +1,6 @@
 open Operand
+open Loc
 (* 2オペランドではなく3オペランドのx86アセンブリもどき *)
-type label_or_const = Label of string | Constant of int
 type bits5 = int
 type addr26 = int
 type off26 = int
@@ -12,11 +12,11 @@ type size4 = int
 
 type addr =
     (*relative address from a reg*)
-    Relative of Operand.t * label_or_const
+    Relative of Operand.t * Loc.t
     (*(r1, s4, r2): relative address
      * of offset r2 * s4 from r1*)
 | Dynamic of Operand.t * size4 * Operand.t
-| Absolute of label_or_const * label_or_const option
+| Absolute of Loc.t * Loc.t option
 
 let loi_to_string = function
 	| Label label -> "$" ^ label
@@ -29,7 +29,7 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *)
     | Nop
     | Add of Operand.t * Operand.t
     | Sub of Operand.t * Operand.t
-    | Addi of  Operand.t * label_or_const
+    | Addi of  Operand.t * Loc.t
     | ShiftL of  Operand.t * bits5
     | ShiftR of Operand.t * bits5
     | Jump of addr26
@@ -58,9 +58,10 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *)
     | IfLT of Operand.t * Operand.t * t * t
     | FIfLT of Operand.t * Operand.t * t * t
     | CallCls of Operand.t * Operand.t list * Operand.t list
-    | CallDir of label_or_const * Operand.t list * Operand.t list
-    | Restore of label_or_const
-type fundef = { name : label_or_const; args : Operand.t list; fargs : Operand.t list; body : t; ret : Type.t ; info: Info.t}
+    | CallDir of Loc.t * Operand.t list * Operand.t list
+    | Restore of Loc.t
+    | Save of Operand.t
+type fundef = { name : Loc.t; args : Operand.t list; fargs : Operand.t list; body : t; ret : Type.t ; info: Info.t}
 (* プログラム全体 = 浮動小数点数テーブル + トップレベル関数 + メインの式 (caml2html: sparcasm_prog) *)
 type prog = Prog of (Id.l * int) list * (Id.l * float) list * fundef list * t
 
@@ -98,6 +99,7 @@ let rec fv_exp = function
     | FLoad (Absolute _)
     | JLink _
     | Restore _
+    | Save _
         -> []
 
     | Add (a, b)
@@ -132,18 +134,18 @@ let rec fv_exp = function
     | FIfEQ(u, v, e1, e2)
     | IfLT(u, v, e1, e2)
     | FIfLT(u, v, e1, e2)
-    -> u :: v :: remove_dup OperandSet.empty (fv e1 @ fv e2)
+    -> u :: v :: remove_dup OperandSet.empty (get_free_vars e1 @ get_free_vars e2)
 
     | CallCls (x, ys, zs)
     -> x :: ys @ zs
     | CallDir(_, ys, zs)
     -> ys @ zs
 
-and fv = function
+and get_free_vars = function
   | Ans(exp, info) -> fv_exp exp
   | Let((x, t), exp, e, info) ->
-      fv_exp exp @ remove_dup (OperandSet.singleton x) (fv e)
-let fv e = remove_dup OperandSet.empty (fv e)
+      fv_exp exp @ remove_dup (OperandSet.singleton x) (get_free_vars e)
+let get_free_vars e = remove_dup OperandSet.empty (get_free_vars e)
 
 let rec concat e1 xt e2 =
   match e1 with

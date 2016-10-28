@@ -277,7 +277,7 @@ let h oc { name = Id.L(x, _); args = _; fargs = _; body = e; ret = _ } =
   g (Tail, e)
 
 (* type prog = Prog of (Id.l * float) list * fundef list * t *)
-let f (Prog(idata, data, fundefs, e)) =
+let f (Prog_reg(idata, data, fundefs, e)) =
   Format.eprintf "generating assembly...@.";
 
     (*.start label: starting point*)

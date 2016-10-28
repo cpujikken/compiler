@@ -3,6 +3,7 @@
 open Operand
 open Asm
 open Reg
+open Loc
 
 let data = ref [] (* 浮動小数点数の定数テーブル (caml2html: virtual_data) *)
 let idata = ref [] (*list of big int value - bigger than 16bit*)
@@ -116,12 +117,12 @@ let rec generate env = function (* 式の仮想マシンコード生成 (caml2html: virtual_
   let let_body' = generate (M.add start t env) let_body
   in
   let offset, store_fv =
-	expand
-	  (List.map (fun y -> (y, M.find y env)) external_variable)
+    expand
+      (List.map (fun y -> (y, M.find y env)) external_variable)
       (*open a free space of 4 bytes*)
-	  (4, let_body')
-	  (fun var offset store_fv -> seq(FStore(ID var, Relative(ID start, Constant offset)), store_fv, info))
-	  (fun var _ offset store_fv -> seq(Store(ID var, Relative(ID start, Constant offset)), store_fv, info)) in
+      (4, let_body')
+      (fun var offset store_fv -> seq(FStore(ID var, Relative(ID start, Constant offset)), store_fv, info))
+      (fun var _ offset store_fv -> seq(Store(ID var, Relative(ID start, Constant offset)), store_fv, info)) in
       Let(
           (ID start, t),
           (*move heap pointer to start variable*)
@@ -235,7 +236,7 @@ let rec generate env = function (* 式の仮想マシンコード生成 (caml2html: virtual_
 (* 関数の仮想マシンコード生成 (caml2html: virtual_h) *)
 let fun_converter { Closure.name = (x , t); Closure.args = yts; Closure.formal_fv = zts; Closure.body = e; Closure.info = info } =
     let info = Closure.get_info e in
-  let (int, float) = separate yts in
+  let (ints, floats) = separate yts in
   let (offset, load) =
     expand
       zts
@@ -245,7 +246,7 @@ let fun_converter { Closure.name = (x , t); Closure.args = yts; Closure.formal_f
   in
   match t with
   | Type.Fun(_, t2, _) ->
-          { name = Label (fst x); args = int; fargs = float; body = load; ret = t2 ; info = info}
+          { name = Label (fst x); args = ints; fargs = floats; body = load; ret = t2 ; info = info}
   | _ -> Info.exit info "Cannot apply non-function type"
 
 (* プログラム全体の仮想マシンコード生成 (caml2html: virtual_f) *)
