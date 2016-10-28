@@ -207,7 +207,7 @@ let rec generate dest cont regenv = function (* 命令列のレジスタ割り当て (caml2h
     | Let((let_var, var_type) as id_type, let_exp, body_exp, info) ->
         (
             match let_var with
-            | ID id -> if M.mem id regenv then () else Info.exit info "let variable is not bound"
+            | ID id -> if M.mem id regenv then Info.exit info "let variable is already bound" else ()
             | _ -> ()
         )
             ;
