@@ -45,8 +45,8 @@ let rec generate env = function (* 式の仮想マシンコード生成 (caml2html: virtual_
   | Closure.Unit info -> Ans(Nop, info)
   (*int*)
   | Closure.Int(i, info) ->
-      if Pervasives.abs i < (1 lsl 15) then
-          Ans(Addi(Reg reg_zero, Constant i), info)
+      if Pervasives.abs i < (1 lsl (Asm.imm_length - 1)) then
+          Ans(MoveImm(Constant i), info)
       else
       let l =
         try
@@ -74,13 +74,13 @@ let rec generate env = function (* 式の仮想マシンコード生成 (caml2html: virtual_
         Ans(FLoad(Absolute (Label l, None)), info)
         (*negative*)
   | Closure.Neg(x, info) ->
-          Ans(Sub(Reg reg_zero, ID x), info)
+          Ans(Neg(ID x), info)
   | Closure.Add(x, y, info) ->
           Ans(Add(ID x, ID y), info)
   | Closure.Sub(x, y, info) ->
           Ans(Sub(ID x, ID y), info)
   | Closure.FNeg(x, info) ->
-          Ans(FSub(Reg reg_zero, ID x), info)
+          Ans(FNeg(ID x), info)
   | Closure.FAdd(x, y, info) ->
           Ans(FAdd(ID x, ID y), info)
   | Closure.FSub(x, y, info) ->
@@ -126,7 +126,7 @@ let rec generate env = function (* 式の仮想マシンコード生成 (caml2html: virtual_
       Let(
           (ID start, t),
           (*move heap pointer to start variable*)
-          Add(Reg reg_zero, Reg reg_hp),
+          Move(Reg reg_hp),
           Let(
               (*increase heap pointer*)
               (Reg reg_hp, Type.Int info),
@@ -138,7 +138,7 @@ let rec generate env = function (* 式の仮想マシンコード生成 (caml2html: virtual_
               in
               Let(
                   (new_var, Type.Int info),
-                  Addi(Reg reg_zero, Label (fst entry)),
+                  MoveImm( Label (fst entry)),
                   seq(
                       Store(new_var, Absolute(Label (fst start), None)),
                       store_fv,
@@ -170,7 +170,7 @@ let rec generate env = function (* 式の仮想マシンコード生成 (caml2html: virtual_
         (*gen id-type list*)
           (List.map (fun x -> (x, M.find x env)) id_list)
           (*last instruction is to move the result (tuple) to somewhere it is used*)
-          (0, Ans(Add(Reg reg_zero, tuple), info))
+          (0, Ans(Move( tuple), info))
           (*float handler*)
           (*store ID take from current being scanned element to the memory at offset from tuple*)
           (fun x offset store -> seq(FStore(ID x, Relative(tuple, Constant offset)), store, info))
@@ -181,7 +181,7 @@ let rec generate env = function (* 式の仮想マシンコード生成 (caml2html: virtual_
           Let(
               (*firstly, move heap pointer to tuple variable*)
               (tuple, Type.Tuple(List.map (fun x -> M.find x env) id_list, info)),
-              Add(Reg reg_zero, Reg reg_hp),
+              Move( Reg reg_hp),
               (*after that, increase heap pointer to make space*)
               Let(
                   (Reg reg_hp, Type.Int info),

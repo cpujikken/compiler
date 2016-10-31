@@ -33,11 +33,13 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *)
     | Addi of  Reg.t * Loc.t
     | ShiftL of  Reg.t * bits5
     | ShiftR of Reg.t * bits5
-    | Jump of addr26
-    | JumpEQ of addr26
-    | JumpLT of addr26
     | Load of addr
     | Store of Reg.t * addr
+    | Neg of Reg.t
+    | FNeg of Reg.t
+    | Move of Reg.t
+    | FMove of Reg.t
+    | MoveImm of Loc.t
 
     | FAdd of Reg.t * Reg.t
     | FSub of Reg.t * Reg.t
@@ -68,7 +70,7 @@ type prog = Prog of (Id.l * int) list * (Id.l * float) list * fundef list * t
 
 let seq(e1, e2, info) =
     Let(
-        (reg_zero, Type.Unit info),
+        (reg_dump, Type.Unit info),
         e1,
         e2,
         info
@@ -80,9 +82,9 @@ let rec concat e1 xt e2 =
   | Let(yt, exp, e1', info) -> Let(yt, exp, concat e1' xt e2, info)
 let align i = (if i mod 8 = 0 then i else i + 4)
 
-let addr_to_param rd = function
-    | Relative (r, loc) -> [ rd; Cmd.int_to_string Cmd.addr_mode_relative; r; Loc.to_string loc]
-    | Dynamic(r1, s4, r2) -> [ rd;Cmd.int_to_string Cmd.addr_mode_dynamic; r1; Cmd.int_to_string s4; r2]
-    | Absolute(l1, l2_o) -> match l2_o with
-        None -> [rd; Cmd.int_to_string Cmd.addr_mode_absolute; Loc.to_string l1]
-        | Some l2 -> [rd; Cmd.int_to_string Cmd.addr_mode_absolute; Loc.to_string l1; Loc.to_string l2]
+(*let addr_to_param rd = function*)
+    (*| Relative (r, loc) -> [ rd; Cmd.int_to_string Cmd.addr_mode_relative; r; Loc.to_string loc]*)
+    (*| Dynamic(r1, s4, r2) -> [ rd;Cmd.int_to_string Cmd.addr_mode_dynamic; r1; Cmd.int_to_string s4; r2]*)
+    (*| Absolute(l1, l2_o) -> match l2_o with*)
+        (*None -> [rd; Cmd.int_to_string Cmd.addr_mode_absolute; Loc.to_string l1]*)
+        (*| Some l2 -> [rd; Cmd.int_to_string Cmd.addr_mode_absolute; Loc.to_string l1; Loc.to_string l2]*)

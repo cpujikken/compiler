@@ -65,31 +65,57 @@ and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
     | NonTail _, Nop -> ()
 
     | NonTail rd, Add (ra, rb) ->
-        if rd = ra && rb = reg_zero || rd = rb && ra = reg_zero then
-            ()
-        else
-            append_cmd cmd_add [rd; ra; rb] info
+        append_cmd cmd_add [rd; ra; rb] info
     | NonTail rd, Sub (ra, rb) ->
-            if rb = reg_zero  && rd = ra then
-                ()
-            else
-                append_cmd cmd_sub [rd; ra; rb] info
+        append_cmd cmd_sub [rd; ra; rb] info
+    | NonTail rd, Addi (ra, Constant c) when rd = ra && c = 1->
+            append_cmd cmd_inc [rd] info
+    | NonTail rd, Addi (ra, Constant c) when rd = ra && c = -1->
+            append_cmd cmd_dec [rd] info
+    | NonTail rd, Addi (ra, Constant c) when c = 0 ->
+            g' info (NonTail rd, Move ra);
+    | NonTail rd, Move (rs) when rd = rs->
+            ()
+    | NonTail rd, Move (rs) ->
+            append_cmd cmd_move [rd; rs] info
+    | NonTail rd, MoveImm (Constant c) when c = 0 ->
+            append_cmd cmd_xor [rd; rd; rd] info
+    | NonTail rd, MoveImm loc ->
+            append_cmd cmd_moveImm [rd; Loc.to_string loc] info
     | NonTail rd, Addi (ra, loc) ->
         append_cmd cmd_addi  [rd; ra; Loc.to_string loc] info
+    | NonTail rd, Neg(ra) when ra = rd->
+                append_cmd cmd_neg1 [ra] info
+    | NonTail rd, Neg(ra) ->
+                append_cmd cmd_neg2 [rd; ra] info
+    | NonTail rd, FNeg(rs) when rd = rs ->
+                append_cmd cmd_fNeg1 [rd] info
+    | NonTail rd, FMove rs when rd = rs ->
+            ()
+    | NonTail rd, FMove rs ->
+            append_cmd cmd_fMove [rd; rs] info
+    | NonTail rd, FNeg(rs) ->
+                append_cmd cmd_fNeg2 [rd; rs] info
     | NonTail rd, ShiftL (r, b5) ->
             append_cmd cmd_shiftL [rd; r; int_to_string b5] info
     |NonTail rd, ShiftR (r, b5) ->
             append_cmd cmd_shiftR [rd; r; int_to_string b5] info
-    | NonTail _, Jump addr26 ->
-            append_cmd cmd_jump [int_to_string addr26] info
-    | NonTail _, JumpEQ addr26 ->
-            append_cmd cmd_jumpEQ [int_to_string addr26] info
-    | NonTail _, JumpLT addr26 ->
-            append_cmd cmd_jumpLT [int_to_string addr26] info
-    | NonTail rd, Load addr ->
-            append_cmd cmd_load (addr_to_param rd addr) info
-    | NonTail _, Store (rd, addr)->
-            append_cmd cmd_store (addr_to_param rd addr) info
+    | NonTail rd, Load (Relative (r, loc)) ->
+         append_cmd cmd_loadRelative [rd; r; Loc.to_string loc] info
+    | NonTail rd, Load ( Dynamic(r1, s4, r2)) ->
+            append_cmd cmd_loadDynamic [rd; r1; Cmd.int_to_string s4; r2] info
+    | NonTail rd, Load ( Absolute (l1, None)) ->
+             append_cmd cmd_loadAbsolute [rd; Loc.to_string l1] info
+    | NonTail rd, Load ( Absolute (l1, Some l2)) ->
+            append_cmd cmd_loadAbsolute [rd; Loc.to_string l1; Loc.to_string l2] info
+    | NonTail _, Store (rd, Relative(r, loc)) ->
+            append_cmd cmd_storeRelative [rd; r; Loc.to_string loc] info
+    | NonTail _, Store (rd, Dynamic(r1, s4, r2)) ->
+            append_cmd cmd_storeDynamic [rd; r1; Cmd.int_to_string s4; r2] info
+    | NonTail _, Store (rd, Absolute (l1, None)) ->
+            append_cmd cmd_storeAbsolute [rd; Loc.to_string l1] info
+    | NonTail _, Store (rd, Absolute (l1, Some l2)) ->
+            append_cmd cmd_storeAbsolute [rd; Loc.to_string l1; Loc.to_string l2] info
     | NonTail rd, FAdd (ra, rb) ->
         append_cmd cmd_fAdd [rd; ra; rb] info
     | NonTail rd, FSub (ra, rb) ->
@@ -98,10 +124,22 @@ and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
         append_cmd cmd_fMul [rd; ra; rb] info
     | NonTail rd, FDiv (ra, rb) ->
         append_cmd cmd_fDiv [rd; ra; rb] info
-    | NonTail rd, FLoad addr ->
-            append_cmd cmd_fLoad (addr_to_param rd addr) info
-    | NonTail _, FStore (rd, addr) ->
-            append_cmd cmd_fStore (addr_to_param rd addr) info
+    | NonTail rd, FLoad (Relative(r, loc)) ->
+            append_cmd cmd_fLoadRelative [rd; r; Loc.to_string loc] info
+    | NonTail rd, FLoad (Dynamic(r1, s4, r2)) ->
+            append_cmd cmd_fLoadDynamic [rd; r1; Cmd.int_to_string s4; r2] info
+    | NonTail rd, FLoad (Absolute (l1, None ))->
+            append_cmd cmd_fLoadAbsolute [rd; Loc.to_string l1] info
+    | NonTail rd, FLoad (Absolute (l1, Some l2 ))->
+            append_cmd cmd_fLoadAbsolute [rd; Loc.to_string l1; Loc.to_string l2] info
+    | NonTail _, FStore (rd, Relative(r, loc)) ->
+            append_cmd cmd_fStoreRelative [rd; r; Loc.to_string loc] info
+    | NonTail _, FStore (rd, Dynamic(r1, s4, r2)) ->
+            append_cmd cmd_fStoreDynamic [rd; r1; Cmd.int_to_string s4; r2] info
+    | NonTail _, FStore (rd, Absolute (l1,None)) ->
+            append_cmd cmd_fStoreAbsolute [rd; Loc.to_string l1] info
+    | NonTail _, FStore (rd, Absolute (l1,Some l2)) -> 
+            append_cmd cmd_fStoreAbsolute [rd; Loc.to_string l1; Loc.to_string l2] info
     | NonTail _, JLink addr26 ->
             append_cmd cmd_jLink [int_to_string addr26] info
     | NonTail _, Link ->
@@ -132,23 +170,23 @@ and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
                 g' info (NonTail rd, FLoad (Relative (reg_sp, Constant (offset id))))
             else
                 failwith "invalid register for restore"
-    | Tail, (Nop | Add _ | Sub _ | Addi _ | ShiftL _ | ShiftR _ | JumpEQ _ | JumpLT _ | Load _ | Store _ | JLink _ | Link | Push _ | Pop | Out | Jump _ | Save _ as exp) ->
-            g' info (NonTail reg_zero, exp)
+    | Tail, (Nop | Add _ | Sub _ | Addi _ | ShiftL _ | ShiftR _ | Load _ | Store _ | JLink _ | Link | Push _ | Move _ | MoveImm _ | Neg _ | FNeg _ | Pop | Out | Save _ | FMove _ as exp) ->
+            g' info (NonTail reg_dump, exp)
     | Tail, (FMul _ | FSub _ | FDiv _ | FAdd _  | FLoad _ | FStore _ as exp )->
-            g' info (NonTail freg_zero, exp)
+            g' info (NonTail freg_dump, exp)
     | Tail, (Restore (id) as exp )->
             ((match locate id with
-            | [i] -> g' info (NonTail(reg_zero), exp)
-            | [i; j] when i + 1 = j -> g' info (NonTail (freg_zero), exp)
+            | [i] -> g' info (NonTail(reg_dump), exp)
+            | [i; j] when i + 1 = j -> g' info (NonTail (freg_dump), exp)
             | _ -> failwith "invalid register for restore"
             );
             append_cmd cmd_link [] info
             )
     | Tail, IfEQ(r1, r2, e1, e2) ->
-          append_cmd cmd_sub [reg_zero; r1; r2] info;
+          append_cmd cmd_xor [reg_dump; r1; r2] info;
           let b_eq = fst (Id.genid("if_eq", info))
           in
-            append_cmd cmd_jumpEQ [Cmd.label_to_string b_eq] info;
+            append_cmd cmd_jumpZero [Cmd.label_to_string b_eq] info;
             let stackset_backup = !stackset
             in
                 g (Tail, e2);
@@ -156,10 +194,10 @@ and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
                 stackset := stackset_backup;
                 g (Tail, e1);
     | Tail, IfLT(r1, r2, e1, e2) ->
-          append_cmd cmd_sub [reg_zero; r1; r2] info;
+          append_cmd cmd_cmp [reg_dump; r1; r2] info;
           let b_lt = fst (Id.genid("if_lt", info))
           in
-            append_cmd cmd_jumpLT [Cmd.label_to_string b_lt] info;
+            append_cmd cmd_jumpZero [Cmd.label_to_string b_lt] info;
             let stackset_backup = !stackset
             in
                 g (Tail, e2);
@@ -170,7 +208,7 @@ and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
             append_cmd cmd_fCmp [r1; r2; int_to_string 0] info;
           let b_eq = fst (Id.genid("if_eq", info))
           in
-            append_cmd cmd_fJumpEQ [Cmd.label_to_string b_eq] info;
+            append_cmd cmd_fJumpEqual [Cmd.label_to_string b_eq] info;
             let stackset_backup = !stackset
             in
                 g (Tail, e2);
@@ -189,12 +227,12 @@ and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
                 stackset := stackset_backup;
                 g (Tail, e1);
     | NonTail rd as dest, IfEQ(r1, r2, e1, e2) ->
-          append_cmd cmd_sub [reg_zero; r1; r2] info;
+          append_cmd cmd_xor [r1; r2] info;
           let b_eq = fst (Id.genid("if_eq", info))
           in
           let b_cont = fst (Id.genid("if_eq_cont", info))
           in
-            append_cmd cmd_jumpEQ [Cmd.label_to_string b_eq] info;
+            append_cmd cmd_jumpZero [Cmd.label_to_string b_eq] info;
             let stackset_backup = !stackset
             in
                 g (dest, e2);
@@ -212,12 +250,12 @@ and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
                     in
                     stackset := S.inter stackset1 stackset2;
     | NonTail rd as dest, IfLT(r1, r2, e1, e2) ->
-          append_cmd cmd_sub [reg_zero; r1; r2] info;
+          append_cmd cmd_cmp [r1; r2] info;
           let b_lt = fst (Id.genid("if_lt", info))
           in
           let b_cont = fst (Id.genid("if_lt_cont", info))
           in
-            append_cmd cmd_jumpEQ [Cmd.label_to_string b_lt] info;
+            append_cmd cmd_jumpZero [Cmd.label_to_string b_lt] info;
             let stackset_backup = !stackset
             in
                 g (dest, e2);
@@ -240,7 +278,7 @@ and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
           in
           let b_cont = fst (Id.genid("if_feq_cont", info))
           in
-            append_cmd cmd_jumpEQ [Cmd.label_to_string b_feq] info;
+            append_cmd cmd_fJumpEqual [Cmd.label_to_string b_feq] info;
             let stackset_backup = !stackset
             in
                 g (dest, e2);
@@ -263,7 +301,7 @@ and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
           in
           let b_cont = fst (Id.genid("if_flt_cont", info))
           in
-            append_cmd cmd_jumpEQ [Cmd.label_to_string b_flt] info;
+            append_cmd cmd_fJumpLT [Cmd.label_to_string b_flt] info;
             let stackset_backup = !stackset
             in
                 g (dest, e2);
@@ -293,19 +331,19 @@ and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
             in
             if ss > 0 then
                 (*increase stack*)
-                append_cmd cmd_addi [reg_sp; reg_zero; int_to_string ss] info;
+                g' info (NonTail reg_sp, Addi (reg_sp, Constant ss));
             (*jump and link to closure register*)
             append_cmd cmd_jLinkCls [] info;
             (*the subroutines will automatically jump back here*)
             if ss > 0 then
                 (*decrease stack*)
-                append_cmd cmd_addi [reg_sp; reg_zero; int_to_string (-ss)] info;
+                g' info (NonTail reg_sp, Addi (reg_sp, Constant (-ss)));
             (*returned value is set to reg_ret by convention*)
             if List.mem rd allregs && rd <> reg_ret then
-                append_cmd cmd_add [rd; reg_zero; reg_ret] info
+                g' info (NonTail rd, Move reg_ret)
             else
                 if List.mem rd allfregs && rd <> freg_ret then
-                    append_cmd cmd_fAdd [rd; freg_zero; freg_ret] info
+                    g' info (NonTail rd, Move freg_ret)
     | NonTail rd, CallDir(l, params, fparams) ->
             (*set param*)
             g'_args [] params fparams info;
@@ -313,18 +351,18 @@ and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
             in
             (*increase stack*)
             if ss > 0 then
-                append_cmd cmd_addi [reg_sp; reg_zero; int_to_string ss] info;
+                g' info (NonTail reg_sp, Addi(reg_sp, Constant ss));
             (*call*)
             append_cmd cmd_jLink [Loc.to_string l] info;
             (*resstore stack*)
             if ss > 0 then
-                append_cmd cmd_addi [reg_sp; reg_zero; int_to_string (-ss)] info;
+                g' info (NonTail reg_sp, Addi (reg_sp, Constant (-ss)));
             (*save returned value*)
             if List.mem rd allregs && rd <> reg_ret then
-                append_cmd cmd_add [rd; reg_zero; reg_ret] info
+                g' info (NonTail rd, Move reg_ret)
             else
                 if List.mem rd allfregs && rd <> freg_ret then
-                    append_cmd cmd_add [rd;freg_zero; freg_ret] info
+                    g' info (NonTail rd, FMove freg_ret)
 and g'_args x_reg_cl params fparams info =
     (*quick assertion*)
     if List.length params > Array.length regs - List.length x_reg_cl then
@@ -346,11 +384,11 @@ and g'_args x_reg_cl params fparams info =
     (fun (y, r) ->
         match y, r with
         | Go reg, Hide ->
-                append_cmd cmd_store [reg; int_to_string addr_mode_relative; int_to_string stacksize_backup; reg_sp] info
+                g' info (Tail , Store(reg, Relative (reg_sp, Constant stacksize_backup)))
         | Hide, Go reg ->
-                append_cmd cmd_load [reg; int_to_string addr_mode_relative; int_to_string stacksize_backup; reg_sp] info
+                g' info (NonTail reg, Load (Relative(reg_sp, Constant stacksize_backup)))
         | Go r1, Go r2 ->
-                append_cmd cmd_add [r1; reg_zero; r2] info
+                g' info (NonTail r1, Move r2)
         | _ -> ()
     )
     (shuffle (List.map (fun (x, y) -> Go x, Go y) param_regs));
@@ -364,11 +402,11 @@ and g'_args x_reg_cl params fparams info =
     (fun (y, fr) ->
         match y, fr with
         | Go reg, Hide ->
-                append_cmd cmd_fStore [reg; int_to_string addr_mode_relative; int_to_string stacksize_backup; reg_sp] info
+                g' info (Tail , FStore(reg, Relative (reg_sp, Constant stacksize_backup)))
         | Hide, Go reg ->
-                append_cmd cmd_fLoad [reg; int_to_string addr_mode_relative; int_to_string stacksize_backup; reg_sp] info
+                g' info (NonTail reg, FLoad (Relative(reg_sp, Constant stacksize_backup)))
         | Go r1, Go r2 ->
-                append_cmd cmd_fAdd [r1; reg_zero; r2] info
+                g' info (NonTail r1, FMove r2)
         | _ -> ()
     )
     (shuffle (List.map (fun (x, y) -> Go x, Go y)  param_fregs))

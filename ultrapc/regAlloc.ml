@@ -252,14 +252,11 @@ and generate' dest cont regenv info exp = (* ³ÆÌ¿Îá¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html
     | Nop
     -> AsmReg.Ans(AsmReg.Nop, info), regenv
 
-    | Jump x
-    -> AsmReg.Ans(AsmReg.Jump x, info), regenv
-    (*| FJump(x, r2, c3) -> AsmReg.Ans(AsmReg.FJump(x, r2, c3), info), regenv*)
 
-    | JumpEQ x
-    -> AsmReg.Ans(AsmReg.JumpEQ x, info), regenv
-    | JumpLT x
-    -> AsmReg.Ans(AsmReg.JumpLT x, info), regenv
+    | Neg r -> AsmReg.Ans(AsmReg.Neg (reg_finder r), info), regenv
+    | FNeg r -> AsmReg.Ans(AsmReg.FNeg (reg_finder r), info), regenv
+    | Move r -> AsmReg.Ans(AsmReg.Move (reg_finder r), info), regenv
+    | MoveImm loc -> AsmReg.Ans(AsmReg.MoveImm loc, info), regenv
     | JLink x
     -> AsmReg.Ans(AsmReg.JLink x, info), regenv
     | Link
@@ -376,7 +373,7 @@ and generate'_call dest cont regenv exp constr ys zs info = (* ´Ø¿ô¸Æ¤Ó½Ð¤·¤Î¥ì¥
    M.empty)
 
     (*assign register for func*)
-let process_def { Asm.name = def_name; Asm.args = args; Asm.fargs = float_args; Asm.body = body; Asm.ret = t ; Asm.info = info} = (* ´Ø¿ô¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: regalloc_h) *)
+let process_def { Asm.name = def_name; Asm.args = args; Asm.fargs = float_args; Asm.body = body; Asm.ret = return_type ; Asm.info = info} = (* ´Ø¿ô¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: regalloc_h) *)
     let regenv = M.add (def_name, info) reg_cl M.empty
     in
     let (i, arg_regs, regenv) =
@@ -409,17 +406,17 @@ let process_def { Asm.name = def_name; Asm.args = args; Asm.fargs = float_args; 
         (0, [], regenv)
         float_args
     in
-    let a = match t with
-        | Type.Unit info -> reg_zero
-        | Type.Float info -> fregs.(0)
+    let return_reg = match return_type with
+        | Type.Unit info -> reg_ret
+        | Type.Float info -> freg_ret
         | _ -> regs.(0)
     in
     let info = Asm.get_info body
     in
     let (body', regenv') =
-        generate (Reg a, t) (Ans(Add(Reg reg_zero, Reg a), info)) regenv body
+        generate (Reg return_reg, return_type) (Ans(Move(Reg return_reg), info)) regenv body
     in
-        { AsmReg.name = def_name; AsmReg.args =  arg_regs; AsmReg.fargs = farg_regs; AsmReg.body = body'; AsmReg.ret = t; AsmReg.info = info }
+        { AsmReg.name = def_name; AsmReg.args =  arg_regs; AsmReg.fargs = farg_regs; AsmReg.body = body'; AsmReg.ret = return_type; AsmReg.info = info }
 
 (*assign register*)
 let f (Prog(idata, data, fundefs, e)) = (* ¥×¥í¥°¥é¥àÁ´ÂÎ¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: regalloc_f) *)

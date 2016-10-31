@@ -33,18 +33,15 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *)
     | Addi of  Operand.t * Loc.t
     | ShiftL of  Operand.t * bits5
     | ShiftR of Operand.t * bits5
-    | Jump of addr26
-    | JumpEQ of addr26
-    | JumpLT of addr26
     | Load of addr
     | Store of Operand.t * addr
+    | Neg of Operand.t
+    | FNeg of Operand.t
 
     | FAdd of Operand.t * Operand.t
     | FSub of Operand.t * Operand.t
     | FMul of Operand.t * Operand.t
     | FDiv of Operand.t * Operand.t
-    (*| FCmp of Operand.t * Operand.t * const3*)
-    (*| FJump of addr26 * ret2 * const3*)
     | FLoad of addr
     | FStore of Operand.t * addr
 
@@ -53,6 +50,9 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *)
     | Push of Operand.t
     | Pop
     | Out
+
+    | MoveImm of Loc.t
+    | Move of Operand.t
 
     | IfEQ of Operand.t * Operand.t * t * t
     | FIfEQ of Operand.t * Operand.t *t * t
@@ -89,10 +89,6 @@ let rec remove_dup xs = function
 (* free variables in the order of use (for spilling) (caml2html: sparcasm_fv) *)
 let rec fv_exp = function
     | Nop
-    | Jump _
-    (*| FJump _*)
-    | JumpEQ _
-    | JumpLT _
     | Link
     | Pop
     | Out
@@ -100,6 +96,7 @@ let rec fv_exp = function
     | FLoad (Absolute _)
     | JLink _
     | Restore _
+    | MoveImm _
         -> []
 
     | Add (a, b)
@@ -115,6 +112,7 @@ let rec fv_exp = function
     (*| FCmp(a, b, _)*)
         -> [a; b]
 
+      | Move r
     | Addi (r, _)
     | ShiftL (r, _)
     | ShiftR (r, _)
@@ -123,6 +121,8 @@ let rec fv_exp = function
     | Store(r, Absolute _)
     | FStore(r, Absolute _)
     | Push r
+    | Neg r
+    | FNeg r
         ->  [r]
 
     | Store(r1, Dynamic(r2, _, r3))
@@ -158,3 +158,4 @@ let get_info = function
 
 let int_size = 4
 let float_size = 4
+let imm_length = 21
