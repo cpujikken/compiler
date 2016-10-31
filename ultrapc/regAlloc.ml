@@ -312,11 +312,18 @@ and generate' dest cont regenv info exp = (* 各命令のレジスタ割り当て (caml2html
             generate'_if dest cont regenv exp (fun e1' e2' ->
                 AsmReg.FIfLT(freg_finder reg1, freg_finder reg2, e1', e2')
                 ) e1 e2 info
-    | CallCls(reg, reg_list1, reg_list2) ->
-            generate'_call dest cont regenv exp (fun ys zs ->
-                AsmReg.CallCls(reg_finder reg, ys, zs)) reg_list1 reg_list2 info
-    | CallDir (loc, reg_list1, reg_list2) ->
-            generate'_call dest cont regenv exp (fun ys zs -> AsmReg.CallDir(loc, ys, zs)) reg_list1 reg_list2 info
+    | CallCls(reg, int_params, float_params) ->
+            if List.length int_params > Array.length regs - 1 || List.length float_params > Array.length fregs - 1 then
+                Info.exit info "not enough registers to pass parameters to function"
+            else
+                generate'_call dest cont regenv exp (fun ys zs ->
+                    AsmReg.CallCls(reg_finder reg, ys, zs)) int_params float_params info
+    | CallDir (loc, int_params, float_params) ->
+            if List.length int_params > Array.length regs - 1 || List.length float_params > Array.length fregs - 1 then
+                Info.exit info "not enough registers to pass parameters to function"
+            else
+                generate'_call dest cont regenv exp (fun ys zs -> AsmReg.CallDir(loc, ys, zs)) int_params float_params info
+
 and generate'_if dest cont regenv exp constr e1 e2 info = (* ifのレジスタ割り当て (caml2html: regalloc_if) *)
     let (e1', regenv1) = generate dest cont regenv e1 in
     let (e2', regenv2) = generate dest cont regenv e2 in
