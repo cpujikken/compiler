@@ -77,7 +77,7 @@ rule token = parse
     { COMMA }
 | '_'
     { IDENT(Id.gentmp (Type.Unit (Info.lex_get lexbuf)) (Info.lex_get lexbuf)) }
-| "Array.create" (* [XX] ad hoc *)
+| "Array.make" (* [XX] ad hoc *)
     { ARRAY_CREATE }
 | "create_array" (* [XX] ad hoc *)
     { ARRAY_CREATE }
