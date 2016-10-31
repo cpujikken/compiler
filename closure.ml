@@ -4,6 +4,8 @@ type t = (* クロージャ変換後の式 (caml2html: closure_t) *)
   | Int of int * Info.t
   | Float of float * Info.t
   | Neg of Id.t * Info.t
+  | Four of Id.t * Info.t
+  | Half of Id.t * Info.t
   | Add of Id.t * Id.t * Info.t
   | Sub of Id.t * Id.t * Info.t
   | FNeg of Id.t * Info.t
@@ -32,7 +34,10 @@ type prog = Prog of fundef list * t
 
 let rec fv = function
   | Unit _ | Int(_) | Float(_) | ExtArray(_) -> S.empty
-  | Neg(x, info) | FNeg(x, info) -> S.singleton x
+  | Neg(x, info)
+  | Four(x, info)
+  | Half(x, info)
+  | FNeg(x, info) -> S.singleton x
   | Add(x, y, info) | Sub(x, y, info) | FAdd(x, y, info) | FSub(x, y, info) | FMul(x, y, info) | FDiv(x, y, info) | Get(x, y, info) -> S.of_list [x; y]
   | IfEq(x, y, e1, e2, info)| IfLE(x, y, e1, e2, info) -> S.add x (S.add y (S.union (fv e1) (fv e2)))
   | Let((x, t), e1, e2, info) -> S.union (fv e1) (S.remove x (fv e2))
@@ -53,6 +58,8 @@ let rec g env known = function (* クロージャ変換ルーチン本体 (caml2html: closure
   | KNormal.Int(i, info) -> Int(i, info)
   | KNormal.Float(d, info) -> Float(d, info)
   | KNormal.Neg(x, info) -> Neg(x, info)
+  | KNormal.Four(x, info) -> Four(x, info)
+  | KNormal.Half(x, info) -> Half(x, info)
   | KNormal.Add(x, y, info) -> Add(x, y, info)
   | KNormal.Sub(x, y, info) -> Sub(x, y, info)
   | KNormal.FNeg(x, info) -> FNeg(x, info)
@@ -180,6 +187,8 @@ let get_info = function
   | Int (_, info)
   | Float(_, info)
   | Neg(_, info)
+  | Four(_, info)
+  | Half(_, info)
   | Add (_, _, info)
   | Sub (_, _, info)
   | FNeg(_, info)

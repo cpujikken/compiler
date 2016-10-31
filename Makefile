@@ -21,7 +21,7 @@ clean:: nobackup
 SOURCES = float.c common.ml info.ml cmd.ml type.ml id.ml stringSet.ml m.ml s.ml \
 		  loc.ml\
 		  reg.ml operand.ml operandSet.ml \
-		syntax.ml parser.mly lexer.mll typing.mli typing.ml kNormal.mli kNormal.ml \
+		syntax.ml parser.mly lexer.mll typing.mli typing.ml kNormal.ml \
 		m1.ml duplicateLet.ml \
 		alpha.mli alpha.ml beta.mli beta.ml assoc.mli assoc.ml \
 		inline.mli inline.ml constFold.mli constFold.ml elim.mli elim.ml \
@@ -54,7 +54,7 @@ test/%.cmp: test/%.res test/%.ans
 
 min-caml.html: main.mli main.ml id.ml m.ml stringSet.ml s.ml \
 	loc.ml\
-		syntax.ml type.ml parser.mly lexer.mll typing.mli typing.ml kNormal.mli kNormal.ml \
+		syntax.ml type.ml parser.mly lexer.mll typing.mli typing.ml kNormal.ml \
 		alpha.mli alpha.ml beta.mli beta.ml assoc.mli assoc.ml \
 		inline.mli inline.ml constFold.mli constFold.ml elim.mli elim.ml \
 		closure.mli closure.ml asmReg.ml asm.ml virtual.mli virtual.ml \

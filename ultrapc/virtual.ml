@@ -73,8 +73,9 @@ let rec generate env = function (* 式の仮想マシンコード生成 (caml2html: virtual_
       in
         Ans(FLoad(Absolute (Label l, None)), info)
         (*negative*)
-  | Closure.Neg(x, info) ->
-          Ans(Neg(ID x), info)
+  | Closure.Neg(x, info) -> Ans(Neg(ID x), info)
+  | Closure.Four(x, info) -> Ans(Four(ID x), info)
+  | Closure.Half(x, info) -> Ans(Half(ID x), info)
   | Closure.Add(x, y, info) ->
           Ans(Add(ID x, ID y), info)
   | Closure.Sub(x, y, info) ->

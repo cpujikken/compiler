@@ -4,6 +4,8 @@ type t =
   | Int of int * Info.t
   | Float of float * Info.t
   | Neg of Id.t * Info.t
+  | Four of Id.t * Info.t
+  | Half of Id.t * Info.t
   | Add of Id.t * Id.t * Info.t
   | Sub of Id.t * Id.t * Info.t
   | FNeg of Id.t * Info.t

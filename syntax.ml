@@ -23,6 +23,8 @@ type t = (* MinCamlの構文を表現するデータ型 (caml2html: syntax_t) *)
   | LetTuple of (Id.t * Type.t) list * t * t * Info.t
   | Array of t * t * Info.t
   | Get of t * t * Info.t
+  | Four of t * Info.t
+  | Half of t * Info.t
   | Put of t * t * t * Info.t
 and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }
 
@@ -37,6 +39,8 @@ let to_string (x: t) =
         | Float (f, info) -> Printf.sprintf "%sFLOAT %f\t#%s" pre f (Info.to_string info)
         | Not (t, info) -> Printf.sprintf "%sNOT\t#%s\n%s" pre (Info.to_string info) (to_string_pre npre t)
         | Neg (t, info) -> Printf.sprintf "%sNEG\t#%s\n%s" pre (Info.to_string info) (to_string_pre npre t)
+        | Four (t, info) -> Printf.sprintf "%sFOUR\t#%s\n%s" pre (Info.to_string info) (to_string_pre npre t)
+        | Half (t, info) -> Printf.sprintf "%sHALF\t#%s\n%s" pre (Info.to_string info) (to_string_pre npre t)
         | Add (x, y, info) -> Printf.sprintf "%sADD\t#%s\n%s\n%s" pre (Info.to_string info) (to_string_pre npre x) (to_string_pre npre y)
         | Sub (x, y, info) -> Printf.sprintf "%sSUB\t#%s\n%s\n%s" pre (Info.to_string info) (to_string_pre npre x) (to_string_pre npre y)
         | FNeg (t, info) -> Printf.sprintf "%sFNEG\t#%s\n%s" pre  (Info.to_string info) (to_string_pre npre t)
@@ -95,6 +99,8 @@ let to_string (x: t) =
 
 let get_info = function
   | Unit info
+  | Four (_, info)
+  | Half (_, info)
   | Bool (_, info)
   | Int (_, info)
   | Float (_, info)

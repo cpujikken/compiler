@@ -23,12 +23,12 @@ rule token = parse
     { LPAREN }
 | ')'
     { RPAREN }
+| "not"
+    { NOT }
 | "true"
     { BOOL(true) }
 | "false"
     { BOOL(false) }
-| "not"
-    { NOT }
 | digit+ (* 整数を字句解析するルール (caml2html: lexer_int) *)
     { INT(int_of_string (Lexing.lexeme lexbuf)) }
 | digit+ ('.' digit*)? (['e' 'E'] ['+' '-']? digit+)?
@@ -43,8 +43,12 @@ rule token = parse
     { PLUS_DOT }
 | "*."
     { AST_DOT }
+| "*"
+    { AST }
 | "/."
     { SLASH_DOT }
+| "/"
+    { SLASH}
 | '='
     { EQUAL }
 | "<>"
@@ -75,6 +79,8 @@ rule token = parse
     { IDENT(Id.gentmp (Type.Unit (Info.lex_get lexbuf)) (Info.lex_get lexbuf)) }
 | "Array.create" (* [XX] ad hoc *)
     { ARRAY_CREATE }
+| "create_array" (* [XX] ad hoc *)
+    { ARRAY_CREATE }
 | '.'
     { DOT }
 | "<-"
@@ -87,11 +93,11 @@ rule token = parse
     { IDENT(Lexing.lexeme lexbuf, Info.lex_get lexbuf) }
 | _
     { failwith
-	(Printf.sprintf "\"%s\": unknown token %s near characters %d-%d, i.e. %d:%d to %d:%d (line:column format)"
+    (Printf.sprintf "\"%s\": unknown token %s near characters %d-%d, i.e. %d:%d to %d:%d (line:column format)"
        (Lexing.lexeme_start_p lexbuf).Lexing.pos_fname
-	   (Lexing.lexeme lexbuf)
-	   (Lexing.lexeme_start lexbuf)
-	   (Lexing.lexeme_end lexbuf)
+       (Lexing.lexeme lexbuf)
+       (Lexing.lexeme_start lexbuf)
+       (Lexing.lexeme_end lexbuf)
        (Lexing.lexeme_start_p lexbuf).Lexing.pos_lnum
        ((Lexing.lexeme_start_p lexbuf).Lexing.pos_cnum - (Lexing.lexeme_start_p lexbuf).Lexing.pos_bol + 1)
        (Lexing.lexeme_end_p lexbuf).Lexing.pos_lnum

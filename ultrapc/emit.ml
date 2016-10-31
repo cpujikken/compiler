@@ -96,10 +96,10 @@ and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
             append_cmd cmd_fMove [rd; rs] info
     | NonTail rd, FNeg(rs) ->
                 append_cmd cmd_fNeg2 [rd; rs] info
-    | NonTail rd, ShiftL (r, b5) ->
-            append_cmd cmd_shiftL [rd; r; int_to_string b5] info
-    |NonTail rd, ShiftR (r, b5) ->
-            append_cmd cmd_shiftR [rd; r; int_to_string b5] info
+    | NonTail rd, Four(rs) ->
+            append_cmd cmd_four [rd; rs] info
+    | NonTail rd, Half(rs) ->
+            append_cmd cmd_half [rd; rs] info
     | NonTail rd, Load (Relative (r, loc)) ->
          append_cmd cmd_loadRelative [rd; r; Loc.to_string loc] info
     | NonTail rd, Load ( Dynamic(r1, s4, r2)) ->
@@ -170,7 +170,7 @@ and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
                 g' info (NonTail rd, FLoad (Relative (reg_sp, Constant (offset id))))
             else
                 failwith "invalid register for restore"
-    | Tail, (Nop | Add _ | Sub _ | Addi _ | ShiftL _ | ShiftR _ | Load _ | Store _ | JLink _ | Link | Push _ | Move _ | MoveImm _ | Neg _ | FNeg _ | Pop | Out | Save _ | FMove _ as exp) ->
+    | Tail, (Nop | Add _ | Sub _ | Addi _ | Four _ | Half _ | Load _ | Store _ | JLink _ | Link | Push _ | Move _ | MoveImm _ | Neg _ | FNeg _ | Pop | Out | Save _ | FMove _ as exp) ->
             g' info (NonTail reg_dump, exp)
     | Tail, (FMul _ | FSub _ | FDiv _ | FAdd _  | FLoad _ | FStore _ as exp )->
             g' info (NonTail freg_dump, exp)

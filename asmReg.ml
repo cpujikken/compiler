@@ -31,8 +31,8 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *)
     | Add of Reg.t * Reg.t
     | Sub of Reg.t * Reg.t
     | Addi of  Reg.t * Loc.t
-    | ShiftL of  Reg.t * bits5
-    | ShiftR of Reg.t * bits5
+    | Four of Reg.t
+    | Half of Reg.t
     | Load of addr
     | Store of Reg.t * addr
     | Neg of Reg.t

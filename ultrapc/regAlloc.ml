@@ -82,9 +82,9 @@ and source' t = function
     -> [x; y]
 
     | AsmReg.Addi (x, _)
-    | AsmReg.ShiftL (x, _)
-    | AsmReg.ShiftR (x, _)
     | AsmReg.Push(x)
+    | AsmReg.Four x
+    | AsmReg.Half x
     -> [x]
 
     | AsmReg.Load (addr)
@@ -280,10 +280,10 @@ and generate' dest cont regenv info exp = (* 各命令のレジスタ割り当て (caml2html
                 reg_finder reg1,
             reg_finder reg2
     ), info), regenv
-    | ShiftL (reg, b5) ->
-            AsmReg.Ans(AsmReg.ShiftL(reg_finder reg, b5), info), regenv
-    | ShiftR (reg, b5) ->
-            AsmReg.Ans(AsmReg.ShiftR(reg_finder reg, b5), info), regenv
+    | Four reg->
+            AsmReg.Ans(AsmReg.Four(reg_finder reg), info), regenv
+    | Half reg->
+            AsmReg.Ans(AsmReg.Half(reg_finder reg), info), regenv
     | Load addr -> AsmReg.Ans( AsmReg.Load(addr_finder addr), info), regenv
     | FLoad addr -> AsmReg.Ans( AsmReg.FLoad(addr_finder addr), info), regenv
     | Store (reg, addr) -> AsmReg.Ans(AsmReg.Store(reg_finder reg, addr_finder addr), info), regenv

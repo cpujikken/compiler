@@ -1,5 +1,7 @@
 let rec has_side_effect = function
   | KNormal.Unit _
+  | KNormal.Four _
+  | KNormal.Half _
   | KNormal.Int _
   | KNormal.Float _
   | KNormal.Neg _
@@ -70,6 +72,8 @@ let rec g env exp = match exp with
   | KNormal.Int _
   | KNormal.Float _
   | KNormal.Neg _
+  | KNormal.Four _
+  | KNormal.Half _
   | KNormal.Add _
   | KNormal.Sub _
   | KNormal.FNeg _

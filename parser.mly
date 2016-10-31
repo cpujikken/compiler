@@ -8,13 +8,17 @@ let addtyp x info = (x, Type.gentyp info)
 %token <bool> BOOL
 %token <int> INT
 %token <float> FLOAT
+%token TRUE
+%token FALSE
 %token NOT
 %token MINUS
 %token PLUS
 %token MINUS_DOT
 %token PLUS_DOT
 %token AST_DOT
+%token AST
 %token SLASH_DOT
+%token SLASH
 %token EQUAL
 %token LESS_GREATER
 %token LESS_EQUAL
@@ -46,6 +50,7 @@ let addtyp x info = (x, Type.gentyp info)
 %left EQUAL LESS_GREATER LESS GREATER LESS_EQUAL GREATER_EQUAL
 %left PLUS MINUS PLUS_DOT MINUS_DOT
 %left AST_DOT SLASH_DOT
+%left AST SLASH
 %right prec_unary_minus
 %left prec_app
 %left DOT
@@ -111,8 +116,28 @@ exp: /* (* 一般の式 (caml2html: parser_exp) *) */
     { FSub($1, $3, (Info.parsing_get())  )}
 | exp AST_DOT exp
     { FMul($1, $3, (Info.parsing_get())  )}
+| exp AST INT
+    {
+        if $3 = 4 then
+            Four($1, Info.parsing_get ())
+        else
+            failwith (Printf.sprintf "%s: only support multiplication by 4" (Info.to_string (Info.parsing_get())))
+    }
 | exp SLASH_DOT exp
     { FDiv($1, $3, (Info.parsing_get())  )}
+| exp SLASH INT
+    {
+        if $3 = 2 then
+            Half ($1, Info.parsing_get())
+        else
+            failwith (Printf.sprintf "%s: only support division by 2" (Info.to_string (Info.parsing_get())))
+    }
+| LET BOOL EQUAL exp IN exp
+    %prec prec_let
+    { Let((Id.gentmp (Type.Unit (Info.parsing_get())) (Info.parsing_get()), Type.Unit (Info.parsing_get())), Unit (Info.parsing_get()), $6, (Info.parsing_get())  )}
+| LET BOOL EQUAL exp IN exp
+    %prec prec_let
+    { Let((Id.gentmp (Type.Unit (Info.parsing_get())) (Info.parsing_get()), Type.Unit (Info.parsing_get())), Unit (Info.parsing_get()), $6, (Info.parsing_get())  )}
 | LET IDENT EQUAL exp IN exp
     %prec prec_let
     { Let(addtyp $2 (Info.parsing_get()), $4, $6, (Info.parsing_get())  )}
@@ -130,20 +155,17 @@ exp: /* (* 一般の式 (caml2html: parser_exp) *) */
     { Put($1, $4, $7, (Info.parsing_get())  )}
 | exp SEMICOLON exp
     { Let((Id.gentmp (Type.Unit (Info.parsing_get())) (Info.parsing_get()), Type.Unit (Info.parsing_get())), $1, $3, (Info.parsing_get())  )}
+| exp SEMICOLON
+    { Let((Id.gentmp (Type.Unit (Info.parsing_get())) (Info.parsing_get()), Type.Unit (Info.parsing_get())), $1, (Unit (Info.parsing_get())), (Info.parsing_get())  )}
 | ARRAY_CREATE simple_exp simple_exp
     %prec prec_app
     { Array($2, $3, (Info.parsing_get())  )}
 | error
     { failwith
-	(Printf.sprintf "\"%s\": parse error near characters %d-%d, i.e. %d:%d to %d:%d (file:row:column format)"
-       (Parsing.symbol_start_pos ()).Lexing.pos_fname
-	   (Parsing.symbol_start ())
-	   (Parsing.symbol_end ())
-       (Parsing.symbol_start_pos ()).Lexing.pos_lnum
-       ((Parsing.symbol_start_pos ()).Lexing.pos_cnum - (Parsing.symbol_start_pos ()).Lexing.pos_bol + 1)
-       (Parsing.symbol_end_pos ()).Lexing.pos_lnum
-       ((Parsing.symbol_end_pos ()).Lexing.pos_cnum - (Parsing.symbol_end_pos ()).Lexing.pos_bol + 1)
-       ) }
+    (
+        Printf.sprintf "%s: unknown expression" (Info.to_string (Info.parsing_get ()))
+    )
+       }
 
 fundef:
 | IDENT formal_args EQUAL exp

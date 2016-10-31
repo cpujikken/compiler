@@ -31,8 +31,8 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *)
     | Add of Operand.t * Operand.t
     | Sub of Operand.t * Operand.t
     | Addi of  Operand.t * Loc.t
-    | ShiftL of  Operand.t * bits5
-    | ShiftR of Operand.t * bits5
+    | Four of Operand.t
+    | Half of Operand.t
     | Load of addr
     | Store of Operand.t * addr
     | Neg of Operand.t
@@ -112,10 +112,10 @@ let rec fv_exp = function
     (*| FCmp(a, b, _)*)
         -> [a; b]
 
-      | Move r
+    | Move r
     | Addi (r, _)
-    | ShiftL (r, _)
-    | ShiftR (r, _)
+    | Four r
+    | Half r
     | Load (Relative (r, _))
     | FLoad (Relative(r, _))
     | Store(r, Absolute _)

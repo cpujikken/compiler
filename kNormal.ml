@@ -23,6 +23,8 @@ type t = (* K正規化後の式 (caml2html: knormal_t) *)
   | Get of Id.t * Id.t * Info.t
   | Put of Id.t * Id.t * Id.t * Info.t
   | ExtArray of Id.t * Info.t
+  | Four of Id.t * Info.t
+  | Half of Id.t * Info.t
   | ExtFunApp of Id.t * Id.t list * Info.t
 and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }
 
@@ -35,6 +37,8 @@ let to_string x =
         | Int(i, info) -> Printf.sprintf "%sINT %d\t#%s" pre i (Info.to_string info)
         | Float( f , info)-> Printf.sprintf "%sFLOAT %f\t#%s" pre f (Info.to_string info)
         | Neg(t, info) -> Printf.sprintf "%sNEG\t#%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre t)
+        | Four(t, info) -> Printf.sprintf "%sFOUR\t#%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre t)
+        | Half(t, info) -> Printf.sprintf "%sHALF\t#%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre t)
         | Add (x, y, info) -> Printf.sprintf "%sADD\t#%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
         | Sub (x, y, info) -> Printf.sprintf "%sSUB\t#%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
         | FNeg( t , info)-> Printf.sprintf "%sFNEG\t#%s\n%s" pre  (Info.to_string info) (Id.to_string_pre npre t)
@@ -72,7 +76,9 @@ let to_string x =
 
 let rec fv = function (* 式に出現する（自由な）変数 (caml2html: knormal_fv) *)
   | Unit (_) | Int(_, _) | Float(_, _) | ExtArray(_, _) -> S.empty
-  | Neg(x, _) | FNeg(x, _) -> S.singleton x
+  | Neg(x, _) | FNeg(x, _)
+  | Four(x, _) | Half(x, _)
+  -> S.singleton x
   | Add(x, y, _) | Sub(x, y, _) | FAdd(x, y, _) | FSub(x, y, _) | FMul(x, y, _) | FDiv(x, y, _) | Get(x, y, _) -> S.of_list [x; y]
   | IfEq(x, y, e1, e2, _) | IfLE(x, y, e1, e2, _) -> S.add x (S.add y (S.union (fv e1) (fv e2)))
   | Let((x, t), e1, e2, _) -> S.union (fv e1) (S.remove x (fv e2))
@@ -99,6 +105,10 @@ let rec g env = function (* K正規化ルーチン本体 (caml2html: knormal_g) *)
   | Syntax.Int(i, info) -> Int(i, info), Type.Int info
   | Syntax.Float(d, info) -> Float(d, info), Type.Float info
   | Syntax.Not(e, info) -> g env (Syntax.If(e, Syntax.Bool(false, info), Syntax.Bool(true, info), info))
+  | Syntax.Four (e, info) ->
+          insert_let (g env e) (fun x -> Four(x, info), Type.Int info) info
+  | Syntax.Half (e, info) ->
+          insert_let (g env e) (fun x -> Half(x, info), Type.Int info) info
   | Syntax.Neg(e, info) ->
       insert_let (g env e)
 	(fun x -> Neg(x, info), Type.Int info) info
@@ -155,7 +165,8 @@ let rec g env = function (* K正規化ルーチン本体 (caml2html: knormal_g) *)
   | Syntax.Var(x, info) -> (* 外部配列の参照 (caml2html: knormal_extarray) *)
       (match M.find x !Typing.extenv with
       | Type.Array(_, _) as t -> ExtArray(x, info), t
-      | _ -> Info.exit info (Printf.sprintf "external variable %s does not have an array type" (Id.to_string x)))
+      | typ ->
+              Info.exit info (Printf.sprintf "external variable %s has type\n%s\nbut type array is expected" (Id.to_string x) (Type.to_string typ)))
   | Syntax.LetRec({ Syntax.name = (x, t); Syntax.args = yts; Syntax.body = e1 }, e2, info) ->
       let env' = M.add x t env in
       let e2', t2 = g env' e2 in
@@ -222,7 +233,7 @@ let rec g env = function (* K正規化ルーチン本体 (caml2html: knormal_g) *)
 		(fun z -> Put(x, y, z, info), Type.Unit info) info) info) info
 
 let f e =
-    Printf.printf "%s" (Syntax.to_string e);
+    (*Printf.printf "%s" (Syntax.to_string e);*)
     fst (g M.empty e)
 let get_constructor_code = function
   | Unit _ -> 0
@@ -248,6 +259,8 @@ let get_constructor_code = function
   | Put _ ->                     20
   | ExtArray _ ->                      21
   | ExtFunApp _ ->                       22
+  | Four _ -> 23
+  | Half _ -> 24
 
 
 let id_type_compare (id1, type1) (id2, type2) =

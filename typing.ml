@@ -25,6 +25,8 @@ let rec deref_id_typ (x, t) = (x, deref_typ t)
 let rec deref_term = function
   | Not(e, info) -> Not(deref_term e, info)
   | Neg(e, info) -> Neg(deref_term e, info)
+  | Four(e, info) -> Four(deref_term e, info)
+  | Half(e, info) -> Half(deref_term e, info)
   | Add(e1, e2, info) -> Add(deref_term e1, deref_term e2, info)
   | Sub(e1, e2, info) -> Sub(deref_term e1, deref_term e2, info)
   | Eq(e1, e2, info) -> Eq(deref_term e1, deref_term e2, info)
@@ -88,11 +90,17 @@ let rec g env e = (* 型推論ルーチン (caml2html: typing_g) *)
     | Int(_, info) -> Type.Int info
     | Float(_, info) -> Type.Float info
     | Not(e, info) ->
-	unify (Type.Bool info) (g env e);
-	Type.Bool info
+        unify (Type.Bool info) (g env e);
+        Type.Bool info
+    | Four (e, info) ->
+            unify (Type.Int info) (g env e);
+            Type.Int info
+    | Half (e, info) ->
+            unify (Type.Int info) (g env e);
+            Type.Int info
     | Neg(e, info) ->
-	unify (Type.Int info) (g env e);
-	Type.Int info
+        unify (Type.Int info) (g env e);
+        Type.Int info
     | Add(e1, e2, info) | Sub(e1, e2, info) -> (* 足し算（と引き算）の型推論 (caml2html: typing_add) *)
 	unify (Type.Int info) (g env e1);
 	unify (Type.Int info) (g env e2);
