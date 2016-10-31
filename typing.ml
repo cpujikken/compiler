@@ -65,11 +65,11 @@ let rec unify t1 t2 = (* 型が合うように、型変数への代入をする (caml2html: typing
   | Type.Unit _, Type.Unit _ | Type.Bool _ , Type.Bool _ | Type.Int _, Type.Int _ | Type.Float _, Type.Float _ -> ()
   | Type.Fun(t1s, t1', _), Type.Fun(t2s, t2', _) ->
       (try List.iter2 unify t1s t2s
-      with Invalid_argument("List.iter2") -> raise (Unify(t1, t2)));
+      with Invalid_argument(_) -> raise (Unify(t1, t2)));
       unify t1' t2'
   | Type.Tuple(t1s, _), Type.Tuple(t2s, _) ->
       (try List.iter2 unify t1s t2s
-      with Invalid_argument("List.iter2") -> raise (Unify(t1, t2)))
+      with Invalid_argument(_) -> raise (Unify(t1, t2)))
   | Type.Array(t1, _), Type.Array(t2, _) -> unify t1 t2
   | Type.Var(r1, _), Type.Var(r2, _) when r1 == r2 -> ()
   | Type.Var({ contents = Some(t1') }, info), _ -> unify t1' t2
