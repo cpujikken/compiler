@@ -16,4 +16,5 @@ let lex_get lexbuf =
 (*let dump() = "dump_file.ml", -1, -1, -1, -1*)
 
 let exit info msg =
-    failwith (Printf.sprintf "%s:: %s" (to_string info) msg)
+    Printf.printf "%s:: %s" (to_string info) msg;
+    exit 1

@@ -135,9 +135,6 @@ exp: /* (* ∞Ï»Ã§Œº∞ (caml2html: parser_exp) *) */
 | LET BOOL EQUAL exp IN exp
     %prec prec_let
     { Let((Id.gentmp (Type.Unit (Info.parsing_get())) (Info.parsing_get()), Type.Unit (Info.parsing_get())), Unit (Info.parsing_get()), $6, (Info.parsing_get())  )}
-| LET BOOL EQUAL exp IN exp
-    %prec prec_let
-    { Let((Id.gentmp (Type.Unit (Info.parsing_get())) (Info.parsing_get()), Type.Unit (Info.parsing_get())), Unit (Info.parsing_get()), $6, (Info.parsing_get())  )}
 | LET IDENT EQUAL exp IN exp
     %prec prec_let
     { Let(addtyp $2 (Info.parsing_get()), $4, $6, (Info.parsing_get())  )}
