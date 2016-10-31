@@ -81,8 +81,8 @@ let rec concat e1 xt e2 =
 let align i = (if i mod 8 = 0 then i else i + 4)
 
 let addr_to_param rd = function
-    | Relative (r, loc) -> [ r; Cmd.int_to_string Cmd.addr_mode_relative; rd; Loc.to_string loc]
+    | Relative (r, loc) -> [ rd; Cmd.int_to_string Cmd.addr_mode_relative; r; Loc.to_string loc]
     | Dynamic(r1, s4, r2) -> [ rd;Cmd.int_to_string Cmd.addr_mode_dynamic; r1; Cmd.int_to_string s4; r2]
     | Absolute(l1, l2_o) -> match l2_o with
-        None -> [rd; Loc.to_string l1]
+        None -> [rd; Cmd.int_to_string Cmd.addr_mode_absolute; Loc.to_string l1]
         | Some l2 -> [rd; Cmd.int_to_string Cmd.addr_mode_absolute; Loc.to_string l1; Loc.to_string l2]

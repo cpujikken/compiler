@@ -21,12 +21,12 @@ let append cmd =
     cmd_list := cmd :: !cmd_list
 
     (*convert one cmd to string*) (*one line*)
-let to_string (opcode, operand_list, info_o) =
+let to_string opcode operand_list info_o =
     let operand_list_to_string operand_list =
         let rec loop current = function
             | [] -> current
             | operand::alist ->
-                    current ^ ", " ^ operand
+                    loop (current ^ ", " ^ operand) alist
         in
         match operand_list with
         | [] -> ""
@@ -62,7 +62,7 @@ let rec f output =
                 );
                 Printf.fprintf output "\n"
         | Command (a, b, c) ->
-                Printf.fprintf output "%s\n" (to_string (a, b, c))
+                Printf.fprintf output "%s\n" (to_string a b c)
         | IData i ->
                 Printf.fprintf output "\t.long\t%x\n" i
         | FData i ->
