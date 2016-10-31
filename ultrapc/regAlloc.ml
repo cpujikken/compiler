@@ -365,9 +365,9 @@ and generate'_call dest cont regenv exp constr ys zs info = (* ´Ø¿ô¸Æ¤Ó½Ð¤·¤Î¥ì¥
          else
              match x with
              | ID id when not (M.mem id regenv) -> e
+             | Reg _ -> e
              | ID id ->
                  AsmReg.seq(AsmReg.Save(M.find id regenv, id), e, info)
-             | _ -> failwith "error while reallocating register"
      )
      (AsmReg.Ans(constr
         (List.map (fun y -> find y (Type.Int info) regenv) ys)
