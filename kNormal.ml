@@ -165,8 +165,9 @@ let rec g env = function (* K正規化ルーチン本体 (caml2html: knormal_g) *)
   | Syntax.Var(x, info) -> (* 外部配列の参照 (caml2html: knormal_extarray) *)
       (match M.find x !Typing.extenv with
       | Type.Array(_, _) as t -> ExtArray(x, info), t
-      | typ ->
-              Info.exit info (Printf.sprintf "external variable %s has type\n%s\nbut type array is expected" (Id.to_string x) (Type.to_string typ)))
+      | typ -> ExtArray(x, info), typ
+              (*Info.exit info (Printf.sprintf "external variable %s has type\n%s\nbut type array is expected" (Id.to_string x) (Type.to_string typ))*)
+              )
   | Syntax.LetRec({ Syntax.name = (x, t); Syntax.args = yts; Syntax.body = e1 }, e2, info) ->
       let env' = M.add x t env in
       let e2', t2 = g env' e2 in
