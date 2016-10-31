@@ -348,9 +348,9 @@ and generate'_if dest cont regenv exp constr e1 e2 info = (* if¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤
                          match x with
                          | ID id when M.mem id regenv' -> e
                          | ID id when not (M.mem id regenv) -> e
+                         | Reg _ -> e
                          | ID id ->
                              AsmReg.seq(AsmReg.Save(M.find id regenv, id), e, info)
-                         | _ -> failwith "error while allocating register"
                  ) (* ¤½¤¦¤Ç¤Ê¤¤ÊÑ¿ô¤ÏÊ¬´ôÄ¾Á°¤Ë¥»¡¼¥Ö *)
                  (AsmReg.Ans(constr e1' e2', info))
                  (get_free_vars cont)

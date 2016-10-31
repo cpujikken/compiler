@@ -41,38 +41,34 @@ let to_string (opcode, operand_list, info_o) =
 
 let rec f output =
     let g = function
-        | [] -> ()
-        | ins :: alist ->
-                match ins with
+        | Directive (directive, param_o, comment_o)->
+                Printf.fprintf output ".%s" directive;
+                (
+                    match param_o with
+                     | Some param -> Printf.fprintf output "\t%s" param
+                     | None -> ()
+                );
+                (match comment_o with Some comment ->
+                    Printf.fprintf output "\t#%s" comment
+                     | None -> ()
+                );
+                Printf.fprintf output "\n"
 
-                | Directive (directive, param_o, comment_o)->
-                        Printf.fprintf output "%s" directive;
-                        (
-                            match param_o with
-                             | Some param -> Printf.fprintf output "\t%s" param
-                             | None -> ()
-                        );
-                        (match comment_o with Some comment ->
-                            Printf.fprintf output "\t#%s" comment
-                             | None -> ()
-                        );
-                        Printf.fprintf output "\n"
-
-                | Label(label, comment_o) ->
-                        Printf.fprintf output "%s:" label;
-                        (match comment_o with
-                            Some comment -> Printf.fprintf output "\t%s" comment
-                            | None -> ()
-                        );
-                        Printf.fprintf output "\n"
-                | Command (a, b, c) ->
-                        Printf.fprintf output "%s\n" (to_string (a, b, c))
-                | IData i ->
-                        Printf.fprintf output "\t.long\t%x" i
-                | FData i ->
-                        Printf.fprintf output "\t.long\t%x" (Int32.to_int (Int32.bits_of_float i))
+        | Label(label, comment_o) ->
+                Printf.fprintf output "%s:" label;
+                (match comment_o with
+                    Some comment -> Printf.fprintf output "\t#%s" comment
+                    | None -> ()
+                );
+                Printf.fprintf output "\n"
+        | Command (a, b, c) ->
+                Printf.fprintf output "%s\n" (to_string (a, b, c))
+        | IData i ->
+                Printf.fprintf output "\t.long\t%x\n" i
+        | FData i ->
+                Printf.fprintf output "\t.long\t%x\n" (Int32.to_int (Int32.bits_of_float i))
     in
-    g !cmd_list
+    List.iter g (List.rev !cmd_list)
 
 (*constant declaration*)
 let start_directive = "start"
