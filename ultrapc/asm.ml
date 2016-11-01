@@ -47,8 +47,6 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *)
 
     | JLink of addr26
     | Link
-    | Push of Operand.t
-    | Pop
     | Out
 
     | MoveImm of Loc.t
@@ -90,7 +88,6 @@ let rec remove_dup xs = function
 let rec fv_exp = function
     | Nop
     | Link
-    | Pop
     | Out
     | Load (Absolute _ )
     | FLoad (Absolute _)
@@ -120,7 +117,6 @@ let rec fv_exp = function
     | FLoad (Relative(r, _))
     | Store(r, Absolute _)
     | FStore(r, Absolute _)
-    | Push r
     | Neg r
     | FNeg r
         ->  [r]

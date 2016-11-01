@@ -261,8 +261,6 @@ and generate' dest cont regenv info exp = (* 各命令のレジスタ割り当て (caml2html
     -> AsmReg.Ans(AsmReg.JLink x, info), regenv
     | Link
     -> AsmReg.Ans(AsmReg.Link, info), regenv
-    | Pop
-    -> AsmReg.Ans(AsmReg.Pop, info), regenv
     | Out ->
         AsmReg.Ans(AsmReg.Out, info), regenv
     | Restore x ->
@@ -294,7 +292,6 @@ and generate' dest cont regenv info exp = (* 各命令のレジスタ割り当て (caml2html
     | FMul (reg1, reg2) -> AsmReg.Ans(AsmReg.FMul(freg_finder reg1, freg_finder reg2), info), regenv
     | FDiv (reg1, reg2) -> AsmReg.Ans(AsmReg.FDiv(freg_finder reg1, freg_finder reg2), info), regenv
     (*| FCmp(reg1, reg2, c3) -> AsmReg.Ans(AsmReg.FCmp(freg_finder reg1, freg_finder reg2, c3), info), regenv*)
-    | Push reg -> AsmReg.Ans(AsmReg.Push(reg_finder reg), info), regenv
 
     | IfEQ(reg1, reg2, e1, e2) ->
             generate'_if dest cont regenv exp (fun e1' e2' ->
