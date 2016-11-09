@@ -20,7 +20,7 @@ clean:: nobackup
 
 # ↓もし実装を改造したら、それに合わせて変える
 SOURCES = float.c common.ml info.ml cmd.ml type.ml id.ml stringSet.ml m.ml s.ml \
-		  loc.ml\
+		  loc.ml tuple.ml\
 		  reg.ml operand.ml operandSet.ml \
 		syntax.ml parser.mly lexer.mll typing.mli typing.ml kNormal.ml \
 		m1.ml duplicateLet.ml \
@@ -55,7 +55,7 @@ test/%.cmp: test/%.res test/%.ans
 	diff $^ > $@
 
 min-caml.html: main.mli main.ml id.ml m.ml stringSet.ml s.ml \
-	loc.ml\
+	loc.ml tuple.ml\
 		syntax.ml type.ml parser.mly lexer.mll typing.mli typing.ml kNormal.ml \
 		alpha.mli alpha.ml beta.mli beta.ml assoc.mli assoc.ml \
 		inline.mli inline.ml constFold.mli constFold.ml elim.mli elim.ml \

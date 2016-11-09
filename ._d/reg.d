@@ -1,2 +1,0 @@
-reg.cmo :
-reg.cmx :

@@ -235,13 +235,19 @@ let rec generate env = function (* 式の仮想マシンコード生成 (caml2html: virtual_
           )
 
 (* 関数の仮想マシンコード生成 (caml2html: virtual_h) *)
-let fun_converter { Closure.name = (x , t); Closure.args = yts; Closure.formal_fv = zts; Closure.body = e; Closure.info = info } =
-    let info = Closure.get_info e in
-  let (ints, floats) = separate yts in
+let fun_converter { Closure.name = (x , t); Closure.args = args; Closure.formal_fv = free_args; Closure.body = e; Closure.info = info } =
+  let info = Closure.get_info e
+  in
+  let (ints, floats) = separate args
+  in
+  let all_args = M.add_list args (M.add_list free_args M.empty)
+  in
+  let all_vars = (M.add x t all_args)
+  in
   let (offset, load) =
     expand
-      zts
-      (4, generate (M.add x t (M.add_list yts (M.add_list zts M.empty))) e)
+      free_args
+      (4, generate all_vars e)
       (fun z offset load -> fletd(ID z, FLoad(Absolute(Label (fst x), Some (Constant offset))), load, info))
       (fun z t offset load -> Let((ID z, t), Load(Absolute(Label (fst x), Some (Constant offset))), load, info))
   in

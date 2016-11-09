@@ -1,6 +1,18 @@
-let x = 123456789123
+let a = (1, (2, 3))
 in
-let y = -10
+let (x, y) = a
 in
-print y;
-print x
+let (p, q) = y
+in
+let result = p + q + x
+in
+
+let a = (1, 2)
+in
+let b = (a, 3)
+in
+let (x, y) = b
+in
+let result = result + y
+in
+    show result
