@@ -82,7 +82,6 @@ and source' t = function
     -> [x; y]
 
     | AsmReg.Addi (x, _)
-    | AsmReg.Push(x)
     | AsmReg.Four x
     | AsmReg.Half x
     -> [x]

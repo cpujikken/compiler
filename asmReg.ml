@@ -52,8 +52,6 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *)
 
     | JLink of addr26
     | Link
-    | Push of Reg.t
-    | Pop
     | Out
 
     | IfEQ of Reg.t * Reg.t * t * t

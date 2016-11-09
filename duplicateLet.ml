@@ -106,11 +106,9 @@ let rec g env exp = match exp with
 
     (*env maps expression to variable (Syntax.Var type)*)
 let f e =
-    fst (g M1.empty e)
-    (*
+    (*fst (g M1.empty e)*)
     let refined = fst (g M1.empty e)
     in
-    Printf.printf "\n\n code before removing duplicate elements:\n%s" (KNormal.to_string e);
-    Printf.printf "\n\ncode after removing duplicate elements:\n%s" (KNormal.to_string refined);
+    (*Printf.printf "\n\n code before removing duplicate elements:\n%s" (KNormal.to_string e);*)
+    (*Printf.printf "\n\ncode after removing duplicate elements:\n%s" (KNormal.to_string refined);*)
     refined
-    *)

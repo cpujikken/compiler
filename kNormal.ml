@@ -53,7 +53,7 @@ let to_string x =
         | LetRec (f, t, info) -> Printf.sprintf "%sLET_REC\t#%s\n%s\n%s" pre (Info.to_string info) (to_string_let_rec npre f) (to_string_pre npre t)
         | App (x, xlist, info) -> Printf.sprintf "%sAPP\t#%s\n%s%s" pre (Info.to_string info) (Id.to_string_pre npre x) (to_string_idlist npre xlist)
         | Tuple(idlist, info) -> Printf.sprintf "%sTUPLE\t#%s%s" pre (Info.to_string info) (to_string_idlist npre idlist)
-        | LetTuple (idtype_list, id, x, info) -> Printf.sprintf "%sLET_TUPLE\t#%s\n%s\n%s\n%s" pre (Info.to_string info) (to_string_idtype_list npre idtype_list) (Id.to_string_pre npre id) (to_string_pre npre x)
+        | LetTuple (idtype_list, id, x, info) -> Printf.sprintf "%sLET_TUPLE\t#%s\t%s\n%s\n%s" pre (Info.to_string info) (to_string_idtype_list npre idtype_list) (Id.to_string_pre npre id) (to_string_pre npre x)
         | Get (x, y, info) -> Printf.sprintf "%sGET\t#%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
         | Put (x, y, z, info) -> Printf.sprintf "%sPUT\t#%s\n%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y) (Id.to_string_pre npre z)
         | ExtArray(x, info) -> Printf.sprintf "%sEXT_ARRAY\t#%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x)
@@ -69,7 +69,7 @@ let to_string x =
         Printf.sprintf "%sNAME\n%s\n%sTYPE\n%s\n%sARG%s\n%sBODY\n%s" pre (Id.to_string_pre npre nid) pre (Type.to_string_pre npre ntype) pre (to_string_args npre f.args) pre (to_string_pre npre f.body)
     and to_string_args pre = function
         | [] -> ""
-        | (id, typ) :: args -> Printf.sprintf "\n%s\n%s%s" (Id.to_string_pre pre id) (Type.to_string_pre pre typ) (to_string_args pre args)
+        | (id, typ) :: args -> Printf.sprintf "\n%s\n%s\t%s" (Id.to_string_pre pre id) (Type.to_string_pre pre typ) (to_string_args pre args)
     and to_string_idtype_list pre x = to_string_args pre x
     in
     to_string_pre "" x
@@ -234,7 +234,7 @@ let rec g env = function (* K正規化ルーチン本体 (caml2html: knormal_g) *)
 		(fun z -> Put(x, y, z, info), Type.Unit info) info) info) info
 
 let f e =
-    (*Printf.printf "%s" (Syntax.to_string e);*)
+    (*Printf.printf "kNormal form\n%s" (Syntax.to_string e);*)
     fst (g M.empty e)
 let get_constructor_code = function
   | Unit _ -> 0

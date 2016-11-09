@@ -21,29 +21,6 @@ let rec flat_type = function
   (*| Type.Var (ref_opt_t, info) -> Type.Var*)
 
 let rec flat = function
-  | Unit _
-  | Int _
-  | Float _
-  | Neg _
-  | Four _
-  | Half _
-  | Add _
-  | Sub _
-  | FNeg _
-  | FAdd _
-  | FSub _
-  | FMul _
-  | FDiv _
-  | IfEq _
-  | IfLE _
-  | Var _
-  | AppCls _
-  | AppDir _
-  | Get _
-  | Put _
-  | ExtArray _
-  | Tuple _
-  as e -> e
 
   | Let ((var, var_type), value, body, info)
     -> Let((var, flat_type var_type), flat value, flat body, info)
@@ -64,6 +41,11 @@ let rec flat = function
             new_exp,
             info
         )
+  | IfEq (id1, id2, e1, e2, info)
+    -> IfEq(id1, id2, flat e1, flat e2, info)
+  | IfLE (id1, id2, e1, e2, info)
+  -> IfLE(id1, id2, flat e1, flat e2, info)
+    | other-> other
 and flat_id_type_list id_type_list =
     List.fold_right
         (fun (id, typ) (tuple_list, replacements) -> match flat_type typ with
@@ -105,4 +87,8 @@ let fun_converter { name = (fun_name , fun_type); args = args_id_types; formal_f
 
 
 let f (Prog(fundefs, e)) =
-    Prog(List.map fun_converter fundefs, flat e)
+(*Printf.printf "Before flatten\n%s\n" (to_string e);*)
+    let new_e = flat e
+    in
+    (*Printf.printf "After flatten\n%s\n" (to_string new_e);*)
+    Prog(List.map fun_converter fundefs, new_e)
