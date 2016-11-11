@@ -14,7 +14,6 @@ let rec has_side_effect = function
   | KNormal.FDiv _
   | KNormal.Var _
   | KNormal.Tuple _
-  | KNormal.Get _
   | KNormal.ExtArray _
   -> false
   | KNormal.LetTuple (_, _, e, _)
@@ -31,6 +30,7 @@ let rec has_side_effect = function
   | KNormal.App _
   | KNormal.Put _
   | KNormal.ExtFunApp _
+  | KNormal.Get _
   -> true
 
 let rec g env exp = match exp with
@@ -99,7 +99,7 @@ let rec g env exp = match exp with
   -> KNormal.IfLE(id1, id2, fst (g env t1), fst (g env t2), info), env
 
   | KNormal.LetRec (f, e, info)
-  -> 
+  ->
       KNormal.LetRec({
           KNormal.name = f.KNormal.name; KNormal.args = f.KNormal.args; KNormal.body = fst (g env (f.KNormal.body))
       }, fst (g env e), info), env
