@@ -6,11 +6,11 @@ open Loc
 (*remove unused let if all of place can be replacable*)
 let rec generate env = function (* Ì¿ÎáÎó¤ÎÂ¨ÃÍºÇÅ¬²½ (caml2html: simm13_g) *)
   | Ans(exp, info) -> Ans(generate' env exp, info)
-  | Let((ID x, t), Addi(reg_zero, Constant i), e, info) ->
+  | Let((ID x, t), MoveImm(Constant i), e, info) ->
       (* Format.eprintf "found simm %s = %d@." x i; *)
       let e' = generate (M.add x i env) e in
       if List.mem (ID x) (get_free_vars e') then
-          Let((ID x, t), Addi(reg_zero, Constant i), e', info)
+          Let((ID x, t),MoveImm(Constant i), e', info)
       else
       ((* Format.eprintf "erased redundant Set to %s@." x; *)
        e')
