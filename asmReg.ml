@@ -45,14 +45,9 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *)
     | FSub of Reg.t * Reg.t
     | FMul of Reg.t * Reg.t
     | FDiv of Reg.t * Reg.t
-    (*| FCmp of Reg.t * Reg.t * const3*)
-    (*| FJump of addr26 * ret2 * const3*)
     | FLoad of addr
     | FStore of Reg.t * addr
 
-    | JLink of addr26
-    | Link
-    | Out
 
     | IfEQ of Reg.t * Reg.t * t * t
     | FIfEQ of Reg.t * Reg.t *t * t

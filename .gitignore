@@ -1,1 +1,14 @@
 /tags
+/min-caml.top
+/min-caml
+/*.cmo
+/example.s
+/test/*.cmo
+/test/*.s
+/*.cmi
+/float.o
+/parser.ml
+/parser.mli
+/lexer.ml
+/._d/
+/._bcdi/
