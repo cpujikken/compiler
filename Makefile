@@ -23,9 +23,9 @@ SOURCES = float.c common.ml info.ml cmd.ml type.ml id.ml stringSet.ml m.ml s.ml 
 		  loc.ml \
 		  reg.ml operand.ml operandSet.ml \
 		syntax.ml parser.mly lexer.mll typing.ml kNormal.ml \
-		m1.ml duplicateLet.ml \
+		m1.ml \
 		alpha.ml beta.ml assoc.ml \
-		inline.ml constFold.ml elim.ml \
+		inline.ml constFold.ml elim.ml duplicateLet.ml \
 		closure.ml expandTuple.ml flatTuple.ml asmReg.ml asm.ml virtual.ml \
 		simm.ml regAlloc.ml emit.ml \
 		main.ml
