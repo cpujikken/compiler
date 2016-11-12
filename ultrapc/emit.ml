@@ -3,9 +3,6 @@ open Loc
 open Cmd
 open Reg
 
-external gethi : float -> int32 = "gethi"
-external getlo : float -> int32 = "getlo"
-
 let stackset = ref S.empty (* すでにSaveされた変数の集合 (caml2html: emit_stackset) *)
 let stackmap = ref [] (* Saveされた変数の、スタックにおける位置 (caml2html: emit_stackmap) *)
 let save x =
