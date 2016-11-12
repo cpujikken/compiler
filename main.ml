@@ -1,37 +1,37 @@
 let limit = ref 1000
 
 let rec iter n e = (* 最適化処理をくりかえす (caml2html: main_iter) *)
-  Format.eprintf "iteration %d@." n;
+    Format.eprintf "iteration %d@." n;
   if n = 0 then e else
-  let e' = Elim.f (ConstFold.f (Inline.f (Assoc.f (Beta.f e)))) in
-  if e = e' then e else
-  iter (n - 1) e'
+      let e' = Elim.f (ConstFold.f (Inline.f (Assoc.f (Beta.f e)))) in
+      if e = e' then e else
+          iter (n - 1) e'
 
 let lexbuf outchan l = (* バッファをコンパイルしてチャンネルへ出力する (caml2html: main_lexbuf) *)
-  Id.counter := 0;
+    Id.counter := 0;
   Typing.extenv := M.empty;
   Emit.f
     (RegAlloc.f
        (Simm.f
-	  (Virtual.f
+      (Virtual.f
       (ExpandTuple.f
          (FlatTuple.f
-	     (Closure.f
-		(iter !limit
+         (Closure.f
+        (iter !limit
         (DuplicateLet.f
-		   (Alpha.f
-		      (KNormal.f
-			 (Typing.f
+           (Alpha.f
+              (KNormal.f
+             (Typing.f
                 (Parser.exp Lexer.token l))))))))))));
     Cmd.f outchan
 
 let string s = lexbuf stdout (Lexing.from_string s) (* 文字列をコンパイルして標準出力に表示する (caml2html: main_string) *)
 
 let file f = (* ファイルをコンパイルしてファイルに出力する (caml2html: main_file) *)
-  let inchan = open_in (f ^ ".ml") in
-  let outchan = open_out (f ^ ".s") in
-  try
-      let lbuf = Lexing.from_channel inchan
+    let inchan = open_in (f ^ ".ml") in
+    let outchan = open_out (f ^ ".s") in
+    try
+        let lbuf = Lexing.from_channel inchan
       in
       lbuf.Lexing.lex_curr_p <- {
           lbuf.Lexing.lex_curr_p with Lexing.pos_fname = f ^ ".ml"
@@ -39,11 +39,11 @@ let file f = (* ファイルをコンパイルしてファイルに出力する (caml2html: main_file
     lexbuf outchan lbuf;
     close_in inchan;
     close_out outchan;
-  with e -> (close_in inchan; close_out outchan; raise e)
+    with e -> (close_in inchan; close_out outchan; raise e)
 
 let () = (* ここからコンパイラの実行が開始される (caml2html: main_entry) *)
-  let files = ref [] in
-  Arg.parse
+    let files = ref [] in
+    Arg.parse
     [("-inline", Arg.Int(fun i -> Inline.threshold := i), "maximum size of functions inlined");
      ("-iter", Arg.Int(fun i -> limit := i), "maximum number of optimizations iterated")]
     (fun s -> files := !files @ [s])
