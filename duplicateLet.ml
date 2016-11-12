@@ -1,38 +1,3 @@
-let rec has_side_effect = function
-  | KNormal.Unit _
-  | KNormal.Four _
-  | KNormal.Half _
-  | KNormal.Int _
-  | KNormal.Float _
-  | KNormal.Neg _
-  | KNormal.Add _
-  | KNormal.Sub _
-  | KNormal.FNeg _
-  | KNormal.FAdd _
-  | KNormal.FSub _
-  | KNormal.FMul _
-  | KNormal.FDiv _
-  | KNormal.Var _
-  | KNormal.Tuple _
-  | KNormal.Get _
-  | KNormal.ExtArray _
-  -> false
-  | KNormal.LetTuple (_, _, e, _)
-  -> has_side_effect e
-
-  | KNormal.IfEq (_, _, t1, t2, _)
-  | KNormal.IfLE(_, _, t1, t2, _)
-  | KNormal.Let (_, t1, t2, _ )
-  -> (has_side_effect t1) || (has_side_effect t2)
-
-  | KNormal.LetRec (f, t1, _)
-  -> (has_side_effect (f.KNormal.body)) || (has_side_effect t1)
-
-  | KNormal.App _
-  | KNormal.Put _
-  | KNormal.ExtFunApp _
-  -> true
-
 let rec generate env exp = match exp with
     | KNormal.Let ((x, t), e1, e2, info) ->
             (
@@ -58,7 +23,7 @@ let rec generate env exp = match exp with
                             let e1', _ = generate env e1
                             in
                             let env' =
-                                if has_side_effect e1 then
+                                if Elim.effect e1 then
                                     env
                                 else
                                     (*map e1 to variable x*)
