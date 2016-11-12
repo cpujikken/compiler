@@ -53,7 +53,7 @@ let toplevel : fundef list ref = ref []
 (*
  * convert KNormal.t to Closure.t
  *)
-let rec g env known = function (* クロージャ変換ルーチン本体 (caml2html: closure_g) *)
+let rec generate env known = function (* クロージャ変換ルーチン本体 (caml2html: closure_g) *)
   | KNormal.Unit info -> Unit info
   | KNormal.Int(i, info) -> Int(i, info)
   | KNormal.Float(d, info) -> Float(d, info)
@@ -67,9 +67,9 @@ let rec g env known = function (* クロージャ変換ルーチン本体 (caml2html: closure
   | KNormal.FSub(x, y, info) -> FSub(x, y, info)
   | KNormal.FMul(x, y, info) -> FMul(x, y, info)
   | KNormal.FDiv(x, y, info) -> FDiv(x, y, info)
-  | KNormal.IfEq(x, y, e1, e2, info) -> IfEq(x, y, g env known e1, g env known e2, info)
-  | KNormal.IfLE(x, y, e1, e2, info) -> IfLE(x, y, g env known e1, g env known e2, info)
-  | KNormal.Let((x, t), e1, e2, info) -> Let((x, t), g env known e1, g (M.add x t env) known e2, info)
+  | KNormal.IfEq(x, y, e1, e2, info) -> IfEq(x, y, generate env known e1, generate env known e2, info)
+  | KNormal.IfLE(x, y, e1, e2, info) -> IfLE(x, y, generate env known e1, generate env known e2, info)
+  | KNormal.Let((x, t), e1, e2, info) -> Let((x, t), generate env known e1, generate (M.add x t env) known e2, info)
   | KNormal.Var(x, info) -> Var(x, info)
   | KNormal.LetRec({ KNormal.name = (fun_name, fun_type); KNormal.args = param_list; KNormal.body = fun_body }, let_body, info) -> (* 関数定義の場合 (caml2html: closure_letrec) *)
     (* 関数定義let rec fun_name y1 ... yn = fun_body in let_bodyの場合は、
@@ -88,7 +88,7 @@ let rec g env known = function (* クロージャ変換ルーチン本体 (caml2html: closure
     (*add parameter list (by name with type) to current env
     * and transform function's expression
     * *)
-    let fun_body' = g (M.add_list param_list env') known' fun_body in
+    let fun_body' = generate (M.add_list param_list env') known' fun_body in
     (* 本当に自由変数がなかったか、変換結果fun_body'を確認する *)
     (* 注意: fun_body'にfun_name自身が変数として出現する場合はclosureが必要!
      (thanks to nuevo-namasute and azounoman; test/cls-bug2.ml参照) *)
@@ -121,7 +121,7 @@ let rec g env known = function (* クロージャ変換ルーチン本体 (caml2html: closure
                  (*reevaluate function's expression but without function name.
                   * There is no need of closure for this fun
                   * *)
-                 let fun_body' = g (M.add_list param_list env') known fun_body
+                 let fun_body' = generate (M.add_list param_list env') known fun_body
                  in
                  known, fun_body'
              )
@@ -156,7 +156,7 @@ let rec g env known = function (* クロージャ変換ルーチン本体 (caml2html: closure
     in (* ここで自由変数zの型を引くために引数envが必要 *)
         toplevel := { name = (Id.to_L fun_name, fun_type); args = param_list; formal_fv = external_variable_with_type; body = fun_body'; info = info } :: !toplevel; (* トップレベル関数を追加 *)
         (*parse let_body*)
-        let let_body' = g env' known' let_body
+        let let_body' = generate env' known' let_body
         in
             (*if function is used after that*)
             if S.mem fun_name (fv let_body') then (* fun_nameが変数としてlet_body'に出現するか *)
@@ -171,7 +171,7 @@ let rec g env known = function (* クロージャ変換ルーチン本体 (caml2html: closure
       AppDir(Id.to_L x, ys, info)
   | KNormal.App(f, xs, info) -> AppCls(f, xs, info)
   | KNormal.Tuple(xs, info) -> Tuple(xs, info)
-  | KNormal.LetTuple(xts, y, e, info) -> LetTuple(xts, y, g (M.add_list xts env) known e, info)
+  | KNormal.LetTuple(xts, y, e, info) -> LetTuple(xts, y, generate (M.add_list xts env) known e, info)
   | KNormal.Get(x, y, info) -> Get(x, y, info)
   | KNormal.Put(x, y, z, info) -> Put(x, y, z, info)
   | KNormal.ExtArray(x, info) -> ExtArray(Id.to_L(x), info)
@@ -179,7 +179,7 @@ let rec g env known = function (* クロージャ変換ルーチン本体 (caml2html: closure
 
 let f e =
   toplevel := [];
-  let e' = g M.empty S.empty e in
+  let e' = generate M.empty S.empty e in
   Prog(List.rev !toplevel, e')
 
 let get_info = function

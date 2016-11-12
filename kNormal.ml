@@ -99,67 +99,67 @@ let insert_let (e, t) k info = (* letを挿入する補助関数 (caml2html: knormal_inse
       let e', t' = k x in
       Let((x, t), e, e', info), t'
 
-let rec g env = function (* K正規化ルーチン本体 (caml2html: knormal_g) *)
+let rec generate env = function (* K正規化ルーチン本体 (caml2html: knormal_g) *)
   | Syntax.Unit info -> Unit info, Type.Unit info
   | Syntax.Bool(b, info) -> Int((if b then 1 else 0), info), Type.Int info (* 論理値true, falseを整数1, 0に変換 (caml2html: knormal_bool) *)
   | Syntax.Int(i, info) -> Int(i, info), Type.Int info
   | Syntax.Float(d, info) -> Float(d, info), Type.Float info
-  | Syntax.Not(e, info) -> g env (Syntax.If(e, Syntax.Bool(false, info), Syntax.Bool(true, info), info))
+  | Syntax.Not(e, info) -> generate env (Syntax.If(e, Syntax.Bool(false, info), Syntax.Bool(true, info), info))
   | Syntax.Four (e, info) ->
-          insert_let (g env e) (fun x -> Four(x, info), Type.Int info) info
+          insert_let (generate env e) (fun x -> Four(x, info), Type.Int info) info
   | Syntax.Half (e, info) ->
-          insert_let (g env e) (fun x -> Half(x, info), Type.Int info) info
+          insert_let (generate env e) (fun x -> Half(x, info), Type.Int info) info
   | Syntax.Neg(e, info) ->
-      insert_let (g env e)
+      insert_let (generate env e)
 	(fun x -> Neg(x, info), Type.Int info) info
   | Syntax.Add(e1, e2, info) -> (* 足し算のK正規化 (caml2html: knormal_add) *)
-      insert_let (g env e1)
-	(fun x -> insert_let (g env e2)
+      insert_let (generate env e1)
+	(fun x -> insert_let (generate env e2)
 	    (fun y -> Add(x, y, info), Type.Int info) info) info
   | Syntax.Sub(e1, e2, info) ->
-      insert_let (g env e1)
-	(fun x -> insert_let (g env e2)
+      insert_let (generate env e1)
+	(fun x -> insert_let (generate env e2)
 	    (fun y -> Sub(x, y, info), Type.Int info) info) info
   | Syntax.FNeg(e, info) ->
-      insert_let (g env e)
+      insert_let (generate env e)
 	(fun x -> FNeg(x, info), Type.Float info) info
   | Syntax.FAdd(e1, e2, info) ->
-      insert_let (g env e1)
-	(fun x -> insert_let (g env e2)
+      insert_let (generate env e1)
+	(fun x -> insert_let (generate env e2)
 	    (fun y -> FAdd(x, y, info), Type.Float info) info) info
   | Syntax.FSub(e1, e2, info) ->
-      insert_let (g env e1)
-	(fun x -> insert_let (g env e2)
+      insert_let (generate env e1)
+	(fun x -> insert_let (generate env e2)
 	    (fun y -> FSub(x, y, info), Type.Float info) info) info
   | Syntax.FMul(e1, e2, info) ->
-      insert_let (g env e1)
-	(fun x -> insert_let (g env e2)
+      insert_let (generate env e1)
+	(fun x -> insert_let (generate env e2)
 	    (fun y -> FMul(x, y, info), Type.Float info) info) info
   | Syntax.FDiv(e1, e2, info) ->
-      insert_let (g env e1)
-	(fun x -> insert_let (g env e2)
+      insert_let (generate env e1)
+	(fun x -> insert_let (generate env e2)
 	    (fun y -> FDiv(x, y, info), Type.Float info) info) info
   | Syntax.Eq (_, _, info) | Syntax.LE (_, _, info) as cmp ->
-      g env (Syntax.If(cmp, Syntax.Bool(true, info), Syntax.Bool(false, info), info))
-  | Syntax.If(Syntax.Not(e1, _), e2, e3, info) -> g env (Syntax.If(e1, e3, e2, info)) (* notによる分岐を変換 (caml2html: knormal_not) *)
+      generate env (Syntax.If(cmp, Syntax.Bool(true, info), Syntax.Bool(false, info), info))
+  | Syntax.If(Syntax.Not(e1, _), e2, e3, info) -> generate env (Syntax.If(e1, e3, e2, info)) (* notによる分岐を変換 (caml2html: knormal_not) *)
   | Syntax.If(Syntax.Eq(e1, e2, _), e3, e4, info) ->
-      insert_let (g env e1)
-	(fun x -> insert_let (g env e2)
+      insert_let (generate env e1)
+	(fun x -> insert_let (generate env e2)
 	    (fun y ->
-	      let e3', t3 = g env e3 in
-	      let e4', t4 = g env e4 in
+	      let e3', t3 = generate env e3 in
+	      let e4', t4 = generate env e4 in
 	      IfEq(x, y, e3', e4', info), t3) info) info
   | Syntax.If(Syntax.LE(e1, e2, _), e3, e4, info) ->
-      insert_let (g env e1)
-	(fun x -> insert_let (g env e2)
+      insert_let (generate env e1)
+	(fun x -> insert_let (generate env e2)
 	    (fun y ->
-	      let e3', t3 = g env e3 in
-	      let e4', t4 = g env e4 in
+	      let e3', t3 = generate env e3 in
+	      let e4', t4 = generate env e4 in
 	      IfLE(x, y, e3', e4', info), t3) info) info
-  | Syntax.If(e1, e2, e3, info) -> g env (Syntax.If(Syntax.Eq(e1, Syntax.Bool(false, info), info), e3, e2, info)) (* 比較のない分岐を変換 (caml2html: knormal_if) *)
+  | Syntax.If(e1, e2, e3, info) -> generate env (Syntax.If(Syntax.Eq(e1, Syntax.Bool(false, info), info), e3, e2, info)) (* 比較のない分岐を変換 (caml2html: knormal_if) *)
   | Syntax.Let((x, t), e1, e2, info) ->
-      let e1', t1 = g env e1 in
-      let e2', t2 = g (M.add x t env) e2 in
+      let e1', t1 = generate env e1 in
+      let e2', t2 = generate (M.add x t env) e2 in
       Let((x, t), e1', e2', info), t2
   | Syntax.Var(x, info) when M.mem x env -> Var(x, info), M.find x env
   | Syntax.Var(x, info) -> (* 外部配列の参照 (caml2html: knormal_extarray) *)
@@ -170,8 +170,8 @@ let rec g env = function (* K正規化ルーチン本体 (caml2html: knormal_g) *)
               )
   | Syntax.LetRec({ Syntax.name = (x, t); Syntax.args = yts; Syntax.body = e1 }, e2, info) ->
       let env' = M.add x t env in
-      let e2', t2 = g env' e2 in
-      let e1', t1 = g (M.add_list yts env') e1 in
+      let e2', t2 = generate env' e2 in
+      let e1', t1 = generate (M.add_list yts env') e1 in
       LetRec({ name = (x, t); args = yts; body = e1' }, e2', info), t2
   | Syntax.App(Syntax.Var(f, _) as f_with_info, e2s, info) when not (M.mem f env) -> (* 外部関数の呼び出し (caml2html: knormal_extfunapp) *)
       (match M.find f !Typing.extenv with
@@ -179,20 +179,20 @@ let rec g env = function (* K正規化ルーチン本体 (caml2html: knormal_g) *)
 	  let rec bind xs = function (* "xs" are identifiers for the arguments *)
 	    | [] -> ExtFunApp(f, xs, info), t
 	    | e2 :: e2s ->
-		insert_let (g env e2)
+		insert_let (generate env e2)
 		  (fun x -> bind (xs @ [x]) e2s) info in
 	  bind [] e2s (* left-to-right evaluation *)
       | _ -> Info.exit info (Printf.sprintf "%s is not a function" (Syntax.to_string f_with_info))
       )
   | Syntax.App(e1, e2s, info) ->
-      (match g env e1 with
+      (match generate env e1 with
       | _, Type.Fun(_, t, _) as g_e1 ->
 	  insert_let g_e1
 	    (fun f ->
 	      let rec bind xs = function (* "xs" are identifiers for the arguments *)
 		| [] -> App(f, xs, info), t
 		| e2 :: e2s ->
-		    insert_let (g env e2)
+		    insert_let (generate env e2)
 		      (fun x -> bind (xs @ [x]) e2s) info in
 	      bind [] e2s) info (* left-to-right evaluation *)
       | _ -> Info.exit info (Printf.sprintf "%s is not a function" (Syntax.to_string e1)))
@@ -200,19 +200,19 @@ let rec g env = function (* K正規化ルーチン本体 (caml2html: knormal_g) *)
       let rec bind xs ts = function (* "xs" and "ts" are identifiers and types for the elements *)
 	| [] -> Tuple(xs, info), Type.Tuple(ts, info)
 	| e :: es ->
-	    let _, t as g_e = g env e in
+	    let _, t as g_e = generate env e in
 	    insert_let g_e
 	      (fun x -> bind (xs @ [x]) (ts @ [t]) es) info in
       bind [] [] es
   | Syntax.LetTuple(xts, e1, e2, info) ->
-      insert_let (g env e1)
+      insert_let (generate env e1)
 	(fun y ->
-	  let e2', t2 = g (M.add_list xts env) e2 in
+	  let e2', t2 = generate (M.add_list xts env) e2 in
 	  LetTuple(xts, y, e2', info), t2) info
   | Syntax.Array(e1, e2, info) ->
-      insert_let (g env e1)
+      insert_let (generate env e1)
 	(fun x ->
-	  let _, t2 as g_e2 = g env e2 in
+	  let _, t2 as g_e2 = generate env e2 in
 	  insert_let g_e2
 	    (fun y ->
 	      let l =
@@ -221,45 +221,45 @@ let rec g env = function (* K正規化ルーチン本体 (caml2html: knormal_g) *)
 		| x -> "create_array", (Type.get_info x) in
 	      ExtFunApp(l, [x; y], info), Type.Array(t2, info)) info) info
   | Syntax.Get(e1, e2, info) ->
-      (match g env e1 with
+      (match generate env e1 with
       |	_, Type.Array(t, info) as g_e1 ->
 	  insert_let g_e1
-	    (fun x -> insert_let (g env e2)
+	    (fun x -> insert_let (generate env e2)
 		(fun y -> Get(x, y, info), t) info) info
       | _ -> Info.exit info (Printf.sprintf "cannot get element from non-array type (%s)" (Syntax.to_string e1)))
   | Syntax.Put(e1, e2, e3, info) ->
-      insert_let (g env e1)
-	(fun x -> insert_let (g env e2)
-	    (fun y -> insert_let (g env e3)
+      insert_let (generate env e1)
+	(fun x -> insert_let (generate env e2)
+	    (fun y -> insert_let (generate env e3)
 		(fun z -> Put(x, y, z, info), Type.Unit info) info) info) info
 
 let f e =
     (*Printf.printf "kNormal form\n%s" (Syntax.to_string e);*)
-    fst (g M.empty e)
+    fst (generate M.empty e)
 let get_constructor_code = function
   | Unit _ -> 0
   | Int _ ->  1
-  | Float _ ->   2
-  | Neg _ ->    3
-  | Add _ ->     4
-  | Sub _ ->      5
-  | FNeg _ ->       6
-  | FAdd _ ->        7
-  | FSub _ ->         8
-  | FMul _ ->          9
-  | FDiv _ ->           10
-  | IfEq _ ->            11
-  | IfLE _ ->             12
-  | Let _ ->              13
-  | Var _ ->               14
-  | LetRec _ ->                15
-  | App _ ->                 16
-  | Tuple _ ->                  17
-  | LetTuple _ ->                   18
-  | Get _ ->                    19
-  | Put _ ->                     20
-  | ExtArray _ ->                      21
-  | ExtFunApp _ ->                       22
+  | Float _ -> 2
+  | Neg _ -> 3
+  | Add _ -> 4
+  | Sub _ -> 5
+  | FNeg _ -> 6
+  | FAdd _ -> 7
+  | FSub _ -> 8
+  | FMul _ -> 9
+  | FDiv _ -> 10
+  | IfEq _ -> 11
+  | IfLE _ -> 12
+  | Let _ -> 13
+  | Var _ -> 14
+  | LetRec _ -> 15
+  | App _ -> 16
+  | Tuple _ -> 17
+  | LetTuple _ -> 18
+  | Get _ -> 19
+  | Put _ -> 20
+  | ExtArray _ -> 21
+  | ExtFunApp _ -> 22
   | Four _ -> 23
   | Half _ -> 24
 

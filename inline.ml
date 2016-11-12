@@ -9,14 +9,14 @@ let rec size = function
   | LetTuple(_, _, e, info) -> 1 + size e
   | _ -> 1
 
-let rec g env = function (* インライン展開ルーチン本体 (caml2html: inline_g) *)
-  | IfEq(x, y, e1, e2, info) -> IfEq(x, y, g env e1, g env e2, info)
-  | IfLE(x, y, e1, e2, info) -> IfLE(x, y, g env e1, g env e2, info)
-  | Let(xt, e1, e2, info) -> Let(xt, g env e1, g env e2, info)
+let rec generate env = function (* インライン展開ルーチン本体 (caml2html: inline_g) *)
+  | IfEq(x, y, e1, e2, info) -> IfEq(x, y, generate env e1, generate env e2, info)
+  | IfLE(x, y, e1, e2, info) -> IfLE(x, y, generate env e1, generate env e2, info)
+  | Let(xt, e1, e2, info) -> Let(xt, generate env e1, generate env e2, info)
   | LetRec({ name = (x, t); args = yts; body = e1 }, e2, info) -> (* 関数定義の場合 (caml2html: inline_letrec) *)
           (* map function variables to their (argument list, body)*)
       let env = if size e1 > !threshold then env else M.add x (yts, e1) env in
-      LetRec({ name = (x, t); args = yts; body = g env e1}, g env e2, info)
+      LetRec({ name = (x, t); args = yts; body = generate env e1}, generate env e2, info)
   | App(x, ys, info) when M.mem x env -> (* 関数適用の場合 (caml2html: inline_app) *)
       let (zs, e) = M.find x env in
       Format.eprintf "inlining %s@." (Id.to_string x);
@@ -27,8 +27,8 @@ let rec g env = function (* インライン展開ルーチン本体 (caml2html: inline_g) *)
 	  M.empty
 	  zs
 	  ys in
-      Alpha.g env' e
-  | LetTuple(xts, y, e, info) -> LetTuple(xts, y, g env e, info)
+      Alpha.generate env' e
+  | LetTuple(xts, y, e, info) -> LetTuple(xts, y, generate env e, info)
   | e -> e
 
-let f e = g M.empty e
+let f e = generate M.empty e
