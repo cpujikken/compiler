@@ -4,14 +4,22 @@ let find x env = try M.find x env with Not_found -> x (* 置換のための関数 (caml2
 
 let rec generate env = function (* β簡約ルーチン本体 (caml2html: beta_g) *)
   | Unit info -> Unit info
+  | FloatRead info -> FloatRead info
+  | IntRead info -> IntRead info
   | Int(i, info) -> Int(i, info)
   | Float(d, info) -> Float(d, info)
   | Neg(x, info) -> Neg(find x env, info)
   | Four(x, info) -> Four(find x env, info)
+  | Print(x, info) -> Print(find x env, info)
   | Half(x, info) -> Half(find x env, info)
   | Add(x, y, info) -> Add(find x env, find y env, info)
+  | Mul(x, y, info) -> Mul(find x env, find y env, info)
+  | Div(x, y, info) -> Div(find x env, find y env, info)
+  | ShiftLeft(x, y, info) -> ShiftLeft(find x env, find y env, info)
+  | ShiftRight(x, y, info) -> ShiftRight(find x env, find y env, info)
   | Sub(x, y, info) -> Sub(find x env, find y env, info)
   | FNeg(x, info) -> FNeg(find x env, info)
+  | FAbs(x, info) -> FAbs(find x env, info)
   | FAdd(x, y, info) -> FAdd(find x env, find y env, info)
   | FSub(x, y, info) -> FSub(find x env, find y env, info)
   | FMul(x, y, info) -> FMul(find x env, find y env, info)

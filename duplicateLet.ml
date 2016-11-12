@@ -53,6 +53,14 @@ let rec generate env exp = match exp with
   | KNormal.Put _
   | KNormal.ExtArray _
   | KNormal.ExtFunApp _
+  | KNormal.Mul _
+  | KNormal.Div _
+  | KNormal.ShiftLeft _
+  | KNormal.ShiftRight _
+  | KNormal.FAbs _
+  | KNormal.IntRead _
+  | KNormal.FloatRead _
+  | KNormal.Print _
   -> exp, env
   | KNormal.LetTuple (a, b,e, info)
   -> KNormal.LetTuple(a, b, fst (generate env e), info), env

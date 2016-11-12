@@ -49,7 +49,21 @@ let rec deref_term = function
   | Array(e1, e2, info) -> Array(deref_term e1, deref_term e2, info)
   | Get(e1, e2, info) -> Get(deref_term e1, deref_term e2, info)
   | Put(e1, e2, e3, info) -> Put(deref_term e1, deref_term e2, deref_term e3, info)
-  | e -> e
+  | ShiftLeft(e1, e2, info) -> ShiftLeft(deref_term e1, deref_term e2, info)
+  | ShiftRight(e1, e2, info) -> ShiftRight(deref_term e1, deref_term e2, info)
+  | Div(e1, e2, info) -> Div(deref_term e1, deref_term e2, info)
+  | Mul(e1, e2, info) -> Mul(deref_term e1, deref_term e2, info)
+  | FAbs(e, info) -> FAbs(deref_term e, info)
+  | Print (e, info) -> Print(deref_term e, info)
+
+  | Unit _
+  | Bool _
+  | Int _
+  | Float _
+  | Var _
+  | FloatRead _
+  | IntRead _ as e
+  -> e
 
 let rec occur r1 = function (* occur check (caml2html: typing_occur) *)
   | Type.Fun(t2s, t2, info) -> List.exists (occur r1) t2s || occur r1 t2
@@ -98,20 +112,35 @@ let rec generate env e = (* 型推論ルーチン (caml2html: typing_g) *)
     | Half (e, info) ->
             unify (Type.Int info) (generate env e);
             Type.Int info
-    | Neg(e, info) ->
+
+    | Neg(e, info)
+    | Print(e, info)
+    ->
         unify (Type.Int info) (generate env e);
         Type.Int info
-    | Add(e1, e2, info) | Sub(e1, e2, info) -> (* 足し算（と引き算）の型推論 (caml2html: typing_add) *)
+
+    | Add(e1, e2, info)
+    | Sub(e1, e2, info)
+    | Mul(e1, e2, info)
+    | Div(e1, e2, info)
+    | ShiftLeft(e1, e2, info)
+    | ShiftRight(e1, e2, info)
+    -> (* 足し算（と引き算）の型推論 (caml2html: typing_add) *)
 	unify (Type.Int info) (generate env e1);
 	unify (Type.Int info) (generate env e2);
 	Type.Int info
-    | FNeg(e, info) ->
+
+    | FNeg(e, info)
+    | FAbs(e, info)
+    ->
 	unify (Type.Float info) (generate env e);
 	Type.Float info
+
     | FAdd(e1, e2, info) | FSub(e1, e2, info) | FMul(e1, e2, info) | FDiv(e1, e2, info) ->
 	unify (Type.Float info) (generate env e1);
 	unify (Type.Float info) (generate env e2);
 	Type.Float info
+
     | Eq(e1, e2, info) | LE(e1, e2, info) ->
 	unify (generate env e1) (generate env e2);
 	Type.Bool info
@@ -156,6 +185,9 @@ let rec generate env e = (* 型推論ルーチン (caml2html: typing_g) *)
 	unify (Type.Array(t, info)) (generate env e1);
 	unify (Type.Int info) (generate env e2);
 	Type.Unit info
+
+  | IntRead info -> Type.Int info
+  | FloatRead info -> Type.Float info
   with Unify(t1, t2) -> raise (Error(deref_term e, deref_typ t1, deref_typ t2))
 
 let f e =

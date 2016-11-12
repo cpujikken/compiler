@@ -28,7 +28,13 @@ type t = (* 命令の列 (caml2html: sparcasm_t) *)
   | Let of (Operand.t * Type.t) * exp * t * Info.t
 and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *)
     | Nop
+    | IntRead
+    | FloatRead
     | Add of Operand.t * Operand.t
+    | ShiftLeft of Operand.t * Operand.t
+    | ShiftRight of Operand.t * Operand.t
+    | Div of Operand.t * Operand.t
+    | Mul of Operand.t * Operand.t
     | Sub of Operand.t * Operand.t
     | Addi of  Operand.t * Loc.t
     | Four of Operand.t
@@ -37,7 +43,8 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *)
     | Store of Operand.t * addr
     | Neg of Operand.t
     | FNeg of Operand.t
-
+    | FAbs of Operand.t
+    | Print of Operand.t
     | FAdd of Operand.t * Operand.t
     | FSub of Operand.t * Operand.t
     | FMul of Operand.t * Operand.t
@@ -84,6 +91,8 @@ let rec remove_dup xs = function
 (* free variables in the order of use (for spilling) (caml2html: sparcasm_fv) *)
 let rec fv_exp = function
     | Nop
+    | IntRead
+    | FloatRead
     | Load (Absolute _ )
     | FLoad (Absolute _)
     | Restore _
@@ -91,6 +100,10 @@ let rec fv_exp = function
         -> []
 
     | Add (a, b)
+    | ShiftLeft (a, b)
+    | ShiftRight (a, b)
+    | Div (a, b)
+    | Mul (a, b)
     | Sub(a, b)
     | Load ((Dynamic (a, _, b)))
     | FLoad ((Dynamic (a, _, b)))
@@ -113,6 +126,8 @@ let rec fv_exp = function
     | FStore(r, Absolute _)
     | Neg r
     | FNeg r
+    | FAbs r
+    | Print r
         ->  [r]
 
     | Store(r1, Dynamic(r2, _, r3))

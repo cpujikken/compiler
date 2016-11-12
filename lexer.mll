@@ -49,6 +49,18 @@ rule token = parse
     { SLASH_DOT }
 | "/"
     { SLASH}
+| "<<"
+    {LTLT}
+| ">>"
+    {GTGT}
+| "read_float"
+    {READ_FLOAT}
+| "read_int"
+    {READ_INT}
+| "print_byte"
+    {PRINT_BYTE}
+| "abs_float"
+    {ABS_FLOAT}
 | '='
     { EQUAL }
 | "<>"

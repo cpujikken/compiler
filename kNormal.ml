@@ -26,6 +26,14 @@ type t = (* K正規化後の式 (caml2html: knormal_t) *)
   | Four of Id.t * Info.t
   | Half of Id.t * Info.t
   | ExtFunApp of Id.t * Id.t list * Info.t
+  | FAbs of Id.t * Info.t
+  | ShiftLeft of Id.t * Id.t * Info.t
+  | ShiftRight of Id.t * Id.t * Info.t
+  | IntRead of Info.t
+  | FloatRead of Info.t
+  | Print of Id.t * Info.t
+  | Mul of Id.t * Id.t * Info.t
+  | Div of Id.t * Id.t * Info.t
 and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }
 
 let to_string x =
@@ -34,6 +42,10 @@ let to_string x =
         in
         match k with
         | Unit info -> Printf.sprintf "%sUnit\t#%s" pre (Info.to_string info)
+        | IntRead info -> Printf.sprintf "%sIntRead\t#%s" pre (Info.to_string info)
+        | FloatRead info -> Printf.sprintf "%sFloatRead\t#%s" pre (Info.to_string info)
+        | FAbs(t, info) -> Printf.sprintf "%sFAbs\t#%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre t)
+        | Print(t, info) -> Printf.sprintf "%sPrint\t#%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre t)
         | Int(i, info) -> Printf.sprintf "%sINT %d\t#%s" pre i (Info.to_string info)
         | Float( f , info)-> Printf.sprintf "%sFLOAT %f\t#%s" pre f (Info.to_string info)
         | Neg(t, info) -> Printf.sprintf "%sNEG\t#%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre t)
@@ -43,6 +55,10 @@ let to_string x =
         | Sub (x, y, info) -> Printf.sprintf "%sSUB\t#%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
         | FNeg( t , info)-> Printf.sprintf "%sFNEG\t#%s\n%s" pre  (Info.to_string info) (Id.to_string_pre npre t)
         | FAdd (x, y, info) -> Printf.sprintf "%sFADD\t#%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
+        | Mul (x, y, info) -> Printf.sprintf "%sMul\t#%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
+        | Div (x, y, info) -> Printf.sprintf "%sDiv\t#%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
+        | ShiftLeft (x, y, info) -> Printf.sprintf "%sShiftLeft\t#%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
+        | ShiftRight (x, y, info) -> Printf.sprintf "%sShiftRight\t#%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
         | FSub (x, y, info) -> Printf.sprintf "%sFSUB\t#%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
         | FMul (x, y, info) -> Printf.sprintf "%sFMUL\t#%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
         | FDiv (x, y, info) -> Printf.sprintf "%sFDIV\t#%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
@@ -75,11 +91,23 @@ let to_string x =
     to_string_pre "" x
 
 let rec fv = function (* 式に出現する（自由な）変数 (caml2html: knormal_fv) *)
-  | Unit (_) | Int(_, _) | Float(_, _) | ExtArray(_, _) -> S.empty
+  | Unit (_) | Int(_, _) | Float(_, _) | ExtArray(_, _)
+  | IntRead _
+  | FloatRead _
+  -> S.empty
   | Neg(x, _) | FNeg(x, _)
   | Four(x, _) | Half(x, _)
+  | FAbs(x, _)
+  | Print(x, _)
   -> S.singleton x
-  | Add(x, y, _) | Sub(x, y, _) | FAdd(x, y, _) | FSub(x, y, _) | FMul(x, y, _) | FDiv(x, y, _) | Get(x, y, _) -> S.of_list [x; y]
+
+  | Add(x, y, _) | Sub(x, y, _) | FAdd(x, y, _) | FSub(x, y, _) | FMul(x, y, _) | FDiv(x, y, _) | Get(x, y, _)
+  | Mul(x, y, _)
+  | Div(x, y, _)
+  | ShiftLeft(x, y, _)
+  | ShiftRight(x, y, _)
+  -> S.of_list [x; y]
+
   | IfEq(x, y, e1, e2, _) | IfLE(x, y, e1, e2, _) -> S.add x (S.add y (S.union (fv e1) (fv e2)))
   | Let((x, t), e1, e2, _) -> S.union (fv e1) (S.remove x (fv e2))
   | Var(x, _) -> S.singleton x
@@ -101,12 +129,18 @@ let insert_let (e, t) k info = (* letを挿入する補助関数 (caml2html: knormal_inse
 
 let rec generate env = function (* K正規化ルーチン本体 (caml2html: knormal_g) *)
   | Syntax.Unit info -> Unit info, Type.Unit info
+  | Syntax.IntRead info -> IntRead info, Type.Int info
+  | Syntax.FloatRead info -> FloatRead info, Type.Float info
   | Syntax.Bool(b, info) -> Int((if b then 1 else 0), info), Type.Int info (* 論理値true, falseを整数1, 0に変換 (caml2html: knormal_bool) *)
   | Syntax.Int(i, info) -> Int(i, info), Type.Int info
   | Syntax.Float(d, info) -> Float(d, info), Type.Float info
   | Syntax.Not(e, info) -> generate env (Syntax.If(e, Syntax.Bool(false, info), Syntax.Bool(true, info), info))
   | Syntax.Four (e, info) ->
           insert_let (generate env e) (fun x -> Four(x, info), Type.Int info) info
+  | Syntax.FAbs (e, info) ->
+          insert_let (generate env e) (fun x -> FAbs(x, info), Type.Float info) info
+  | Syntax.Print (e, info) ->
+          insert_let (generate env e) (fun x -> Print(x, info), Type.Unit info) info
   | Syntax.Half (e, info) ->
           insert_let (generate env e) (fun x -> Half(x, info), Type.Int info) info
   | Syntax.Neg(e, info) ->
@@ -116,6 +150,22 @@ let rec generate env = function (* K正規化ルーチン本体 (caml2html: knormal_g) *)
       insert_let (generate env e1)
 	(fun x -> insert_let (generate env e2)
 	    (fun y -> Add(x, y, info), Type.Int info) info) info
+  | Syntax.Mul(e1, e2, info) -> (* 足し算のK正規化 (caml2html: knormal_add) *)
+      insert_let (generate env e1)
+	(fun x -> insert_let (generate env e2)
+	    (fun y -> Mul(x, y, info), Type.Int info) info) info
+  | Syntax.Div(e1, e2, info) -> (* 足し算のK正規化 (caml2html: knormal_add) *)
+      insert_let (generate env e1)
+	(fun x -> insert_let (generate env e2)
+	    (fun y -> Div(x, y, info), Type.Int info) info) info
+  | Syntax.ShiftLeft(e1, e2, info) -> (* 足し算のK正規化 (caml2html: knormal_add) *)
+      insert_let (generate env e1)
+	(fun x -> insert_let (generate env e2)
+	    (fun y -> ShiftLeft(x, y, info), Type.Int info) info) info
+  | Syntax.ShiftRight(e1, e2, info) -> (* 足し算のK正規化 (caml2html: knormal_add) *)
+      insert_let (generate env e1)
+	(fun x -> insert_let (generate env e2)
+	    (fun y -> ShiftRight(x, y, info), Type.Int info) info) info
   | Syntax.Sub(e1, e2, info) ->
       insert_let (generate env e1)
 	(fun x -> insert_let (generate env e2)
@@ -262,6 +312,14 @@ let get_constructor_code = function
   | ExtFunApp _ -> 22
   | Four _ -> 23
   | Half _ -> 24
+  | FAbs _ -> 25
+  | Print _ -> 26
+  | ShiftLeft _ -> 27
+  | ShiftRight _ -> 28
+  | Mul _ -> 29
+  | Div _ -> 30
+  | IntRead _ -> 31
+  | FloatRead _ -> 32
 
 
 let id_type_compare (id1, type1) (id2, type2) =
@@ -271,15 +329,20 @@ let id_type_compare (id1, type1) (id2, type2) =
 
 (*expression compare*)
 let rec compare x y = match x, y with
-    | Unit _, Unit _ -> 0
+    | Unit _, Unit _
+    | IntRead _, IntRead _
+    | FloatRead _, FloatRead _ -> 0
     | Int(a, _), Int(b, _) -> Pervasives.compare a b
     | Float(a, _), Float(b, _) -> Pervasives.compare a b
 
     | Neg (a, _), Neg(b, _)
     | FNeg (a, _), FNeg(b, _)
     -> Id.compare b a
+
     | Var (a, _), Var(b, _)
     | ExtArray(a, _), ExtArray(b, _)
+    | Print(a, _), Print(b, _)
+    | FAbs(a, _), FAbs(b, _)
     -> Id.compare a b
 
     | Add (a1, b1, _), Add (a2, b2, _)
@@ -289,6 +352,10 @@ let rec compare x y = match x, y with
     | FMul(a1, b1, _), FMul (a2, b2, _)
     | FDiv(a1, b1, _), FDiv (a2, b2, _)
     | Get(a1, b1, _), Get(a2, b2, _)
+    | ShiftLeft(a1, b1, _), ShiftLeft(a2, b2, _)
+    | ShiftRight(a1, b1, _), ShiftRight(a2, b2, _)
+    | Div(a1, b1, _), Div(a2, b2, _)
+    | Mul(a1, b1, _), Mul(a2, b2, _)
     -> Common.list_compare [a1; b1] [a2; b2] Id.compare
 
     | Put(a1, b1, c1, _), Put(a2, b2, c2, _)
@@ -331,4 +398,12 @@ let rec compare x y = match x, y with
             if cmp1 != 0 then cmp1 else
                 compare e1 e2
 
-    | _, _ -> Pervasives.compare (get_constructor_code x) (get_constructor_code y)
+    | _, _ ->
+            let code_x = get_constructor_code x
+            in
+            let code_y = get_constructor_code y
+            in
+            if code_x = code_y then
+                failwith "equivalent KNormal.t construct code auto comparison found. Please check KNormal.compare"
+            else
+                Pervasives.compare code_x code_y

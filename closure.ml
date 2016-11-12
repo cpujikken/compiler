@@ -1,14 +1,27 @@
 type closure = { entry : Id.l; actual_fv : Id.t list }
 type t = (* クロージャ変換後の式 (caml2html: closure_t) *)
   | Unit of Info.t
+  | IntRead of Info.t
+  | FloatRead of Info.t
   | Int of int * Info.t
   | Float of float * Info.t
   | Neg of Id.t * Info.t
+  | Print of Id.t * Info.t
   | Four of Id.t * Info.t
   | Half of Id.t * Info.t
-  | Add of Id.t * Id.t * Info.t
+  | Add
+  of Id.t * Id.t * Info.t
+  | ShiftLeft
+  of Id.t * Id.t * Info.t
+  | ShiftRight
+  of Id.t * Id.t * Info.t
+  | Div
+  of Id.t * Id.t * Info.t
+  | Mul
+  of Id.t * Id.t * Info.t
   | Sub of Id.t * Id.t * Info.t
   | FNeg of Id.t * Info.t
+  | FAbs of Id.t * Info.t
   | FAdd of Id.t * Id.t * Info.t
   | FSub of Id.t * Id.t * Info.t
   | FMul of Id.t * Id.t * Info.t
@@ -33,12 +46,24 @@ type fundef = { name : Id.l * Type.t;
 type prog = Prog of fundef list * t
 
 let rec fv = function
-  | Unit _ | Int(_) | Float(_) | ExtArray(_) -> S.empty
+  | Unit _
+  | IntRead _
+  | FloatRead _
+  | Int(_) | Float(_) | ExtArray(_) -> S.empty
+
   | Neg(x, info)
+  | Print(x, info)
   | Four(x, info)
   | Half(x, info)
-  | FNeg(x, info) -> S.singleton x
-  | Add(x, y, info) | Sub(x, y, info) | FAdd(x, y, info) | FSub(x, y, info) | FMul(x, y, info) | FDiv(x, y, info) | Get(x, y, info) -> S.of_list [x; y]
+  | FNeg(x, info)
+  | FAbs(x, info) -> S.singleton x
+
+  | Add(x, y, info)
+  | ShiftLeft(x, y, info)
+  | ShiftRight(x, y, info)
+  | Div(x, y, info)
+  | Mul(x, y, info)
+  | Sub(x, y, info) | FAdd(x, y, info) | FSub(x, y, info) | FMul(x, y, info) | FDiv(x, y, info) | Get(x, y, info) -> S.of_list [x; y]
   | IfEq(x, y, e1, e2, info)| IfLE(x, y, e1, e2, info) -> S.add x (S.add y (S.union (fv e1) (fv e2)))
   | Let((x, t), e1, e2, info) -> S.union (fv e1) (S.remove x (fv e2))
   | Var(x, info) -> S.singleton x
@@ -55,14 +80,22 @@ let toplevel : fundef list ref = ref []
  *)
 let rec generate env known = function (* クロージャ変換ルーチン本体 (caml2html: closure_g) *)
   | KNormal.Unit info -> Unit info
+  | KNormal.IntRead info -> IntRead info
+  | KNormal.FloatRead info -> FloatRead info
   | KNormal.Int(i, info) -> Int(i, info)
   | KNormal.Float(d, info) -> Float(d, info)
   | KNormal.Neg(x, info) -> Neg(x, info)
+  | KNormal.Print(x, info) -> Print(x, info)
   | KNormal.Four(x, info) -> Four(x, info)
   | KNormal.Half(x, info) -> Half(x, info)
   | KNormal.Add(x, y, info) -> Add(x, y, info)
+  | KNormal.ShiftLeft(x, y, info) -> ShiftLeft(x, y, info)
+  | KNormal.ShiftRight(x, y, info) -> ShiftRight(x, y, info)
+  | KNormal.Div(x, y, info) -> Div(x, y, info)
+  | KNormal.Mul(x, y, info) -> Mul(x, y, info)
   | KNormal.Sub(x, y, info) -> Sub(x, y, info)
   | KNormal.FNeg(x, info) -> FNeg(x, info)
+  | KNormal.FAbs(x, info) -> FAbs(x, info)
   | KNormal.FAdd(x, y, info) -> FAdd(x, y, info)
   | KNormal.FSub(x, y, info) -> FSub(x, y, info)
   | KNormal.FMul(x, y, info) -> FMul(x, y, info)
@@ -184,15 +217,23 @@ let f e =
 
 let get_info = function
   | Unit info
+  | IntRead info
+  | FloatRead info
   | Int (_, info)
   | Float(_, info)
   | Neg(_, info)
+  | Print(_, info)
   | Four(_, info)
   | Half(_, info)
   | Add (_, _, info)
   | Sub (_, _, info)
   | FNeg(_, info)
+  | FAbs(_, info)
   | FAdd (_, _, info)
+  | ShiftLeft (_, _, info)
+  | ShiftRight (_, _, info)
+  | Div (_, _, info)
+  | Mul (_, _, info)
   | FSub (_, _, info)
   | FMul (_, _, info)
   | FDiv (_, _, info)
@@ -216,14 +257,22 @@ let to_string x =
         in
         match k with
         | Unit info -> Printf.sprintf "%sUnit\t#%s" pre (Info.to_string info)
+        | IntRead info -> Printf.sprintf "%sIntRead\t#%s" pre (Info.to_string info)
+        | FloatRead info -> Printf.sprintf "%sFloatRead\t#%s" pre (Info.to_string info)
         | Int(i, info) -> Printf.sprintf "%sINT %d\t#%s" pre i (Info.to_string info)
         | Float( f , info)-> Printf.sprintf "%sFLOAT %f\t#%s" pre f (Info.to_string info)
         | Neg(t, info) -> Printf.sprintf "%sNEG\t#%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre t)
+        | Print(t, info) -> Printf.sprintf "%sPrint\t#%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre t)
         | Four(t, info) -> Printf.sprintf "%sFOUR\t#%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre t)
         | Half(t, info) -> Printf.sprintf "%sHALF\t#%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre t)
         | Add (x, y, info) -> Printf.sprintf "%sADD\t#%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
+        | ShiftLeft (x, y, info) -> Printf.sprintf "%sSHIFT_LEFT\t#%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
+        | ShiftRight (x, y, info) -> Printf.sprintf "%sSHIFT_RIGHT\t#%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
+        | Div (x, y, info) -> Printf.sprintf "%sDIV\t#%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
+        | Mul (x, y, info) -> Printf.sprintf "%sMUL\t#%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
         | Sub (x, y, info) -> Printf.sprintf "%sSUB\t#%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
         | FNeg( t , info)-> Printf.sprintf "%sFNEG\t#%s\n%s" pre  (Info.to_string info) (Id.to_string_pre npre t)
+        | FAbs( t , info)-> Printf.sprintf "%sFABS\t#%s\n%s" pre  (Info.to_string info) (Id.to_string_pre npre t)
         | FAdd (x, y, info) -> Printf.sprintf "%sFADD\t#%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
         | FSub (x, y, info) -> Printf.sprintf "%sFSUB\t#%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
         | FMul (x, y, info) -> Printf.sprintf "%sFMUL\t#%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)

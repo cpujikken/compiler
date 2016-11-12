@@ -19,6 +19,12 @@ let addtyp x info = (x, Type.gentyp info)
 %token AST
 %token SLASH_DOT
 %token SLASH
+%token LTLT
+%token GTGT
+%token READ_FLOAT
+%token READ_INT
+%token PRINT_BYTE
+%token ABS_FLOAT
 %token EQUAL
 %token LESS_GREATER
 %token LESS_EQUAL
@@ -54,6 +60,7 @@ let addtyp x info = (x, Type.gentyp info)
 %right prec_unary_minus
 %left prec_app
 %left DOT
+%left LTLT GTGT ABS_FLOAT
 
 /* (* 開始記号の定義 *) */
 %type <Syntax.t> exp
@@ -92,6 +99,18 @@ exp: /* (* 一般の式 (caml2html: parser_exp) *) */
     { Add($1,$3, (Info.parsing_get()))  }
 | exp MINUS exp
     { Sub($1, $3, (Info.parsing_get())  )}
+    | exp LTLT exp
+        { ShiftLeft($1, $3, Info.parsing_get())}
+    | exp GTGT exp
+        {ShiftRight ($1, $3, Info.parsing_get())}
+    | READ_FLOAT LPAREN RPAREN
+        { FloatRead(Info.parsing_get())}
+    | READ_INT LPAREN RPAREN
+        {IntRead(Info.parsing_get())}
+    | PRINT_BYTE exp
+        {Print ($2, Info.parsing_get())}
+    | ABS_FLOAT exp
+        {FAbs($2, Info.parsing_get())}
 | exp EQUAL exp
     { Eq($1, $3, (Info.parsing_get())  )}
 | exp LESS_GREATER exp
@@ -121,7 +140,7 @@ exp: /* (* 一般の式 (caml2html: parser_exp) *) */
         if $3 = 4 then
             Four($1, Info.parsing_get ())
         else
-            failwith (Printf.sprintf "%s: only support multiplication by 4" (Info.to_string (Info.parsing_get())))
+            Mul($1, Int ($3, Info.parsing_get()), Info.parsing_get())
     }
 | exp SLASH_DOT exp
     { FDiv($1, $3, (Info.parsing_get())  )}
@@ -130,7 +149,15 @@ exp: /* (* 一般の式 (caml2html: parser_exp) *) */
         if $3 = 2 then
             Half ($1, Info.parsing_get())
         else
-            failwith (Printf.sprintf "%s: only support division by 2" (Info.to_string (Info.parsing_get())))
+            Div($1, Int ($3, Info.parsing_get()), Info.parsing_get())
+    }
+    | exp AST exp
+    {
+            Mul($1, $3, Info.parsing_get())
+    }
+    | exp SLASH exp
+    {
+            Div($1, $3, Info.parsing_get())
     }
 | LET BOOL EQUAL exp IN exp
     %prec prec_let

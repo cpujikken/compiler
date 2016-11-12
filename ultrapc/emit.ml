@@ -59,10 +59,20 @@ let rec g = function (* 命令列のアセンブリ生成 (caml2html: emit_g) *)
       g (dest, e)
 and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
     (* 末尾でなかったら計算結果をdestにセット (caml2html: emit_nontail) *)
-    | NonTail _, Nop -> ()
+    | _, Nop -> ()
+    | _, Print rs ->
+            append_cmd cmd_print [rs] info
 
     | NonTail rd, Add (ra, rb) ->
         append_cmd cmd_add [rd; ra; rb] info
+    | NonTail rd, ShiftLeft (ra, rb) ->
+        append_cmd cmd_shiftLeft [rd; ra; rb] info
+    | NonTail rd, ShiftRight (ra, rb) ->
+        append_cmd cmd_shiftRight [rd; ra; rb] info
+    | NonTail rd, Div (ra, rb) ->
+        append_cmd cmd_div [rd; ra; rb] info
+    | NonTail rd, Mul (ra, rb) ->
+        append_cmd cmd_mul [rd; ra; rb] info
     | NonTail rd, Sub (ra, rb) ->
         append_cmd cmd_sub [rd; ra; rb] info
     | NonTail rd, Addi (ra, Constant c) when rd = ra && c = 1->
@@ -93,6 +103,12 @@ and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
             append_cmd cmd_fMove [rd; rs] info
     | NonTail rd, FNeg(rs) ->
                 append_cmd cmd_fNeg2 [rd; rs] info
+    | NonTail rd, IntRead ->
+            append_cmd cmd_readInt [rd] info
+    | NonTail rd, FloatRead ->
+            append_cmd cmd_readFloat [rd] info
+    | NonTail rd, FAbs(rs) ->
+                append_cmd cmd_fAbs [rd; rs] info
     | NonTail rd, Four(rs) ->
             append_cmd cmd_four [rd; rs] info
     | NonTail rd, Half(rs) ->
@@ -105,13 +121,13 @@ and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
              append_cmd cmd_loadAbsolute [rd; Loc.to_string l1] info
     | NonTail rd, Load ( Absolute (l1, Some l2)) ->
             append_cmd cmd_loadAbsolute [rd; Loc.to_string l1; Loc.to_string l2] info
-    | NonTail _, Store (rd, Relative(r, loc)) ->
+    | _, Store (rd, Relative(r, loc)) ->
             append_cmd cmd_storeRelative [rd; r; Loc.to_string loc] info
-    | NonTail _, Store (rd, Dynamic(r1, s4, r2)) ->
+    | _, Store (rd, Dynamic(r1, s4, r2)) ->
             append_cmd cmd_storeDynamic [rd; r1; Cmd.int_to_string s4; r2] info
-    | NonTail _, Store (rd, Absolute (l1, None)) ->
+    | _, Store (rd, Absolute (l1, None)) ->
             append_cmd cmd_storeAbsolute [rd; Loc.to_string l1] info
-    | NonTail _, Store (rd, Absolute (l1, Some l2)) ->
+    | _, Store (rd, Absolute (l1, Some l2)) ->
             append_cmd cmd_storeAbsolute [rd; Loc.to_string l1; Loc.to_string l2] info
     | NonTail rd, FAdd (ra, rb) ->
         append_cmd cmd_fAdd [rd; ra; rb] info
@@ -129,22 +145,22 @@ and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
             append_cmd cmd_fLoadAbsolute [rd; Loc.to_string l1] info
     | NonTail rd, FLoad (Absolute (l1, Some l2 ))->
             append_cmd cmd_fLoadAbsolute [rd; Loc.to_string l1; Loc.to_string l2] info
-    | NonTail _, FStore (rd, Relative(r, loc)) ->
+    | _, FStore (rd, Relative(r, loc)) ->
             append_cmd cmd_fStoreRelative [rd; r; Loc.to_string loc] info
-    | NonTail _, FStore (rd, Dynamic(r1, s4, r2)) ->
+    | _, FStore (rd, Dynamic(r1, s4, r2)) ->
             append_cmd cmd_fStoreDynamic [rd; r1; Cmd.int_to_string s4; r2] info
-    | NonTail _, FStore (rd, Absolute (l1,None)) ->
+    | _, FStore (rd, Absolute (l1,None)) ->
             append_cmd cmd_fStoreAbsolute [rd; Loc.to_string l1] info
-    | NonTail _, FStore (rd, Absolute (l1,Some l2)) ->
+    | _, FStore (rd, Absolute (l1,Some l2)) ->
             append_cmd cmd_fStoreAbsolute [rd; Loc.to_string l1; Loc.to_string l2] info
 
-    | (NonTail _), Save(r, id) when List.mem r allregs && not (S.mem id !stackset) ->
+    | _, Save(r, id) when List.mem r allregs && not (S.mem id !stackset) ->
             save id;
             g' info (NonTail r, Load (Relative (reg_sp, Constant (offset id ))))
-    | NonTail _ , Save(r, id) when List.mem r allfregs && not (S.mem id !stackset) ->
+    | _ , Save(r, id) when List.mem r allfregs && not (S.mem id !stackset) ->
             save id;
             g' info (NonTail r, FLoad (Relative (reg_sp, Constant (offset id ))))
-    | NonTail _, Save(r, id) ->
+    | _, Save(r, id) ->
             if S.mem id !stackset then
                 ()
             else
@@ -157,9 +173,10 @@ and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
                 g' info (NonTail rd, FLoad (Relative (reg_sp, Constant (offset id))))
             else
                 failwith "invalid register for restore"
-    | Tail, (Nop | Add _ | Sub _ | Addi _ | Four _ | Half _ | Load _ | Store _ |  Move _ | MoveImm _ | Neg _ | FNeg _ |  Save _ | FMove _ as exp) ->
+    | Tail, (Add _ | ShiftLeft _ | ShiftRight _ | Div _ | Mul _ | IntRead
+    | Sub _ | Addi _ | Four _ | Half _ | Load _ |  Move _ | MoveImm _ | Neg _ | FNeg _ |  FMove _ as exp) ->
             g' info (NonTail reg_dump, exp)
-    | Tail, (FMul _ | FSub _ | FDiv _ | FAdd _  | FLoad _ | FStore _ as exp )->
+    | Tail, (FMul _ | FSub _ | FDiv _ | FAdd _  | FAbs _ | FLoad _ | FloatRead as exp )->
             g' info (NonTail freg_dump, exp)
     | Tail, (Restore (id) as exp )->
             ((match locate id with

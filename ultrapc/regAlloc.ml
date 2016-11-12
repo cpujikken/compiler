@@ -45,6 +45,10 @@ let rec source t = function
 and source' t = function
 
     | AsmReg.Add(x, y)
+    | AsmReg.ShiftLeft(x, y)
+    | AsmReg.ShiftRight(x, y)
+    | AsmReg.Div(x, y)
+    | AsmReg.Mul(x, y)
     | AsmReg.Sub (x, y)
     | AsmReg.FAdd (x, y)
     | AsmReg.FSub (x, y)
@@ -60,6 +64,8 @@ and source' t = function
     | AsmReg.FMove x
     | AsmReg.Neg x
     | AsmReg.FNeg x
+    | AsmReg.FAbs x
+    | AsmReg.Print x
     -> [x]
 
     | AsmReg.Load (addr)
@@ -83,7 +89,10 @@ and source' t = function
         | Type.Float _ -> [fregs.(0)]
         | _ -> [regs.(0)]
     )
+
     | AsmReg.Nop
+    | AsmReg.IntRead
+    | AsmReg.FloatRead
     | AsmReg.MoveImm _
     |AsmReg.Restore _
     | AsmReg.Save _
@@ -230,10 +239,16 @@ and generate' dest cont regenv info exp = (* 各命令のレジスタ割り当て (caml2html
     match exp with
     | Nop
     -> AsmReg.Ans(AsmReg.Nop, info), regenv
+    | IntRead
+    -> AsmReg.Ans(AsmReg.IntRead, info), regenv
+    | FloatRead
+    -> AsmReg.Ans(AsmReg.FloatRead, info), regenv
 
 
     | Neg r -> AsmReg.Ans(AsmReg.Neg (reg_finder r), info), regenv
-    | FNeg r -> AsmReg.Ans(AsmReg.FNeg (reg_finder r), info), regenv
+    | Print r -> AsmReg.Ans(AsmReg.Print (reg_finder r), info), regenv
+    | FNeg r -> AsmReg.Ans(AsmReg.FNeg (freg_finder r), info), regenv
+    | FAbs r -> AsmReg.Ans(AsmReg.FAbs (freg_finder r), info), regenv
     | Move r -> AsmReg.Ans(AsmReg.Move (reg_finder r), info), regenv
     | MoveImm loc -> AsmReg.Ans(AsmReg.MoveImm loc, info), regenv
     | Restore x ->
@@ -242,10 +257,40 @@ and generate' dest cont regenv info exp = (* 各命令のレジスタ割り当て (caml2html
             AsmReg.Ans(AsmReg.Addi (reg_finder reg, loc), info), regenv
 
     | Add (reg1, reg2) ->
-            AsmReg.Ans(AsmReg.Add(
-                reg_finder reg1,
-            reg_finder reg2
-    ), info), regenv
+            AsmReg.Ans(
+                AsmReg.Add(
+                    reg_finder reg1,
+                    reg_finder reg2
+                ), info
+            ), regenv
+    | ShiftLeft (reg1, reg2) ->
+            AsmReg.Ans(
+                AsmReg.ShiftLeft(
+                    reg_finder reg1,
+                    reg_finder reg2
+                ), info
+            ), regenv
+    | ShiftRight (reg1, reg2) ->
+            AsmReg.Ans(
+                AsmReg.ShiftRight(
+                    reg_finder reg1,
+                    reg_finder reg2
+                ), info
+            ), regenv
+    | Div (reg1, reg2) ->
+            AsmReg.Ans(
+                AsmReg.Div(
+                    reg_finder reg1,
+                    reg_finder reg2
+                ), info
+            ), regenv
+    | Mul (reg1, reg2) ->
+            AsmReg.Ans(
+                AsmReg.Mul(
+                    reg_finder reg1,
+                    reg_finder reg2
+                ), info
+            ), regenv
     | Sub (reg1, reg2) ->
             AsmReg.Ans(AsmReg.Sub(
                 reg_finder reg1,

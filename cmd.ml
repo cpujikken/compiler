@@ -123,6 +123,14 @@ let cmd_dec = "DEC"
 let cmd_cmp = "CMP"
 let cmd_fCmp = "FCMP"
 let cmd_fMove = "FMV"
+let cmd_readFloat = "RF"
+let cmd_readInt = "RI"
+let cmd_print = "PRINT"
+let cmd_fAbs = "FABS"
+let cmd_shiftLeft = "SL"
+let cmd_shiftRight = "SR"
+let cmd_div = "DIV"
+let cmd_mul = "MUL"
 
 let append_cmd_noinfo opcode operand_list =
     append (Command (opcode, operand_list, None))
