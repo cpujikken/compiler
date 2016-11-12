@@ -7,34 +7,6 @@ open Reg
 (* [XXX] Callがあったら、そこから先は無意味というか逆効果なので追わない。
          そのために「Callがあったかどうか」を返り値の第1要素に含める。 *)
 let rec target' src (dest, t) = function
-    | Add(Reg reg_zero, reg2) when reg2 = src ->
-        (match dest with
-        | Reg dest_reg ->
-            (
-            (
-                match t with
-                | Type.Unit _ -> failwith "invalid type when allocating register"
-                | Type.Float _ -> failwith "invalid type when allocating register"
-                | _ -> ()
-            );
-
-              false, [dest_reg]
-            )
-        |_ -> false, []
-        )
-
-    | FAdd(Reg reg_zero, reg) when reg = src ->
-        (
-            match dest with
-            | Reg dest_reg ->(
-                  (match t with
-                  | Type.Float _ -> ()
-                  | _ -> failwith "invalid type when allocating register"
-                  );
-              false, [dest_reg]
-            )
-            | _ -> false, []
-        )
     | IfEQ(_, _, e1, e2)
     | IfLT(_, _, e1, e2)
     | FIfEQ(_, _, e1, e2)
@@ -84,6 +56,10 @@ and source' t = function
     | AsmReg.Addi (x, _)
     | AsmReg.Four x
     | AsmReg.Half x
+    | AsmReg.Move x
+    | AsmReg.FMove x
+    | AsmReg.Neg x
+    | AsmReg.FNeg x
     -> [x]
 
     | AsmReg.Load (addr)
@@ -107,7 +83,11 @@ and source' t = function
         | Type.Float _ -> [fregs.(0)]
         | _ -> [regs.(0)]
     )
-    | _ -> []
+    | AsmReg.Nop
+    | AsmReg.MoveImm _
+    |AsmReg.Restore _
+    | AsmReg.Save _
+    -> []
 
 and source_addr = function
     | AsmReg.Relative (reg, _) -> [reg]
@@ -256,12 +236,6 @@ and generate' dest cont regenv info exp = (* 各命令のレジスタ割り当て (caml2html
     | FNeg r -> AsmReg.Ans(AsmReg.FNeg (reg_finder r), info), regenv
     | Move r -> AsmReg.Ans(AsmReg.Move (reg_finder r), info), regenv
     | MoveImm loc -> AsmReg.Ans(AsmReg.MoveImm loc, info), regenv
-    | JLink x
-    -> AsmReg.Ans(AsmReg.JLink x, info), regenv
-    | Link
-    -> AsmReg.Ans(AsmReg.Link, info), regenv
-    | Out ->
-        AsmReg.Ans(AsmReg.Out, info), regenv
     | Restore x ->
             AsmReg.Ans(AsmReg.Restore x, info), regenv
     | Addi(reg, loc) ->

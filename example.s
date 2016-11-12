@@ -4,8 +4,7 @@
 .align	8
 .text
 f.4:
-	MVI	%r02, $1	# example.ml#1:19->1:20
-	ADD	%r0, %r01, %r02	# example.ml#1:15->1:20
+	ADDI	%r0, %r01, $1	# example.ml#1:15->1:20
 min_caml_start:
 	MVI	%r01, $1	# example.ml#3:11->3:12
 	JLINK	$f.4	# example.ml#3:9->3:12

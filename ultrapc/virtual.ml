@@ -259,6 +259,7 @@ let fun_converter { Closure.name = (x , t); Closure.args = args; Closure.formal_
 (* プログラム全体の仮想マシンコード生成 (caml2html: virtual_f) *)
 let f (Closure.Prog(fundefs, e)) =
   data := [];
+  idata := [];
   let fundefs = List.map fun_converter fundefs in
   let e = generate M.empty e in
   Prog(!idata, !data, fundefs, e)

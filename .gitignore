@@ -3,7 +3,6 @@
 /min-caml
 /*.cmo
 /example.s
-/example
 /test/*.cmo
 /test/*.s
 /*.cmi

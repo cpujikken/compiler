@@ -140,12 +140,6 @@ and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
             append_cmd cmd_fStoreAbsolute [rd; Loc.to_string l1] info
     | NonTail _, FStore (rd, Absolute (l1,Some l2)) ->
             append_cmd cmd_fStoreAbsolute [rd; Loc.to_string l1; Loc.to_string l2] info
-    | NonTail _, JLink addr26 ->
-            append_cmd cmd_jLink [int_to_string addr26] info
-    | NonTail _, Link ->
-            append_cmd cmd_link [] info
-    | NonTail _, Out ->
-            append_cmd cmd_out [] info
 
     | (NonTail _), Save(r, id) when List.mem r allregs && not (S.mem id !stackset) ->
             save id;
@@ -166,7 +160,7 @@ and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
                 g' info (NonTail rd, FLoad (Relative (reg_sp, Constant (offset id))))
             else
                 failwith "invalid register for restore"
-    | Tail, (Nop | Add _ | Sub _ | Addi _ | Four _ | Half _ | Load _ | Store _ | JLink _ | Link |  Move _ | MoveImm _ | Neg _ | FNeg _ |  Out | Save _ | FMove _ as exp) ->
+    | Tail, (Nop | Add _ | Sub _ | Addi _ | Four _ | Half _ | Load _ | Store _ |  Move _ | MoveImm _ | Neg _ | FNeg _ |  Save _ | FMove _ as exp) ->
             g' info (NonTail reg_dump, exp)
     | Tail, (FMul _ | FSub _ | FDiv _ | FAdd _  | FLoad _ | FStore _ as exp )->
             g' info (NonTail freg_dump, exp)
