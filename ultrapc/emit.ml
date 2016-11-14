@@ -427,10 +427,10 @@ let f (Prog(idata, fdata, fundefs, e)) =
 
     (*.start label: starting point*)
     append (Directive (start_directive, Some entry_label, None));
-    append (Directive (align_directive, Some (string_of_int align_length), None));
 
     (*data section*)
     append (Directive (data_directive, None, None));
+    append (Directive (align_directive, Some (string_of_int align_length), None));
 
     (*print double floating point constant labels*)
     (*use fold_left by flavor of tail recursive optimization*)
@@ -449,7 +449,7 @@ let f (Prog(idata, fdata, fundefs, e)) =
     )
     idata;
 
-    append (Directive (align_directive, Some "8", None));
+    append (Directive (align_directive, Some (string_of_int align_length), None));
   (*end of data section*)
 
   (*begin coding section*)
