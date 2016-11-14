@@ -52,15 +52,15 @@ let rec shuffle regs =
   | regs, acyc -> acyc  @ shuffle regs
 
 type dest = Tail | NonTail of Reg.t (* 末尾かどうかを表すデータ型 (caml2html: emit_dest) *)
-let rec g = function (* 命令列のアセンブリ生成 (caml2html: emit_g) *)
-  | dest, Ans(exp, info) -> g' info (dest, exp)
+let rec generate = function (* 命令列のアセンブリ生成 (caml2html: emit_g) *)
+  | dest, Ans(exp, info) -> generate' info (dest, exp)
   | dest, Let((x, t), exp, e, info) ->
-      g' info (NonTail(x), exp);
-      g (dest, e)
-and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
+      generate' info (NonTail(x), exp);
+      generate (dest, e)
+and generate' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
     (* 末尾でなかったら計算結果をdestにセット (caml2html: emit_nontail) *)
-    | _, Nop -> ()
-    | _, Print rs ->
+    | NonTail _, Nop -> ()
+    | NonTail _, Print rs ->
             append_cmd cmd_print [rs] info
 
     | NonTail rd, Add (ra, rb) ->
@@ -80,7 +80,7 @@ and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
     | NonTail rd, Addi (ra, Constant c) when rd = ra && c = -1->
             append_cmd cmd_dec [rd] info
     | NonTail rd, Addi (ra, Constant c) when c = 0 ->
-            g' info (NonTail rd, Move ra);
+            generate' info (NonTail rd, Move ra);
     | NonTail rd, Move (rs) when rd = rs->
             ()
     | NonTail rd, Move (rs) ->
@@ -121,13 +121,13 @@ and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
              append_cmd cmd_loadAbsolute [rd; Loc.to_string l1] info
     | NonTail rd, Load ( Absolute (l1, Some l2)) ->
             append_cmd cmd_loadAbsolute [rd; Loc.to_string l1; Loc.to_string l2] info
-    | _, Store (rd, Relative(r, loc)) ->
+    | NonTail _, Store (rd, Relative(r, loc)) ->
             append_cmd cmd_storeRelative [rd; r; Loc.to_string loc] info
-    | _, Store (rd, Dynamic(r1, s4, r2)) ->
+    | NonTail _, Store (rd, Dynamic(r1, s4, r2)) ->
             append_cmd cmd_storeDynamic [rd; r1; Cmd.int_to_string s4; r2] info
-    | _, Store (rd, Absolute (l1, None)) ->
+    | NonTail _, Store (rd, Absolute (l1, None)) ->
             append_cmd cmd_storeAbsolute [rd; Loc.to_string l1] info
-    | _, Store (rd, Absolute (l1, Some l2)) ->
+    | NonTail _, Store (rd, Absolute (l1, Some l2)) ->
             append_cmd cmd_storeAbsolute [rd; Loc.to_string l1; Loc.to_string l2] info
     | NonTail rd, FAdd (ra, rb) ->
         append_cmd cmd_fAdd [rd; ra; rb] info
@@ -145,43 +145,47 @@ and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
             append_cmd cmd_fLoadAbsolute [rd; Loc.to_string l1] info
     | NonTail rd, FLoad (Absolute (l1, Some l2 ))->
             append_cmd cmd_fLoadAbsolute [rd; Loc.to_string l1; Loc.to_string l2] info
-    | _, FStore (rd, Relative(r, loc)) ->
+    | NonTail _, FStore (rd, Relative(r, loc)) ->
             append_cmd cmd_fStoreRelative [rd; r; Loc.to_string loc] info
-    | _, FStore (rd, Dynamic(r1, s4, r2)) ->
+    | NonTail _, FStore (rd, Dynamic(r1, s4, r2)) ->
             append_cmd cmd_fStoreDynamic [rd; r1; Cmd.int_to_string s4; r2] info
-    | _, FStore (rd, Absolute (l1,None)) ->
+    | NonTail _, FStore (rd, Absolute (l1,None)) ->
             append_cmd cmd_fStoreAbsolute [rd; Loc.to_string l1] info
-    | _, FStore (rd, Absolute (l1,Some l2)) ->
+    | NonTail _, FStore (rd, Absolute (l1,Some l2)) ->
             append_cmd cmd_fStoreAbsolute [rd; Loc.to_string l1; Loc.to_string l2] info
 
-    | _, Save(r, id) when List.mem r allregs && not (S.mem id !stackset) ->
+    | NonTail _, Save(r, id) when List.mem r allregs && not (S.mem id !stackset) ->
             save id;
-            g' info (NonTail r, Load (Relative (reg_sp, Constant (offset id ))))
-    | _ , Save(r, id) when List.mem r allfregs && not (S.mem id !stackset) ->
+            generate' info (NonTail r, Load (Relative (reg_sp, Constant (offset id ))))
+    | NonTail _ , Save(r, id) when List.mem r allfregs && not (S.mem id !stackset) ->
             save id;
-            g' info (NonTail r, FLoad (Relative (reg_sp, Constant (offset id ))))
-    | _, Save(r, id) ->
+            generate' info (NonTail r, FLoad (Relative (reg_sp, Constant (offset id ))))
+    | NonTail _, Save(r, id) ->
             if S.mem id !stackset then
                 ()
             else
                 failwith "invalid register for saving"
 
     | NonTail rd, Restore id when List.mem rd allregs ->
-            g' info (NonTail rd, Load (Relative (reg_sp, Constant(offset id))))
+            generate' info (NonTail rd, Load (Relative (reg_sp, Constant(offset id))))
     | NonTail rd, Restore id ->
             if  List.mem rd allfregs then
-                g' info (NonTail rd, FLoad (Relative (reg_sp, Constant (offset id))))
+                generate' info (NonTail rd, FLoad (Relative (reg_sp, Constant (offset id))))
             else
                 failwith "invalid register for restore"
     | Tail, (Add _ | ShiftLeft _ | ShiftRight _ | Div _ | Mul _ | IntRead
-    | Sub _ | Addi _ | Four _ | Half _ | Load _ |  Move _ | MoveImm _ | Neg _ | FNeg _ |  FMove _ as exp) ->
-            g' info (NonTail reg_dump, exp)
+    | Sub _ | Addi _ | Four _ | Half _ | Load _ |  Move _ | MoveImm _ | Neg _ | FNeg _ |  FMove _ | Nop | Print _
+    | Store _ | FStore _ | Save _
+    as exp) ->
+            generate' info (NonTail reg_dump, exp);
+            append_cmd cmd_link [] info
     | Tail, (FMul _ | FSub _ | FDiv _ | FAdd _  | FAbs _ | FLoad _ | FloatRead as exp )->
-            g' info (NonTail freg_dump, exp)
+            generate' info (NonTail freg_dump, exp);
+            append_cmd cmd_link [] info
     | Tail, (Restore (id) as exp )->
             ((match locate id with
-            | [i] -> g' info (NonTail(reg_dump), exp)
-            | [i; j] when i + 1 = j -> g' info (NonTail (freg_dump), exp)
+            | [i] -> generate' info (NonTail(reg_dump), exp)
+            | [i; j] when i + 1 = j -> generate' info (NonTail (freg_dump), exp)
             | _ -> failwith "invalid register for restore"
             );
             append_cmd cmd_link [] info
@@ -193,10 +197,10 @@ and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
             append_cmd cmd_jumpZero [Cmd.label_to_string b_eq] info;
             let stackset_backup = !stackset
             in
-                g (Tail, e2);
+                generate (Tail, e2);
                 append (Label (b_eq, None));
                 stackset := stackset_backup;
-                g (Tail, e1);
+                generate (Tail, e1);
     | Tail, IfLT(r1, r2, e1, e2) ->
           append_cmd cmd_cmp [reg_dump; r1; r2] info;
           let b_lt = fst (Id.genid("if_lt", info))
@@ -204,10 +208,10 @@ and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
             append_cmd cmd_jumpZero [Cmd.label_to_string b_lt] info;
             let stackset_backup = !stackset
             in
-                g (Tail, e2);
+                generate (Tail, e2);
                 append (Label (b_lt, None));
                 stackset := stackset_backup;
-                g (Tail, e1);
+                generate (Tail, e1);
     | Tail, FIfEQ(r1, r2, e1, e2) ->
             append_cmd cmd_fCmp [r1; r2; int_to_string 0] info;
           let b_eq = fst (Id.genid("if_eq", info))
@@ -215,10 +219,10 @@ and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
             append_cmd cmd_fJumpEqual [Cmd.label_to_string b_eq] info;
             let stackset_backup = !stackset
             in
-                g (Tail, e2);
+                generate (Tail, e2);
                 append (Label (b_eq, None));
                 stackset := stackset_backup;
-                g (Tail, e1);
+                generate (Tail, e1);
     | Tail, FIfLT(r1, r2, e1, e2) ->
             append_cmd cmd_fCmp [r1; r2] info;
           let b_flt = fst (Id.genid("if_flt", info))
@@ -226,10 +230,10 @@ and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
             append_cmd cmd_fJumpLT [Cmd.label_to_string b_flt] info;
             let stackset_backup = !stackset
             in
-                g (Tail, e2);
+                generate (Tail, e2);
                 append (Label (b_flt, None));
                 stackset := stackset_backup;
-                g (Tail, e1);
+                generate (Tail, e1);
     | NonTail rd as dest, IfEQ(r1, r2, e1, e2) ->
           append_cmd cmd_xor [r1; r2] info;
           let b_eq = fst (Id.genid("if_eq", info))
@@ -239,7 +243,7 @@ and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
             append_cmd cmd_jumpZero [Cmd.label_to_string b_eq] info;
             let stackset_backup = !stackset
             in
-                g (dest, e2);
+                generate (dest, e2);
                 let stackset1 = !stackset
                 in
                     (*continue after comparison*)
@@ -248,7 +252,7 @@ and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
                     append (Label (b_eq, None));
                     stackset := stackset_backup;
                     (*if equal*)
-                    g (dest, e1);
+                    generate (dest, e1);
                     append (Label (b_cont, None));
                     let stackset2 = !stackset
                     in
@@ -262,7 +266,7 @@ and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
             append_cmd cmd_jumpZero [Cmd.label_to_string b_lt] info;
             let stackset_backup = !stackset
             in
-                g (dest, e2);
+                generate (dest, e2);
                 let stackset1 = !stackset
                 in
                     (*continue after comparison*)
@@ -271,7 +275,7 @@ and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
                     append (Label (b_lt, None));
                     stackset := stackset_backup;
                     (*if equal*)
-                    g (dest, e1);
+                    generate (dest, e1);
                     append (Label (b_cont, None));
                     let stackset2 = !stackset
                     in
@@ -285,7 +289,7 @@ and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
             append_cmd cmd_fJumpEqual [Cmd.label_to_string b_feq] info;
             let stackset_backup = !stackset
             in
-                g (dest, e2);
+                generate (dest, e2);
                 let stackset1 = !stackset
                 in
                     (*continue after comparison*)
@@ -294,7 +298,7 @@ and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
                     append (Label (b_feq, None));
                     stackset := stackset_backup;
                     (*if equal*)
-                    g (dest, e1);
+                    generate (dest, e1);
                     append (Label (b_cont, None));
                     let stackset2 = !stackset
                     in
@@ -308,7 +312,7 @@ and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
             append_cmd cmd_fJumpLT [Cmd.label_to_string b_flt] info;
             let stackset_backup = !stackset
             in
-                g (dest, e2);
+                generate (dest, e2);
                 let stackset1 = !stackset
                 in
                     (*continue after comparison*)
@@ -317,57 +321,57 @@ and g' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
                     append (Label (b_flt, None));
                     stackset := stackset_backup;
                     (*if equal*)
-                    g (dest, e1);
+                    generate (dest, e1);
                     append (Label (b_cont, None));
                     let stackset2 = !stackset
                     in
                     stackset := S.inter stackset1 stackset2;
     | Tail, CallCls(rcls, params, fparams) ->
-            g'_args [(rcls, reg_cl)] params fparams info;
+            generate'_args [(rcls, reg_cl)] params fparams info;
             append_cmd cmd_jumpCls [] info
     | Tail, CallDir(l, params, fparams) ->
-            g'_args [] params fparams info;
+            generate'_args [] params fparams info;
             append_cmd cmd_jump [Loc.to_string l] info
     | NonTail rd, CallCls(rcls, params, fparams) ->
             (*set param*)
-            g'_args [(rcls, reg_cl)] params fparams info;
+            generate'_args [(rcls, reg_cl)] params fparams info;
             let ss = stacksize ()
             in
             if ss > 0 then
                 (*increase stack*)
-                g' info (NonTail reg_sp, Addi (reg_sp, Constant ss));
+                generate' info (NonTail reg_sp, Addi (reg_sp, Constant ss));
             (*jump and link to closure register*)
             append_cmd cmd_jLinkCls [] info;
             (*the subroutines will automatically jump back here*)
             if ss > 0 then
                 (*decrease stack*)
-                g' info (NonTail reg_sp, Addi (reg_sp, Constant (-ss)));
+                generate' info (NonTail reg_sp, Addi (reg_sp, Constant (-ss)));
             (*returned value is set to reg_ret by convention*)
             if List.mem rd allregs && rd <> reg_ret then
-                g' info (NonTail rd, Move reg_ret)
+                generate' info (NonTail rd, Move reg_ret)
             else
                 if List.mem rd allfregs && rd <> freg_ret then
-                    g' info (NonTail rd, Move freg_ret)
+                    generate' info (NonTail rd, Move freg_ret)
     | NonTail rd, CallDir(l, params, fparams) ->
             (*set param*)
-            g'_args [] params fparams info;
+            generate'_args [] params fparams info;
             let ss = stacksize()
             in
             (*increase stack*)
             if ss > 0 then
-                g' info (NonTail reg_sp, Addi(reg_sp, Constant ss));
+                generate' info (NonTail reg_sp, Addi(reg_sp, Constant ss));
             (*call*)
             append_cmd cmd_jLink [Loc.to_string l] info;
             (*resstore stack*)
             if ss > 0 then
-                g' info (NonTail reg_sp, Addi (reg_sp, Constant (-ss)));
+                generate' info (NonTail reg_sp, Addi (reg_sp, Constant (-ss)));
             (*save returned value*)
             if List.mem rd allregs && rd <> reg_ret then
-                g' info (NonTail rd, Move reg_ret)
+                generate' info (NonTail rd, Move reg_ret)
             else
                 if List.mem rd allfregs && rd <> freg_ret then
-                    g' info (NonTail rd, FMove freg_ret)
-and g'_args x_reg_cl params fparams info =
+                    generate' info (NonTail rd, FMove freg_ret)
+and generate'_args x_reg_cl params fparams info =
     (*quick assertion*)
     if List.length params > Array.length regs - List.length x_reg_cl then
         failwith "number of parameter is larger than number of available registers";
@@ -388,11 +392,11 @@ and g'_args x_reg_cl params fparams info =
     (fun (y, r) ->
         match y, r with
         | Go reg, Hide ->
-                g' info (Tail , Store(reg, Relative (reg_sp, Constant stacksize_backup)))
+                generate' info (Tail , Store(reg, Relative (reg_sp, Constant stacksize_backup)))
         | Hide, Go reg ->
-                g' info (NonTail reg, Load (Relative(reg_sp, Constant stacksize_backup)))
+                generate' info (NonTail reg, Load (Relative(reg_sp, Constant stacksize_backup)))
         | Go r1, Go r2 ->
-                g' info (NonTail r1, Move r2)
+                generate' info (NonTail r1, Move r2)
         | _ -> ()
     )
     (shuffle (List.map (fun (x, y) -> Go x, Go y) param_regs));
@@ -406,20 +410,20 @@ and g'_args x_reg_cl params fparams info =
     (fun (y, fr) ->
         match y, fr with
         | Go reg, Hide ->
-                g' info (Tail , FStore(reg, Relative (reg_sp, Constant stacksize_backup)))
+                generate' info (Tail , FStore(reg, Relative (reg_sp, Constant stacksize_backup)))
         | Hide, Go reg ->
-                g' info (NonTail reg, FLoad (Relative(reg_sp, Constant stacksize_backup)))
+                generate' info (NonTail reg, FLoad (Relative(reg_sp, Constant stacksize_backup)))
         | Go r1, Go r2 ->
-                g' info (NonTail r1, FMove r2)
+                generate' info (NonTail r1, FMove r2)
         | _ -> ()
     )
     (shuffle (List.map (fun (x, y) -> Go x, Go y)  param_fregs))
 
-let h { name = x; args = _; fargs = _; body = e; ret = _ } =
+let print_fun { name = x; args = _; fargs = _; body = e; ret = _ } =
     append (Label (x, None));
   stackset := S.empty;
   stackmap := [];
-  g (Tail, e)
+  generate (Tail, e)
 
 (* type prog = Prog of (Id.l * float) list * fundef list * t *)
 let f (Prog(idata, fdata, fundefs, e)) =
@@ -455,14 +459,14 @@ let f (Prog(idata, fdata, fundefs, e)) =
   (*begin coding section*)
   append (Directive (text_directive, None, None));
   (*fun def*)
-  List.iter (fun fundef -> h fundef) fundefs;
+  List.iter (fun fundef -> print_fun fundef) fundefs;
 
   append (Label (entry_label, None));
 
     (*backup all regs*)
     stackset := S.empty;
     stackmap := [];
-    g (NonTail(reg_ret), e);
+    generate (NonTail(reg_ret), e);
 
     (*restore all regs*)
     append_cmd_noinfo cmd_out [] ;
