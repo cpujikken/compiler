@@ -202,7 +202,7 @@ and generate' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime)
                 stackset := stackset_backup;
                 generate (Tail, e1);
     | Tail, IfLT(r1, r2, e1, e2) ->
-          append_cmd cmd_cmp [reg_dump; r1; r2] info;
+          append_cmd cmd_cmp [r1; r2] info;
           let b_lt = fst (Id.genid("if_lt", info))
           in
             append_cmd cmd_jumpZero [Cmd.label_to_string b_lt] info;
