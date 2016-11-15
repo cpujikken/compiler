@@ -108,7 +108,6 @@ let cmd_fDiv = "FDIV"
 
 let cmd_jLink = "JLINK"
 let cmd_link = "LINK"
-let cmd_out = "OUT"
 let cmd_jumpCls = "JC"
 let cmd_jLinkCls = "JLINKC"
 let cmd_xor = "XOR"

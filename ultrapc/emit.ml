@@ -469,4 +469,4 @@ let f (Prog(idata, fdata, fundefs, e)) =
     generate (NonTail(reg_ret), e);
 
     (*restore all regs*)
-    append_cmd_noinfo cmd_out [] ;
+    append_cmd_noinfo cmd_link []
