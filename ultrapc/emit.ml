@@ -156,10 +156,10 @@ and generate' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime)
 
     | NonTail _, Save(r, id) when List.mem r allregs && not (S.mem id !stackset) ->
             save id;
-            generate' info (NonTail r, Load (Relative (reg_sp, Constant (offset id ))))
+            generate' info (NonTail r, Store (r, Relative (reg_sp, Constant (offset id ))))
     | NonTail _ , Save(r, id) when List.mem r allfregs && not (S.mem id !stackset) ->
             save id;
-            generate' info (NonTail r, FLoad (Relative (reg_sp, Constant (offset id ))))
+            generate' info (NonTail r, FStore (r, Relative (reg_sp, Constant (offset id ))))
     | NonTail _, Save(r, id) ->
             if S.mem id !stackset then
                 ()
