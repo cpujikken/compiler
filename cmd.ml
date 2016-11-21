@@ -138,7 +138,7 @@ let append_cmd opcode operand_list info =
 
 let label_to_string label = "$" ^ label
 let int_to_string i = "$" ^ string_of_int i
-let align_length = 8
+let align_length = 4
 let addr_mode_relative = 0
 let addr_mode_dynamic = 2
 let addr_mode_absolute = 3
