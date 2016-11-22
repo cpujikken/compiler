@@ -77,10 +77,12 @@ let rec occur r1 = function (* occur check (caml2html: typing_occur) *)
 let rec unify t1 t2 = (* 型が合うように、型変数への代入をする (caml2html: typing_unify) *)
   match t1, t2 with
   | Type.Unit _, Type.Unit _ | Type.Bool _ , Type.Bool _ | Type.Int _, Type.Int _ | Type.Float _, Type.Float _ -> ()
+
   | Type.Fun(t1s, t1', _), Type.Fun(t2s, t2', _) ->
       (try List.iter2 unify t1s t2s
       with Invalid_argument(_) -> raise (Unify(t1, t2)));
       unify t1' t2'
+
   | Type.Tuple(t1s, _), Type.Tuple(t2s, _) ->
       (try List.iter2 unify t1s t2s
       with Invalid_argument(_) -> raise (Unify(t1, t2)))
@@ -164,10 +166,46 @@ let rec generate env e = (* 型推論ルーチン (caml2html: typing_g) *)
 	let env = M.add x t env in
 	unify t (Type.Fun(List.map snd yts, generate (M.add_list yts env) e1, info));
 	generate env e2
+
     | App(e, es, info) -> (* 関数適用の型推論 (caml2html: typing_app) *)
-	let t = Type.gentyp info in
-	unify (generate env e) (Type.Fun(List.map (generate env) es, t, info));
-	t
+        let t = generate env e
+        in
+        let len = List.length es
+        in
+        (
+        match t with
+          | Type.Fun(t1s, _, _) when List.length t1s < len ->
+                      Format.eprintf "apply function\n%s\nwith too many arguments. Did you forget ;" (Syntax.to_string e);
+                    exit 1
+          | Type.Fun(t1s, _, _) when List.length t1s > len ->
+                          (*generate lambda*)
+                  let rec seperate_params beg en cnt = function
+                      | [] -> beg, en
+                      | param::rest ->
+                              if cnt >= len then
+                                  seperate_params beg (param::en) (cnt + 1) rest
+                              else
+                                  seperate_params (param::beg) en (cnt + 1) rest
+                  in
+                  let begin_params, end_params = seperate_params [] [] 0 t1s
+                  in
+                  let id = Id.genid ("part_lambda", info)
+                  in
+                  let rec_fun = Var(id, info)
+                  in
+                          generate env (
+                              LetRec (
+                                { name = id, Type.gentyp info ; args = end_params; body = App(rec_fun, end_params, info) },
+                                rec_fun,
+                                info
+                              )
+                          )
+          | _ ->
+            let t1 = Type.gentyp info
+            in
+                unify t (Type.Fun(List.map (generate env) es, t1, info));
+                t1
+        )
     | Tuple(es, info) -> Type.Tuple(List.map (generate env) es, info)
     | LetTuple(xts, e1, e2, info) ->
 	unify (Type.Tuple(List.map snd xts, info)) (generate env e1);
