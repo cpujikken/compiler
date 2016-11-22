@@ -16,3 +16,4 @@
 /example
 /example.s
 /test/*.s
+/test/ultrapc/*.s
