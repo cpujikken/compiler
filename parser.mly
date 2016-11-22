@@ -168,6 +168,7 @@ exp: /* (* ∞Ï»Ã§Œº∞ (caml2html: parser_exp) *) */
     %prec prec_let
     { Let(addtyp $2 (Info.parsing_get()), $4, $6, (Info.parsing_get())  )}
 | FUN formal_args MINUS_LT exp
+    %prec prec_let
     {
         let fname = Id.genid ("lambda", Info.parsing_get())
         in
