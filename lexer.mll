@@ -29,6 +29,8 @@ rule token = parse
     { BOOL(true) }
 | "false"
     { BOOL(false) }
+| "fun"
+    {FUN}
 | digit+ (* 整数を字句解析するルール (caml2html: lexer_int) *)
     { INT(int_of_string (Lexing.lexeme lexbuf)) }
 | digit+ ('.' digit*)? (['e' 'E'] ['+' '-']? digit+)?
@@ -39,6 +41,8 @@ rule token = parse
     { PLUS }
 | "-."
     { MINUS_DOT }
+| "->"
+    {MINUS_LT}
 | "+."
     { PLUS_DOT }
 | "*."

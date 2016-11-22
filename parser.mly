@@ -8,12 +8,14 @@ let addtyp x info = (x, Type.gentyp info)
 %token <bool> BOOL
 %token <int> INT
 %token <float> FLOAT
+%token FUN
 %token TRUE
 %token FALSE
 %token NOT
 %token MINUS
 %token PLUS
 %token MINUS_DOT
+%token MINUS_LT
 %token PLUS_DOT
 %token AST_DOT
 %token AST
@@ -165,6 +167,18 @@ exp: /* (* ∞Ï»Ã§Œº∞ (caml2html: parser_exp) *) */
 | LET IDENT EQUAL exp IN exp
     %prec prec_let
     { Let(addtyp $2 (Info.parsing_get()), $4, $6, (Info.parsing_get())  )}
+| FUN formal_args MINUS_LT exp
+    {
+        let fname = Id.genid ("lambda", Info.parsing_get())
+        in
+        let info = Info.parsing_get()
+        in
+        LetRec(
+            { name = addtyp fname info; args = $2; body = $4 } ,
+            Var(fname, info),
+            info
+            )
+    }
 | LET REC fundef IN exp
     %prec prec_let
     { LetRec($3, $5, (Info.parsing_get())  )}
