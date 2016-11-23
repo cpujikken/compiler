@@ -101,18 +101,19 @@ exp: /* (* ∞Ï»Ã§Œº∞ (caml2html: parser_exp) *) */
     { Add($1,$3, (Info.parsing_get()))  }
 | exp MINUS exp
     { Sub($1, $3, (Info.parsing_get())  )}
-    | exp LTLT exp
-        { ShiftLeft($1, $3, Info.parsing_get())}
-    | exp GTGT exp
-        {ShiftRight ($1, $3, Info.parsing_get())}
-    | READ_FLOAT LPAREN RPAREN
-        { FloatRead(Info.parsing_get())}
-    | READ_INT LPAREN RPAREN
-        {IntRead(Info.parsing_get())}
-    | PRINT_BYTE exp
-        {Print ($2, Info.parsing_get())}
-    | ABS_FLOAT exp
-        {FAbs($2, Info.parsing_get())}
+| exp LTLT exp
+    { ShiftLeft($1, $3, Info.parsing_get())}
+| exp GTGT exp
+    {ShiftRight ($1, $3, Info.parsing_get())}
+| READ_FLOAT LPAREN RPAREN
+    { FloatRead(Info.parsing_get())}
+| READ_INT LPAREN RPAREN
+    {IntRead(Info.parsing_get())}
+| PRINT_BYTE exp
+    %prec prec_app
+    {Print ($2, Info.parsing_get())}
+| ABS_FLOAT exp
+    {FAbs($2, Info.parsing_get())}
 | exp EQUAL exp
     { Eq($1, $3, (Info.parsing_get())  )}
 | exp LESS_GREATER exp
