@@ -470,7 +470,7 @@ in
           extenv := M.map deref_typ !extenv;
           let ret = deref_term ee
           in
-          Printf.printf "after function expasion: %s\n" (Syntax.to_string ret);
+          (*Printf.printf "after function expasion: %s\n" (Syntax.to_string ret);*)
           ret
       )
   with
