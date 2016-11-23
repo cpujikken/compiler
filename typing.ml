@@ -119,7 +119,7 @@ let rec generate env e = (* 型推論ルーチン (caml2html: typing_g) *)
     | Print(e, info)
     ->
         unify (Type.Int info) (generate env e);
-        Type.Int info
+        Type.Unit info
 
     | Add(e1, e2, info)
     | Sub(e1, e2, info)
@@ -167,44 +167,75 @@ let rec generate env e = (* 型推論ルーチン (caml2html: typing_g) *)
 	unify t (Type.Fun(List.map snd yts, generate (M.add_list yts env) e1, info));
 	generate env e2
 
-    | App(e, es, info) -> (* 関数適用の型推論 (caml2html: typing_app) *)
-        let t = generate env e
+    | App(fun_exp, param_exps, info) -> (* 関数適用の型推論 (caml2html: typing_app) *)
+        let t = generate env fun_exp
         in
-        let len = List.length es
+        let len = List.length param_exps
         in
         (
-        match t with
+            let rec process_t = function
+                | Type.Var({contents = Some tt}, _) -> process_t tt
           | Type.Fun(t1s, _, _) when List.length t1s < len ->
-                      Format.eprintf "apply function\n%s\nwith too many arguments. Did you forget ;" (Syntax.to_string e);
+                      Format.eprintf "apply function\n%s\nwith too many arguments. Did you forget ;" (Syntax.to_string fun_exp);
                     exit 1
-          | Type.Fun(t1s, _, _) when List.length t1s > len ->
+          | Type.Fun(t1s, _, _) as fun_type when List.length t1s > len ->
                           (*generate lambda*)
-                  let rec seperate_params beg en cnt = function
-                      | [] -> beg, en
-                      | param::rest ->
-                              if cnt >= len then
-                                  seperate_params beg (param::en) (cnt + 1) rest
-                              else
-                                  seperate_params (param::beg) en (cnt + 1) rest
+                  (*test example: # let m = ref 10 in let n = ref 5 in let _ = (let t = fun x y z -> Printf.printf "%d\n" x in m := 1; t) (n := 3; 10) in Printf.printf "m = %d\n n = %d\n" !m !n;;
+* should print 1, 3 (not 10, 5)*)
+                  let rec seperate_params params args param_id_exps param_exps = function
+                      | [] -> params, args, param_id_exps
+                      | param::rest -> match param_exps with
+                        | [] ->
+                                  let id = Id.genid ("partial_eval_param_new", info)
+                                  in
+                                  let var = Var(id, info)
+                                  in
+                                  seperate_params ((id, param)::params) (var::args) param_id_exps [] rest
+                        | param_exp::param_exps_rest ->
+                                let id = Id.genid ("partial_eval_param_org", get_info param_exp)
+                                in
+                                  seperate_params params args ((id, param_exp)::param_id_exps) param_exps_rest rest
                   in
-                  let begin_params, end_params = seperate_params [] [] 0 t1s
+                  let last_params, last_args, param_id_exps = seperate_params [] [] [] param_exps t1s
                   in
-                  let id = Id.genid ("part_lambda", info)
+                  let partial_fun_id = Id.genid ("partial_fun_new", info)
                   in
-                  let rec_fun = Var(id, info)
+                  let partial_fun_var = Var(partial_fun_id, info)
                   in
-                          generate env (
-                              LetRec (
-                                { name = id, Type.gentyp info ; args = end_params; body = App(rec_fun, end_params, info) },
-                                rec_fun,
-                                info
-                              )
+                  let original_fun_id = Id.genid("partial_fun_org", info)
+                  in
+                  let original_fun_var = Var(original_fun_id, info)
+                  in
+                    let param_vars = List.map (fun (id, _) -> Var(id, Id.get_info id)) param_id_exps
+                    in
+                      generate env (
+                          Let(
+                              (original_fun_id, fun_type),
+                              fun_exp,
+                              List.fold_right
+                                (fun (id, exp) current_let -> Let(
+                                        (id, generate env exp),
+                                        exp,
+                                        current_let,
+                                        Id.get_info id
+                                    )
+                                )
+                                param_id_exps
+                                  (LetRec (
+                                    { name = partial_fun_id, Type.gentyp info ; args = last_params; body = App(original_fun_var, (param_vars @ last_args), info) },
+                                    partial_fun_var,
+                                    info
+                                  )),
+                              info
                           )
+                      )
           | _ ->
             let t1 = Type.gentyp info
             in
-                unify t (Type.Fun(List.map (generate env) es, t1, info));
+                unify t (Type.Fun(List.map (generate env) param_exps, t1, info));
                 t1
+            in
+            process_t t
         )
     | Tuple(es, info) -> Type.Tuple(List.map (generate env) es, info)
     | LetTuple(xts, e1, e2, info) ->
