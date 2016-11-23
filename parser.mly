@@ -95,8 +95,14 @@ exp: /* (* 一般の式 (caml2html: parser_exp) *) */
 | MINUS exp
     %prec prec_unary_minus
     { match $2 with
-    | Float(f, info) -> Float(-.f, (Info.parsing_get()))  (* -1.23などは型エラーではないので別扱い *)
+    | Float(f, _) -> Float(-.f, (Info.parsing_get()))  (* -1.23などは型エラーではないので別扱い *)
+    | Int(i, _) -> Int(-i, Info.parsing_get())
     | e -> Neg(e, (Info.parsing_get()) ) }
+| MINUS_DOT exp
+    %prec prec_unary_minus
+    { match $2 with
+    | Float(f, _) -> Float(-.f, (Info.parsing_get()))  (* -1.23などは型エラーではないので別扱い *)
+    | e -> FNeg(e, (Info.parsing_get()) ) }
 | exp PLUS exp /* (* 足し算を構文解析するルール (caml2html: parser_add) *) */
     { Add($1,$3, (Info.parsing_get()))  }
 | exp MINUS exp
@@ -129,9 +135,6 @@ exp: /* (* 一般の式 (caml2html: parser_exp) *) */
 | IF exp THEN exp ELSE exp
     %prec prec_if
     { If($2, $4, $6, (Info.parsing_get())  )}
-| MINUS_DOT exp
-    %prec prec_unary_minus
-    { FNeg($2, (Info.parsing_get())  )}
 | exp PLUS_DOT exp
     { FAdd($1, $3, (Info.parsing_get())  )}
 | exp MINUS_DOT exp
