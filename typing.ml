@@ -6,6 +6,9 @@ exception Unify of Type.t * Type.t
 exception Error of t * Type.t * Type.t
 
 let extenv = ref M.empty
+let partial_evaluating = ref true
+let partial_evaluation_threshold = 2 (*partial evaluation expansion threshold*)
+let continue_partial_eval = ref false
 
 (* for pretty printing (and type normalization) *)
 let rec deref_typ = function (* 型変数を中身でおきかえる関数 (caml2html: typing_deref) *)
@@ -79,12 +82,17 @@ let rec unify t1 t2 = (* 型が合うように、型変数への代入をする (caml2html: typing
   | Type.Unit _, Type.Unit _ | Type.Bool _ , Type.Bool _ | Type.Int _, Type.Int _ | Type.Float _, Type.Float _ -> ()
 
   | Type.Fun(t1s, t1', _), Type.Fun(t2s, t2', _) ->
-          let rec loop = function
-              | [], _->()
-              | _, [] ->()
-              | (t1::rest1), (t2::rest2)-> unify t1 t2; loop (rest1, rest2)
-          in
-          loop (t1s, t2s);
+          if !partial_evaluating then
+              let rec loop = function
+                  | [], _->()
+                  | _, [] ->()
+                  | (t1::rest1), (t2::rest2)-> unify t1 t2; loop (rest1, rest2)
+              in
+              loop (t1s, t2s);
+          else
+              (try List.iter2 unify t1s t2s
+              with Invalid_argument(_) -> raise (Unify(t1, t2))
+              );
       unify t1' t2'
 
   | Type.Tuple(t1s, _), Type.Tuple(t2s, _) ->
@@ -96,9 +104,11 @@ let rec unify t1 t2 = (* 型が合うように、型変数への代入をする (caml2html: typing
   | _, Type.Var({ contents = Some(t2') }, info) -> unify t1 t2'
   | Type.Var({ contents = None } as r1, info), _ -> (* 一方が未定義の型変数の場合 (caml2html: typing_undef) *)
       if occur r1 t2 then raise (Unify(t1, t2));
+    continue_partial_eval := true;
       r1 := Some(t2)
   | _, Type.Var({ contents = None } as r2, info) ->
       if occur r2 t1 then raise (Unify(t1, t2));
+    continue_partial_eval := true;
       r2 := Some(t1)
   | _, _ -> raise (Unify(t1, t2))
 
@@ -293,8 +303,8 @@ let rec generate env e = (* 型推論ルーチン (caml2html: typing_g) *)
 	extenv := M.add x t !extenv;
 	t, e
 
-    | LetRec({ name = (x, t); args = yts; body = e1 }, e2, info) -> (* let recの型推論 (caml2html: typing_letrec) *)
-	let env = M.add x t env in
+| LetRec({ name = (x, t); args = yts; body = e1 }, e2, info) -> (* let recの型推論 (caml2html: typing_letrec) *)
+let env = M.add x t env in
     let typ1, exp1 = generate (M.add_list yts env) e1
     in
 	unify t (Type.Fun(List.map snd yts, typ1, info));
@@ -314,6 +324,7 @@ let rec generate env e = (* 型推論ルーチン (caml2html: typing_g) *)
                       Format.eprintf "apply function\n%s\nwith too many arguments. Did you forget ;" (Syntax.to_string fun_exp);
                     exit 1
           | Type.Fun(t1s, _, _) as fun_type when List.length t1s > len ->
+                  continue_partial_eval := true;
                           (*generate lambda*)
                   (*test example: # let m = ref 10 in let n = ref 5 in let _ = (let t = fun x y z -> Printf.printf "%d\n" x in m := 1; t) (n := 3; 10) in Printf.printf "m = %d\n n = %d\n" !m !n;;
 * should print 1, 3 (not 10, 5)*)
@@ -344,38 +355,40 @@ let rec generate env e = (* 型推論ルーチン (caml2html: typing_g) *)
                     let param_vars = List.map (fun (id, _) -> Var(id, Id.get_info id)) param_id_exps
                     in
                     let ee =
+                          List.fold_right
+                            (fun (id, exp) current_let ->
+                                let typ, dexp = generate env exp
+                                in
+                                Let(
+                                    (id, typ),
+                                    dexp,
+                                    current_let,
+                                    Id.get_info id
+                                )
+                            )
+                            param_id_exps
+                            (
                           Let(
                               (original_fun_id, fun_type),
                               f_exp,
-                              List.fold_right
-                                (fun (id, exp) current_let ->
-                                    let typ, dexp = generate env exp
-                                    in
-                                    Let(
-                                        (id, typ),
-                                        dexp,
-                                        current_let,
-                                        Id.get_info id
-                                    )
-                                )
-                                param_id_exps
-                                  (LetRec (
-                                    { name = partial_fun_id, Type.gentyp info ; args = last_params; body = App(original_fun_var, (param_vars @ last_args), info) },
-                                    partial_fun_var,
-                                    info
-                                  )),
+                              LetRec (
+                                  { name = partial_fun_id, Type.gentyp info ; args = last_params; body = App(original_fun_var, (param_vars @ last_args), info) },
+                                partial_fun_var,
+                                info
+                                  ),
                               info
                           )
+                                )
                     in generate env ee
-          | _ ->
+          | _  ->
             let t1 = Type.gentyp info
             in
             let param_type_exps = List.map (generate env) param_exps
             in
                 unify f_type (Type.Fun(List.map fst param_type_exps, t1, info));
                 t1, App(f_exp, List.map snd param_type_exps, info)
-            in
-            process_t f_type
+        in
+        process_t f_type
         )
     | Tuple(es, info) ->
             let type_exps = List.map (generate env) es
@@ -431,8 +444,28 @@ let f e =
   | Type.Unit -> ()
   | _ -> Format.eprintf "warning: final result does not have type unit@.");
 *)
-  try
+let rec rep e cnt =
+    if cnt = 0 then
+        (
+        partial_evaluating := false;
+        let _, ee = generate M.empty e
+        in
+            ee
+        )
+    else
+        (
+      partial_evaluating := true;
+      continue_partial_eval := false;
       let _, ee = generate M.empty e
+      in
+        if !continue_partial_eval then
+          rep ee (cnt - 1)
+        else
+            ee
+        )
+in
+  try
+      let ee = rep e partial_evaluation_threshold
       in (
           extenv := M.map deref_typ !extenv;
           let ret = deref_term ee
