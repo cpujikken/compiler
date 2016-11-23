@@ -127,13 +127,25 @@ let rec generate env e = (* 型推論ルーチン (caml2html: typing_g) *)
     | Four (e, info) ->
             let four_type, four_exp = generate env e
             in
+            (
+            try
                 unify (Type.Int info) four_type;
                 Type.Int info, Four(four_exp, info)
+            with
+                Unify _ ->
+                unify (Type.Float info) four_type;
+                Type.Float info, FMul(four_exp, Float (4., info), info)
+            )
     | Half (e, info) ->
             let half_type, half_exp = generate env e
-            in
+            in (try
                 unify (Type.Int info) half_type;
                 Type.Int info, Half(half_exp, info)
+            with
+            Unify _ ->
+                unify (Type.Float info) half_type;
+                Type.Float info, FDiv(half_exp, Float(2., info), info)
+            )
 
     | Neg(e, info)
     ->
@@ -159,37 +171,61 @@ let rec generate env e = (* 型推論ルーチン (caml2html: typing_g) *)
         let typ1, exp1 = generate env e1
         in
         let typ2, exp2 = generate env e2
-        in
-        unify (Type.Int info) typ1;
-        unify (Type.Int info) typ2;
-        Type.Int info, Add(exp1, exp2, info)
+        in(
+        try
+            unify (Type.Int info) typ1;
+            unify (Type.Int info) typ2;
+            Type.Int info, Add(exp1, exp2, info)
+        with Unify _ ->
+            unify (Type.Float info) typ1;
+            unify (Type.Float info) typ2;
+            Type.Float info, FAdd(exp1, exp2, info)
+        )
     | Sub(e1, e2, info)
     -> (* 足し算（と引き算）の型推論 (caml2html: typing_add) *)
         let typ1, exp1 = generate env e1
         in
         let typ2, exp2 = generate env e2
         in
+        (
+        try
         unify (Type.Int info) typ1;
         unify (Type.Int info) typ2;
         Type.Int info, Sub(exp1, exp2, info)
+        with
+            Unify _ ->
+        unify (Type.Float info) typ1;
+        unify (Type.Float info) typ2;
+        Type.Float info, FSub(exp1, exp2, info)
+        )
     | Mul(e1, e2, info)
     -> (* 足し算（と引き算）の型推論 (caml2html: typing_add) *)
         let typ1, exp1 = generate env e1
         in
         let typ2, exp2 = generate env e2
-        in
-        unify (Type.Int info) typ1;
-        unify (Type.Int info) typ2;
-        Type.Int info, Mul(exp1, exp2, info)
+        in(try
+            unify (Type.Int info) typ1;
+            unify (Type.Int info) typ2;
+            Type.Int info, Mul(exp1, exp2, info)
+        with Unify _ ->
+            unify (Type.Float info) typ1;
+            unify (Type.Float info) typ2;
+            Type.Float info, FMul(exp1, exp2, info)
+        )
     | Div(e1, e2, info)
     -> (* 足し算（と引き算）の型推論 (caml2html: typing_add) *)
         let typ1, exp1 = generate env e1
         in
         let typ2, exp2 = generate env e2
-        in
-        unify (Type.Int info) typ1;
-        unify (Type.Int info) typ2;
-        Type.Int info, Div(exp1, exp2, info)
+        in (try
+            unify (Type.Int info) typ1;
+            unify (Type.Int info) typ2;
+            Type.Int info, Div(exp1, exp2, info)
+        with Unify _ ->
+            unify (Type.Float info) typ1;
+            unify (Type.Float info) typ2;
+            Type.Float info, FDiv(exp1, exp2, info)
+        )
     | ShiftLeft(e1, e2, info)
     -> (* 足し算（と引き算）の型推論 (caml2html: typing_add) *)
         let typ1, exp1 = generate env e1
@@ -470,7 +506,7 @@ in
           extenv := M.map deref_typ !extenv;
           let ret = deref_term ee
           in
-          (*Printf.printf "after function expasion: %s\n" (Syntax.to_string ret);*)
+          Printf.printf "after function expasion: %s\n" (Syntax.to_string ret);
           ret
       )
   with
