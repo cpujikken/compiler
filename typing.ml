@@ -7,7 +7,7 @@ exception Error of t * Type.t * Type.t
 
 let extenv = ref M.empty
 let partial_evaluating = ref true
-let partial_evaluation_threshold = 2 (*partial evaluation expansion threshold*)
+let partial_evaluation_threshold = 100 (*partial evaluation expansion threshold*)
 let continue_partial_eval = ref false
 
 (* for pretty printing (and type normalization) *)
