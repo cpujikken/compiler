@@ -104,14 +104,14 @@ and source_addr = function
     | _ -> []
 
 type alloc_result = (* allocにおいてspillingがあったかどうかを表すデータ型 *)
-    | Alloc of string (* allocated register *)
+    | Alloc of Reg.t (* allocated register *)
     | Spill of Id.t (* spilled variable *)
 
 let rec alloc cont regenv var var_type prefer =
     (* allocate a register or spill a variable *)
     (
     match var with
-    | ID id -> if M.mem id regenv then failwith "invalid register assignment" else ()
+    | ID id -> if M.mem id regenv then failwith "error: try allocate already alllocated variable" else ()
     | Reg reg -> ()
     );
   let all =
@@ -121,7 +121,7 @@ let rec alloc cont regenv var var_type prefer =
     | _ -> allregs
   in
     if all = [] then
-        Alloc "%unit"
+        Alloc reg_dump
     else (* [XX] ad hoc *)
         match var with
         | Reg reg -> Alloc(reg)
@@ -149,6 +149,7 @@ let rec alloc cont regenv var var_type prefer =
                         (* Format.eprintf "allocated %s to %s@." var r; *)
                         Alloc(r)
                 with Not_found ->
+                    (*out of register*)
                     Format.eprintf "register allocation failed for %s@." (M.to_string id);
                     match( (* 型の合うレジスタ変数を探す *)
                         List.find
