@@ -86,6 +86,7 @@ let rec unify t1 t2 = (* 型が合うように、型変数への代入をする (caml2html: typing
 
   | Type.Fun(t1s, t1', info1), Type.Fun(t2s, t2', info2) ->
       let rec loop = function
+          | [], [] -> unify t1' t2'
           | [], rest->
               unify t1' (Type.Fun(rest, t2', info2))
           | rest, [] ->
