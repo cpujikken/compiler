@@ -77,23 +77,23 @@ let rec occur r1 = function (* occur check (caml2html: typing_occur) *)
   | Type.Var({ contents = Some(t2) }, info) -> occur r1 t2
   | _ -> false
 
+  (*expect type: t1
+   * argument type: t2
+   * *)
 let rec unify t1 t2 = (* 型が合うように、型変数への代入をする (caml2html: typing_unify) *)
   match t1, t2 with
   | Type.Unit _, Type.Unit _ | Type.Bool _ , Type.Bool _ | Type.Int _, Type.Int _ | Type.Float _, Type.Float _ -> ()
 
-  | Type.Fun(t1s, t1', _), Type.Fun(t2s, t2', _) ->
-          if !partial_evaluating then
-              let rec loop = function
-                  | [], _->()
-                  | _, [] ->()
-                  | (t1::rest1), (t2::rest2)-> unify t1 t2; loop (rest1, rest2)
-              in
-              loop (t1s, t2s);
-          else
-              (try List.iter2 unify t1s t2s
-              with Invalid_argument(_) -> raise (Unify(t1, t2))
-              );
-      unify t1' t2'
+  | Type.Fun(t1s, t1', info1), Type.Fun(t2s, t2', info2) ->
+      let rec loop = function
+          | [], rest->
+              unify t1' (Type.Fun(rest, t2', info2))
+          | rest, [] ->
+              unify (Type.Fun(rest, t1', info1)) t2'
+          | (t1::rest1), (t2::rest2)->
+              unify t1 t2; loop (rest1, rest2)
+      in
+      loop (t1s, t2s);
 
   | Type.Tuple(t1s, _), Type.Tuple(t2s, _) ->
       (try List.iter2 unify t1s t2s
@@ -319,7 +319,7 @@ let rec generate env e = (* 型推論ルーチン (caml2html: typing_g) *)
         in
         let typ3, exp3 = generate env e3
         in
-            unify typ1 (Type.Bool info);
+            unify (Type.Bool info) typ1 ;
             unify typ2 typ3;
             typ2, If(exp1, exp2, exp3, info)
 
@@ -339,14 +339,14 @@ let rec generate env e = (* 型推論ルーチン (caml2html: typing_g) *)
 	extenv := M.add x t !extenv;
 	t, e
 
-| LetRec({ name = (x, t); args = yts; body = e1 }, e2, info) -> (* let recの型推論 (caml2html: typing_letrec) *)
+| LetRec({ name = (x, t); args = id_types; body = let_rec_fun_body }, let_rec_body, info) -> (* let recの型推論 (caml2html: typing_letrec) *)
 let env = M.add x t env in
-    let typ1, exp1 = generate (M.add_list yts env) e1
+    let typ1, exp1 = generate (M.add_list id_types env) let_rec_fun_body
     in
-	unify t (Type.Fun(List.map snd yts, typ1, info));
-    let typ2, exp2 = generate env e2
+	unify (Type.Fun(List.map snd id_types, typ1, info)) t;
+    let typ2, exp2 = generate env let_rec_body
     in
-        typ2, LetRec({name = (x, t); args = yts; body = exp1}, exp2, info)
+        typ2, LetRec({name = (x, t); args = id_types; body = exp1}, exp2, info)
 
     | App(fun_exp, param_exps, info) -> (* 関数適用の型推論 (caml2html: typing_app) *)
         let f_type, f_exp = generate env fun_exp
@@ -421,7 +421,7 @@ let env = M.add x t env in
             in
             let param_type_exps = List.map (generate env) param_exps
             in
-                unify f_type (Type.Fun(List.map fst param_type_exps, t1, info));
+                unify (Type.Fun(List.map fst param_type_exps, t1, info)) f_type ;
                 t1, App(f_exp, List.map snd param_type_exps, info)
         in
         process_t f_type
@@ -511,5 +511,5 @@ in
       )
   with
     | Error(e, t1, t2) ->
-            Format.eprintf "type\n%s\nis not compatible with type\n%s\nwhile evaluating\n%s" (Type.to_string t2) (Type.to_string t1) (Syntax.to_string e);
+            Format.eprintf "expect type\n%s\nbut type\n%s\nis passed while evaluating\n%s" (Type.to_string t2) (Type.to_string t1) (Syntax.to_string e);
           exit 1
