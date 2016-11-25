@@ -28,7 +28,7 @@ let stacksize () = List.length !stackmap * 4
 type param = Go of Reg.t | Hide
 
 (*(shuffle (List.map (fun (x, y) -> Go x, Go y) param_regs));*)
-(*regs = list of (ind * argument_reg * regs[ind])*)
+(*regs = list of (Go argument_reg * Go regs[ind])*)
 let rec shuffle regs =
   (* remove identical moves *)
   let _, regs = List.partition (fun (x, y) -> x = y) regs in
@@ -63,93 +63,119 @@ let rec generate = function (* 命令列のアセンブリ生成 (caml2html: emit_g) *)
 and generate' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime) *)
     (* 末尾でなかったら計算結果をdestにセット (caml2html: emit_nontail) *)
     | NonTail _, Nop -> ()
+    | NonTail _, Print rs when rs = reg_dump -> ()
     | NonTail _, Print rs ->
             append_cmd cmd_print [rs] info
 
+    | NonTail rd, Add (ra, rb) when ra = reg_dump || rb = reg_dump || rd = reg_dump -> ()
     | NonTail rd, Add (ra, rb) ->
         append_cmd cmd_add [rd; ra; rb] info
+    | NonTail rd, ShiftLeft (ra, rb) when ra = reg_dump || rb = reg_dump || rd = reg_dump -> ()
     | NonTail rd, ShiftLeft (ra, rb) ->
         append_cmd cmd_shiftLeft [rd; ra; rb] info
+    | NonTail rd, ShiftRight (ra, rb) when ra = reg_dump || rb = reg_dump  || rd = reg_dump -> ()
     | NonTail rd, ShiftRight (ra, rb) ->
         append_cmd cmd_shiftRight [rd; ra; rb] info
+    | NonTail rd, Div (ra, rb) when ra = reg_dump || rb = reg_dump  || rd = reg_dump -> ()
     | NonTail rd, Div (ra, rb) ->
         append_cmd cmd_div [rd; ra; rb] info
+    | NonTail rd, Mul (ra, rb) when ra = reg_dump || rb = reg_dump ||  rd = reg_dump  -> ()
     | NonTail rd, Mul (ra, rb) ->
         append_cmd cmd_mul [rd; ra; rb] info
+    | NonTail rd, Sub (ra, rb) when ra = reg_dump || rb = reg_dump || rd = reg_dump -> ()
     | NonTail rd, Sub (ra, rb) ->
         append_cmd cmd_sub [rd; ra; rb] info
+    | NonTail rd, Addi (ra, loc) when ra = reg_dump || rd = reg_dump -> ()
     | NonTail rd, Addi (ra, Constant c) when rd = ra && c = 1->
             append_cmd cmd_inc [rd] info
     | NonTail rd, Addi (ra, Constant c) when rd = ra && c = -1->
             append_cmd cmd_dec [rd] info
     | NonTail rd, Addi (ra, Constant c) when c = 0 ->
             generate' info (NonTail rd, Move ra);
-    | NonTail rd, Move (rs) when rd = rs->
-            ()
+    | NonTail rd, Addi (ra, loc) ->
+        append_cmd cmd_addi  [rd; ra; Loc.to_string loc] info
+    | NonTail rd, Move (rs) when rd = reg_dump || rs = reg_dump -> ()
+    | NonTail rd, Move (rs) when rd = rs-> ()
     | NonTail rd, Move (rs) ->
             append_cmd cmd_move [rd; rs] info
+    | NonTail rd, MoveImm loc when rd = reg_dump  ->()
     | NonTail rd, MoveImm (Constant c) when c = 0 ->
             append_cmd cmd_xor [rd; rd; rd] info
     | NonTail rd, MoveImm loc ->
             append_cmd cmd_moveImm [rd; Loc.to_string loc] info
-    | NonTail rd, Addi (ra, loc) ->
-        append_cmd cmd_addi  [rd; ra; Loc.to_string loc] info
+    | NonTail rd, Neg(ra) when rd = reg_dump || ra = reg_dump -> ()
     | NonTail rd, Neg(ra) when ra = rd->
                 append_cmd cmd_neg1 [ra] info
     | NonTail rd, Neg(ra) ->
                 append_cmd cmd_neg2 [rd; ra] info
-    | NonTail rd, FNeg(rs) when rd = rs ->
-                append_cmd cmd_fNeg1 [rd] info
-    | NonTail rd, FMove rs when rd = rs ->
-            ()
+    | NonTail rd, FMove rs when rd = reg_dump || rs = reg_dump  -> ()
+    | NonTail rd, FMove rs when rd = rs -> ()
     | NonTail rd, FMove rs ->
             append_cmd cmd_fMove [rd; rs] info
+    | NonTail rd, FNeg(rs) when rd = reg_dump || rs = reg_dump -> ()
+    | NonTail rd, FNeg(rs) when rd = rs ->
+                append_cmd cmd_fNeg1 [rd] info
     | NonTail rd, FNeg(rs) ->
                 append_cmd cmd_fNeg2 [rd; rs] info
     | NonTail rd, IntRead ->
             append_cmd cmd_readInt [rd] info
     | NonTail rd, FloatRead ->
             append_cmd cmd_readFloat [rd] info
+    | NonTail rd, FAbs(rs) when rd = reg_dump || rs = reg_dump -> ()
     | NonTail rd, FAbs(rs) ->
                 append_cmd cmd_fAbs [rd; rs] info
+    | NonTail rd, Four(rs) when rd = reg_dump || rs = reg_dump -> ()
     | NonTail rd, Four(rs) ->
             append_cmd cmd_four [rd; rs] info
+    | NonTail rd, Half(rs) when rd = reg_dump || rs = reg_dump -> ()
     | NonTail rd, Half(rs) ->
             append_cmd cmd_half [rd; rs] info
+    | NonTail rd, Load (Relative (r, loc)) when rd = reg_dump || r = reg_dump -> ()
     | NonTail rd, Load (Relative (r, loc)) ->
          append_cmd cmd_loadRelative [rd; r; Loc.to_string loc] info
+    | NonTail rd, Load ( Dynamic(r1, s4, r2)) when rd = reg_dump || r1 = reg_dump || r2 = reg_dump ->()
     | NonTail rd, Load ( Dynamic(r1, s4, r2)) ->
             append_cmd cmd_loadDynamic [rd; r1; Cmd.int_to_string s4; r2] info
     | NonTail rd, Load ( Absolute (l1, None)) ->
              append_cmd cmd_loadAbsolute [rd; Loc.to_string l1] info
     | NonTail rd, Load ( Absolute (l1, Some l2)) ->
             append_cmd cmd_loadAbsolute [rd; Loc.to_string l1; Loc.to_string l2] info
-    | NonTail _, Store (rd, Relative(r, loc)) ->
-            append_cmd cmd_storeRelative [rd; r; Loc.to_string loc] info
-    | NonTail _, Store (rd, Dynamic(r1, s4, r2)) ->
-            append_cmd cmd_storeDynamic [rd; r1; Cmd.int_to_string s4; r2] info
-    | NonTail _, Store (rd, Absolute (l1, None)) ->
-            append_cmd cmd_storeAbsolute [rd; Loc.to_string l1] info
-    | NonTail _, Store (rd, Absolute (l1, Some l2)) ->
-            append_cmd cmd_storeAbsolute [rd; Loc.to_string l1; Loc.to_string l2] info
+    | NonTail _, Store (rs, Relative(r, loc)) when rs = reg_dump || r = reg_dump -> ()
+    | NonTail _, Store (rs, Relative(r, loc)) ->
+            append_cmd cmd_storeRelative [rs; r; Loc.to_string loc] info
+    | NonTail _, Store (rs, Dynamic(r1, s4, r2)) when rs = reg_dump || r1 = reg_dump || r2 = reg_dump ->()
+    | NonTail _, Store (rs, Dynamic(r1, s4, r2)) ->
+            append_cmd cmd_storeDynamic [rs; r1; Cmd.int_to_string s4; r2] info
+    | NonTail _, Store (rs, Absolute (l1, None)) ->
+            append_cmd cmd_storeAbsolute [rs; Loc.to_string l1] info
+    | NonTail _, Store (rs, Absolute (l1, Some l2)) ->
+            append_cmd cmd_storeAbsolute [rs; Loc.to_string l1; Loc.to_string l2] info
+    | NonTail rd, FAdd (ra, rb) when rd = freg_dump || ra = freg_dump || rb = freg_dump -> ()
     | NonTail rd, FAdd (ra, rb) ->
         append_cmd cmd_fAdd [rd; ra; rb] info
+    | NonTail rd, FSub (ra, rb) when rd = freg_dump || ra = freg_dump || rb = freg_dump -> ()
     | NonTail rd, FSub (ra, rb) ->
         append_cmd cmd_fSub [rd; ra; rb] info
+    | NonTail rd, FMul (ra, rb) when rd = freg_dump || ra = freg_dump || rb = freg_dump -> ()
     | NonTail rd, FMul (ra, rb) ->
         append_cmd cmd_fMul [rd; ra; rb] info
+    | NonTail rd, FDiv (ra, rb) when rd = freg_dump || ra = freg_dump || rb = freg_dump -> ()
     | NonTail rd, FDiv (ra, rb) ->
         append_cmd cmd_fDiv [rd; ra; rb] info
+    | NonTail rd, FLoad (Relative(r, loc)) when rd = freg_dump || r = reg_dump -> ()
     | NonTail rd, FLoad (Relative(r, loc)) ->
             append_cmd cmd_fLoadRelative [rd; r; Loc.to_string loc] info
+    | NonTail rd, FLoad (Dynamic(r1, s4, r2)) when rd = freg_dump || r1 = reg_dump || r2 = reg_dump ->()
     | NonTail rd, FLoad (Dynamic(r1, s4, r2)) ->
             append_cmd cmd_fLoadDynamic [rd; r1; Cmd.int_to_string s4; r2] info
     | NonTail rd, FLoad (Absolute (l1, None ))->
             append_cmd cmd_fLoadAbsolute [rd; Loc.to_string l1] info
     | NonTail rd, FLoad (Absolute (l1, Some l2 ))->
             append_cmd cmd_fLoadAbsolute [rd; Loc.to_string l1; Loc.to_string l2] info
+    | NonTail _, FStore (rd, Relative(r, loc)) when rd = freg_dump || r = reg_dump -> ()
     | NonTail _, FStore (rd, Relative(r, loc)) ->
             append_cmd cmd_fStoreRelative [rd; r; Loc.to_string loc] info
+    | NonTail _, FStore (rd, Dynamic(r1, s4, r2)) when rd = freg_dump || r1 = reg_dump || r2 = reg_dump -> ()
     | NonTail _, FStore (rd, Dynamic(r1, s4, r2)) ->
             append_cmd cmd_fStoreDynamic [rd; r1; Cmd.int_to_string s4; r2] info
     | NonTail _, FStore (rd, Absolute (l1,None)) ->
@@ -395,11 +421,11 @@ and generate'_args x_reg_cl params fparams info =
     (fun (y, r) ->
         match y, r with
         | Go reg, Hide ->
-                generate' info (Tail , Store(reg, Relative (reg_sp, Constant stacksize_backup)))
+                generate' info (NonTail reg_dump , Store(reg, Relative (reg_sp, Constant stacksize_backup)))
         | Hide, Go reg ->
                 generate' info (NonTail reg, Load (Relative(reg_sp, Constant stacksize_backup)))
         | Go r1, Go r2 ->
-                generate' info (NonTail r1, Move r2)
+                generate' info (NonTail r2, Move r1)
         | _ -> ()
     )
     (shuffle (List.map (fun (x, y) -> Go x, Go y) param_regs));
@@ -417,7 +443,7 @@ and generate'_args x_reg_cl params fparams info =
         | Hide, Go reg ->
                 generate' info (NonTail reg, FLoad (Relative(reg_sp, Constant stacksize_backup)))
         | Go r1, Go r2 ->
-                generate' info (NonTail r1, FMove r2)
+                generate' info (NonTail r2, FMove r1)
         | _ -> ()
     )
     (shuffle (List.map (fun (x, y) -> Go x, Go y)  param_fregs))
@@ -469,7 +495,4 @@ let f (Prog(idata, fdata, fundefs, e)) =
     (*backup all regs*)
     stackset := S.empty;
     stackmap := [];
-    generate (NonTail(reg_ret), e);
-
-    (*restore all regs*)
-    append_cmd_noinfo cmd_link []
+    generate (Tail, e);
