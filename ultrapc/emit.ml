@@ -26,6 +26,9 @@ let stacksize () = List.length !stackmap * 4
 
 (* 関数呼び出しのために引数を並べ替える(register shuffling) (caml2html: emit_shuffle) *)
 type param = Go of Reg.t | Hide
+
+(*(shuffle (List.map (fun (x, y) -> Go x, Go y) param_regs));*)
+(*regs = list of (ind * argument_reg * regs[ind])*)
 let rec shuffle regs =
   (* remove identical moves *)
   let _, regs = List.partition (fun (x, y) -> x = y) regs in

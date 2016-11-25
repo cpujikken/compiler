@@ -13,3 +13,4 @@ let reg_ret = reg_no 0
 let freg_ret = freg_no 0
 let reg_hp = "%rhp" (*r29*)
 (* let reg_ra = "%eax" (* return address *) *)
+let to_string x = x

@@ -301,3 +301,9 @@ let to_string x =
     in
     to_string_pre "" x
 
+let fundef_to_string { name = (name, name_info), typ;
+        args = _;(*(Id.t * Type.t) list;*)
+        formal_fv = _ ;(*(Id.t * Type.t) list;*)
+        body = body;
+        info = info;} =
+            Printf.sprintf "fun name: %s\n%s" name (to_string body)
