@@ -136,6 +136,7 @@ and generate' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime)
     | NonTail rd, Load ( Dynamic(r1, s4, r2)) when rd = reg_dump || r1 = reg_dump || r2 = reg_dump ->()
     | NonTail rd, Load ( Dynamic(r1, s4, r2)) ->
             append_cmd cmd_loadDynamic [rd; r1; Cmd.int_to_string s4; r2] info
+    | NonTail rd, Load ( Absolute (l1, _)) when rd = reg_dump -> ()
     | NonTail rd, Load ( Absolute (l1, None)) ->
              append_cmd cmd_loadAbsolute [rd; Loc.to_string l1] info
     | NonTail rd, Load ( Absolute (l1, Some l2)) ->
@@ -146,6 +147,7 @@ and generate' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime)
     | NonTail _, Store (rs, Dynamic(r1, s4, r2)) when rs = reg_dump || r1 = reg_dump || r2 = reg_dump ->()
     | NonTail _, Store (rs, Dynamic(r1, s4, r2)) ->
             append_cmd cmd_storeDynamic [rs; r1; Cmd.int_to_string s4; r2] info
+    | NonTail _, Store (rs, Absolute (l1, _)) when rs = reg_dump  ->()
     | NonTail _, Store (rs, Absolute (l1, None)) ->
             append_cmd cmd_storeAbsolute [rs; Loc.to_string l1] info
     | NonTail _, Store (rs, Absolute (l1, Some l2)) ->
@@ -168,6 +170,7 @@ and generate' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime)
     | NonTail rd, FLoad (Dynamic(r1, s4, r2)) when rd = freg_dump || r1 = reg_dump || r2 = reg_dump ->()
     | NonTail rd, FLoad (Dynamic(r1, s4, r2)) ->
             append_cmd cmd_fLoadDynamic [rd; r1; Cmd.int_to_string s4; r2] info
+    | NonTail rd, FLoad (Absolute (l1, _ )) when rd = freg_dump -> ()
     | NonTail rd, FLoad (Absolute (l1, None ))->
             append_cmd cmd_fLoadAbsolute [rd; Loc.to_string l1] info
     | NonTail rd, FLoad (Absolute (l1, Some l2 ))->
@@ -178,6 +181,7 @@ and generate' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime)
     | NonTail _, FStore (rd, Dynamic(r1, s4, r2)) when rd = freg_dump || r1 = reg_dump || r2 = reg_dump -> ()
     | NonTail _, FStore (rd, Dynamic(r1, s4, r2)) ->
             append_cmd cmd_fStoreDynamic [rd; r1; Cmd.int_to_string s4; r2] info
+    | NonTail _, FStore (rd, Absolute (l1, _)) when rd = freg_dump -> ()
     | NonTail _, FStore (rd, Absolute (l1,None)) ->
             append_cmd cmd_fStoreAbsolute [rd; Loc.to_string l1] info
     | NonTail _, FStore (rd, Absolute (l1,Some l2)) ->
