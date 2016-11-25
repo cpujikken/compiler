@@ -17,3 +17,4 @@
 /example.s
 /test/*.s
 /test/ultrapc/*.s
+/minrt.s
