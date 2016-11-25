@@ -144,7 +144,7 @@ let rec generate env = function (* 式の仮想マシンコード生成 (caml2html: virtual_
           Let(
               (*increase heap pointer*)
               (Reg reg_hp, Type.Int info),
-              Addi(Reg reg_hp, Constant (align offset)),
+              Addi(Reg reg_hp, Constant offset),
 
               (
                   (*make new var*)
@@ -199,7 +199,7 @@ let rec generate env = function (* 式の仮想マシンコード生成 (caml2html: virtual_
               (*after that, increase heap pointer to make space*)
               Let(
                   (Reg reg_hp, Type.Int info),
-                  Addi(Reg reg_hp, Constant (align offset)),
+                  Addi(Reg reg_hp, Constant offset),
                   store,
                   info
                   ),

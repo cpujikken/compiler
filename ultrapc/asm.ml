@@ -156,7 +156,6 @@ let rec concat e1 xt e2 =
   | Ans(exp, info) -> Let(xt, exp, e2, info)
   | Let(yt, exp, e1', info) -> Let(yt, exp, concat e1' xt e2, info)
 
-let align i = (if i mod 8 = 0 then i else i + 4)
 let get_info = function
   | Ans (_, info)
   | Let (_, _, _, info) -> info
