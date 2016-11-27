@@ -85,7 +85,9 @@ and generate' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime)
     | NonTail rd, Sub (ra, rb) when ra = reg_dump || rb = reg_dump || rd = reg_dump -> ()
     | NonTail rd, Sub (ra, rb) ->
         append_cmd cmd_sub [rd; ra; rb] info
-    | NonTail rd, Addi (ra, loc) when ra = reg_dump || rd = reg_dump -> ()
+    | NonTail rd, Addi (ra, loc) when ra = reg_dump || rd = reg_dump ->
+            (*Printf.printf "hello %s, %s %s" rd (Loc.to_string loc);*)
+            ()
     | NonTail rd, Addi (ra, Constant c) when rd = ra && c = 1->
             append_cmd cmd_inc [rd] info
     | NonTail rd, Addi (ra, Constant c) when rd = ra && c = -1->
@@ -208,17 +210,17 @@ and generate' info = function (* 各命令のアセンブリ生成 (caml2html: emit_gprime)
                 failwith "invalid register for restore"
     | Tail, (Add _ | ShiftLeft _ | ShiftRight _ | Div _ | Mul _ | IntRead
     | Sub _ | Addi _ | Four _ | Half _ | Load _ |  Move _ | MoveImm _ | Neg _ | FNeg _ |  FMove _ | Nop | Print _
-    | Store _ | FStore _ | Save _
+    | Store _ | Save _
     as exp) ->
-            generate' info (NonTail reg_dump, exp);
+            generate' info (NonTail reg_ret, exp);
             append_cmd cmd_link [] info
-    | Tail, (FMul _ | FSub _ | FDiv _ | FAdd _  | FAbs _ | FLoad _ | FloatRead as exp )->
-            generate' info (NonTail freg_dump, exp);
+    | Tail, (FMul _ | FSub _ | FDiv _ | FAdd _  | FAbs _ | FLoad _ | FloatRead | FStore _ as exp )->
+            generate' info (NonTail freg_ret, exp);
             append_cmd cmd_link [] info
     | Tail, (Restore (id) as exp )->
             ((match locate id with
-            | [i] -> generate' info (NonTail(reg_dump), exp)
-            | [i; j] when i + 1 = j -> generate' info (NonTail (freg_dump), exp)
+            | [i] -> generate' info (NonTail reg_ret, exp)
+            | [i; j] when i + 1 = j -> generate' info (NonTail reg_ret, exp)
             | _ -> failwith "invalid register for restore"
             );
             append_cmd cmd_link [] info
