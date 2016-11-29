@@ -130,7 +130,7 @@ let rec alloc cont regenv var var_type prefer =
             in
                 try
                     (*list of beging used regs*)
-                    let live = (* 生きているレジスタ *)
+                    let used_regs = (* 生きているレジスタ *)
                         List.fold_left
                             ( fun live y -> match y with
                             | Reg reg -> StringSet.add reg live
@@ -141,13 +141,13 @@ let rec alloc cont regenv var var_type prefer =
                             free
                     in
                     (*remaining regs*)
-                    let r = (* そうでないレジスタを探す *)
+                    let not_used_reg = (* そうでないレジスタを探す *)
                         List.find
-                            (fun r -> not (StringSet.mem r live))
+                            (fun r -> not (StringSet.mem r used_regs))
                             (prefer @ all)
                     in
-                        (* Format.eprintf "allocated %s to %s@." var r; *)
-                        Alloc(r)
+                        (* Format.eprintf "allocated %s to %s@." var not_used_reg; *)
+                        Alloc(not_used_reg)
                 with Not_found ->
                     (*out of register*)
                     Format.eprintf "register allocation failed for %s@." (M.to_string id);

@@ -138,18 +138,18 @@ let rec fv_exp = function
     | FIfEQ(u, v, e1, e2)
     | IfLT(u, v, e1, e2)
     | FIfLT(u, v, e1, e2)
-    -> u :: v :: remove_dup OperandSet.empty (get_free_vars e1 @ get_free_vars e2)
+    -> u :: v :: remove_dup OperandSet.empty (get_free_vars_ e1 @ get_free_vars_ e2)
 
     | CallCls (x, ys, zs)
     -> x :: ys @ zs
     | CallDir(_, ys, zs)
     -> ys @ zs
 
-and get_free_vars = function
+and get_free_vars_ = function
   | Ans(exp, info) -> fv_exp exp
   | Let((x, t), exp, e, info) ->
-      fv_exp exp @ remove_dup (OperandSet.singleton x) (get_free_vars e)
-let get_free_vars e = remove_dup OperandSet.empty (get_free_vars e)
+      fv_exp exp @ remove_dup (OperandSet.singleton x) (get_free_vars_ e)
+let get_free_vars e = remove_dup OperandSet.empty (get_free_vars_ e)
 
 let rec concat e1 xt e2 =
   match e1 with

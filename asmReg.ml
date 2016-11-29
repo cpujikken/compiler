@@ -77,11 +77,10 @@ let seq(e1, e2, info) =
         info
         )
 
-let rec concat e1 xt e2 =
+let rec concat e1 reg_and_type e2 =
   match e1 with
-  | Ans(exp, info) -> Let(xt, exp, e2, info)
-  | Let(yt, exp, e1', info) -> Let(yt, exp, concat e1' xt e2, info)
-let align i = (if i mod 8 = 0 then i else i + 4)
+  | Ans(exp, info) -> Let(reg_and_type, exp, e2, info)
+  | Let(yt, exp, e1', info) -> Let(yt, exp, concat e1' reg_and_type e2, info)
 
 let rec to_string_pre pre e =
     let npre = pre ^ "\t"
