@@ -437,10 +437,10 @@ let process_def { Asm.name = def_name; Asm.args = args; Asm.fargs = float_args; 
     let info = Asm.get_info body
     in
     let (body', regenv') =
-        Printf.printf "closure body:\n%s\n" (Asm.to_string body);
+        (*Printf.printf "closure body:\n%s\n" (Asm.to_string body);*)
         generate (Reg return_reg, return_type) (Ans(Move(Reg return_reg), info)) regenv body
     in
-        Printf.printf "closure body after regAlloc:\n%s\n" (AsmReg.to_string body');
+        (*Printf.printf "closure body after regAlloc:\n%s\n" (AsmReg.to_string body');*)
         { AsmReg.name = def_name; AsmReg.args =  arg_regs; AsmReg.fargs = farg_regs; AsmReg.body = body'; AsmReg.ret = return_type; AsmReg.info = info }
 
 (*assign register*)

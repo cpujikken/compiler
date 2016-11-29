@@ -271,8 +271,8 @@ let fun_converter { Closure.name = (x , t); Closure.args = args; Closure.formal_
 
 (* プログラム全体の仮想マシンコード生成 (caml2html: virtual_f) *)
 let f (Closure.Prog(fundefs, e)) =
-    Printf.printf "before transform to asm\n%s\n" (Closure.to_string e);
-    List.iter (fun def -> Printf.printf "%s\n" (Closure.fundef_to_string def)) fundefs;
+    (*Printf.printf "before transform to asm\n%s\n" (Closure.to_string e);*)
+    (*List.iter (fun def -> Printf.printf "%s\n" (Closure.fundef_to_string def)) fundefs;*)
   data := [];
   idata := [];
   let fundefs = List.map fun_converter fundefs in
