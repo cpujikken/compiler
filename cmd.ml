@@ -55,7 +55,10 @@ let rec f output =
                 Printf.fprintf output "\n"
 
         | Label(label, comment_o) ->
-                Printf.fprintf output "%s:" label;
+                if !Common.is_lib then
+                    Printf.fprintf output "min_caml_%s:" label
+                else
+                    Printf.fprintf output "%s:" label;
                 (match comment_o with
                     Some comment -> Printf.fprintf output "\t#%s" comment
                     | None -> ()
@@ -136,7 +139,11 @@ let append_cmd_noinfo opcode operand_list =
 let append_cmd opcode operand_list info =
     append (Command (opcode, operand_list, Some info))
 
-let label_to_string label = "$" ^ label
+let label_to_string label =
+    if !Common.is_lib then
+        "$" ^ "min_caml_" ^ label
+    else
+        "$" ^ label
 let int_to_string i = "$" ^ string_of_int i
 let align_length = 4
 let addr_mode_relative = 0

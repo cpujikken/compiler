@@ -465,7 +465,8 @@ let f (Prog(idata, fdata, fundefs, e)) =
   Format.eprintf "generating assembly...@.";
 
     (*.start label: starting point*)
-    append (Directive (start_directive, Some entry_label, None));
+    if not !Common.is_lib then
+        append (Directive (start_directive, Some entry_label, None));
 
     (*data section*)
     append (Directive (data_directive, None, None));
@@ -496,7 +497,8 @@ let f (Prog(idata, fdata, fundefs, e)) =
   (*fun def*)
   List.iter (fun fundef -> print_fun fundef) fundefs;
 
-  append (Label (entry_label, None));
+  if not !Common.is_lib then
+      append (Label (entry_label, None));
 
     (*backup all regs*)
     stackset := S.empty;
