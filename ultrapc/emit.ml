@@ -498,9 +498,11 @@ let f (Prog(idata, fdata, fundefs, e)) =
   List.iter (fun fundef -> print_fun fundef) fundefs;
 
   if not !Common.is_lib then
+      (
       append (Label (entry_label, None));
 
-    (*backup all regs*)
-    stackset := S.empty;
-    stackmap := [];
-    generate (Tail, e);
+        (*backup all regs*)
+        stackset := S.empty;
+        stackmap := [];
+        generate (Tail, e);
+      )
