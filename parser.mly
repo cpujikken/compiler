@@ -197,7 +197,7 @@ exp: /* (* ∞Ï»Ã§Œº∞ (caml2html: parser_exp) *) */
 | simple_exp DOT LPAREN exp RPAREN LESS_MINUS exp
     { Put($1, $4, $7, (Info.parsing_get())  )}
 | exp SEMICOLON exp
-    { Let((Id.gentmp (Type.Unit (Info.parsing_get())) (Info.parsing_get()), Type.Unit (Info.parsing_get())), $1, $3, (Info.parsing_get())  )}
+    { Let((Id.gentmp (Type.gentyp (Info.parsing_get())) (Info.parsing_get()), Type.Unit (Info.parsing_get())), $1, $3, (Info.parsing_get())  )}
 | exp SEMICOLON
     { Let((Id.gentmp (Type.Unit (Info.parsing_get())) (Info.parsing_get()), Type.Unit (Info.parsing_get())), $1, (Unit (Info.parsing_get())), (Info.parsing_get())  )}
 | ARRAY_CREATE simple_exp simple_exp
