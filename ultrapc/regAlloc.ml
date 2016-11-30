@@ -111,8 +111,8 @@ let rec alloc cont regenv var var_type prefer =
     (* allocate a register or spill a variable *)
     (
     match var with
-    | ID id -> if M.mem id regenv then failwith "error: try allocate already alllocated variable" else ()
-    | Reg reg -> ()
+    | ID id when M.mem id regenv -> failwith "error: try allocate already alllocated variable"
+    | _ -> ()
     );
   let all =
       match var_type with
@@ -150,7 +150,7 @@ let rec alloc cont regenv var var_type prefer =
                         Alloc(not_used_reg)
                 with Not_found ->
                     (*out of register*)
-                    Format.eprintf "register allocation failed for %s@." (M.to_string id);
+                    (*Format.eprintf "register allocation failed for %s@." (M.to_string id);*)
                     match( (* 型の合うレジスタ変数を探す *)
                         List.find
                             (fun y -> match y with
@@ -163,16 +163,16 @@ let rec alloc cont regenv var var_type prefer =
                     ) with
                     | Reg reg -> failwith "system error"
                     | ID id ->
-                        Format.eprintf "spilling %s from %s@."(Id.to_string id) (M.find id regenv);
+                        (*Format.eprintf "spilling %s from %s@."(Id.to_string id) (M.find id regenv);*)
                         Spill id
 
-    (* auxiliary function for generate and generate'_and_restore *)
+    (* auxiliary function for generate and generate_and_restore *)
 let add x r regenv =
     match x with
     | Reg reg ->regenv
     | ID id -> M.add id r regenv
 
-        (* auxiliary functions for generate' *)
+        (* auxiliary functions for generate_exp *)
 exception NoReg of Id.t * Type.t * Info.t
 
 (*find a register which operand x is bound to
@@ -192,17 +192,17 @@ let find x t regenv =
   (*| c -> c*)
 
 let rec generate dest cont regenv = function (* 命令列のレジスタ割り当て (caml2html: regalloc_g) *)
-    | Ans(exp, info) -> generate'_and_restore dest cont regenv exp info
+    | Ans(exp, info) -> generate_and_restore dest cont regenv exp info
     | Let((let_var, var_type) as id_type, let_exp, body_exp, info) ->
         (
             match let_var with
-            | ID id -> if M.mem id regenv then Info.exit info "let variable is already bound" else ()
+            | ID id when M.mem id regenv -> Info.exit info "let variable is already bound"
             | _ -> ()
         )
             ;
       let cont' = concat body_exp dest cont in
-      let (e1', regenv1) = generate'_and_restore id_type cont' regenv let_exp info in
-      let (_call, targets) = target let_var dest cont' in
+      let (e1', regenv1) = generate_and_restore id_type cont' regenv let_exp info in
+      let (_, targets) = target let_var dest cont' in
       let sources = source var_type e1' in
       (* レジスタ間のmovよりメモリを介するswapのほうが問題なので、sourcesよりtargetsを優先 *)
       (match alloc cont' regenv1 let_var var_type (targets @ sources) with
@@ -213,19 +213,19 @@ let rec generate dest cont regenv = function (* 命令列のレジスタ割り�
                       try AsmReg.Save(M.find id regenv, id)
                       with Not_found -> AsmReg.Nop in
                   (AsmReg.seq(save, AsmReg.concat e1' (r, var_type) e2', info), regenv2)
-          | Alloc(reg) ->
-                  let (e2', regenv2) = generate dest cont (add let_var reg regenv1) body_exp in
+          | Alloc reg ->
+                  let e2', regenv2 = generate dest cont (add let_var reg regenv1) body_exp in
                   AsmReg.concat e1' (reg, var_type) e2', regenv2
       )
-and generate'_and_restore dest cont regenv exp info = (* 使用される変数をスタックからレジスタへRestore (caml2html: regalloc_unspill) *)
-  try generate' dest cont regenv info exp
+and generate_and_restore dest cont regenv exp info = (* 使用される変数をスタックからレジスタへRestore (caml2html: regalloc_unspill) *)
+  try generate_exp dest cont regenv info exp
   (*try generate*)
   with NoReg(x, t, info) ->
-      (*if out of register, assign to new var*)
+      (*if variable is not bound by any register, restore it from stack*)
       ((* Format.eprintf "restoring %s@." x; *)
           generate dest cont regenv (Let((ID x, t), Restore(x), Ans(exp, info), info))
           )
-and generate' dest cont regenv info exp = (* 各命令のレジスタ割り当て (caml2html: regalloc_gprime) *)
+and generate_exp dest cont regenv info exp = (* 各命令のレジスタ割り当て (caml2html: regalloc_gprime) *)
     let reg_finder reg =
       find reg (Type.Int info) regenv
       in
@@ -313,34 +313,34 @@ and generate' dest cont regenv info exp = (* 各命令のレジスタ割り当�
     (*| FCmp(reg1, reg2, c3) -> AsmReg.Ans(AsmReg.FCmp(freg_finder reg1, freg_finder reg2, c3), info), regenv*)
 
     | IfEQ(reg1, reg2, e1, e2) ->
-            generate'_if dest cont regenv exp (fun e1' e2' ->
+            generate_if dest cont regenv exp (fun e1' e2' ->
                 AsmReg.IfEQ(reg_finder reg1, reg_finder reg2, e1', e2')
                 ) e1 e2 info
     | IfLT(reg1, reg2, e1, e2) ->
-            generate'_if dest cont regenv exp (fun e1' e2' ->
+            generate_if dest cont regenv exp (fun e1' e2' ->
                 AsmReg.IfLT(reg_finder reg1, reg_finder reg2, e1', e2')
                 ) e1 e2 info
     | FIfEQ(reg1, reg2, e1, e2) ->
-            generate'_if dest cont regenv exp (fun e1' e2' ->
+            generate_if dest cont regenv exp (fun e1' e2' ->
                 AsmReg.FIfEQ(freg_finder reg1, freg_finder reg2, e1', e2')
                 ) e1 e2 info
     | FIfLT(reg1, reg2, e1, e2) ->
-            generate'_if dest cont regenv exp (fun e1' e2' ->
+            generate_if dest cont regenv exp (fun e1' e2' ->
                 AsmReg.FIfLT(freg_finder reg1, freg_finder reg2, e1', e2')
                 ) e1 e2 info
     | CallCls(reg, int_params, float_params) ->
             if List.length int_params > Array.length regs - 1 || List.length float_params > Array.length fregs - 1 then
                 Info.exit info "not enough registers to pass parameters to function"
             else
-                generate'_call dest cont regenv exp (fun ys zs ->
+                generate_call dest cont regenv exp (fun ys zs ->
                     AsmReg.CallCls(reg_finder reg, ys, zs)) int_params float_params info
     | CallDir (loc, int_params, float_params) ->
             if List.length int_params > Array.length regs - 1 || List.length float_params > Array.length fregs - 1 then
                 Info.exit info "not enough registers to pass parameters to function"
             else
-                generate'_call dest cont regenv exp (fun ys zs -> AsmReg.CallDir(loc, ys, zs)) int_params float_params info
+                generate_call dest cont regenv exp (fun ys zs -> AsmReg.CallDir(loc, ys, zs)) int_params float_params info
 
-and generate'_if dest cont regenv exp constr e1 e2 info = (* ifのレジスタ割り当て (caml2html: regalloc_if) *)
+and generate_if dest cont regenv exp constr e1 e2 info = (* ifのレジスタ割り当て (caml2html: regalloc_if) *)
     let (e1', regenv1) = generate dest cont regenv e1 in
     let (e2', regenv2) = generate dest cont regenv e2 in
     let regenv' = (* 両方に共通のレジスタ変数だけ利用 *)
@@ -377,7 +377,7 @@ and generate'_if dest cont regenv exp constr e1 e2 info = (* ifのレジスタ�
             ,
            regenv'
         )
-and generate'_call dest cont regenv exp constr ys zs info = (* 関数呼び出しのレジスタ割り当て (caml2html: regalloc_call) *)
+and generate_call dest cont regenv exp constr ys zs info = (* 関数呼び出しのレジスタ割り当て (caml2html: regalloc_call) *)
     (List.fold_left
      (fun e x ->
          if x = fst dest then
@@ -445,7 +445,7 @@ let process_def { Asm.name = def_name; Asm.args = args; Asm.fargs = float_args; 
 
 (*assign register*)
 let f (Prog(idata, data, fundefs, e)) = (* プログラム全体のレジスタ割り当て (caml2html: regalloc_f) *)
-Format.eprintf "register allocation: may take some time (up to a few minutes, depending on the size of functions)@.";
+(*Format.eprintf "register allocation: may take some time (up to a few minutes, depending on the size of functions)@.";*)
   let fundefs' = List.map process_def fundefs in
   let info = Asm.get_info e in
   let e', regenv' = generate (ID (Id.gentmp (Type.Unit info) info), Type.Unit info) (Ans(Nop, info)) M.empty e in
