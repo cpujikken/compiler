@@ -5,7 +5,7 @@ open Asm
 open Reg
 open Loc
 
-let data = ref [] (* ÉâÆ°¾®¿ôÅÀ¿ô¤ÎÄê¿ô¥Æ¡¼¥Ö¥ë (caml2html: virtual_data) *)
+let data = ref [] (* æµ®å‹•å°æ•°ç‚¹æ•°ã®å®šæ•°ãƒ†ãƒ¼ãƒ–ãƒ« (caml2html: virtual_data) *)
 let idata = ref [] (*list of big int value - bigger than 16bit*)
 
 (*classify float, unit type and others*)
@@ -41,7 +41,7 @@ let expand id_type_list init addf addi =
     (fun (offset, acc) x t ->
       (offset + int_size, addi x t offset acc))
 
-let rec generate env = function (* ¼°¤Î²¾ÁÛ¥Þ¥·¥ó¥³¡¼¥ÉÀ¸À® (caml2html: virtual_g) *)
+let rec generate env = function (* å¼ã®ä»®æƒ³ãƒžã‚·ãƒ³ã‚³ãƒ¼ãƒ‰ç”Ÿæˆ (caml2html: virtual_g) *)
   | Closure.Unit info -> Ans(Nop, info)
   (*int*)
   | Closure.Int(i, info) ->
@@ -50,7 +50,7 @@ let rec generate env = function (* ¼°¤Î²¾ÁÛ¥Þ¥·¥ó¥³¡¼¥ÉÀ¸À® (caml2html: virtual_
       else
       let l =
         try
-          (* ¤¹¤Ç¤ËÄê¿ô¥Æ¡¼¥Ö¥ë¤Ë¤¢¤Ã¤¿¤éºÆÍøÍÑ *)
+          (* ã™ã§ã«å®šæ•°ãƒ†ãƒ¼ãƒ–ãƒ«ã«ã‚ã£ãŸã‚‰å†åˆ©ç”¨ *)
           let (l, _) = List.find (fun (_, i') -> i = i') !idata in
           fst l
         with Not_found ->
@@ -63,7 +63,7 @@ let rec generate env = function (* ¼°¤Î²¾ÁÛ¥Þ¥·¥ó¥³¡¼¥ÉÀ¸À® (caml2html: virtual_
   | Closure.Float(d, info) ->
       let l =
         try
-          (* ¤¹¤Ç¤ËÄê¿ô¥Æ¡¼¥Ö¥ë¤Ë¤¢¤Ã¤¿¤éºÆÍøÍÑ *)
+          (* ã™ã§ã«å®šæ•°ãƒ†ãƒ¼ãƒ–ãƒ«ã«ã‚ã£ãŸã‚‰å†åˆ©ç”¨ *)
           let (l, _) = List.find (fun (_, d') -> d = d') !data in
           fst l
         with Not_found ->
@@ -126,8 +126,8 @@ let rec generate env = function (* ¼°¤Î²¾ÁÛ¥Þ¥·¥ó¥³¡¼¥ÉÀ¸À® (caml2html: virtual_
       | Type.Float _ -> Ans(FLoad(Absolute (Label (fst x), None)), info)
       | _ -> Ans(Load(Absolute (Label (fst x), None)), info))
   | Closure.MakeCls((start, t), { Closure.entry = entry; Closure.actual_fv = external_variable }, let_body, info) ->
-          (* ¥¯¥í¡¼¥¸¥ã¤ÎÀ¸À® (caml2html: virtual_makecls) *)
-      (* Closure¤Î¥¢¥É¥ì¥¹¤ò¥»¥Ã¥È¤·¤Æ¤«¤é¡¢¼«Í³ÊÑ¿ô¤ÎÃÍ¤ò¥¹¥È¥¢ *)
+          (* ã‚¯ãƒ­ãƒ¼ã‚¸ãƒ£ã®ç”Ÿæˆ (caml2html: virtual_makecls) *)
+      (* Closureã®ã‚¢ãƒ‰ãƒ¬ã‚¹ã‚’ã‚»ãƒƒãƒˆã—ã¦ã‹ã‚‰ã€è‡ªç”±å¤‰æ•°ã®å€¤ã‚’ã‚¹ãƒˆã‚¢ *)
   let let_body' = generate (M.add start t env) let_body
   in
   let offset, store_fv =
@@ -174,7 +174,7 @@ let rec generate env = function (* ¼°¤Î²¾ÁÛ¥Þ¥·¥ó¥³¡¼¥ÉÀ¸À® (caml2html: virtual_
       let (ints, floats) = separate (List.map (fun y -> (y, M.find y env)) params)
       in
       Ans(CallDir(Label (fst cls), ints, floats), info)
-  | Closure.Tuple(id_list, info) -> (* ÁÈ¤ÎÀ¸À® (caml2html: virtual_tuple) *)
+  | Closure.Tuple(id_list, info) -> (* çµ„ã®ç”Ÿæˆ (caml2html: virtual_tuple) *)
           (*generate a now id*)
           (*this ID should keep position of the tuple*)
       let tuple = ID (Id.genid("t", info )) in
@@ -226,7 +226,7 @@ let rec generate env = function (* ¼°¤Î²¾ÁÛ¥Þ¥·¥ó¥³¡¼¥ÉÀ¸À® (caml2html: virtual_
           )
       in
           load
-  | Closure.Get(x, y, info) -> (* ÇÛÎó¤ÎÆÉ¤ß½Ð¤· (caml2html: virtual_get) *)
+  | Closure.Get(x, y, info) -> (* é…åˆ—ã®èª­ã¿å‡ºã— (caml2html: virtual_get) *)
       (match M.find x env with
       | Type.Array(Type.Unit _, _) -> Ans(Nop, info)
       | Type.Array(Type.Float _, _) -> Ans(FLoad(Dynamic (ID  x, float_size, ID  y)), info)
@@ -247,7 +247,7 @@ let rec generate env = function (* ¼°¤Î²¾ÁÛ¥Þ¥·¥ó¥³¡¼¥ÉÀ¸À® (caml2html: virtual_
               info
           )
 
-(* ´Ø¿ô¤Î²¾ÁÛ¥Þ¥·¥ó¥³¡¼¥ÉÀ¸À® (caml2html: virtual_h) *)
+(* é–¢æ•°ã®ä»®æƒ³ãƒžã‚·ãƒ³ã‚³ãƒ¼ãƒ‰ç”Ÿæˆ (caml2html: virtual_h) *)
 let fun_converter { Closure.name = (x , t); Closure.args = args; Closure.formal_fv = free_args; Closure.body = e; Closure.info = info } =
   let info = Closure.get_info e
   in
@@ -269,7 +269,7 @@ let fun_converter { Closure.name = (x , t); Closure.args = args; Closure.formal_
           { name = fst x; args = ints; fargs = floats; body = load; ret = t2 ; info = info}
   | _ -> Info.exit info "Cannot apply non-function type"
 
-(* ¥×¥í¥°¥é¥àÁ´ÂÎ¤Î²¾ÁÛ¥Þ¥·¥ó¥³¡¼¥ÉÀ¸À® (caml2html: virtual_f) *)
+(* ãƒ—ãƒ­ã‚°ãƒ©ãƒ å…¨ä½“ã®ä»®æƒ³ãƒžã‚·ãƒ³ã‚³ãƒ¼ãƒ‰ç”Ÿæˆ (caml2html: virtual_f) *)
 let f (Closure.Prog(fundefs, e)) =
     (*Printf.printf "before transform to asm\n%s\n" (Closure.to_string e);*)
     (*List.iter (fun def -> Printf.printf "%s\n" (Closure.fundef_to_string def)) fundefs;*)

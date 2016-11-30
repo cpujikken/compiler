@@ -1,5 +1,5 @@
 type closure = { entry : Id.l; actual_fv : Id.t list }
-type t = (* ¥¯¥í¡¼¥¸¥ãÊÑ´¹¸å¤Î¼° (caml2html: closure_t) *)
+type t = (* ã‚¯ãƒ­ãƒ¼ã‚¸ãƒ£å¤‰æ›å¾Œã®å¼ (caml2html: closure_t) *)
   | Unit of Info.t
   | IntRead of Info.t
   | FloatRead of Info.t
@@ -78,7 +78,7 @@ let toplevel : fundef list ref = ref []
 (*
  * convert KNormal.t to Closure.t
  *)
-let rec generate env known = function (* ¥¯¥í¡¼¥¸¥ãÊÑ´¹¥ë¡¼¥Á¥óËÜÂÎ (caml2html: closure_g) *)
+let rec generate env known = function (* ã‚¯ãƒ­ãƒ¼ã‚¸ãƒ£å¤‰æ›ãƒ«ãƒ¼ãƒãƒ³æœ¬ä½“ (caml2html: closure_g) *)
   | KNormal.Unit info -> Unit info
   | KNormal.IntRead info -> IntRead info
   | KNormal.FloatRead info -> FloatRead info
@@ -104,10 +104,10 @@ let rec generate env known = function (* ¥¯¥í¡¼¥¸¥ãÊÑ´¹¥ë¡¼¥Á¥óËÜÂÎ (caml2html: 
   | KNormal.IfLE(x, y, e1, e2, info) -> IfLE(x, y, generate env known e1, generate env known e2, info)
   | KNormal.Let((x, t), e1, e2, info) -> Let((x, t), generate env known e1, generate (M.add x t env) known e2, info)
   | KNormal.Var(x, info) -> Var(x, info)
-  | KNormal.LetRec({ KNormal.name = (fun_name, fun_type); KNormal.args = param_list; KNormal.body = fun_body }, let_body, info) -> (* ´Ø¿ôÄêµÁ¤Î¾ì¹ç (caml2html: closure_letrec) *)
-    (* ´Ø¿ôÄêµÁlet rec fun_name y1 ... yn = fun_body in let_body¤Î¾ì¹ç¤Ï¡¢
-    fun_name¤Ë¼«Í³ÊÑ¿ô¤¬¤Ê¤¤(closure¤ò²ð¤µ¤ºdirect¤Ë¸Æ¤Ó½Ð¤»¤ë)
-    ¤È²¾Äê¤·¡¢known¤ËÄÉ²Ã¤·¤Æfun_body¤ò¥¯¥í¡¼¥¸¥ãÊÑ´¹¤·¤Æ¤ß¤ë *)
+  | KNormal.LetRec({ KNormal.name = (fun_name, fun_type); KNormal.args = param_list; KNormal.body = fun_body }, let_body, info) -> (* é–¢æ•°å®šç¾©ã®å ´åˆ (caml2html: closure_letrec) *)
+    (* é–¢æ•°å®šç¾©let rec fun_name y1 ... yn = fun_body in let_bodyã®å ´åˆã¯ã€
+    fun_nameã«è‡ªç”±å¤‰æ•°ãŒãªã„(closureã‚’ä»‹ã•ãšdirectã«å‘¼ã³å‡ºã›ã‚‹)
+    ã¨ä»®å®šã—ã€knownã«è¿½åŠ ã—ã¦fun_bodyã‚’ã‚¯ãƒ­ãƒ¼ã‚¸ãƒ£å¤‰æ›ã—ã¦ã¿ã‚‹ *)
 
     (*backup top level*)
     let toplevel_backup = !toplevel in
@@ -122,9 +122,9 @@ let rec generate env known = function (* ¥¯¥í¡¼¥¸¥ãÊÑ´¹¥ë¡¼¥Á¥óËÜÂÎ (caml2html: 
     * and transform function's expression
     * *)
     let fun_body' = generate (M.add_list param_list env') known' fun_body in
-    (* ËÜÅö¤Ë¼«Í³ÊÑ¿ô¤¬¤Ê¤«¤Ã¤¿¤«¡¢ÊÑ´¹·ë²Ìfun_body'¤ò³ÎÇ§¤¹¤ë *)
-    (* Ãí°Õ: fun_body'¤Ëfun_name¼«¿È¤¬ÊÑ¿ô¤È¤·¤Æ½Ð¸½¤¹¤ë¾ì¹ç¤Ïclosure¤¬É¬Í×!
-     (thanks to nuevo-namasute and azounoman; test/cls-bug2.ml»²¾È) *)
+    (* æœ¬å½“ã«è‡ªç”±å¤‰æ•°ãŒãªã‹ã£ãŸã‹ã€å¤‰æ›çµæžœfun_body'ã‚’ç¢ºèªã™ã‚‹ *)
+    (* æ³¨æ„: fun_body'ã«fun_nameè‡ªèº«ãŒå¤‰æ•°ã¨ã—ã¦å‡ºç¾ã™ã‚‹å ´åˆã¯closureãŒå¿…è¦!
+     (thanks to nuevo-namasute and azounoman; test/cls-bug2.mlå‚ç…§) *)
 
     (*get list of variables used in fun_body but not parameter
      * external_variables might include function name
@@ -145,7 +145,7 @@ let rec generate env known = function (* ¥¯¥í¡¼¥¸¥ãÊÑ´¹¥ë¡¼¥Á¥óËÜÂÎ (caml2html: 
             (*keep function name in known' list to aknowledge that there is no need of closure*)
             known', fun_body'
         else
-            (* ÂÌÌÜ¤À¤Ã¤¿¤é¾õÂÖ(toplevel¤ÎÃÍ)¤òÌá¤·¤Æ¡¢¥¯¥í¡¼¥¸¥ãÊÑ´¹¤ò¤ä¤êÄ¾¤¹ *)
+            (* é§„ç›®ã ã£ãŸã‚‰çŠ¶æ…‹(toplevelã®å€¤)ã‚’æˆ»ã—ã¦ã€ã‚¯ãƒ­ãƒ¼ã‚¸ãƒ£å¤‰æ›ã‚’ã‚„ã‚Šç›´ã™ *)
             (
                 Format.eprintf "free variable(s) %s found in function %s@." (Id.pp_list (S.elements external_variables)) (Id.to_string fun_name);
                  Format.eprintf "function %s cannot be directly applied in fact@." (Id.to_string fun_name);
@@ -176,7 +176,7 @@ let rec generate env known = function (* ¥¯¥í¡¼¥¸¥ãÊÑ´¹¥ë¡¼¥Á¥óËÜÂÎ (caml2html: 
                         (List.map fst param_list)
                     )
                 )
-            )(* ¼«Í³ÊÑ¿ô¤Î¥ê¥¹¥È *)
+            )(* è‡ªç”±å¤‰æ•°ã®ãƒªã‚¹ãƒˆ *)
     in
     let external_variable_with_type =
         List.map
@@ -186,20 +186,20 @@ let rec generate env known = function (* ¥¯¥í¡¼¥¸¥ãÊÑ´¹¥ë¡¼¥Á¥óËÜÂÎ (caml2html: 
                 )
             (*for all free variables*)
             external_variables
-    in (* ¤³¤³¤Ç¼«Í³ÊÑ¿ôz¤Î·¿¤ò°ú¤¯¤¿¤á¤Ë°ú¿ôenv¤¬É¬Í× *)
-        toplevel := { name = (Id.to_L fun_name, fun_type); args = param_list; formal_fv = external_variable_with_type; body = fun_body'; info = info } :: !toplevel; (* ¥È¥Ã¥×¥ì¥Ù¥ë´Ø¿ô¤òÄÉ²Ã *)
+    in (* ã“ã“ã§è‡ªç”±å¤‰æ•°zã®åž‹ã‚’å¼•ããŸã‚ã«å¼•æ•°envãŒå¿…è¦ *)
+        toplevel := { name = (Id.to_L fun_name, fun_type); args = param_list; formal_fv = external_variable_with_type; body = fun_body'; info = info } :: !toplevel; (* ãƒˆãƒƒãƒ—ãƒ¬ãƒ™ãƒ«é–¢æ•°ã‚’è¿½åŠ  *)
         (*parse let_body*)
         let let_body' = generate env' known' let_body
         in
             (*if function is used after that*)
-            if S.mem fun_name (fv let_body') then (* fun_name¤¬ÊÑ¿ô¤È¤·¤Ælet_body'¤Ë½Ð¸½¤¹¤ë¤« *)
+            if S.mem fun_name (fv let_body') then (* fun_nameãŒå¤‰æ•°ã¨ã—ã¦let_body'ã«å‡ºç¾ã™ã‚‹ã‹ *)
                 (* return a closure call*)
-                MakeCls((fun_name, fun_type), { entry = Id.to_L fun_name; actual_fv = external_variables }, let_body', info) (* ½Ð¸½¤·¤Æ¤¤¤¿¤éºï½ü¤·¤Ê¤¤ *)
+                MakeCls((fun_name, fun_type), { entry = Id.to_L fun_name; actual_fv = external_variables }, let_body', info) (* å‡ºç¾ã—ã¦ã„ãŸã‚‰å‰Šé™¤ã—ãªã„ *)
             else
                 (*just return let_body if function is not used*)
                 (Format.eprintf "eliminating closure(s) %s@." (Id.to_string fun_name);
-                let_body') (* ½Ð¸½¤·¤Ê¤±¤ì¤ÐMakeCls¤òºï½ü *)
-  | KNormal.App(x, ys, info) when S.mem x known -> (* ´Ø¿ôÅ¬ÍÑ¤Î¾ì¹ç (caml2html: closure_app) *)
+                let_body') (* å‡ºç¾ã—ãªã‘ã‚Œã°MakeClsã‚’å‰Šé™¤ *)
+  | KNormal.App(x, ys, info) when S.mem x known -> (* é–¢æ•°é©ç”¨ã®å ´åˆ (caml2html: closure_app) *)
       Format.eprintf "directly applying %s@." (Id.to_string x);
       AppDir(Id.to_L x, ys, info)
   | KNormal.App(f, xs, info) -> AppCls(f, xs, info)

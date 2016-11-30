@@ -1,4 +1,4 @@
-(* 2¥ª¥Ú¥é¥ó¥É¤Ç¤Ï¤Ê¤¯3¥ª¥Ú¥é¥ó¥É¤Îx86¥¢¥»¥ó¥Ö¥ê¤â¤É¤­ *)
+(* 2ã‚ªãƒšãƒ©ãƒ³ãƒ‰ã§ã¯ãªã3ã‚ªãƒšãƒ©ãƒ³ãƒ‰ã®x86ã‚¢ã‚»ãƒ³ãƒ–ãƒªã‚‚ã©ã *)
 open Loc
 open Reg
 type bits5 = int
@@ -23,10 +23,10 @@ let loi_to_string = function
     | Label label -> "$" ^ label
     | Constant i -> "$" ^ (string_of_int i)
 
-type t = (* Ì¿Îá¤ÎÎó (caml2html: sparcasm_t) *)
+type t = (* å‘½ä»¤ã®åˆ— (caml2html: sparcasm_t) *)
   | Ans of exp * Info.t
   | Let of (Reg.t * Type.t) * exp * t * Info.t
-and exp = (* °ì¤Ä°ì¤Ä¤ÎÌ¿Îá¤ËÂĞ±ş¤¹¤ë¼° (caml2html: sparcasm_exp) *)
+and exp = (* ä¸€ã¤ä¸€ã¤ã®å‘½ä»¤ã«å¯¾å¿œã™ã‚‹å¼ (caml2html: sparcasm_exp) *)
     | Nop
     | IntRead
     | FloatRead
@@ -66,7 +66,7 @@ and exp = (* °ì¤Ä°ì¤Ä¤ÎÌ¿Îá¤ËÂĞ±ş¤¹¤ë¼° (caml2html: sparcasm_exp) *)
     | Restore of Id.t
     | Save of Reg.t * Id.t
 type fundef = { name : label; args : Reg.t list; fargs : Reg.t list; body : t; ret : Type.t ; info: Info.t}
-(* ¥×¥í¥°¥é¥àÁ´ÂÎ = ÉâÆ°¾®¿ôÅÀ¿ô¥Æ¡¼¥Ö¥ë + ¥È¥Ã¥×¥ì¥Ù¥ë´Ø¿ô + ¥á¥¤¥ó¤Î¼° (caml2html: sparcasm_prog) *)
+(* ãƒ—ãƒ­ã‚°ãƒ©ãƒ å…¨ä½“ = æµ®å‹•å°æ•°ç‚¹æ•°ãƒ†ãƒ¼ãƒ–ãƒ« + ãƒˆãƒƒãƒ—ãƒ¬ãƒ™ãƒ«é–¢æ•° + ãƒ¡ã‚¤ãƒ³ã®å¼ (caml2html: sparcasm_prog) *)
 type prog = Prog of (Id.l * int) list * (Id.l * float) list * fundef list * t
 
 let seq(e1, e2, info) =

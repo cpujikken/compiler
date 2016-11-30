@@ -1,6 +1,6 @@
 (* give names to intermediate values (K-normalization) *)
 
-type t = (* KÀµµ¬²½¸å¤Î¼° (caml2html: knormal_t) *)
+type t = (* Kæ­£è¦åŒ–å¾Œã®å¼ (caml2html: knormal_t) *)
   | Unit of Info.t
   | Int of int * Info.t
   | Float of float * Info.t
@@ -12,8 +12,8 @@ type t = (* KÀµµ¬²½¸å¤Î¼° (caml2html: knormal_t) *)
   | FSub of Id.t * Id.t * Info.t
   | FMul of Id.t * Id.t * Info.t
   | FDiv of Id.t * Id.t * Info.t
-  | IfEq of Id.t * Id.t * t * t * Info.t (* Èæ³Ó + Ê¬´ô (caml2html: knormal_branch) *)
-  | IfLE of Id.t * Id.t * t * t * Info.t (* Èæ³Ó + Ê¬´ô *)
+  | IfEq of Id.t * Id.t * t * t * Info.t (* æ¯”è¼ƒ + åˆ†å² (caml2html: knormal_branch) *)
+  | IfLE of Id.t * Id.t * t * t * Info.t (* æ¯”è¼ƒ + åˆ†å² *)
   | Let of (Id.t * Type.t) * t * t * Info.t
   | Var of Id.t * Info.t
   | LetRec of fundef * t * Info.t
@@ -90,7 +90,7 @@ let to_string x =
     in
     to_string_pre "" x
 
-let rec fv = function (* ¼°¤Ë½Ð¸½¤¹¤ë¡Ê¼«Í³¤Ê¡ËÊÑ¿ô (caml2html: knormal_fv) *)
+let rec fv = function (* å¼ã«å‡ºç¾ã™ã‚‹ï¼ˆè‡ªç”±ãªï¼‰å¤‰æ•° (caml2html: knormal_fv) *)
   | Unit (_) | Int(_, _) | Float(_, _) | ExtArray(_, _)
   | IntRead _
   | FloatRead _
@@ -119,7 +119,7 @@ let rec fv = function (* ¼°¤Ë½Ð¸½¤¹¤ë¡Ê¼«Í³¤Ê¡ËÊÑ¿ô (caml2html: knormal_fv) *)
   | Put(x, y, z, _) -> S.of_list [x; y; z]
   | LetTuple(xs, y, e, _) -> S.add y (S.diff (fv e) (S.of_list (List.map fst xs)))
 
-let insert_let (e, t) k info = (* let¤òÁÞÆþ¤¹¤ëÊä½õ´Ø¿ô (caml2html: knormal_insert) *)
+let insert_let (e, t) k info = (* letã‚’æŒ¿å…¥ã™ã‚‹è£œåŠ©é–¢æ•° (caml2html: knormal_insert) *)
   match e with
   | Var(x, _) -> k x
   | _ ->
@@ -127,11 +127,11 @@ let insert_let (e, t) k info = (* let¤òÁÞÆþ¤¹¤ëÊä½õ´Ø¿ô (caml2html: knormal_inse
       let e', t' = k x in
       Let((x, t), e, e', info), t'
 
-let rec generate env = function (* KÀµµ¬²½¥ë¡¼¥Á¥óËÜÂÎ (caml2html: knormal_g) *)
+let rec generate env = function (* Kæ­£è¦åŒ–ãƒ«ãƒ¼ãƒãƒ³æœ¬ä½“ (caml2html: knormal_g) *)
   | Syntax.Unit info -> Unit info, Type.Unit info
   | Syntax.IntRead info -> IntRead info, Type.Int info
   | Syntax.FloatRead info -> FloatRead info, Type.Float info
-  | Syntax.Bool(b, info) -> Int((if b then 1 else 0), info), Type.Int info (* ÏÀÍýÃÍtrue, false¤òÀ°¿ô1, 0¤ËÊÑ´¹ (caml2html: knormal_bool) *)
+  | Syntax.Bool(b, info) -> Int((if b then 1 else 0), info), Type.Int info (* è«–ç†å€¤true, falseã‚’æ•´æ•°1, 0ã«å¤‰æ› (caml2html: knormal_bool) *)
   | Syntax.Int(i, info) -> Int(i, info), Type.Int info
   | Syntax.Float(d, info) -> Float(d, info), Type.Float info
   | Syntax.Not(e, info) -> generate env (Syntax.If(e, Syntax.Bool(false, info), Syntax.Bool(true, info), info))
@@ -146,23 +146,23 @@ let rec generate env = function (* KÀµµ¬²½¥ë¡¼¥Á¥óËÜÂÎ (caml2html: knormal_g) *)
   | Syntax.Neg(e, info) ->
       insert_let (generate env e)
 	(fun x -> Neg(x, info), Type.Int info) info
-  | Syntax.Add(e1, e2, info) -> (* Â­¤·»»¤ÎKÀµµ¬²½ (caml2html: knormal_add) *)
+  | Syntax.Add(e1, e2, info) -> (* è¶³ã—ç®—ã®Kæ­£è¦åŒ– (caml2html: knormal_add) *)
       insert_let (generate env e1)
 	(fun x -> insert_let (generate env e2)
 	    (fun y -> Add(x, y, info), Type.Int info) info) info
-  | Syntax.Mul(e1, e2, info) -> (* Â­¤·»»¤ÎKÀµµ¬²½ (caml2html: knormal_add) *)
+  | Syntax.Mul(e1, e2, info) -> (* è¶³ã—ç®—ã®Kæ­£è¦åŒ– (caml2html: knormal_add) *)
       insert_let (generate env e1)
 	(fun x -> insert_let (generate env e2)
 	    (fun y -> Mul(x, y, info), Type.Int info) info) info
-  | Syntax.Div(e1, e2, info) -> (* Â­¤·»»¤ÎKÀµµ¬²½ (caml2html: knormal_add) *)
+  | Syntax.Div(e1, e2, info) -> (* è¶³ã—ç®—ã®Kæ­£è¦åŒ– (caml2html: knormal_add) *)
       insert_let (generate env e1)
 	(fun x -> insert_let (generate env e2)
 	    (fun y -> Div(x, y, info), Type.Int info) info) info
-  | Syntax.ShiftLeft(e1, e2, info) -> (* Â­¤·»»¤ÎKÀµµ¬²½ (caml2html: knormal_add) *)
+  | Syntax.ShiftLeft(e1, e2, info) -> (* è¶³ã—ç®—ã®Kæ­£è¦åŒ– (caml2html: knormal_add) *)
       insert_let (generate env e1)
 	(fun x -> insert_let (generate env e2)
 	    (fun y -> ShiftLeft(x, y, info), Type.Int info) info) info
-  | Syntax.ShiftRight(e1, e2, info) -> (* Â­¤·»»¤ÎKÀµµ¬²½ (caml2html: knormal_add) *)
+  | Syntax.ShiftRight(e1, e2, info) -> (* è¶³ã—ç®—ã®Kæ­£è¦åŒ– (caml2html: knormal_add) *)
       insert_let (generate env e1)
 	(fun x -> insert_let (generate env e2)
 	    (fun y -> ShiftRight(x, y, info), Type.Int info) info) info
@@ -191,7 +191,7 @@ let rec generate env = function (* KÀµµ¬²½¥ë¡¼¥Á¥óËÜÂÎ (caml2html: knormal_g) *)
 	    (fun y -> FDiv(x, y, info), Type.Float info) info) info
   | Syntax.Eq (_, _, info) | Syntax.LE (_, _, info) as cmp ->
       generate env (Syntax.If(cmp, Syntax.Bool(true, info), Syntax.Bool(false, info), info))
-  | Syntax.If(Syntax.Not(e1, _), e2, e3, info) -> generate env (Syntax.If(e1, e3, e2, info)) (* not¤Ë¤è¤ëÊ¬´ô¤òÊÑ´¹ (caml2html: knormal_not) *)
+  | Syntax.If(Syntax.Not(e1, _), e2, e3, info) -> generate env (Syntax.If(e1, e3, e2, info)) (* notã«ã‚ˆã‚‹åˆ†å²ã‚’å¤‰æ› (caml2html: knormal_not) *)
   | Syntax.If(Syntax.Eq(e1, e2, _), e3, e4, info) ->
       insert_let (generate env e1)
 	(fun x -> insert_let (generate env e2)
@@ -206,13 +206,13 @@ let rec generate env = function (* KÀµµ¬²½¥ë¡¼¥Á¥óËÜÂÎ (caml2html: knormal_g) *)
 	      let e3', t3 = generate env e3 in
 	      let e4', t4 = generate env e4 in
 	      IfLE(x, y, e3', e4', info), t3) info) info
-  | Syntax.If(e1, e2, e3, info) -> generate env (Syntax.If(Syntax.Eq(e1, Syntax.Bool(false, info), info), e3, e2, info)) (* Èæ³Ó¤Î¤Ê¤¤Ê¬´ô¤òÊÑ´¹ (caml2html: knormal_if) *)
+  | Syntax.If(e1, e2, e3, info) -> generate env (Syntax.If(Syntax.Eq(e1, Syntax.Bool(false, info), info), e3, e2, info)) (* æ¯”è¼ƒã®ãªã„åˆ†å²ã‚’å¤‰æ› (caml2html: knormal_if) *)
   | Syntax.Let((x, t), e1, e2, info) ->
       let e1', t1 = generate env e1 in
       let e2', t2 = generate (M.add x t env) e2 in
       Let((x, t), e1', e2', info), t2
   | Syntax.Var(x, info) when M.mem x env -> Var(x, info), M.find x env
-  | Syntax.Var(x, info) -> (* ³°ÉôÇÛÎó¤Î»²¾È (caml2html: knormal_extarray) *)
+  | Syntax.Var(x, info) -> (* å¤–éƒ¨é…åˆ—ã®å‚ç…§ (caml2html: knormal_extarray) *)
       (match M.find x !Typing.extenv with
       | Type.Array(_, _) as t -> ExtArray(x, info), t
       | typ -> ExtArray(x, info), typ
@@ -223,7 +223,7 @@ let rec generate env = function (* KÀµµ¬²½¥ë¡¼¥Á¥óËÜÂÎ (caml2html: knormal_g) *)
       let e2', t2 = generate env' e2 in
       let e1', t1 = generate (M.add_list yts env') e1 in
       LetRec({ name = (x, t); args = yts; body = e1' }, e2', info), t2
-  | Syntax.App(Syntax.Var(f, _) as f_with_info, e2s, info) when not (M.mem f env) -> (* ³°Éô´Ø¿ô¤Î¸Æ¤Ó½Ð¤· (caml2html: knormal_extfunapp) *)
+  | Syntax.App(Syntax.Var(f, _) as f_with_info, e2s, info) when not (M.mem f env) -> (* å¤–éƒ¨é–¢æ•°ã®å‘¼ã³å‡ºã— (caml2html: knormal_extfunapp) *)
       (match M.find f !Typing.extenv with
       | Type.Fun(_, t, _) ->
 	  let rec bind xs = function (* "xs" are identifiers for the arguments *)

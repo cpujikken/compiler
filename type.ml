@@ -1,4 +1,4 @@
-type t = (* MinCaml¤Î·¿¤òÉ½¸½¤¹¤ë¥Ç¡¼¥¿·¿ (caml2html: type_t) *)
+type t = (* MinCamlã®å‹ã‚’è¡¨ç¾ã™ã‚‹ãƒ‡ãƒ¼ã‚¿å‹ (caml2html: type_t) *)
   | Unit of Info.t
   | Bool of Info.t
   | Int of Info.t
@@ -8,7 +8,7 @@ type t = (* MinCaml¤Î·¿¤òÉ½¸½¤¹¤ë¥Ç¡¼¥¿·¿ (caml2html: type_t) *)
   | Array of t * Info.t
   | Var of t option ref * Info.t
 
-let gentyp info = Var(ref None, info) (* ¿·¤·¤¤·¿ÊÑ¿ô¤òºî¤ë *)
+let gentyp info = Var(ref None, info) (* æ–°ã—ã„å‹å¤‰æ•°ã‚’ä½œã‚‹ *)
 
 let rec to_string_pre pre typ =
     let npre = pre ^ " "

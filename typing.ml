@@ -11,7 +11,7 @@ let partial_evaluation_threshold = 100 (*partial evaluation expansion threshold*
 let continue_partial_eval = ref false
 
 (* for pretty printing (and type normalization) *)
-let rec deref_typ = function (* ·¿ÊÑ¿ô¤òÃæ¿È¤Ç¤ª¤­¤«¤¨¤ë´Ø¿ô (caml2html: typing_deref) *)
+let rec deref_typ = function (* å‹å¤‰æ•°ã‚’ä¸­èº«ã§ãŠãã‹ãˆã‚‹é–¢æ•° (caml2html: typing_deref) *)
   | Type.Fun(t1s, t2, info) -> Type.Fun(List.map deref_typ t1s, deref_typ t2, info)
   | Type.Tuple(ts, info) -> Type.Tuple(List.map deref_typ ts, info)
   | Type.Array(t, info) -> Type.Array(deref_typ t, info)
@@ -80,7 +80,7 @@ let rec occur r1 = function (* occur check (caml2html: typing_occur) *)
   (*expect type: t1
    * argument type: t2
    * *)
-let rec unify t1 t2 = (* ·¿¤¬¹ç¤¦¤è¤¦¤Ë¡¢·¿ÊÑ¿ô¤Ø¤ÎÂåÆş¤ò¤¹¤ë (caml2html: typing_unify) *)
+let rec unify t1 t2 = (* å‹ãŒåˆã†ã‚ˆã†ã«ã€å‹å¤‰æ•°ã¸ã®ä»£å…¥ã‚’ã™ã‚‹ (caml2html: typing_unify) *)
   match t1, t2 with
   | Type.Unit _, Type.Unit _ | Type.Bool _ , Type.Bool _ | Type.Int _, Type.Int _ | Type.Float _, Type.Float _ -> ()
 
@@ -103,7 +103,7 @@ let rec unify t1 t2 = (* ·¿¤¬¹ç¤¦¤è¤¦¤Ë¡¢·¿ÊÑ¿ô¤Ø¤ÎÂåÆş¤ò¤¹¤ë (caml2html: typing
   | Type.Var(r1, _), Type.Var(r2, _) when r1 == r2 -> ()
   | Type.Var({ contents = Some(t1') }, info), _ -> unify t1' t2
   | _, Type.Var({ contents = Some(t2') }, info) -> unify t1 t2'
-  | Type.Var({ contents = None } as r1, info), _ -> (* °ìÊı¤¬Ì¤ÄêµÁ¤Î·¿ÊÑ¿ô¤Î¾ì¹ç (caml2html: typing_undef) *)
+  | Type.Var({ contents = None } as r1, info), _ -> (* ä¸€æ–¹ãŒæœªå®šç¾©ã®å‹å¤‰æ•°ã®å ´åˆ (caml2html: typing_undef) *)
       if occur r1 t2 then raise (Unify(t1, t2));
     continue_partial_eval := true;
       r1 := Some(t2)
@@ -113,7 +113,7 @@ let rec unify t1 t2 = (* ·¿¤¬¹ç¤¦¤è¤¦¤Ë¡¢·¿ÊÑ¿ô¤Ø¤ÎÂåÆş¤ò¤¹¤ë (caml2html: typing
       r2 := Some(t1)
   | _, _ -> raise (Unify(t1, t2))
 
-let rec generate env e = (* ·¿¿äÏÀ¥ë¡¼¥Á¥ó (caml2html: typing_g) *)
+let rec generate env e = (* å‹æ¨è«–ãƒ«ãƒ¼ãƒãƒ³ (caml2html: typing_g) *)
   try
     match e with
     | Unit info -> Type.Unit info, e
@@ -168,7 +168,7 @@ let rec generate env e = (* ·¿¿äÏÀ¥ë¡¼¥Á¥ó (caml2html: typing_g) *)
         Type.Unit info, Print(exp, info)
 
     | Add(e1, e2, info)
-    -> (* Â­¤·»»¡Ê¤È°ú¤­»»¡Ë¤Î·¿¿äÏÀ (caml2html: typing_add) *)
+    -> (* è¶³ã—ç®—ï¼ˆã¨å¼•ãç®—ï¼‰ã®å‹æ¨è«– (caml2html: typing_add) *)
         let typ1, exp1 = generate env e1
         in
         let typ2, exp2 = generate env e2
@@ -183,7 +183,7 @@ let rec generate env e = (* ·¿¿äÏÀ¥ë¡¼¥Á¥ó (caml2html: typing_g) *)
             Type.Float info, FAdd(exp1, exp2, info)
         )
     | Sub(e1, e2, info)
-    -> (* Â­¤·»»¡Ê¤È°ú¤­»»¡Ë¤Î·¿¿äÏÀ (caml2html: typing_add) *)
+    -> (* è¶³ã—ç®—ï¼ˆã¨å¼•ãç®—ï¼‰ã®å‹æ¨è«– (caml2html: typing_add) *)
         let typ1, exp1 = generate env e1
         in
         let typ2, exp2 = generate env e2
@@ -200,7 +200,7 @@ let rec generate env e = (* ·¿¿äÏÀ¥ë¡¼¥Á¥ó (caml2html: typing_g) *)
         Type.Float info, FSub(exp1, exp2, info)
         )
     | Mul(e1, e2, info)
-    -> (* Â­¤·»»¡Ê¤È°ú¤­»»¡Ë¤Î·¿¿äÏÀ (caml2html: typing_add) *)
+    -> (* è¶³ã—ç®—ï¼ˆã¨å¼•ãç®—ï¼‰ã®å‹æ¨è«– (caml2html: typing_add) *)
         let typ1, exp1 = generate env e1
         in
         let typ2, exp2 = generate env e2
@@ -214,7 +214,7 @@ let rec generate env e = (* ·¿¿äÏÀ¥ë¡¼¥Á¥ó (caml2html: typing_g) *)
             Type.Float info, FMul(exp1, exp2, info)
         )
     | Div(e1, e2, info)
-    -> (* Â­¤·»»¡Ê¤È°ú¤­»»¡Ë¤Î·¿¿äÏÀ (caml2html: typing_add) *)
+    -> (* è¶³ã—ç®—ï¼ˆã¨å¼•ãç®—ï¼‰ã®å‹æ¨è«– (caml2html: typing_add) *)
         let typ1, exp1 = generate env e1
         in
         let typ2, exp2 = generate env e2
@@ -228,7 +228,7 @@ let rec generate env e = (* ·¿¿äÏÀ¥ë¡¼¥Á¥ó (caml2html: typing_g) *)
             Type.Float info, FDiv(exp1, exp2, info)
         )
     | ShiftLeft(e1, e2, info)
-    -> (* Â­¤·»»¡Ê¤È°ú¤­»»¡Ë¤Î·¿¿äÏÀ (caml2html: typing_add) *)
+    -> (* è¶³ã—ç®—ï¼ˆã¨å¼•ãç®—ï¼‰ã®å‹æ¨è«– (caml2html: typing_add) *)
         let typ1, exp1 = generate env e1
         in
         let typ2, exp2 = generate env e2
@@ -237,7 +237,7 @@ let rec generate env e = (* ·¿¿äÏÀ¥ë¡¼¥Á¥ó (caml2html: typing_g) *)
         unify (Type.Int info) typ2;
         Type.Int info, ShiftLeft(exp1, exp2, info)
     | ShiftRight(e1, e2, info)
-    -> (* Â­¤·»»¡Ê¤È°ú¤­»»¡Ë¤Î·¿¿äÏÀ (caml2html: typing_add) *)
+    -> (* è¶³ã—ç®—ï¼ˆã¨å¼•ãç®—ï¼‰ã®å‹æ¨è«– (caml2html: typing_add) *)
         let typ1, exp1 = generate env e1
         in
         let typ2, exp2 = generate env e2
@@ -324,7 +324,7 @@ let rec generate env e = (* ·¿¿äÏÀ¥ë¡¼¥Á¥ó (caml2html: typing_g) *)
             unify typ2 typ3;
             typ2, If(exp1, exp2, exp3, info)
 
-    | Let((x, t), e1, e2, info) -> (* let¤Î·¿¿äÏÀ (caml2html: typing_let) *)
+    | Let((x, t), e1, e2, info) -> (* letã®å‹æ¨è«– (caml2html: typing_let) *)
         let typ1, exp1 = generate env e1
         in
             unify t typ1;
@@ -332,15 +332,15 @@ let rec generate env e = (* ·¿¿äÏÀ¥ë¡¼¥Á¥ó (caml2html: typing_g) *)
             in
                 typ2, Let((x, t), exp1, exp2, info)
 
-    | Var(x, info) when M.mem x env -> M.find x env, e (* ÊÑ¿ô¤Î·¿¿äÏÀ (caml2html: typing_var) *)
+    | Var(x, info) when M.mem x env -> M.find x env, e (* å¤‰æ•°ã®å‹æ¨è«– (caml2html: typing_var) *)
     | Var(x, info) when M.mem x !extenv -> M.find x !extenv, e
-    | Var(x, info) -> (* ³°ÉôÊÑ¿ô¤Î·¿¿äÏÀ (caml2html: typing_extvar) *)
+    | Var(x, info) -> (* å¤–éƒ¨å¤‰æ•°ã®å‹æ¨è«– (caml2html: typing_extvar) *)
 	Format.eprintf "free variable %s assumed as external@." (Id.to_string x);
 	let t = Type.gentyp info in
 	extenv := M.add x t !extenv;
 	t, e
 
-| LetRec({ name = (x, t); args = id_types; body = let_rec_fun_body }, let_rec_body, info) -> (* let rec¤Î·¿¿äÏÀ (caml2html: typing_letrec) *)
+| LetRec({ name = (x, t); args = id_types; body = let_rec_fun_body }, let_rec_body, info) -> (* let recã®å‹æ¨è«– (caml2html: typing_letrec) *)
 let env = M.add x t env in
     let typ1, exp1 = generate (M.add_list id_types env) let_rec_fun_body
     in
@@ -349,7 +349,7 @@ let env = M.add x t env in
     in
         typ2, LetRec({name = (x, t); args = id_types; body = exp1}, exp2, info)
 
-    | App(fun_exp, param_exps, info) -> (* ´Ø¿ôÅ¬ÍÑ¤Î·¿¿äÏÀ (caml2html: typing_app) *)
+    | App(fun_exp, param_exps, info) -> (* é–¢æ•°é©ç”¨ã®å‹æ¨è«– (caml2html: typing_app) *)
         let f_type, f_exp = generate env fun_exp
         in
         let len = List.length param_exps

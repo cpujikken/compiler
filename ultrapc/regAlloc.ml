@@ -4,8 +4,8 @@ open Loc
 open Reg
 
 (* for register coalescing *)
-(* [XXX] Call¤¬¤¢¤Ã¤¿¤é¡¢¤½¤³¤«¤éÀè¤ÏÌµ°ÕÌ£¤È¤¤¤¦¤«µÕ¸ú²Ì¤Ê¤Î¤ÇÄÉ¤ï¤Ê¤¤¡£
-         ¤½¤Î¤¿¤á¤Ë¡ÖCall¤¬¤¢¤Ã¤¿¤«¤É¤¦¤«¡×¤òÊÖ¤êÃÍ¤ÎÂè1Í×ÁÇ¤Ë´Ş¤á¤ë¡£ *)
+(* [XXX] CallãŒã‚ã£ãŸã‚‰ã€ãã“ã‹ã‚‰å…ˆã¯ç„¡æ„å‘³ã¨ã„ã†ã‹é€†åŠ¹æœãªã®ã§è¿½ã‚ãªã„ã€‚
+         ãã®ãŸã‚ã«ã€ŒCallãŒã‚ã£ãŸã‹ã©ã†ã‹ã€ã‚’è¿”ã‚Šå€¤ã®ç¬¬1è¦ç´ ã«å«ã‚ã‚‹ã€‚ *)
 let rec target' src (dest, t) = function
     | IfEQ(_, _, e1, e2)
     | IfLT(_, _, e1, e2)
@@ -37,7 +37,7 @@ let rec target' src (dest, t) = function
                       all.(n) :: target_args src all (n + 1) ys
               | _ :: ys -> target_args src all (n + 1) ys
 (* "register sourcing" (?) as opposed to register targeting *)
-(* ¡Êx86¤Î2¥ª¥Ú¥é¥ó¥ÉÌ¿Îá¤Î¤¿¤á¤Îregister coalescing¡Ë *)
+(* ï¼ˆx86ã®2ã‚ªãƒšãƒ©ãƒ³ãƒ‰å‘½ä»¤ã®ãŸã‚ã®register coalescingï¼‰ *)
 let rec source t = function
     | AsmReg.Ans(exp, info) -> source' t exp
     | AsmReg.Let(_, _, e, info) -> source t e
@@ -103,7 +103,7 @@ and source_addr = function
     | AsmReg.Dynamic(reg1, _, reg2) -> [reg1; reg2]
     | _ -> []
 
-type alloc_result = (* alloc¤Ë¤ª¤¤¤Æspilling¤¬¤¢¤Ã¤¿¤«¤É¤¦¤«¤òÉ½¤¹¥Ç¡¼¥¿·¿ *)
+type alloc_result = (* allocã«ãŠã„ã¦spillingãŒã‚ã£ãŸã‹ã©ã†ã‹ã‚’è¡¨ã™ãƒ‡ãƒ¼ã‚¿å‹ *)
     | Alloc of Reg.t (* allocated register *)
     | Spill of Id.t (* spilled variable *)
 
@@ -130,7 +130,7 @@ let rec alloc cont regenv var var_type prefer =
             in
                 try
                     (*list of beging used regs*)
-                    let used_regs = (* À¸¤­¤Æ¤¤¤ë¥ì¥¸¥¹¥¿ *)
+                    let used_regs = (* ç”Ÿãã¦ã„ã‚‹ãƒ¬ã‚¸ã‚¹ã‚¿ *)
                         List.fold_left
                             ( fun live y -> match y with
                             | Reg reg -> StringSet.add reg live
@@ -141,7 +141,7 @@ let rec alloc cont regenv var var_type prefer =
                             free
                     in
                     (*remaining regs*)
-                    let not_used_reg = (* ¤½¤¦¤Ç¤Ê¤¤¥ì¥¸¥¹¥¿¤òÃµ¤¹ *)
+                    let not_used_reg = (* ãã†ã§ãªã„ãƒ¬ã‚¸ã‚¹ã‚¿ã‚’æ¢ã™ *)
                         List.find
                             (fun r -> not (StringSet.mem r used_regs))
                             (prefer @ all)
@@ -151,7 +151,7 @@ let rec alloc cont regenv var var_type prefer =
                 with Not_found ->
                     (*out of register*)
                     Format.eprintf "register allocation failed for %s@." (M.to_string id);
-                    match( (* ·¿¤Î¹ç¤¦¥ì¥¸¥¹¥¿ÊÑ¿ô¤òÃµ¤¹ *)
+                    match( (* å‹ã®åˆã†ãƒ¬ã‚¸ã‚¹ã‚¿å¤‰æ•°ã‚’æ¢ã™ *)
                         List.find
                             (fun y -> match y with
                             | Reg reg -> false
@@ -191,7 +191,7 @@ let find x t regenv =
   (*| V(x) -> V(find x (Type.Int info) regenv info)*)
   (*| c -> c*)
 
-let rec generate dest cont regenv = function (* Ì¿ÎáÎó¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: regalloc_g) *)
+let rec generate dest cont regenv = function (* å‘½ä»¤åˆ—ã®ãƒ¬ã‚¸ã‚¹ã‚¿å‰²ã‚Šå½“ã¦ (caml2html: regalloc_g) *)
     | Ans(exp, info) -> generate'_and_restore dest cont regenv exp info
     | Let((let_var, var_type) as id_type, let_exp, body_exp, info) ->
         (
@@ -204,7 +204,7 @@ let rec generate dest cont regenv = function (* Ì¿ÎáÎó¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2h
       let (e1', regenv1) = generate'_and_restore id_type cont' regenv let_exp info in
       let (_call, targets) = target let_var dest cont' in
       let sources = source var_type e1' in
-      (* ¥ì¥¸¥¹¥¿´Ö¤Îmov¤è¤ê¥á¥â¥ê¤ò²ğ¤¹¤ëswap¤Î¤Û¤¦¤¬ÌäÂê¤Ê¤Î¤Ç¡¢sources¤è¤êtargets¤òÍ¥Àè *)
+      (* ãƒ¬ã‚¸ã‚¹ã‚¿é–“ã®movã‚ˆã‚Šãƒ¡ãƒ¢ãƒªã‚’ä»‹ã™ã‚‹swapã®ã»ã†ãŒå•é¡Œãªã®ã§ã€sourcesã‚ˆã‚Štargetsã‚’å„ªå…ˆ *)
       (match alloc cont' regenv1 let_var var_type (targets @ sources) with
           | Spill id ->
                   let r = M.find id regenv1 in
@@ -217,7 +217,7 @@ let rec generate dest cont regenv = function (* Ì¿ÎáÎó¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2h
                   let (e2', regenv2) = generate dest cont (add let_var reg regenv1) body_exp in
                   AsmReg.concat e1' (reg, var_type) e2', regenv2
       )
-and generate'_and_restore dest cont regenv exp info = (* »ÈÍÑ¤µ¤ì¤ëÊÑ¿ô¤ò¥¹¥¿¥Ã¥¯¤«¤é¥ì¥¸¥¹¥¿¤ØRestore (caml2html: regalloc_unspill) *)
+and generate'_and_restore dest cont regenv exp info = (* ä½¿ç”¨ã•ã‚Œã‚‹å¤‰æ•°ã‚’ã‚¹ã‚¿ãƒƒã‚¯ã‹ã‚‰ãƒ¬ã‚¸ã‚¹ã‚¿ã¸Restore (caml2html: regalloc_unspill) *)
   try generate' dest cont regenv info exp
   (*try generate*)
   with NoReg(x, t, info) ->
@@ -225,7 +225,7 @@ and generate'_and_restore dest cont regenv exp info = (* »ÈÍÑ¤µ¤ì¤ëÊÑ¿ô¤ò¥¹¥¿¥Ã¥
       ((* Format.eprintf "restoring %s@." x; *)
           generate dest cont regenv (Let((ID x, t), Restore(x), Ans(exp, info), info))
           )
-and generate' dest cont regenv info exp = (* ³ÆÌ¿Îá¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: regalloc_gprime) *)
+and generate' dest cont regenv info exp = (* å„å‘½ä»¤ã®ãƒ¬ã‚¸ã‚¹ã‚¿å‰²ã‚Šå½“ã¦ (caml2html: regalloc_gprime) *)
     let reg_finder reg =
       find reg (Type.Int info) regenv
       in
@@ -340,10 +340,10 @@ and generate' dest cont regenv info exp = (* ³ÆÌ¿Îá¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html
             else
                 generate'_call dest cont regenv exp (fun ys zs -> AsmReg.CallDir(loc, ys, zs)) int_params float_params info
 
-and generate'_if dest cont regenv exp constr e1 e2 info = (* if¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: regalloc_if) *)
+and generate'_if dest cont regenv exp constr e1 e2 info = (* ifã®ãƒ¬ã‚¸ã‚¹ã‚¿å‰²ã‚Šå½“ã¦ (caml2html: regalloc_if) *)
     let (e1', regenv1) = generate dest cont regenv e1 in
     let (e2', regenv2) = generate dest cont regenv e2 in
-    let regenv' = (* Î¾Êı¤Ë¶¦ÄÌ¤Î¥ì¥¸¥¹¥¿ÊÑ¿ô¤À¤±ÍøÍÑ *)
+    let regenv' = (* ä¸¡æ–¹ã«å…±é€šã®ãƒ¬ã‚¸ã‚¹ã‚¿å¤‰æ•°ã ã‘åˆ©ç”¨ *)
         List.fold_left
           (fun regenv' x ->
            try
@@ -371,13 +371,13 @@ and generate'_if dest cont regenv exp constr e1 e2 info = (* if¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤
                          | Reg _ -> e
                          | ID id ->
                              AsmReg.seq(AsmReg.Save(M.find id regenv, id), e, info)
-                 ) (* ¤½¤¦¤Ç¤Ê¤¤ÊÑ¿ô¤ÏÊ¬´ôÄ¾Á°¤Ë¥»¡¼¥Ö *)
+                 ) (* ãã†ã§ãªã„å¤‰æ•°ã¯åˆ†å²ç›´å‰ã«ã‚»ãƒ¼ãƒ– *)
                  (AsmReg.Ans(constr e1' e2', info))
                  (get_free_vars cont)
             ,
            regenv'
         )
-and generate'_call dest cont regenv exp constr ys zs info = (* ´Ø¿ô¸Æ¤Ó½Ğ¤·¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: regalloc_call) *)
+and generate'_call dest cont regenv exp constr ys zs info = (* é–¢æ•°å‘¼ã³å‡ºã—ã®ãƒ¬ã‚¸ã‚¹ã‚¿å‰²ã‚Šå½“ã¦ (caml2html: regalloc_call) *)
     (List.fold_left
      (fun e x ->
          if x = fst dest then
@@ -396,7 +396,7 @@ and generate'_call dest cont regenv exp constr ys zs info = (* ´Ø¿ô¸Æ¤Ó½Ğ¤·¤Î¥ì¥
    M.empty)
 
     (*assign register for func*)
-let process_def { Asm.name = def_name; Asm.args = args; Asm.fargs = float_args; Asm.body = body; Asm.ret = return_type ; Asm.info = info} = (* ´Ø¿ô¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: regalloc_h) *)
+let process_def { Asm.name = def_name; Asm.args = args; Asm.fargs = float_args; Asm.body = body; Asm.ret = return_type ; Asm.info = info} = (* é–¢æ•°ã®ãƒ¬ã‚¸ã‚¹ã‚¿å‰²ã‚Šå½“ã¦ (caml2html: regalloc_h) *)
     let regenv = M.add (def_name, info) reg_cl M.empty
     in
     let (i, arg_regs, regenv) =
@@ -444,7 +444,7 @@ let process_def { Asm.name = def_name; Asm.args = args; Asm.fargs = float_args; 
         { AsmReg.name = def_name; AsmReg.args =  arg_regs; AsmReg.fargs = farg_regs; AsmReg.body = body'; AsmReg.ret = return_type; AsmReg.info = info }
 
 (*assign register*)
-let f (Prog(idata, data, fundefs, e)) = (* ¥×¥í¥°¥é¥àÁ´ÂÎ¤Î¥ì¥¸¥¹¥¿³ä¤êÅö¤Æ (caml2html: regalloc_f) *)
+let f (Prog(idata, data, fundefs, e)) = (* ãƒ—ãƒ­ã‚°ãƒ©ãƒ å…¨ä½“ã®ãƒ¬ã‚¸ã‚¹ã‚¿å‰²ã‚Šå½“ã¦ (caml2html: regalloc_f) *)
 Format.eprintf "register allocation: may take some time (up to a few minutes, depending on the size of functions)@.";
   let fundefs' = List.map process_def fundefs in
   let info = Asm.get_info e in

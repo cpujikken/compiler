@@ -1,10 +1,10 @@
 {
-(* lexer�����Ѥ����ѿ����ؿ������ʤɤ���� *)
+(* lexerが利用する変数、関数、型などの定義 *)
 open Parser
 open Type
 }
 
-(* ����ɽ����ά�� *)
+(* 正規表現の略記 *)
 let space = [' ' '\t' '\r' ]
 let newline = ['\n']
 let digit = ['0'-'9']
@@ -17,7 +17,7 @@ rule token = parse
 | space+
     { token lexbuf }
 | "(*"
-    { comment lexbuf; (* �ͥ��Ȥ��������ȤΤ���Υȥ�å� *)
+    { comment lexbuf; (* ネストしたコメントのためのトリック *)
       token lexbuf }
 | '('
     { LPAREN }
@@ -31,13 +31,13 @@ rule token = parse
     { BOOL(false) }
 | "fun"
     {FUN}
-| digit+ (* �����������Ϥ���롼�� (caml2html: lexer_int) *)
+| digit+ (* 整数を字句解析するルール (caml2html: lexer_int) *)
     { INT(int_of_string (Lexing.lexeme lexbuf)) }
 | digit+ ('.' digit*)? (['e' 'E'] ['+' '-']? digit+)?
     { FLOAT(float_of_string (Lexing.lexeme lexbuf)) }
-| '-' (* -.����󤷤ˤ��ʤ��Ƥ��ɤ�? ��Ĺ����? *)
+| '-' (* -.より後回しにしなくても良い? 最長一致? *)
     { MINUS }
-| '+' (* +.����󤷤ˤ��ʤ��Ƥ��ɤ�? ��Ĺ����? *)
+| '+' (* +.より後回しにしなくても良い? 最長一致? *)
     { PLUS }
 | "-."
     { MINUS_DOT }
@@ -105,7 +105,7 @@ rule token = parse
     { SEMICOLON }
 | eof
     { EOF }
-| lower (digit|lower|upper|'_')* (* ¾�Ρ�ͽ���פ���Ǥʤ��Ȥ����ʤ� *)
+| lower (digit|lower|upper|'_')* (* 他の「予約語」より後でないといけない *)
     { IDENT(Lexing.lexeme lexbuf, Info.lex_get lexbuf) }
 | _
     { failwith

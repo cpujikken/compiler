@@ -4,7 +4,7 @@ open Reg
 open Loc
 
 (*remove unused let if all of place can be replacable*)
-let rec generate env = function (* Ì¿ÎáÎó¤ÎÂ¨ÃÍºÇÅ¬²½ (caml2html: simm13_g) *)
+let rec generate env = function (* å‘½ä»¤åˆ—ã®å³å€¤æœ€é©åŒ– (caml2html: simm13_g) *)
   | Ans(exp, info) -> Ans(generate' env exp, info)
   | Let((ID x, t), MoveImm(Constant i), e, info) ->
       (* Format.eprintf "found simm %s = %d@." x i; *)
@@ -15,7 +15,7 @@ let rec generate env = function (* Ì¿ÎáÎó¤ÎÂ¨ÃÍºÇÅ¬²½ (caml2html: simm13_g) *)
       ((* Format.eprintf "erased redundant Set to %s@." x; *)
        e')
   | Let(xt, exp, e, info) -> Let(xt, generate' env exp, generate env e, info)
-and generate' env = function (* ³ÆÌ¿Îá¤ÎÂ¨ÃÍºÇÅ¬²½ (caml2html: simm13_gprime) *)
+and generate' env = function (* å„å‘½ä»¤ã®å³å€¤æœ€é©åŒ– (caml2html: simm13_gprime) *)
   | Add(x, ID y) when M.mem y env -> Addi(x, Constant (M.find y env))
   | Add(ID x, y) when M.mem x env -> Addi(y, Constant (M.find x env))
   | Add(ID x, ID y) when M.mem x env && M.mem y env && Pervasives.abs (M.find x env + M.find y env) < (1 lsl (Asm.imm_length - 1))
@@ -49,8 +49,8 @@ and generate' env = function (* ³ÆÌ¿Îá¤ÎÂ¨ÃÍºÇÅ¬²½ (caml2html: simm13_gprime) *)
   | FIfLT(reg1, reg2, asm1, asm2) -> FIfLT(reg1, reg2, generate env asm1, generate env asm2)
   | e -> e
 
-let fun_converter { name = l; args = xs; fargs = ys; body = e; ret = t ; info = info} = (* ¥È¥Ã¥×¥ì¥Ù¥ë´Ø¿ô¤ÎÂ¨ÃÍºÇÅ¬²½ *)
+let fun_converter { name = l; args = xs; fargs = ys; body = e; ret = t ; info = info} = (* ãƒˆãƒƒãƒ—ãƒ¬ãƒ™ãƒ«é–¢æ•°ã®å³å€¤æœ€é©åŒ– *)
     { name = l; args = xs; fargs = ys; body = generate M.empty e; ret = t; info = info }
 
-let f (Prog(idata, data, fundefs, e)) = (* ¥×¥í¥°¥é¥àÁ´ÂÎ¤ÎÂ¨ÃÍºÇÅ¬²½ *)
+let f (Prog(idata, data, fundefs, e)) = (* ãƒ—ãƒ­ã‚°ãƒ©ãƒ å…¨ä½“ã®å³å€¤æœ€é©åŒ– *)
   Prog(idata, data, List.map fun_converter fundefs, generate M.empty e)

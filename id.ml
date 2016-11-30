@@ -1,5 +1,5 @@
-type t = string * Info.t (* ÊÑ¿ô¤ÎÌ¾Á° (caml2html: id_t) *)
-type l = string * Info.t (* ¥È¥Ã¥×¥ì¥Ù¥ë´Ø¿ô¤ä¥°¥í¡¼¥Ğ¥ëÇÛÎó¤Î¥é¥Ù¥ë (caml2html: id_l) *)
+type t = string * Info.t (* å¤‰æ•°ã®åå‰ (caml2html: id_t) *)
+type l = string * Info.t (* ãƒˆãƒƒãƒ—ãƒ¬ãƒ™ãƒ«é–¢æ•°ã‚„ã‚°ãƒ­ãƒ¼ãƒãƒ«é…åˆ—ã®ãƒ©ãƒ™ãƒ« (caml2html: id_l) *)
 
 let to_L x = x
 let to_t x = x

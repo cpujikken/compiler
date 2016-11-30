@@ -3,8 +3,8 @@ open Loc
 open Cmd
 open Reg
 
-let stackset = ref S.empty (* ¤¹¤Ç¤ËSave¤µ¤ì¤¿ÊÑ¿ô¤Î½¸¹ç (caml2html: emit_stackset) *)
-let stackmap = ref [] (* Save¤µ¤ì¤¿ÊÑ¿ô¤Î¡¢¥¹¥¿¥Ã¥¯¤Ë¤ª¤±¤ë°ÌÃÖ (caml2html: emit_stackmap) *)
+let stackset = ref S.empty (* ã™ã§ã«Saveã•ã‚ŒãŸå¤‰æ•°ã®é›†åˆ (caml2html: emit_stackset) *)
+let stackmap = ref [] (* Saveã•ã‚ŒãŸå¤‰æ•°ã®ã€ã‚¹ã‚¿ãƒƒã‚¯ã«ãŠã‘ã‚‹ä½ç½® (caml2html: emit_stackmap) *)
 let save x =
   stackset := S.add x !stackset;
   if not (List.mem x !stackmap) then
@@ -24,7 +24,7 @@ let locate x =
 let offset x = 4 * List.hd (locate x)
 let stacksize () = List.length !stackmap * 4
 
-(* ´Ø¿ô¸Æ¤Ó½Ð¤·¤Î¤¿¤á¤Ë°ú¿ô¤òÊÂ¤ÙÂØ¤¨¤ë(register shuffling) (caml2html: emit_shuffle) *)
+(* é–¢æ•°å‘¼ã³å‡ºã—ã®ãŸã‚ã«å¼•æ•°ã‚’ä¸¦ã¹æ›¿ãˆã‚‹(register shuffling) (caml2html: emit_shuffle) *)
 type param = Go of Reg.t | Hide
 
 (*(shuffle (List.map (fun (x, y) -> Go x, Go y) param_regs));*)
@@ -54,14 +54,14 @@ let rec shuffle regs =
          regs)
   | regs, acyc -> acyc  @ shuffle regs
 
-type dest = Tail | NonTail of Reg.t (* ËöÈø¤«¤É¤¦¤«¤òÉ½¤¹¥Ç¡¼¥¿·¿ (caml2html: emit_dest) *)
-let rec generate = function (* Ì¿ÎáÎó¤Î¥¢¥»¥ó¥Ö¥êÀ¸À® (caml2html: emit_g) *)
+type dest = Tail | NonTail of Reg.t (* æœ«å°¾ã‹ã©ã†ã‹ã‚’è¡¨ã™ãƒ‡ãƒ¼ã‚¿åž‹ (caml2html: emit_dest) *)
+let rec generate = function (* å‘½ä»¤åˆ—ã®ã‚¢ã‚»ãƒ³ãƒ–ãƒªç”Ÿæˆ (caml2html: emit_g) *)
   | dest, Ans(exp, info) -> generate' info (dest, exp)
   | dest, Let((x, t), exp, e, info) ->
       generate' info (NonTail(x), exp);
       generate (dest, e)
-and generate' info = function (* ³ÆÌ¿Îá¤Î¥¢¥»¥ó¥Ö¥êÀ¸À® (caml2html: emit_gprime) *)
-    (* ËöÈø¤Ç¤Ê¤«¤Ã¤¿¤é·×»»·ë²Ì¤òdest¤Ë¥»¥Ã¥È (caml2html: emit_nontail) *)
+and generate' info = function (* å„å‘½ä»¤ã®ã‚¢ã‚»ãƒ³ãƒ–ãƒªç”Ÿæˆ (caml2html: emit_gprime) *)
+    (* æœ«å°¾ã§ãªã‹ã£ãŸã‚‰è¨ˆç®—çµæžœã‚’destã«ã‚»ãƒƒãƒˆ (caml2html: emit_nontail) *)
     | NonTail _, Nop -> ()
     | NonTail _, Print rs when rs = reg_dump -> ()
     | NonTail _, Print rs ->

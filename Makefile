@@ -1,7 +1,7 @@
 # Sumii's Makefile for Min-Caml (for GNU Make)
 # 
-# ack.ml¤Ê¤É¤Î¥Æ¥¹¥È¥×¥í¥°¥é¥à¤òtest/¤ËÍÑ°Õ¤·¤Æmake do_test¤ò¼Â¹Ô¤¹¤ë¤È¡¢
-# min-caml¤Èocaml¤Ç¥³¥ó¥Ñ¥¤¥ë¡¦¼Â¹Ô¤·¤¿·ë²Ì¤ò¼«Æ°¤ÇÈæ³Ó¤·¤Ş¤¹¡£
+# ack.mlãªã©ã®ãƒ†ã‚¹ãƒˆãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚’test/ã«ç”¨æ„ã—ã¦make do_testã‚’å®Ÿè¡Œã™ã‚‹ã¨ã€
+# min-camlã¨ocamlã§ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ãƒ»å®Ÿè¡Œã—ãŸçµæœã‚’è‡ªå‹•ã§æ¯”è¼ƒã—ã¾ã™ã€‚
 
 RESULT = min-caml
 NCSUFFIX = .opt
@@ -11,14 +11,14 @@ OCAMLLDFLAGS=-warn-error -31
 
 default: debug-code top $(RESULT)# do_test
 $(RESULT): debug-code top
-## [¼«Ê¬¡Ê½»°æ¡ËÍÑ¤ÎÃí]
-## ¡¦OCamlMakefile¤ä¸Å¤¤GNU Make¤Î¥Ğ¥°(?)¤Ç¾å¤Î¤è¤¦¤ÊÄêµÁ¤¬É¬Í×(??)
-## ¡¦OCamlMakefile¤Ç¤Ïdebug-code¤Ènative-code¤Î¤½¤ì¤¾¤ì¤Ç
-##   .mli¤¬¥³¥ó¥Ñ¥¤¥ë¤µ¤ì¤Æ¤·¤Ş¤¦¤Î¤Ç¡¢Î¾Êı¤È¤âdefault:¤Î±¦ÊÕ¤ËÆş¤ì¤ë¤È
-##   ºÆmake»ş¤Ë¡Ê.mli¤¬ÊÑ¹¹¤µ¤ì¤Æ¤¤¤ë¤Î¤Ç¡Ë.ml¤âºÆ¥³¥ó¥Ñ¥¤¥ë¤µ¤ì¤ë
+## [è‡ªåˆ†ï¼ˆä½äº•ï¼‰ç”¨ã®æ³¨]
+## ãƒ»OCamlMakefileã‚„å¤ã„GNU Makeã®ãƒã‚°(?)ã§ä¸Šã®ã‚ˆã†ãªå®šç¾©ãŒå¿…è¦(??)
+## ãƒ»OCamlMakefileã§ã¯debug-codeã¨native-codeã®ãã‚Œãã‚Œã§
+##   .mliãŒã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ã•ã‚Œã¦ã—ã¾ã†ã®ã§ã€ä¸¡æ–¹ã¨ã‚‚default:ã®å³è¾ºã«å…¥ã‚Œã‚‹ã¨
+##   å†makeæ™‚ã«ï¼ˆ.mliãŒå¤‰æ›´ã•ã‚Œã¦ã„ã‚‹ã®ã§ï¼‰.mlã‚‚å†ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ã•ã‚Œã‚‹
 clean:: nobackup
 
-# ¢­¤â¤·¼ÂÁõ¤ò²şÂ¤¤·¤¿¤é¡¢¤½¤ì¤Ë¹ç¤ï¤»¤ÆÊÑ¤¨¤ë
+# â†“ã‚‚ã—å®Ÿè£…ã‚’æ”¹é€ ã—ãŸã‚‰ã€ãã‚Œã«åˆã‚ã›ã¦å¤‰ãˆã‚‹
 SOURCES = float.c common.ml info.ml cmd.ml type.ml id.ml stringSet.ml m.ml s.ml \
 		  loc.ml \
 		  reg.ml operand.ml operandSet.ml \
@@ -30,7 +30,7 @@ SOURCES = float.c common.ml info.ml cmd.ml type.ml id.ml stringSet.ml m.ml s.ml 
 		simm.ml regAlloc.ml emit.ml \
 		main.ml
 
-# ¢­¥Æ¥¹¥È¥×¥í¥°¥é¥à¤¬Áı¤¨¤¿¤é¡¢¤³¤ì¤âÁı¤ä¤¹
+# â†“ãƒ†ã‚¹ãƒˆãƒ—ãƒ­ã‚°ãƒ©ãƒ ãŒå¢—ãˆãŸã‚‰ã€ã“ã‚Œã‚‚å¢—ã‚„ã™
 TESTS = print sum-tail gcd sum fib ack even-odd \
 adder funcomp cls-rec cls-bug cls-bug2 cls-reg-bug \
 shuffle spill spill2 spill3 join-stack join-stack2 join-stack3 \
