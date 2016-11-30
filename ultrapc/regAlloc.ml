@@ -443,10 +443,43 @@ let process_def { Asm.name = def_name; Asm.args = args; Asm.fargs = float_args; 
         (*Printf.printf "closure body after regAlloc:\n%s\n" (AsmReg.to_string body');*)
         { AsmReg.name = def_name; AsmReg.args =  arg_regs; AsmReg.fargs = farg_regs; AsmReg.body = body'; AsmReg.ret = return_type; AsmReg.info = info }
 
+let rec alloc color_map = function
+    | Ans(exp, info) -> AsmReg.Ans(alloc_exp color_map exp, info)
+    | Let((Reg reg, var_type), let_exp, body_exp, info) ->
+        AsmReg.Let((reg, var_type), alloc_exp color_map let_exp, alloc_exp color_map body_exp, info)
+    | Let((ID id, var_type), let_exp, body_exp, info) when M.mem id color_map ->
+        AsmReg.Let((M.find id color_map, var_type), alloc_exp color_map let_exp, alloc_exp color_map body_exp, info)
+    | Let((ID id, var_type), let_exp, body_exp, info) ->
+            (*spill*)
+      let cont' = concat body_exp dest cont in
+      let (e1', regenv1) = generate_and_restore id_type cont' regenv let_exp info in
+      let (_, targets) = target let_var dest cont' in
+      let sources = source var_type e1' in
+      (* レジスタ間のmovよりメモリを介するswapのほうが問題なので、sourcesよりtargetsを優先 *)
+      (match alloc cont' regenv1 let_var var_type (targets @ sources) with
+          | Spill id ->
+                  let r = M.find id regenv1 in
+                  let (e2', regenv2) = generate dest cont (add let_var r (M.remove id regenv1)) body_exp in
+                  let save =
+                      try AsmReg.Save(M.find id regenv, id)
+                      with Not_found -> AsmReg.Nop in
+                  (AsmReg.seq(save, AsmReg.concat e1' (r, var_type) e2', info), regenv2)
+          | Alloc reg ->
+                  let e2', regenv2 = generate dest cont (add let_var reg regenv1) body_exp in
+                  AsmReg.concat e1' (reg, var_type) e2', regenv2
+      )
+let coloring e =
+    let graph = Graph.gen_graph e
+    in
+    let color_map = Graph.coloring graph allregs allfregs
+    in
+    alloc color_map e
+
 (*assign register*)
 let f (Prog(idata, data, fundefs, e)) = (* プログラム全体のレジスタ割り当て (caml2html: regalloc_f) *)
 (*Format.eprintf "register allocation: may take some time (up to a few minutes, depending on the size of functions)@.";*)
   let fundefs' = List.map process_def fundefs in
   let info = Asm.get_info e in
-  let e', regenv' = generate (ID (Id.gentmp (Type.Unit info) info), Type.Unit info) (Ans(Nop, info)) M.empty e in
+  (*let e', _ = generate (ID (Id.gentmp (Type.Unit info) info), Type.Unit info) (Ans(Nop, info)) M.empty e in*)
+  let e' = coloring e in
   AsmReg.Prog(idata, data, fundefs', e')
