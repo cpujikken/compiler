@@ -155,35 +155,38 @@ replace_id_exp id new_id e =
     | Restore id -> Restore id
     *)
 
-let rec spill id def_found e =
-    match def_found with
-    None ->( match e with
-          | Ans (exp, info) ->(
-                  try
-                      Ans(spill_exp id def_found exp, info)
-                  with
-                      Spilled_ID_Found ->(match def_found with
-                          None -> failwith (Printf.sprintf "wrong data flow. %s is used before its definition" (Id.to_string id))
-                          | Some (new_id, typ, false) ->
-                              Let((Operand.ID new_id, typ), Restore(id), Ans(spill_exp id (Some (new_id, typ, true)) exp, info), info)
-                          | Some(_, _, true) ->
-                                  failwith (Printf.sprintf "wrong data flow. exception raised for already restored variable %s" (Id.to_string id))
-                      )
-          )
-          | Let ((Operand.ID op_id as op, op_type), let_exp, body, info) when op_id = id ->
-                  let new_id = (Id.genid ("dump", info))
-                  in
-                  let body' = spill id (Some (new_id, op_type, false)) body
-                  in
-                      Let((op, op_type), let_exp, Let((Operand.ID new_id, Type.Unit info), Save(op_id, op_type), body',info), info)
-         | Let (op_type, let_exp, body, info) ->
-                 Let(op_type, spill_exp id def_found let_exp, spill id  def_found body, info)
-        )
-     | Some _ -> (match e with
-          | Ans (exp, info) -> Ans (spill_exp id def_found exp, info)
-         | Let (op_type, let_exp, body, info) ->
-                 Let(op_type, spill_exp id def_found let_exp, spill id def_found body, info)
-     )
+let rec spill id def_found = function
+      | Ans (exp, info) ->(
+              try
+                  Ans(spill_exp id def_found exp, info)
+              with
+                  Spilled_ID_Found ->(match def_found with
+                      None -> failwith (Printf.sprintf "wrong data flow. %s is used before its definition" (Id.to_string id))
+                      | Some (new_id, typ, false) ->
+                          Let((Operand.ID new_id, typ), Restore(id), Ans(spill_exp id (Some (new_id, typ, true)) exp, info), info)
+                      | Some(_, _, true) ->
+                              failwith (Printf.sprintf "wrong data flow. exception raised for already restored variable %s" (Id.to_string id))
+                  )
+      )
+      | Let ((Operand.ID op_id as op, op_type), let_exp, body, info) when op_id = id ->
+              let new_id = (Id.genid ("dump", info))
+              in
+              let body' = spill id (Some (new_id, op_type, false)) body
+              in
+                  Let((op, op_type), let_exp, Let((Operand.ID new_id, Type.Unit info), Save(op_id, op_type), body',info), info)
+     | Let (op_type, let_exp, body, info) ->
+         try
+             Let(op_type, spill_exp id def_found let_exp, spill id  def_found body, info)
+         with
+                  Spilled_ID_Found ->(match def_found with
+                      None -> failwith (Printf.sprintf "wrong data flow. %s is used before its definition" (Id.to_string id))
+                      | Some (new_id, typ, false) ->
+                          let new_def_found = (Some (new_id, typ, true))
+                          in
+                             Let((Operand.ID new_id, typ), Restore(id), Let(op_type, spill_exp id new_def_found let_exp , spill id def_found body, info), info)
+                      | Some(_, _, true) ->
+                              failwith (Printf.sprintf "wrong data flow. exception raised for already restored variable %s" (Id.to_string id))
+                  )
 and
 spill_exp id def_found e =
     let check_id = function
@@ -245,22 +248,20 @@ spill_exp id def_found e =
     | CallCls (op, l1, l2) -> CallCls (check_id op, List.map check_id l1, List.map check_id l2)
     | CallDir (loc, l1, l2) -> CallDir (loc, List.map check_id l1, List.map check_id l2)
 
-let rec coloring e =
-    let graph = Graph.gen_graph e
-    in
-    let color_map = Graph.coloring graph
+let rec coloring e regenv =
+    let color_map = Graph.coloring e regenv
     in
     match color_map with
-        | Graph.Spill id -> coloring (spill id None e)
+        | Graph.Spill id -> coloring (spill id None e) regenv
         | Graph.ColorMap (int_color_map, float_color_map) ->
-                M.iter (fun key _ -> Printf.printf "%s\n" (Id.to_string key)) int_color_map;
+                (*M.iter (fun key _ -> Printf.printf "%s\n" (Id.to_string key)) int_color_map;*)
                 map_all int_color_map float_color_map e
 
 (*assign register for func*)
 let process_def { Asm.name = def_name; Asm.args = args; Asm.fargs = float_args; Asm.body = body; Asm.ret = return_type ; Asm.info = info} = (* 関数のレジスタ割り当て (caml2html: regalloc_h) *)
     let regenv = M.add (def_name, info) reg_cl M.empty
     in
-    let (i, arg_regs, regenv) =
+    let (_, arg_regs, regenv) =
         List.fold_left
             (fun (i, arg_regs, regenv) y ->
                 let r = regs.(i)
@@ -276,7 +277,7 @@ let process_def { Asm.name = def_name; Asm.args = args; Asm.fargs = float_args; 
             (0, [], regenv)
             args
     in
-    let (d, farg_regs, regenv) =
+    let (_, farg_regs, regenv) =
         List.fold_left
         (fun (d, farg_regs, regenv) z ->
             let fr = fregs.(d)
@@ -299,7 +300,7 @@ let process_def { Asm.name = def_name; Asm.args = args; Asm.fargs = float_args; 
     in
     let body' =
         (*Printf.printf "closure body:\n%s\n" (Asm.to_string body);*)
-        coloring (concat body (Reg return_reg, return_type) (Ans(Move(Reg return_reg), info)))
+        coloring (concat body (Reg return_reg, return_type) (Ans(Move(Reg return_reg), info))) regenv
     in
         (*Printf.printf "closure body after regAlloc:\n%s\n" (AsmReg.to_string body');*)
         { AsmReg.name = def_name; AsmReg.args =  arg_regs; AsmReg.fargs = farg_regs; AsmReg.body = body'; AsmReg.ret = return_type; AsmReg.info = info }
@@ -308,4 +309,5 @@ let process_def { Asm.name = def_name; Asm.args = args; Asm.fargs = float_args; 
 let f (Prog(idata, data, fundefs, e)) = (* プログラム全体のレジスタ割り当て (caml2html: regalloc_f) *)
     (*Format.eprintf "register allocation: may take some time (up to a few minutes, depending on the size of functions)@.";*)
       let fundefs' = List.map process_def fundefs in
-      AsmReg.Prog(idata, data, fundefs', coloring e)
+        (*Printf.printf "closure body:\n%s\n" (Asm.to_string e);*)
+      AsmReg.Prog(idata, data, fundefs', coloring e M.empty)

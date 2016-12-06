@@ -289,7 +289,11 @@ let get_max_neighbor_deg_node min_deg_nodes degree_map graph =
 
 
 let graph_remove_node node graph =
-    M2.remove node graph
+    M2.fold (fun v neigbors  graph' ->
+        M2.add v (S1.remove node neigbors) graph'
+    )
+    (M2.remove node graph)
+    (M2.remove node graph)
 
 let rec coloring_make_stack current_stack graph =
     if graph = empty then
@@ -297,6 +301,7 @@ let rec coloring_make_stack current_stack graph =
     else
         let degree_map = graph_get_degree_map graph
         in
+        (*M2.iter (fun key v -> Printf.printf "%s: %d\n" (Operand.to_string key) v) degree_map;*)
         let min_deg, min_deg_nodes = graph_get_min_deg_node degree_map
         in
         let to_remove_node  =
@@ -305,12 +310,13 @@ let rec coloring_make_stack current_stack graph =
             else
                 get_max_neighbor_deg_node min_deg_nodes degree_map graph
         in
-            (to_remove_node ::current_stack), graph_remove_node to_remove_node graph
+            coloring_make_stack (to_remove_node ::current_stack) (graph_remove_node to_remove_node graph)
 
 exception Spill_break of Id.t
-let coloring_graph graph regs =
+let coloring_graph graph regs regenv =
     let stack = fst (coloring_make_stack [] graph)
     in
+    (*Printf.printf "hello\n%d\n" (List.length stack);*)
     (*List.iter (fun x -> Printf.printf "%s" (Operand.to_string x)) stack;*)
         List.fold_left (fun color_map node ->
             match node with
@@ -336,21 +342,34 @@ let coloring_graph graph regs =
                             raise (Spill_break id)
 
         )
-        M.empty
+        regenv
         stack
 
+let graph_to_string graph =
+    M2.fold (fun node neighbor_set str ->
+        S1.fold (fun neighbor str' ->
+            Printf.sprintf "%s\n%s -> %s" str' (Operand.to_string node) (Operand.to_string neighbor)
+        )
+        neighbor_set
+        str
+    )
+    graph
+    ""
 
 type coloring_result =
     | Spill of Id.t
     | ColorMap of (Reg.t M.t * Reg.t M.t)
 
     (*need to separate to int_graph and float_graph because sets of register are difference (Reg.allregs and Reg.allfregs)*)
-let coloring (int_graph, float_graph) =
+let coloring e regenv =
+    let int_graph, float_graph = gen_graph e
+    in
+    (*Printf.printf "%s\n" (graph_to_string int_graph);*)
     try
-        let int_color_map = coloring_graph int_graph (StringSet.of_list Reg.allregs)
+        let int_color_map = coloring_graph int_graph (StringSet.of_list Reg.allregs) regenv
         in
-        let float_color_map = coloring_graph float_graph (StringSet.of_list Reg.allfregs)
+        let color_map = coloring_graph float_graph (StringSet.of_list Reg.allfregs) int_color_map
         in
-            ColorMap (int_color_map, float_color_map)
+            ColorMap (int_color_map, color_map)
     with
         | Spill_break id -> Spill id
