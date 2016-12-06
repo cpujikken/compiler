@@ -6,14 +6,10 @@ open Reg
 
 let rec map_all int_color_map float_color_map e =
     let find_int op =
-        match op with
-            | Operand.Reg reg -> reg
-            | Operand.ID id -> M.find id int_color_map
+        find_op int_color_map float_color_map false op
     in
     let find_float op =
-        match op with
-            | Operand.Reg reg -> reg
-            | Operand.ID id -> M.find id float_color_map
+        find_op int_color_map float_color_map true op
     in
     match e with
     | Ans (exp, info) -> AsmReg.Ans(map_exp int_color_map float_color_map exp, info)
@@ -24,16 +20,23 @@ let rec map_all int_color_map float_color_map e =
     | Let ((op, (_ as op_typ)), let_exp, body_exp, info) ->
             AsmReg.Let((find_int op, op_typ), map_exp int_color_map float_color_map let_exp, map_all int_color_map float_color_map body_exp, info)
 and
+find_op int_color_map float_color_map is_float = function
+    | Operand.Reg reg -> reg
+    | Operand.ID id -> try
+        if is_float then
+            M.find id float_color_map
+        else
+            M.find id int_color_map
+        with
+        Not_found ->
+            failwith (Printf.sprintf "Wrong compiler flow. ID(%s):%s is not bound (colored) yet while mapping" (Id.to_string id) (if is_float then "float" else "int"))
+and
 map_exp int_color_map float_color_map e =
     let find_int op =
-        match op with
-            | Operand.Reg reg -> reg
-            | Operand.ID id -> M.find id int_color_map
+        find_op int_color_map float_color_map false op
     in
     let find_float op =
-        match op with
-            | Operand.Reg reg -> reg
-            | Operand.ID id -> M.find id float_color_map
+        find_op int_color_map float_color_map true op
     in
     let find_addr = function
         Relative (op, loc) -> AsmReg.Relative (find_int op, loc)
@@ -250,6 +253,7 @@ let rec coloring e =
     match color_map with
         | Graph.Spill id -> coloring (spill id None e)
         | Graph.ColorMap (int_color_map, float_color_map) ->
+                M.iter (fun key _ -> Printf.printf "%s\n" (Id.to_string key)) int_color_map;
                 map_all int_color_map float_color_map e
 
 (*assign register for func*)
@@ -302,6 +306,6 @@ let process_def { Asm.name = def_name; Asm.args = args; Asm.fargs = float_args; 
 
 (*assign register*)
 let f (Prog(idata, data, fundefs, e)) = (* プログラム全体のレジスタ割り当て (caml2html: regalloc_f) *)
-(*Format.eprintf "register allocation: may take some time (up to a few minutes, depending on the size of functions)@.";*)
-  let fundefs' = List.map process_def fundefs in
-  AsmReg.Prog(idata, data, fundefs', coloring e)
+    (*Format.eprintf "register allocation: may take some time (up to a few minutes, depending on the size of functions)@.";*)
+      let fundefs' = List.map process_def fundefs in
+      AsmReg.Prog(idata, data, fundefs', coloring e)

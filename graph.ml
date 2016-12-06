@@ -1,4 +1,5 @@
 open Asm
+let empty = M2.empty
 
 (*return set of used variables, inttype and float type*)
 
@@ -185,14 +186,66 @@ let graph_from_lives lives =
         graph
     )
     lives
-    M2.empty
+    empty
+
+
+let rec get_vars = function
+  | Ans (exp, _) -> get_vars_exp exp
+  | Let ((op, Type.Float _), let_exp, body_exp, _) ->
+        let i, f = combine_vars
+              (get_vars_exp let_exp)
+              (get_vars body_exp)
+        in
+            i, S1.add op f
+  | Let ((op, _), let_exp, body_exp, _) ->
+        let i, f = combine_vars
+              (get_vars_exp let_exp)
+              (get_vars body_exp)
+        in
+            S1.add op i, f
+and
+combine_vars (i1, f1) (i2, f2) =
+    S1.union i1 i2, S1.union f1 f2
+and
+get_vars_exp = function
+    (*IN = OUT - DEF + USE*)
+    | IfEQ (op1, op2, t1, t2)
+    | IfLT (op1, op2, t1, t2)
+    ->
+        let i, f = combine_vars
+              (get_vars t1)
+              (get_vars t2)
+        in
+            S1.union (S1.of_list [op1; op2]) i, f
+    | FIfEQ (op1, op2, t1, t2)
+    | FIfLT (op1, op2, t1, t2)
+    ->
+        let i, f = combine_vars
+              (get_vars t1)
+              (get_vars t2)
+        in
+            i, S1.union (S1.of_list [op1; op2]) f
+    | exp ->
+            get_use_vars_exp_easy exp
+
+let graph_supply vars graph =
+    S1.fold (fun node graph' ->
+        if M2.mem node graph' then
+            graph'
+        else
+            M2.add node S1.empty graph'
+    )
+    vars
+    graph
 
 let gen_graph e =
     let int_lives, float_lives = get_live_vars_no_dest e
     in
-    graph_from_lives int_lives, graph_from_lives float_lives
-
-
+    let int_graph, float_graph  = graph_from_lives int_lives , graph_from_lives float_lives
+    in
+    let int_vars, float_vars = get_vars e
+    in
+        graph_supply int_vars int_graph, graph_supply float_vars float_graph
 
 let graph_get_degree_map graph =
     M2.map (fun set -> S1.size set) graph
@@ -206,7 +259,7 @@ let graph_get_min_deg_node degree_map =
                 deg, (key::min_deg_nodes)
             else
                 min_deg, min_deg_nodes
-    ) degree_map (-1, [])
+    ) degree_map (M2.size degree_map, [])
 
 let graph_get_neighbor_max_deg node degree_map graph =
     S1.fold (fun neighbor max_deg ->
@@ -239,8 +292,8 @@ let graph_remove_node node graph =
     M2.remove node graph
 
 let rec coloring_make_stack current_stack graph =
-    if graph = M2.empty then
-        current_stack, M2.empty
+    if graph = empty then
+        current_stack, empty
     else
         let degree_map = graph_get_degree_map graph
         in
@@ -254,10 +307,11 @@ let rec coloring_make_stack current_stack graph =
         in
             (to_remove_node ::current_stack), graph_remove_node to_remove_node graph
 
-exception Spill_break of Id.t * bool
-let coloring_graph graph regs is_float =
+exception Spill_break of Id.t
+let coloring_graph graph regs =
     let stack = fst (coloring_make_stack [] graph)
     in
+    (*List.iter (fun x -> Printf.printf "%s" (Operand.to_string x)) stack;*)
         List.fold_left (fun color_map node ->
             match node with
                 | Operand.Reg reg -> color_map
@@ -279,7 +333,7 @@ let coloring_graph graph regs is_float =
                         M.add id (StringSet.choose selectable_color) color_map
                     with
                         Not_found -> (*spill id*)
-                            raise (Spill_break (id, is_float))
+                            raise (Spill_break id)
 
         )
         M.empty
@@ -289,12 +343,14 @@ let coloring_graph graph regs is_float =
 type coloring_result =
     | Spill of Id.t
     | ColorMap of (Reg.t M.t * Reg.t M.t)
+
+    (*need to separate to int_graph and float_graph because sets of register are difference (Reg.allregs and Reg.allfregs)*)
 let coloring (int_graph, float_graph) =
     try
-        let int_color_map = coloring_graph int_graph (StringSet.of_list Reg.allregs) false
+        let int_color_map = coloring_graph int_graph (StringSet.of_list Reg.allregs)
         in
-        let float_color_map = coloring_graph float_graph (StringSet.of_list Reg.allfregs) true
+        let float_color_map = coloring_graph float_graph (StringSet.of_list Reg.allfregs)
         in
             ColorMap (int_color_map, float_color_map)
     with
-        | Spill_break (id, _) -> Spill id
+        | Spill_break id -> Spill id
