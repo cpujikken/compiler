@@ -1,7 +1,8 @@
 type t = string
 let reg_no i = Printf.sprintf "%%r%d" i
 let freg_no i = Printf.sprintf "%%fr%d" i
-let regs = Array.init 28 reg_no
+(*let regs = Array.init 28 reg_no*)
+let regs = Array.init 4 reg_no
 let fregs = Array.init 31 freg_no
 let allregs = Array.to_list regs
 let allfregs = Array.to_list fregs

@@ -3,6 +3,17 @@ let empty = M2.empty
 
 (*return set of used variables, inttype and float type*)
 
+let to_string graph =
+    M2.fold (fun node neighbor_set str ->
+        S1.fold (fun neighbor str' ->
+            Printf.sprintf "%s\n%s -> %s" str' (Operand.to_string node) (Operand.to_string neighbor)
+        )
+        neighbor_set
+        str
+    )
+    graph
+    ""
+
 let get_live_vars_addr = function
     (*relative address from a reg*)
     | Relative (t, _) -> S1.singleton t
@@ -316,11 +327,14 @@ exception Spill_break of Id.t
 let coloring_graph graph regs regenv =
     let stack = fst (coloring_make_stack [] graph)
     in
-    (*Printf.printf "hello\n%d\n" (List.length stack);*)
-    (*List.iter (fun x -> Printf.printf "%s" (Operand.to_string x)) stack;*)
+    (*List.iter (fun x -> Printf.printf "%s\n" (Operand.to_string x)) stack;*)
+    (*Printf.printf "%s\n" (to_string graph);*)
+    (*M.iter (fun key x -> Printf.printf "%s: %s\n" (Id.to_string key) x) regenv;*)
+    (*failwith "ha";*)
         List.fold_left (fun color_map node ->
             match node with
                 | Operand.Reg reg -> color_map
+                | Operand.ID id when M.mem id color_map -> color_map
                 | Operand.ID id ->
                     let neighbor = M2.find node graph
                     in
@@ -328,6 +342,7 @@ let coloring_graph graph regs regenv =
                         S1.fold (fun node colors ->
                             match node with
                             | Operand.ID id when M.mem id color_map -> StringSet.add (M.find id color_map) colors
+                            | Operand.Reg reg -> StringSet.add reg colors
                             | _ -> colors
                         )
                         neighbor
@@ -335,6 +350,9 @@ let coloring_graph graph regs regenv =
                     in
                     let selectable_color = StringSet.diff regs neighbor_colors
                     in
+                    (*Printf.printf "%s\n" (Id.to_string id);*)
+                    (*StringSet.iter (Printf.printf "%s\n") selectable_color;*)
+                    (*failwith "ha";*)
                     try
                         M.add id (StringSet.choose selectable_color) color_map
                     with
@@ -345,23 +363,13 @@ let coloring_graph graph regs regenv =
         regenv
         stack
 
-let graph_to_string graph =
-    M2.fold (fun node neighbor_set str ->
-        S1.fold (fun neighbor str' ->
-            Printf.sprintf "%s\n%s -> %s" str' (Operand.to_string node) (Operand.to_string neighbor)
-        )
-        neighbor_set
-        str
-    )
-    graph
-    ""
-
 type coloring_result =
     | Spill of Id.t
-    | ColorMap of (Reg.t M.t * Reg.t M.t)
+    | ColorMap of Reg.t M.t
 
     (*need to separate to int_graph and float_graph because sets of register are difference (Reg.allregs and Reg.allfregs)*)
 let coloring e regenv =
+        print_endline "hello2\n";
     let int_graph, float_graph = gen_graph e
     in
     (*Printf.printf "%s\n" (graph_to_string int_graph);*)
@@ -370,6 +378,6 @@ let coloring e regenv =
         in
         let color_map = coloring_graph float_graph (StringSet.of_list Reg.allfregs) int_color_map
         in
-            ColorMap (int_color_map, color_map)
+            ColorMap color_map
     with
         | Spill_break id -> Spill id
