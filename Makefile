@@ -22,11 +22,14 @@ clean:: nobackup
 SOURCES = float.c common.ml info.ml cmd.ml type.ml id.ml stringSet.ml m.ml s.ml \
 		  loc.ml \
 		  reg.ml operand.ml operandSet.ml \
+		  m2.ml \
+		  s1.ml \
 		syntax.ml parser.mly lexer.mll typing.ml kNormal.ml \
 		m1.ml \
 		alpha.ml beta.ml assoc.ml \
 		inline.ml constFold.ml elim.ml duplicateLet.ml \
 		closure.ml expandTuple.ml flatTuple.ml asmReg.ml asm.ml virtual.ml \
+		  graph.ml \
 		simm.ml regAlloc.ml emit.ml \
 		main.ml
 
@@ -56,12 +59,17 @@ test/%.cmp: test/%.res test/%.ans
 
 min-caml.html: main.ml id.ml m.ml stringSet.ml s.ml \
 	loc.ml \
+	reg.ml \
+	operand.ml \
+	m2.ml \
+		s1.ml \
 		syntax.ml type.ml parser.mly lexer.mll typing.ml kNormal.ml \
 		alpha.ml beta.ml assoc.ml \
 		inline.ml constFold.ml elim.ml \
 		closure.ml expandTuple.ml flatTuple.ml asmReg.ml asm.ml virtual.ml \
+	graph.ml \
 		simm.ml regAlloc.ml emit.ml info.ml \
-		duplicateLet.ml common.ml m1.ml cmd.ml operand.ml operandSet.ml reg.ml
+		duplicateLet.ml common.ml m1.ml cmd.ml operandSet.ml
 	./to_sparc
 	caml2html -o min-caml.html $^
 	sed 's/.*<\/title>/MinCaml Source Code<\/title>/g' < min-caml.html > min-caml.tmp.html
