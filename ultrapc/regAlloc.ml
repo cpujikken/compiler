@@ -151,10 +151,12 @@ let rec spill id def_found = function
               with
                   Spilled_ID_Found ->(match def_found with
                       None -> failwith (Printf.sprintf "wrong data flow. %s is used before its definition" (Id.to_string id))
-                      | Some (new_id, typ, false) ->
+                      | Some (idd, typ, _) ->
+                              let new_id = Id.genid ("spill", Id.get_info idd)
+                              in
                           Let((Operand.ID new_id, typ), Restore(id), Ans(spill_exp id (Some (new_id, typ, true)) exp, info), info)
-                      | Some(_, _, true) ->
-                              failwith (Printf.sprintf "wrong data flow. exception raised for already restored variable %s" (Id.to_string id))
+                      (*| Some(_, _, true) ->*)
+                              (*failwith (Printf.sprintf "wrong data flow. exception raised for already restored variable %s" (Id.to_string id))*)
                   )
       )
       | Let ((Operand.ID op_id as op, op_type), let_exp, body, info) when op_id = id ->
@@ -169,19 +171,24 @@ let rec spill id def_found = function
          with
                   Spilled_ID_Found ->(match def_found with
                       None -> failwith (Printf.sprintf "wrong data flow. %s is used before its definition" (Id.to_string id))
-                      | Some (new_id, typ, false) ->
+                      | Some (idd, typ, _) ->
+                          let new_id = Id.genid ("spill", Id.get_info idd)
+                          in
                           let new_def_found = (Some (new_id, typ, true))
                           in
-                             Let((Operand.ID new_id, typ), Restore(id), Let(op_type, spill_exp id new_def_found let_exp , spill id def_found body, info), info)
-                      | Some(_, _, true) ->
-                              failwith (Printf.sprintf "wrong data flow. exception raised for already restored variable %s" (Id.to_string id))
+                             Let((Operand.ID new_id, typ), Restore(id), Let(op_type, spill_exp id new_def_found let_exp , spill id def_found body(*use old def_found here to make id restored on next time being used*), info), info)
+                      (*| Some(_, _, true) ->*)
+                              (*failwith (Printf.sprintf "wrong data flow. exception raised for already restored variable %s" (Id.to_string id))*)
                   )
 and
 spill_exp id def_found e =
     let check_id = function
         | Operand.ID cid when cid = id ->( match def_found with
+        (*not assign new id yet*)
             | None -> raise(Spilled_ID_Found )
+            (*assigned but not restored yet*)
             | Some (_, _, false) -> raise Spilled_ID_Found
+            (*assigned and restored*)
             | Some (new_id, _, true) -> Operand.ID new_id
         )
         | other -> other

@@ -202,42 +202,51 @@ let graph_from_lives lives =
 
 let rec get_vars = function
   | Ans (exp, _) -> get_vars_exp exp
+  | Let ((Operand.ID id, Type.Unit _), let_exp, body_exp, _) ->
+      let i, f, u =
+          combine_vars
+              (get_vars_exp let_exp)
+              (get_vars body_exp)
+      in
+        i, f, S.add id u
   | Let ((op, Type.Float _), let_exp, body_exp, _) ->
-        let i, f = combine_vars
+        let i, f, u = combine_vars
               (get_vars_exp let_exp)
               (get_vars body_exp)
         in
-            i, S1.add op f
+            i, S1.add op f, u
   | Let ((op, _), let_exp, body_exp, _) ->
-        let i, f = combine_vars
+        let i, f, u = combine_vars
               (get_vars_exp let_exp)
               (get_vars body_exp)
         in
-            S1.add op i, f
+            S1.add op i, f, u
 and
-combine_vars (i1, f1) (i2, f2) =
-    S1.union i1 i2, S1.union f1 f2
+combine_vars (i1, f1, u1) (i2, f2, u2) =
+    S1.union i1 i2, S1.union f1 f2, S.union u1 u2
 and
 get_vars_exp = function
     (*IN = OUT - DEF + USE*)
     | IfEQ (op1, op2, t1, t2)
     | IfLT (op1, op2, t1, t2)
     ->
-        let i, f = combine_vars
+        let i, f, u = combine_vars
               (get_vars t1)
               (get_vars t2)
         in
-            S1.union (S1.of_list [op1; op2]) i, f
+            S1.union (S1.of_list [op1; op2]) i, f, u
     | FIfEQ (op1, op2, t1, t2)
     | FIfLT (op1, op2, t1, t2)
     ->
-        let i, f = combine_vars
+        let i, f, u = combine_vars
               (get_vars t1)
               (get_vars t2)
         in
-            i, S1.union (S1.of_list [op1; op2]) f
+            i, S1.union (S1.of_list [op1; op2]) f, u
     | exp ->
-            get_use_vars_exp_easy exp
+            let i, f = get_use_vars_exp_easy exp
+            in
+                i, f, S.empty
 
 let graph_supply vars graph =
     S1.fold (fun node graph' ->
@@ -254,9 +263,9 @@ let gen_graph e =
     in
     let int_graph, float_graph  = graph_from_lives int_lives , graph_from_lives float_lives
     in
-    let int_vars, float_vars = get_vars e
+    let int_vars, float_vars, unit_vars = get_vars e
     in
-        graph_supply int_vars int_graph, graph_supply float_vars float_graph
+        graph_supply int_vars int_graph, graph_supply float_vars float_graph, unit_vars
 
 let graph_get_degree_map graph =
     M2.map (fun set -> S1.size set) graph
@@ -350,8 +359,8 @@ let coloring_graph graph regs regenv =
                     in
                     let selectable_color = StringSet.diff regs neighbor_colors
                     in
-                    (*Printf.printf "%s\n" (Id.to_string id);*)
-                    (*StringSet.iter (Printf.printf "%s\n") selectable_color;*)
+                    Printf.printf "%s\n" (Id.to_string id);
+                    StringSet.iter (Printf.printf "%s\n") selectable_color;
                     (*failwith "ha";*)
                     try
                         M.add id (StringSet.choose selectable_color) color_map
@@ -369,12 +378,18 @@ type coloring_result =
 
     (*need to separate to int_graph and float_graph because sets of register are difference (Reg.allregs and Reg.allfregs)*)
 let coloring e regenv =
-        print_endline "hello2\n";
-    let int_graph, float_graph = gen_graph e
+    Printf.printf "closure body:\n%s\n" (Asm.to_string e);
+    let int_graph, float_graph, unit_vars = gen_graph e
+    in
+    let regenv' = S.fold (fun node current ->
+        M.add node Reg.reg_dump current
+    )
+    unit_vars
+    regenv
     in
     (*Printf.printf "%s\n" (graph_to_string int_graph);*)
     try
-        let int_color_map = coloring_graph int_graph (StringSet.of_list Reg.allregs) regenv
+        let int_color_map = coloring_graph int_graph (StringSet.of_list Reg.allregs) regenv'
         in
         let color_map = coloring_graph float_graph (StringSet.of_list Reg.allfregs) int_color_map
         in
