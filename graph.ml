@@ -378,7 +378,7 @@ let coloring_graph graph regs regenv spilled =
     let stack, _,  spillable = coloring_make_stack [] graph S1.empty (StringSet.size regs)
     in
     (*List.iter (fun x -> Printf.printf "%s\n" (Operand.to_string x)) stack;*)
-    Printf.printf "%s\n" (to_string graph);
+    (*Printf.printf "%s\n" (to_string graph);*)
     (*M.iter (fun key x -> Printf.printf "%s: %s\n" (Id.to_string key) x) regenv;*)
     (*failwith "ha";*)
         List.fold_left (fun color_map node ->
