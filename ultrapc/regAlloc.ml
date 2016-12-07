@@ -23,7 +23,7 @@ let rec map_all color_map spilled_vars spilled_vars_type restored_vars e =
             (*Printf.printf "id: %s\n" (Id.to_string id);*)
             (*S.iter (fun x -> (Printf.printf "%s\n") @@ Id.to_string @@ x) restored_vars;*)
             (*try*)
-            let ee, restored_vars_new =try_eval info (S.add id restored_vars) f
+            let ee, restored_vars_new = try_eval info (S.add id restored_vars) f
             in
             AsmReg.Let((M.find id color_map, M.find id spilled_vars_type), AsmReg.Restore(id), ee, info), restored_vars_new
             (*with*)
@@ -32,41 +32,43 @@ let rec map_all color_map spilled_vars spilled_vars_type restored_vars e =
                     (*Printf.printf "not found color for %s or cannot find its type \n" (Id.to_string id);*)
                     (*failwith "common"*)
     in
-    (
     match e with
-        | Let ((_, (Type.Unit _ as op_typ)) , let_exp, body_st, info) ->
-            Let ((Operand.Reg Reg.reg_dump, op_typ), let_exp, body_st, info), spilled_vars_type, restored_vars
-            (*found spilled id need to be saved*)
-        | Let ((Operand.ID id, op_typ) as op_and_typ, let_exp, body_st, info) when S.mem id spilled_vars ->
-                (*sava operand*)
-            Let (op_and_typ, let_exp,
-                Let((Operand.Reg Reg.reg_dump, Type.Unit (Type.get_info op_typ)), Save(id, op_typ), body_st, info),
-                info
-            ), M.add id op_typ spilled_vars_type, S.add id restored_vars
-            (*remove spilled id from restored_vars set (if possible)*)
-        |other -> other, spilled_vars_type, restored_vars
-    )
-        |>( fun (e, spilled_vars_type, restored_vars) -> match e with
-
         | Ans (exp, info) ->
-                try_eval info S.empty @@ fun restored_vars ->
-                    let let_e, restored_vars' = map_exp color_map spilled_vars spilled_vars_type restored_vars exp
+                try_eval info restored_vars @@ fun restored_vars ->
+                    let let_e, restored_vars = map_exp color_map spilled_vars spilled_vars_type restored_vars exp
                     in
-                    AsmReg.Ans(let_e, info), restored_vars'
+                        AsmReg.Ans(let_e, info), restored_vars
 
+        (*found spilled id need to be saved*)
+        | Let ((Operand.ID id, op_typ), let_exp, body_st, info) when S.mem id spilled_vars ->
+                try_eval info restored_vars @@ fun restored_vars ->
+                    let let_e, restored_vars = map_exp color_map spilled_vars spilled_vars_type restored_vars let_exp
+                    in
+                    let spilled_vars_type = M.add id op_typ spilled_vars_type
+                    in
+                    let restored_vars = S.add id restored_vars
+                    in
+                    let body_e, restored_vars = map_all color_map spilled_vars spilled_vars_type restored_vars body_st
+                    in
+                    let id_reg = M.find id color_map
+                    in
+                        AsmReg.Let ((id_reg, op_typ), let_e,
+                            AsmReg.Let((Reg.reg_dump, Type.Unit (Type.get_info op_typ)), AsmReg.Save(id_reg, id), body_e, info),
+                            info
+                        ), restored_vars
+                    (*remove spilled id from restored_vars set (if possible)*)
+                (*save operand*)
         | Let ((op, op_typ), let_exp, body_st, info) ->
-            try_eval info restored_vars @@ fun restored_vars' ->
-                let let_e, restored_vars' = map_exp color_map spilled_vars spilled_vars_type restored_vars' let_exp
-                in
-                let restored_vars'' = match op with
-                    Operand.ID id -> S.remove id restored_vars'
-                    | _ -> restored_vars
-                in
-                let body_e, restored_vars_end = map_all color_map spilled_vars spilled_vars_type restored_vars'' body_st
-                in
-                AsmReg.Let((find_color op, op_typ), let_e, body_e, info), restored_vars_end
-    )
-
+                try_eval info restored_vars @@ fun restored_vars ->
+                    let let_e, restored_vars = map_exp color_map spilled_vars spilled_vars_type restored_vars let_exp
+                    in
+                    let reg = match op_typ with Type.Unit _ -> Reg.reg_dump |_ ->  find_color op
+                    in
+                    let restored_vars = S.filter (fun var -> M.find var color_map != reg) restored_vars
+                    in
+                    let body_e, restored_vars = map_all color_map spilled_vars spilled_vars_type restored_vars body_st
+                    in
+                        AsmReg.Let((reg, op_typ), let_e, body_e, info), restored_vars
 and
 map_exp color_map spilled_vars spilled_vars_type restored_vars e =
     let find_color = function
