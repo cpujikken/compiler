@@ -55,6 +55,7 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *
 
     | MoveImm of Loc.t
     | Move of Operand.t
+    | FMove of Operand.t
 
     | IfEQ of Operand.t * Operand.t * t * t
     | FIfEQ of Operand.t * Operand.t *t * t
@@ -120,6 +121,7 @@ let rec fv_exp = function
         -> [a; b]
 
     | Move r
+    | FMove r
     | Addi (r, _)
     | Four r
     | Half r
@@ -154,6 +156,7 @@ and get_free_vars_ = function
       fv_exp exp @ remove_dup (OperandSet.singleton x) (get_free_vars_ e)
 let get_free_vars e = remove_dup OperandSet.empty (get_free_vars_ e)
 
+(*let xt = e1 then evaluate e2*)
 let rec concat e1 xt e2 =
   match e1 with
   | Ans(exp, info) -> Let(xt, exp, e2, info)
@@ -208,6 +211,7 @@ exp_to_string_pre pre = function
 
     | MoveImm loc -> Printf.sprintf "%sMoveImm %s" pre (Loc.to_string loc)
     | Move op -> Printf.sprintf "%sMove %s" pre (Operand.to_string op)
+    | FMove op -> Printf.sprintf "%sFMove %s" pre (Operand.to_string op)
 
     | IfEQ (op1, op2, exp1, exp2) -> Printf.sprintf "%sIfEQ %s, %s\n%s\n%s" pre (Operand.to_string op1) (Operand.to_string op2) (to_string_pre (pre ^ "\t") exp1) (to_string_pre (pre ^ "\t") exp2)
     | FIfEQ (op1, op2, exp1, exp2) -> Printf.sprintf "%sFIfEQ %s, %s\n%s\n%s" pre (Operand.to_string op1) (Operand.to_string op2) (to_string_pre (pre ^ "\t") exp1) (to_string_pre (pre ^ "\t") exp2)

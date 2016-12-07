@@ -21,7 +21,10 @@ let locate x =
     | y :: zs when x = y -> 0 :: List.map succ (loc zs)
     | y :: zs -> List.map succ (loc zs) in
   loc !stackmap
-let offset x = 4 * List.hd (locate x)
+let offset x =
+    try
+    4 * List.hd (locate x)
+    with _ -> failwith "try to restore variable before saving it"
 let stacksize () = List.length !stackmap * 4
 
 (* 関数呼び出しのために引数を並べ替える(register shuffling) (caml2html: emit_shuffle) *)
@@ -362,14 +365,14 @@ and generate' info = function (* 各命令のアセンブリ生成 (caml2html: e
                     in
                     stackset := S.inter stackset1 stackset2;
     | Tail, CallCls(rcls, params, fparams) ->
-            generate'_args [(rcls, reg_cl)] params fparams info;
+            generate_args [(rcls, reg_cl)] params fparams info;
             append_cmd cmd_jumpCls [] info
     | Tail, CallDir(l, params, fparams) ->
-            generate'_args [] params fparams info;
+            generate_args [] params fparams info;
             append_cmd cmd_jump [Loc.to_string l] info
     | NonTail rd, CallCls(rcls, params, fparams) ->
             (*set param*)
-            generate'_args [(rcls, reg_cl)] params fparams info;
+            generate_args [(rcls, reg_cl)] params fparams info;
             let ss = stacksize ()
             in
             if ss > 0 then
@@ -389,7 +392,7 @@ and generate' info = function (* 各命令のアセンブリ生成 (caml2html: e
                     generate' info (NonTail rd, Move freg_ret)
     | NonTail rd, CallDir(l, params, fparams) ->
             (*set param*)
-            generate'_args [] params fparams info;
+            generate_args [] params fparams info;
             let ss = stacksize()
             in
             (*increase stack*)
@@ -406,7 +409,7 @@ and generate' info = function (* 各命令のアセンブリ生成 (caml2html: e
             else
                 if List.mem rd allfregs && rd <> freg_ret then
                     generate' info (NonTail rd, FMove freg_ret)
-and generate'_args x_reg_cl params fparams info =
+and generate_args x_reg_cl params fparams info =
     (*quick assertion*)
     if List.length params > Array.length regs - List.length x_reg_cl then
         failwith "number of parameter is larger than number of available registers";

@@ -4,28 +4,68 @@ open Loc
 open Reg
 
 
-let rec map_all color_map e =
-    let find_color = find_color_funtor color_map
-    in
-    match e with
-    | Ans (exp, info) -> AsmReg.Ans(map_exp color_map exp, info)
-    | Let ((op, (Type.Unit _ as op_typ)), let_exp, body_exp, info) ->
-            AsmReg.Let((reg_dump, op_typ), map_exp color_map let_exp, map_all color_map body_exp, info)
-    | Let ((op,( Type.Float _ as op_typ )), let_exp, body_exp, info) ->
-            AsmReg.Let((find_color op, op_typ), map_exp color_map let_exp, map_all color_map body_exp, info)
-    | Let ((op, (_ as op_typ)), let_exp, body_exp, info) ->
-            AsmReg.Let((find_color op, op_typ), map_exp color_map let_exp, map_all color_map body_exp, info)
-and
-find_color_funtor color_map = function
+exception Spill of Id.t
+
+let rec map_all color_map spilled_vars spilled_vars_type e =
+    let find_color = function
     | Operand.Reg reg -> reg
     | Operand.ID id -> try
             M.find id color_map
         with
         Not_found ->
             failwith (Printf.sprintf "Wrong compiler flow. ID(%s) is not bound (colored) yet while mapping" (Id.to_string id))
+    in
+    let rec try_eval info restored_vars f =
+        try
+            f restored_vars
+        with
+        Spill (id) ->
+            (*Printf.printf "id: %s\n" (Id.to_string id);*)
+            (*S.iter (fun x -> (Printf.printf "%s\n") @@ Id.to_string @@ x) restored_vars;*)
+            (*try*)
+            AsmReg.Let((M.find id color_map, M.find id spilled_vars_type), AsmReg.Restore(id), try_eval info (S.add id restored_vars) f, info)
+            (*with*)
+                (*Not_found ->*)
+                    (*M.iter (fun key color -> Printf.printf "%s -> %s\n" (Id.to_string key) color) color_map;*)
+                    (*Printf.printf "not found color for %s or cannot find its type \n" (Id.to_string id);*)
+                    (*failwith "common"*)
+    in
+    (
+    match e with
+        | Let ((_, (Type.Unit _ as op_typ)) , let_exp, body_st, info) ->
+            Let ((Operand.Reg Reg.reg_dump, op_typ), let_exp, body_st, info), spilled_vars_type
+        | Let ((Operand.ID id, op_typ) as op_and_typ, let_exp, body_st, info) when S.mem id spilled_vars ->
+                (*sava operand*)
+            Let (op_and_typ, let_exp,
+                Let((Operand.Reg Reg.reg_dump, Type.Unit (Type.get_info op_typ)), Save(id, op_typ), body_st, info),
+                info
+            ), M.add id op_typ spilled_vars_type
+        |other -> other, spilled_vars_type
+    )
+        |>( fun (e, spilled_vars_type) -> match e with
+
+        | Ans (exp, info) ->
+                try_eval info S.empty @@ fun restored_vars ->
+                AsmReg.Ans(map_exp color_map spilled_vars spilled_vars_type restored_vars exp, info)
+
+        | Let ((op, op_typ), let_exp, body_st, info) ->
+            try_eval info S.empty @@ fun restored_vars ->
+                AsmReg.Let((find_color op, op_typ), map_exp color_map spilled_vars spilled_vars_type restored_vars let_exp, map_all color_map spilled_vars spilled_vars_type body_st, info)
+    )
+
 and
-map_exp color_map e =
-    let find_color = find_color_funtor color_map
+map_exp color_map spilled_vars spilled_vars_type restored_vars e =
+    let find_color = function
+    | Operand.Reg reg -> reg
+    | Operand.ID id when S.mem id spilled_vars && not (S.mem id restored_vars) ->
+            (*Printf.printf "id: %s\n" (Id.to_string id);*)
+            (*S.iter (fun x -> (Printf.printf "%s\n") @@ Id.to_string @@ x) restored_vars;*)
+            raise (Spill (id))
+    | Operand.ID id -> try
+            M.find id color_map
+        with
+        Not_found ->
+            failwith (Printf.sprintf "Wrong compiler flow. ID(%s) is not bound (colored) yet while mapping" (Id.to_string id))
     in
     let find_addr = function
         Relative (op, loc) -> AsmReg.Relative (find_color op, loc)
@@ -64,23 +104,21 @@ map_exp color_map e =
 
     | MoveImm loc -> AsmReg.MoveImm loc
     | Move op -> AsmReg.Move (find_color op)
+    | FMove op -> AsmReg.FMove (find_color op)
 
     | IfEQ (op1, op2, e1, e2)
-        -> AsmReg.IfEQ (find_color op1, find_color op2, map_all color_map e1, map_all color_map e2)
+        -> AsmReg.IfEQ (find_color op1, find_color op2, map_all color_map spilled_vars spilled_vars_type e1, map_all color_map spilled_vars spilled_vars_type e2)
     | FIfEQ (op1, op2, e1, e2)
-        -> AsmReg.FIfEQ (find_color op1, find_color op2, map_all color_map e1, map_all color_map e2)
+        -> AsmReg.FIfEQ (find_color op1, find_color op2, map_all color_map spilled_vars spilled_vars_type e1, map_all color_map spilled_vars spilled_vars_type e2)
     | IfLT (op1, op2, e1, e2)
-        -> AsmReg.IfLT (find_color op1, find_color op2, map_all color_map e1, map_all color_map e2)
+        -> AsmReg.IfLT (find_color op1, find_color op2, map_all color_map spilled_vars spilled_vars_type e1, map_all color_map spilled_vars spilled_vars_type e2)
     | FIfLT (op1, op2, e1, e2)
-        -> AsmReg.FIfLT (find_color op1, find_color op2, map_all color_map e1, map_all color_map e2)
+        -> AsmReg.FIfLT (find_color op1, find_color op2, map_all color_map spilled_vars spilled_vars_type e1, map_all color_map spilled_vars spilled_vars_type e2)
     | CallCls (op, l1, l2) -> AsmReg.CallCls (find_color op, List.map find_color l1, List.map find_color l2)
     | CallDir (loc, l1, l2) -> AsmReg.CallDir (loc, List.map find_color l1, List.map find_color l2)
     | Restore id -> AsmReg.Restore id
     | Save (id, Type.Float _) -> AsmReg.Save (M.find id color_map, id)
     | Save (id, _) -> AsmReg.Save (M.find id color_map, id)
-
-
-exception Spilled_ID_Found
 
 (*only replace using, there is no replacement required in define statement*)
 (*
@@ -144,119 +182,23 @@ replace_id_exp id new_id e =
     | Restore id -> Restore id
     *)
 
-let rec spill id def_found = function
-      | Ans (exp, info) ->(
-              try
-                  Ans(spill_exp id def_found exp, info)
-              with
-                  Spilled_ID_Found ->(match def_found with
-                      None -> failwith (Printf.sprintf "wrong data flow. %s is used before its definition" (Id.to_string id))
-                      | Some (idd, typ, _) ->
-                              let new_id = Id.genid ("spill", Id.get_info idd)
-                              in
-                          Let((Operand.ID new_id, typ), Restore(id), Ans(spill_exp id (Some (new_id, typ, true)) exp, info), info)
-                      (*| Some(_, _, true) ->*)
-                              (*failwith (Printf.sprintf "wrong data flow. exception raised for already restored variable %s" (Id.to_string id))*)
-                  )
-      )
-      | Let ((Operand.ID op_id as op, op_type), let_exp, body, info) when op_id = id ->
-              let new_id = (Id.genid ("spill", info))
-              in
-              let body' = spill id (Some (new_id, op_type, false)) body
-              in
-                  Let((op, op_type), let_exp, Let((Operand.ID (Id.genid ("dump", Id.get_info op_id)), Type.Unit info), Save(op_id, op_type), body',info), info)
-     | Let (op_type, let_exp, body, info) ->
-         try
-             Let(op_type, spill_exp id def_found let_exp, spill id  def_found body, info)
-         with
-                  Spilled_ID_Found ->(match def_found with
-                      None -> failwith (Printf.sprintf "wrong data flow. %s is used before its definition" (Id.to_string id))
-                      | Some (idd, typ, _) ->
-                          let new_id = Id.genid ("spill", Id.get_info idd)
-                          in
-                          let new_def_found = (Some (new_id, typ, true))
-                          in
-                             Let((Operand.ID new_id, typ), Restore(id), Let(op_type, spill_exp id new_def_found let_exp , spill id def_found body(*use old def_found here to make id restored on next time being used*), info), info)
-                      (*| Some(_, _, true) ->*)
-                              (*failwith (Printf.sprintf "wrong data flow. exception raised for already restored variable %s" (Id.to_string id))*)
-                  )
-and
-spill_exp id def_found e =
-    let check_id = function
-        | Operand.ID cid when cid = id ->( match def_found with
-        (*not assign new id yet*)
-            | None -> raise(Spilled_ID_Found )
-            (*assigned but not restored yet*)
-            | Some (_, _, false) -> raise Spilled_ID_Found
-            (*assigned and restored*)
-            | Some (new_id, _, true) -> Operand.ID new_id
+let rec alloc e regenv vars_type =
+    let color_map, spilled_vars = Graph.coloring e regenv
+    in
+    let info = Asm.get_info e
+    in
+        (*M.iter (fun key _ -> Printf.printf "%s\n" (Id.to_string key)) color_map;*)
+        (*save arg if need*)
+        M.fold (fun id typ exp -> match typ with
+            | Type.Float _ -> AsmReg.Let((Reg.freg_dump, typ), AsmReg.Save(M.find id regenv, id), exp, info)
+            | Type.Unit _ -> exp
+            | _ -> AsmReg.Let((Reg.reg_dump, typ), AsmReg.Save(M.find id regenv, id), exp, info)
         )
-        | other -> other
-    in
-    let check_addr = function
-        Relative (op, loc) -> Relative(check_id op, loc)
-        (*(r1, s4, r2): relative address
-         * of offset r2 * s4 from r1*)
-        | Dynamic (op1, s, op2) -> Dynamic(check_id op1, s, check_id op2)
-        | Absolute (t1, t2op) -> Absolute(t1, t2op)
-    in
-    match e with
-    | Nop
-    | IntRead
-    | FloatRead
-    | MoveImm _
-    | Restore _
-    | Save _
-    as exp -> exp
-
-    | Add (op1, op2) -> Add(check_id op1, check_id op2)
-    | ShiftLeft (op1, op2) -> ShiftLeft (check_id op1, check_id op2)
-    | ShiftRight (op1, op2) -> ShiftRight (check_id op1, check_id op2)
-    | Div (op1, op2) -> Div (check_id op1, check_id op2)
-    | Mul (op1, op2) -> Mul (check_id op1, check_id op2)
-    | Sub (op1, op2) -> Sub (check_id op1, check_id op2)
-    | Addi (op, loc) -> Addi (check_id op, loc)
-    | Four op -> Four (check_id op)
-    | Half op -> Half (check_id op)
-    | Load addr -> Load(check_addr addr)
-    | Store (op, addr) -> Store(check_id op, check_addr addr)
-    | Neg op -> Neg (check_id op)
-    | FNeg op -> FNeg (check_id op)
-    | FAbs op -> FAbs (check_id op)
-    | Print op -> Print (check_id op)
-    | FAdd (op1, op2) -> FAdd (check_id op1, check_id op2)
-    | FSub (op1, op2) -> FSub (check_id op1, check_id op2)
-    | FMul (op1, op2) -> FMul (check_id op1, check_id op2)
-    | FDiv (op1, op2) -> FDiv (check_id op1, check_id op2)
-    | FLoad addr -> FLoad(check_addr addr)
-    | FStore (op, addr) -> FStore(check_id op, check_addr addr)
-
-    | Move op -> Move (check_id op)
-
-    | IfEQ (op1, op2, e1, e2)
-        -> IfEQ (check_id op1, check_id op2, spill id def_found e1, spill id def_found e2)
-    | FIfEQ (op1, op2, e1, e2)
-        -> FIfEQ (check_id op1, check_id op2, spill id def_found e1, spill id def_found e2)
-    | IfLT (op1, op2, e1, e2)
-        -> IfLT (check_id op1, check_id op2, spill id def_found e1, spill id def_found e2)
-    | FIfLT (op1, op2, e1, e2)
-        -> FIfLT (check_id op1, check_id op2, spill id def_found e1, spill id def_found e2)
-    | CallCls (op, l1, l2) -> CallCls (check_id op, List.map check_id l1, List.map check_id l2)
-    | CallDir (loc, l1, l2) -> CallDir (loc, List.map check_id l1, List.map check_id l2)
-
-let rec alloc e regenv =
-    let color_map = Graph.coloring e regenv
-    in
-    match color_map with
-        | Graph.Spill id ->
-                Format.eprintf "Spilling %s ...@." (Id.to_string id);
-                alloc (spill id None e) regenv
-        | Graph.ColorMap color_map ->
-                (*M.iter (fun key _ -> Printf.printf "%s\n" (Id.to_string key)) color_map;*)
-                map_all color_map e
+        (M.filter (fun id v -> S.mem id spilled_vars) vars_type)
+        (map_all color_map spilled_vars vars_type e)
 
 (*assign register for func*)
-let process_def { Asm.name = def_name; Asm.args = args; Asm.fargs = float_args; Asm.body = body; Asm.ret = return_type ; Asm.info = info} = (* 関数のレジスタ割り当て (caml2html: regalloc_h) *)
+let process_def { Asm.name = def_name; Asm.args = int_args; Asm.fargs = float_args; Asm.body = body; Asm.ret = return_type ; Asm.info = info} = (* 関数のレジスタ割り当て (caml2html: regalloc_h) *)
     let regenv = M.add (def_name, info) reg_cl M.empty
     in
     let (_, arg_regs, regenv) =
@@ -273,7 +215,7 @@ let process_def { Asm.name = def_name; Asm.args = args; Asm.fargs = float_args; 
                     )
                 )
             (0, [], regenv)
-            args
+        int_args
     in
     let (_, farg_regs, regenv) =
         List.fold_left
@@ -289,18 +231,32 @@ let process_def { Asm.name = def_name; Asm.args = args; Asm.fargs = float_args; 
         (0, [], regenv)
         float_args
     in
-    let return_reg = match return_type with
-        | Type.Unit info -> reg_ret
-        | Type.Float info -> freg_ret
-        | _ -> reg_ret
-    in
     let info = Asm.get_info body
+    in
+    let vars_type = List.fold_left (fun env arg -> match arg with
+        | Operand.ID id -> M.add id (Type.Int info)  env
+        | _ -> env
+    )
+    M.empty
+    int_args
+    in
+    let vars_type' = List.fold_left (fun env arg -> match arg with
+        | Operand.ID id -> M.add id (Type.Float info)  env
+        | _ -> env
+    )
+    vars_type
+    int_args
+    in
+    let return_op, move_st = match return_type with
+        | Type.Float _ -> Reg freg_ret, FMove(Reg freg_ret)
+        | Type.Unit _ -> Reg reg_dump, Nop
+        | _ -> Reg reg_ret, Move(Reg reg_ret)
     in
     let body' =
         Printf.printf "closure body:\n%s\n" (Asm.to_string body);
-        alloc (concat body (Reg return_reg, return_type) (Ans(Move(Reg return_reg), info))) regenv
+        alloc (concat body (return_op, return_type) (Ans(move_st, info))) regenv vars_type'
     in
-        (*Printf.printf "closure body after regAlloc:\n%s\n" (AsmReg.to_string body');*)
+        Printf.printf "closure body after regAlloc:\n%s\n" (AsmReg.to_string body');
         { AsmReg.name = def_name; AsmReg.args =  arg_regs; AsmReg.fargs = farg_regs; AsmReg.body = body'; AsmReg.ret = return_type; AsmReg.info = info }
 
 (*assign register*)
@@ -308,4 +264,4 @@ let f (Prog(idata, data, fundefs, e)) = (* プログラム全体のレジスタ�
     (*Format.eprintf "register allocation: may take some time (up to a few minutes, depending on the size of functions)@.";*)
       let fundefs' = List.map process_def fundefs in
         (*Printf.printf "closure body:\n%s\n" (Asm.to_string e);*)
-      AsmReg.Prog(idata, data, fundefs', alloc e M.empty)
+      AsmReg.Prog(idata, data, fundefs', alloc e M.empty M.empty)

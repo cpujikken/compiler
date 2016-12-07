@@ -7,4 +7,4 @@ module S =
     end)
 include S
 
-let of_list l = List.fold_left (fun s e -> add e s) empty l
+let size x = List.length @@ S.elements x
