@@ -245,7 +245,7 @@ let process_def { Asm.name = def_name; Asm.args = int_args; Asm.fargs = float_ar
     let (_, arg_regs, regenv) =
         List.fold_left
             (fun (i, arg_regs, regenv) y ->
-                let r = regs.(i)
+                let r = reg_no i
                 in
                 (
                     i + 1,
@@ -261,7 +261,7 @@ let process_def { Asm.name = def_name; Asm.args = int_args; Asm.fargs = float_ar
     let (_, farg_regs, regenv) =
         List.fold_left
         (fun (d, farg_regs, regenv) z ->
-            let fr = fregs.(d)
+            let fr = freg_no d
             in
             (d + 1, farg_regs @ [fr], (
                 match z with

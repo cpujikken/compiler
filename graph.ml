@@ -349,7 +349,7 @@ let rec coloring_make_stack current_stack graph spillable threshold =
                 get_max_neighbor_deg_node min_deg_nodes degree_map graph
         in
         let spillable' =
-            if min_deg >= threshold then match to_remove_node with Operand.ID _ -> S1.add to_remove_node spillable
+            if min_deg >= threshold then match to_remove_node with Operand.ID to_remove_node_id -> S.add to_remove_node_id spillable
                 | _ -> spillable
             else
                 spillable
@@ -369,7 +369,7 @@ exception Spill of Id.t
     * -> this graph can not be colored by this algorithm
     *)
 let coloring_graph graph regs regenv spilled =
-    let stack, _,  spillable = coloring_make_stack [] graph S1.empty (StringSet.size regs)
+    let stack, _,  spillable = coloring_make_stack [] graph S.empty (StringSet.size regs)
     in
     (*List.iter (fun x -> Printf.printf "%s\n" (Operand.to_string x)) stack;*)
     (*Printf.printf "%s\n" (to_string graph);*)
@@ -399,18 +399,25 @@ let coloring_graph graph regs regenv spilled =
                     StringSet.iter (Printf.printf "%s\n") selectable_color;
                     (*failwith "ha";*)
                     try
-                        M.add id (StringSet.choose selectable_color) color_map
+                        let color =
+                            if S.mem id spilled then
+                                (*choose from bottom*)
+                                StringSet.min_elt selectable_color
+                            else
+                                StringSet.max_elt selectable_color
+                        in
+                        M.add id color color_map
                     with
                         Not_found -> (*spill id*)
-                            let spillable_not_spilled = S1.diff spillable spilled
+                            let spillable_not_spilled = S.diff spillable spilled
                             in
-                                if spillable_not_spilled != S1.empty then(
-                                    match S1.choose spillable_not_spilled with
-                                        | Operand.ID spill_id -> raise (Spill spill_id)
-                                        | _ -> failwith "never happen" (*note: spilled set can be hold as set of Id.t type, but it is hold as set of Operand.t (Operand.ID _ ) due to coding convenience*)
+                                if spillable_not_spilled != S.empty then(
+                                    let spill_id = S.choose spillable_not_spilled
+                                    in
+                                        raise (Spill spill_id)
                                 );
                             (
-                            if not (S1.mem (Operand.ID id) spilled) then
+                            if not (S.mem id spilled) then
                                 raise (Spill id)
                                 )
                                 ;
@@ -418,14 +425,14 @@ let coloring_graph graph regs regenv spilled =
                             let neighbors = M2.find node graph
                             in
                                 S1.iter (fun elt -> match elt with
-                                    Operand.ID id when not (S1.mem elt spilled) -> raise (Spill id)
+                                    Operand.ID id when not (S.mem id spilled) -> raise (Spill id)
                                     | _ -> ()
                                 )
                                 neighbors
                             );
                             (
                             M2.iter (fun node _ -> match node with
-                                Operand.ID id when not (S1.mem node spilled) -> raise (Spill id)
+                                Operand.ID id when not (S.mem id spilled) -> raise (Spill id)
                                     | _ -> ()
                                 )
                                 graph
@@ -441,7 +448,7 @@ let coloring_graph graph regs regenv spilled =
 
 let rec coloring_loop regenv spilled_vars e =
     (*Printf.printf "closure body:\n%s\n" (Asm.to_string e);*)
-    let int_graph, float_graph, unit_vars = gen_graph e spilled_vars
+    let int_graph, float_graph, unit_vars = gen_graph e (S.fold (fun id set -> S1.add (Operand.ID id) set) spilled_vars S1.empty)
     in
     let regenv' = S.fold (fun node current ->
         M.add node Reg.reg_dump current
@@ -459,16 +466,7 @@ let rec coloring_loop regenv spilled_vars e =
     with
         Spill id ->
             Printf.printf "Spill %s ...\n" (Id.to_string id);
-            coloring_loop regenv (S1.add (Operand.ID id) spilled_vars) e
+            coloring_loop regenv (S.add id spilled_vars) e
 
 let coloring e regenv =
-    let color_map, spilled_vars = coloring_loop regenv S1.empty e
-    in
-    let spilled_vars_id = S1.fold (fun elt id_set -> match elt with
-            Operand.ID id -> S.add id id_set
-            | _ -> id_set
-        )
-        spilled_vars
-        S.empty
-    in
-        color_map, spilled_vars_id
+    coloring_loop regenv S.empty e

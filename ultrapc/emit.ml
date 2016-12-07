@@ -411,9 +411,9 @@ and generate' info = function (* 各命令のアセンブリ生成 (caml2html: e
                     generate' info (NonTail rd, FMove freg_ret)
 and generate_args x_reg_cl params fparams info =
     (*quick assertion*)
-    if List.length params > Array.length regs - List.length x_reg_cl then
+    if List.length params > List.length allregs - List.length x_reg_cl then
         failwith "number of parameter is larger than number of available registers";
-  if List.length fparams > Array.length fregs then
+  if List.length fparams > List.length allfregs then
       failwith "number of float params is larger than number of available float registers";
 
   let stacksize_backup = stacksize()
@@ -422,7 +422,7 @@ and generate_args x_reg_cl params fparams info =
   (*in*)
   let (i, param_regs) =
     List.fold_left
-      (fun (i, param_regs) y -> (i + 1, (y, regs.(i)) :: param_regs))
+      (fun (i, param_regs) y -> (i + 1, (y, reg_no i) :: param_regs))
       (0, x_reg_cl)
       params
   in
@@ -441,7 +441,7 @@ and generate_args x_reg_cl params fparams info =
 
   let (d, param_fregs) =
     List.fold_left
-      (fun (d, param_fregs) z -> (d + 1, (z, fregs.(d)) :: param_fregs))
+      (fun (d, param_fregs) z -> (d + 1, (z, freg_no d) :: param_fregs))
       (0, [])
       fparams in
   List.iter
