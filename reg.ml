@@ -1,4 +1,4 @@
-let global_reg_threshold = 5
+let global_reg_threshold = 7
 let nreg = 32
 let nfreg = 32
 
