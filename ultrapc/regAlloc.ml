@@ -152,9 +152,6 @@ map_exp color_map spilled_vars spilled_vars_type restored_vars e =
             AsmReg.FIfLT (find_color op1, find_color op2, e1_ret, e2_ret), S.inter restored_vars1 restored_vars2
     | CallCls (op, l1, l2) -> AsmReg.CallCls (find_color op, List.map find_color l1, List.map find_color l2), restored_vars
     | CallDir (loc, l1, l2) -> AsmReg.CallDir (loc, List.map find_color l1, List.map find_color l2), restored_vars
-    | Restore id -> AsmReg.Restore id, restored_vars
-    | Save (id, Type.Float _) -> AsmReg.Save (M.find id color_map, id), restored_vars
-    | Save (id, _) -> AsmReg.Save (M.find id color_map, id), restored_vars
 
 (*only replace using, there is no replacement required in define statement*)
 (*

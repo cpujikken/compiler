@@ -63,8 +63,6 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *
     | FIfLT of Operand.t * Operand.t * t * t
     | CallCls of Operand.t * Operand.t list * Operand.t list
     | CallDir of Loc.t * Operand.t list * Operand.t list
-    | Restore of Id.t
-    | Save of Id.t * Type.t
 type fundef = { name : label; args : Operand.t list; fargs : Operand.t list; body : t; ret : Type.t ; info: Info.t}
 (* プログラム全体 = 浮動小数点数テーブル + トップレベル関数 + メインの式 (caml2html: sparcasm_prog) *)
 type prog = Prog of (Id.l * int) list * (Id.l * float) list * fundef list * t
@@ -98,9 +96,6 @@ let rec fv_exp = function
     | Load (Absolute _ )
     | FLoad (Absolute _)
     | MoveImm _
-    (*note: save and Restore are special instructions*)
-    | Restore _
-    | Save _
         -> []
 
     | Add (a, b)
@@ -219,8 +214,6 @@ exp_to_string_pre pre = function
     | FIfLT (op1, op2, exp1, exp2) -> Printf.sprintf "%sFIfLT %s, %s\n%s\n%s" pre (Operand.to_string op1) (Operand.to_string op2) (to_string_pre (pre ^ "\t") exp1) (to_string_pre (pre ^ "\t") exp2)
     | CallCls (op, op_list1, op_list2) -> Printf.sprintf "%sCallCls %s%s%s" pre (Operand.to_string op) (op_list_to_string op_list1 (pre ^ "\t")) (op_list_to_string op_list2 (pre ^ "\t"))
     | CallDir (loc, op_list1, op_list2) -> Printf.sprintf "%sCallDir %s%s%s" pre (Loc.to_string loc) (op_list_to_string op_list1 (pre ^ "\t")) (op_list_to_string op_list2 (pre ^ "\t"))
-    | Restore id -> Printf.sprintf "%sRestore %s" pre (Id.to_string id)
-    | Save (id, _) -> Printf.sprintf "%sSave %s" pre (Id.to_string id)
 and
 op_list_to_string ll pre = List.fold_left
     (fun current op  -> Printf.sprintf "\n%s%s" pre (Operand.to_string op))

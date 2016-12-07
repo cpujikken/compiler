@@ -43,11 +43,6 @@ let get_use_vars_exp_easy = function
     | Move t
     | Addi (t, _)
     -> S1.singleton t, S1.empty
-    | Save (id, Type.Float _) ->
-        S1.empty, S1.singleton (Operand.ID id)
-    | Save (id, _) ->
-        S1.singleton (Operand.ID id), S1.empty
-
     | FNeg t
     | FAbs t
     | FMove t
@@ -70,7 +65,6 @@ let get_use_vars_exp_easy = function
     -> get_live_vars_addr a, S1.singleton t
 
     | MoveImm _
-    | Restore _
     -> S1.empty, S1.empty
 
     | IfEQ _
