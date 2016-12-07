@@ -395,8 +395,8 @@ let coloring_graph graph regs regenv spilled =
                     let selectable_color = StringSet.diff regs neighbor_colors
                     in
                     (*print list of selectable colors*)
-                    Printf.printf "%s\n" (Id.to_string id);
-                    StringSet.iter (Printf.printf "%s\n") selectable_color;
+                    (*Printf.printf "%s\n" (Id.to_string id);*)
+                    (*StringSet.iter (Printf.printf "%s\n") selectable_color;*)
                     (*failwith "ha";*)
                     try
                         let color =

@@ -69,6 +69,9 @@ type fundef = { name : label; args : Reg.t list; fargs : Reg.t list; body : t; r
 (* プログラム全体 = 浮動小数点数テーブル + トップレベル関数 + メインの式 (caml2html: sparcasm_prog) *)
 type prog = Prog of (Id.l * int) list * (Id.l * float) list * fundef list * t
 
+let get_info = function
+    Ans (_, info)
+    | Let (_, _, _, info) -> info
 let seq(e1, e2, info) =
     Let(
         (reg_dump, Type.Unit info),
@@ -144,3 +147,30 @@ addr_to_string = function
     | Dynamic (op1, size4, op2) -> Printf.sprintf "Dynamic (%s * %d)(%s)" (Reg.to_string op2) size4 (Reg.to_string op1)
     | Absolute (loc1, Some loc2) -> Printf.sprintf "Absolute %s + %s" (Loc.to_string loc1) (Loc.to_string loc2)
     | Absolute(loc, None) -> Printf.sprintf "Absolute %s" (Loc.to_string loc)
+
+let save_and_restore to_save_global_regs cmd =
+    let info = get_info cmd
+    in
+    let cmd, env =
+        StringSet.fold (fun reg (cmd, env) ->
+            let id = Id.genid ("global_var", info)
+            in
+            Let((reg_dump, Type.Unit info), Save(reg, id), cmd, info), StringMap.add reg id env
+        )
+        to_save_global_regs
+        (cmd, StringMap.empty)
+    in
+    let restore =
+        StringSet.fold (fun reg cmd ->
+            let id = StringMap.find reg env
+            in
+            if is_freg reg then
+                Let((reg, Type.Float info), Restore (id), cmd, info)
+            else
+                Let((reg, Type.Int info), Restore (id), cmd, info)
+        )
+        to_save_global_regs
+        (Ans (Nop, info))
+    in
+    concat cmd (reg_dump, Type.Unit info) restore
+

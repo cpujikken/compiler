@@ -202,7 +202,7 @@ and generate' info = function (* 各命令のアセンブリ生成 (caml2html: e
             if S.mem id !stackset then
                 ()
             else
-                failwith "invalid register for saving"
+                failwith (Printf.sprintf "invalid register for saving %s. ID: %s" r (Id.to_string id))
 
     | NonTail rd, Restore id when List.mem rd allregs ->
             generate' info (NonTail rd, Load (Relative (reg_sp, Constant(offset id))))

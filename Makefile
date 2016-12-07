@@ -20,6 +20,7 @@ clean:: nobackup
 
 # ↓もし実装を改造したら、それに合わせて変える
 SOURCES = float.c common.ml info.ml cmd.ml type.ml id.ml stringSet.ml m.ml s.ml \
+		  stringMap.ml \
 		  loc.ml \
 		  reg.ml operand.ml operandSet.ml \
 		  m2.ml \
@@ -63,6 +64,7 @@ min-caml.html: main.ml id.ml m.ml stringSet.ml s.ml \
 	operand.ml \
 	m2.ml \
 		s1.ml \
+		stringMap.ml \
 		syntax.ml type.ml parser.mly lexer.mll typing.ml kNormal.ml \
 		alpha.ml beta.ml assoc.ml \
 		inline.ml constFold.ml elim.ml \
