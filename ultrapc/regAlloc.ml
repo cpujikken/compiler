@@ -5,7 +5,9 @@ open Reg
 
 
 exception Spill of Id.t
-exception CallGuard
+exception CallGuard of Asm.label option
+
+let used_local_regs_map_global = ref StringMap.empty
 
 let rec map_all color_map spilled_vars spilled_vars_type restored_vars e =
     let find_color = function
@@ -32,9 +34,16 @@ let rec map_all color_map spilled_vars spilled_vars_type restored_vars e =
                     (*M.iter (fun key color -> Printf.printf "%s -> %s\n" (Id.to_string key) color) color_map;*)
                     (*Printf.printf "not found color for %s or cannot find its type \n" (Id.to_string id);*)
                     (*failwith "common"*)
-        | CallGuard ->
-            let to_save_regs = StringSet.inter (M.fold (fun _ reg set -> StringSet.add reg set) color_map StringSet.empty) local_regs
+        | CallGuard calldir_opt->
+            let all_regs = M.fold (fun _ reg set -> StringSet.add reg set) color_map StringSet.empty
             in
+            let overwritten_local_regs = match calldir_opt with
+                None -> local_regs
+                | Some label -> StringSet.inter local_regs (StringMap.find label !used_local_regs_map_global)
+            in
+            let to_save_regs = StringSet.inter all_regs overwritten_local_regs
+            in
+            (*Printf.printf "%d\n" (StringSet.size to_save_regs);*)
             let env = StringSet.fold (fun reg env -> let id = Id.genid ("local_reg", info) in StringMap.add reg id env) to_save_regs StringMap.empty
             in
             let restore_fun cmd =
@@ -182,12 +191,15 @@ map_exp color_map spilled_vars spilled_vars_type restored_vars call_guarded e =
             if call_guarded then
             AsmReg.CallCls (find_color op, List.map find_color l1, List.map find_color l2), restored_vars
             else
-                raise CallGuard
-    | CallDir (loc, l1, l2) ->
+                raise (CallGuard None)
+    | CallDir (label, l1, l2) ->
             if call_guarded then
-            AsmReg.CallDir (loc, List.map find_color l1, List.map find_color l2), restored_vars
+            AsmReg.CallDir (label, List.map find_color l1, List.map find_color l2), restored_vars
             else
-                raise CallGuard
+                if StringMap.mem label !used_local_regs_map_global then
+                    raise (CallGuard (Some label))
+                else
+                    raise (CallGuard None)
 
 (*only replace using, there is no replacement required in define statement*)
 (*
@@ -264,7 +276,9 @@ let rec alloc e regenv vars_type =
     let mapped_exp, _ =
         map_all color_map spilled_vars vars_type need_to_saved_args e
     in
-    let to_save_global_regs = StringSet.inter (M.fold (fun _ reg set -> StringSet.add reg set) color_map StringSet.empty) global_regs
+    let used_regs = (M.fold (fun _ reg set -> StringSet.add reg set) color_map StringSet.empty)
+    in
+    let to_save_global_regs = StringSet.inter used_regs global_regs
     in
         (*M.iter (fun key _ -> Printf.printf "%s\n" (Id.to_string key)) color_map;*)
         (*save arg if need*)
@@ -278,10 +292,10 @@ let rec alloc e regenv vars_type =
             )
             need_to_saved_args_with_type
             mapped_exp
-        )
+        ), used_regs
 
 (*assign register for func*)
-let process_def { Asm.name = def_name; Asm.args = int_args; Asm.fargs = float_args; Asm.body = body; Asm.ret = return_type ; Asm.info = info} = (* 関数のレジスタ割り当て (caml2html: regalloc_h) *)
+let alloc_def { Asm.name = def_name; Asm.args = int_args; Asm.fargs = float_args; Asm.body = body; Asm.ret = return_type ; Asm.info = info} = (* 関数のレジスタ割り当て (caml2html: regalloc_h) *)
     let regenv = M.add (def_name, info) reg_cl M.empty
     in
     let (_, arg_regs, regenv) =
@@ -335,16 +349,96 @@ let process_def { Asm.name = def_name; Asm.args = int_args; Asm.fargs = float_ar
         | Type.Unit _ -> Reg reg_dump, Nop
         | _ -> Reg reg_ret, Move(Reg reg_ret)
     in
-    let body' =
+    let body', used_regs  =
         (*Printf.printf "closure body:\n%s\n" (Asm.to_string body);*)
         alloc (concat body (return_op, return_type) (Ans(move_st, info))) regenv vars_type'
     in
         (*Printf.printf "closure body after regAlloc:\n%s\n" (AsmReg.to_string body');*)
-        { AsmReg.name = def_name; AsmReg.args =  arg_regs; AsmReg.fargs = farg_regs; AsmReg.body = body'; AsmReg.ret = return_type; AsmReg.info = info }
+        { AsmReg.name = def_name; AsmReg.args =  arg_regs; AsmReg.fargs = farg_regs; AsmReg.body = body'; AsmReg.ret = return_type; AsmReg.info = info },
+        used_regs
+
+let calling_def_union s1_opt s2_opt = match s1_opt, s2_opt with
+    | None, _ | _, None -> None
+    | Some s1, Some s2 -> Some (StringSet.union s1 s2)
+let rec calling_def = function
+        Ans(exp, _) -> calling_def_exp exp
+        | Let(_, let_exp, body, _) -> calling_def_union (calling_def_exp let_exp) (calling_def body)
+and
+calling_def_exp = function
+    | CallCls _ -> None
+    | CallDir (label, _, _) -> Some (StringSet.singleton label)
+    | IfEQ(_, _, t1, t2)
+    | FIfEQ(_, _, t1, t2)
+    | IfLT(_, _,  t1, t2)
+    | FIfLT(_, _, t1, t2)
+    -> calling_def_union (calling_def t1) (calling_def t2)
+    | _ -> Some StringSet.empty
+
+let rec static_def_map graph fun_by_name mapped_funs =
+    let found, mapped_funs =
+        StringMap.fold (fun fun_name called_funs_opt (found, mapped_funs) ->
+            if StringMap.mem fun_name mapped_funs then
+                found, mapped_funs
+            else
+            match called_funs_opt with
+                |None -> found, mapped_funs
+                | Some called_funs ->
+                    let is_non_static = StringSet.exists (fun called_fun ->
+                        not (StringMap.mem called_fun mapped_funs)
+                    ) called_funs
+                    in
+                    if not is_non_static then
+                        let mapped_fun, used_local_regs = alloc_def (StringMap.find fun_name fun_by_name)
+                        in
+                        let used_local_regs = StringSet.fold (fun called_fun used_local_regs->
+                                let used_local_regs_called = StringMap.find called_fun !used_local_regs_map_global
+                                in
+                                StringSet.union used_local_regs_called used_local_regs
+                            )
+                            called_funs
+                            used_local_regs
+                        in
+                            used_local_regs_map_global := StringMap.add fun_name used_local_regs !used_local_regs_map_global;
+                            true, StringMap.add fun_name mapped_fun mapped_funs
+                    else
+                        found, mapped_funs
+        )
+        graph
+        (false, mapped_funs)
+    in
+    if found then
+        static_def_map graph fun_by_name mapped_funs
+    else
+        mapped_funs
+
+let gen_fundef fundefs =
+    let fun_by_name = List.fold_left (fun map fundef -> StringMap.add (fundef.name) fundef map) StringMap.empty fundefs
+    in
+    let graph = List.fold_left (fun map fundef -> StringMap.add fundef.name (calling_def fundef.body) map) StringMap.empty fundefs
+    in
+    let static_defs = static_def_map graph fun_by_name StringMap.empty
+    in
+    let mapped_list =
+        List.fold_left (fun mapped_list fundef ->
+            if StringMap.mem fundef.name static_defs then
+                let mapped_def = StringMap.find fundef.name static_defs
+                in
+                    mapped_def :: mapped_list
+            else
+                let mapped_def, _ = alloc_def fundef
+                in
+                    mapped_def :: mapped_list
+        )
+        []
+        fundefs
+    in
+        mapped_list
 
 (*assign register*)
 let f (Prog(idata, data, fundefs, e)) = (* プログラム全体のレジスタ割り当て (caml2html: regalloc_f) *)
     (*Format.eprintf "register allocation: may take some time (up to a few minutes, depending on the size of functions)@.";*)
-      let fundefs' = List.map process_def fundefs in
+      let fundefs' = gen_fundef fundefs in
         (*Printf.printf "closure body:\n%s\n" (Asm.to_string e);*)
-      AsmReg.Prog(idata, data, fundefs', alloc e M.empty M.empty)
+      let e', _ =  alloc e M.empty M.empty
+      in
+      AsmReg.Prog(idata, data, fundefs', e')

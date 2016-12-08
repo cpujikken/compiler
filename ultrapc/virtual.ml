@@ -173,7 +173,7 @@ let rec generate env = function (* 式の仮想マシンコード生成 (caml2ht
   | Closure.AppDir(cls, params, info) ->
       let (ints, floats) = separate (List.map (fun y -> (y, M.find y env)) params)
       in
-      Ans(CallDir(Label (fst cls), ints, floats), info)
+      Ans(CallDir(fst cls, ints, floats), info)
   | Closure.Tuple(id_list, info) -> (* 組の生成 (caml2html: virtual_tuple) *)
           (*generate a now id*)
           (*this ID should keep position of the tuple*)

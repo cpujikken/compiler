@@ -369,7 +369,7 @@ and generate' info = function (* 各命令のアセンブリ生成 (caml2html: e
             append_cmd cmd_jumpCls [] info
     | Tail, CallDir(l, params, fparams) ->
             generate_args [] params fparams info;
-            append_cmd cmd_jump [Loc.to_string l] info
+            append_cmd cmd_jump [l] info
     | NonTail rd, CallCls(rcls, params, fparams) ->
             (*set param*)
             generate_args [(rcls, reg_cl)] params fparams info;
@@ -399,7 +399,7 @@ and generate' info = function (* 各命令のアセンブリ生成 (caml2html: e
             if ss > 0 then
                 generate' info (NonTail reg_sp, Addi(reg_sp, Constant ss));
             (*call*)
-            append_cmd cmd_jLink [Loc.to_string l] info;
+            append_cmd cmd_jLink [l] info;
             (*resstore stack*)
             if ss > 0 then
                 generate' info (NonTail reg_sp, Addi (reg_sp, Constant (-ss)));

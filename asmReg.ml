@@ -62,7 +62,7 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *
     | IfLT of Reg.t * Reg.t * t * t
     | FIfLT of Reg.t * Reg.t * t * t
     | CallCls of Reg.t * Reg.t list * Reg.t list
-    | CallDir of Loc.t * Reg.t list * Reg.t list
+    | CallDir of label * Reg.t list * Reg.t list
     | Restore of Id.t
     | Save of Reg.t * Id.t
 type fundef = { name : label; args : Reg.t list; fargs : Reg.t list; body : t; ret : Type.t ; info: Info.t}
@@ -133,7 +133,7 @@ exp_to_string_pre pre = function
     | IfLT (op1, op2, exp1, exp2) -> Printf.sprintf "%sIfLT %s, %s\n%s\n%s" pre (Reg.to_string op1) (Reg.to_string op2) (to_string_pre (pre ^ "\t") exp1) (to_string_pre (pre ^ "\t") exp2)
     | FIfLT (op1, op2, exp1, exp2) -> Printf.sprintf "%sFIfLT %s, %s\n%s\n%s" pre (Reg.to_string op1) (Reg.to_string op2) (to_string_pre (pre ^ "\t") exp1) (to_string_pre (pre ^ "\t") exp2)
     | CallCls (op, op_list1, op_list2) -> Printf.sprintf "%sCallCls %s%s%s" pre (Reg.to_string op) (op_list_to_string op_list1 (pre ^ "\t")) (op_list_to_string op_list2 (pre ^ "\t"))
-    | CallDir (loc, op_list1, op_list2) -> Printf.sprintf "%sCallDir %s%s%s" pre (Loc.to_string loc) (op_list_to_string op_list1 (pre ^ "\t")) (op_list_to_string op_list2 (pre ^ "\t"))
+    | CallDir (label, op_list1, op_list2) -> Printf.sprintf "%sCallDir %s%s%s" pre label (op_list_to_string op_list1 (pre ^ "\t")) (op_list_to_string op_list2 (pre ^ "\t"))
     | Restore id -> Printf.sprintf "%sRestore %s" pre (Id.to_string id)
     | Save (reg, t) -> Printf.sprintf "%sSave %s, %s" pre (Reg.to_string reg) (Id.to_string t)
 and
