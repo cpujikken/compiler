@@ -402,7 +402,7 @@ let coloring_graph graph regs regenv spilled =
                         let color =
                             (*if S.mem id spilled then*)
                                 (*choose from bottom*)
-                                StringSet.min_elt selectable_color
+                                StringSet.max_elt selectable_color
                             (*else*)
                                 (*StringSet.max_elt selectable_color*)
                         in
