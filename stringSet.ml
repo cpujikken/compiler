@@ -1,10 +1,10 @@
 (*string set*)
-module S =
+module StringSet =
   Set.Make
     (struct
       type t = string
       let compare = String.compare
     end)
-include S
+include StringSet
 
-let size x = List.length @@ S.elements x
+let size x = List.length @@ StringSet.elements x
