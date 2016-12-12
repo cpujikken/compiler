@@ -113,7 +113,7 @@ and generate' info = function (* 各命令のアセンブリ生成 (caml2html: e
                 append_cmd cmd_neg1 [ra] info
     | NonTail rd, Neg(ra) ->
                 append_cmd cmd_neg2 [rd; ra] info
-    | NonTail rd, FMove rs when rd = reg_dump || rs = reg_dump  -> ()
+    | NonTail rd, FMove rs when rd = freg_dump || rs = freg_dump  -> ()
     | NonTail rd, FMove rs when rd = rs -> ()
     | NonTail rd, FMove rs ->
             append_cmd cmd_fMove [rd; rs] info
@@ -389,7 +389,7 @@ and generate' info = function (* 各命令のアセンブリ生成 (caml2html: e
                 generate' info (NonTail rd, Move reg_ret)
             else
                 if List.mem rd allfregs && rd <> freg_ret then
-                    generate' info (NonTail rd, Move freg_ret)
+                    generate' info (NonTail rd, FMove freg_ret)
     | NonTail rd, CallDir(l, params, fparams) ->
             (*set param*)
             generate_args [] params fparams info;
