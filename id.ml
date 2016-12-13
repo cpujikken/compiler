@@ -14,7 +14,10 @@ let rec pp_list = function
 let counter = ref 0
 let genid (s, info) =
   incr counter;
-  Printf.sprintf "%s.%d" s !counter, info
+  if !Common.is_lib && List.mem s Common.lib_funs then
+      s, info
+  else
+      Printf.sprintf "%s.%d" s !counter, info
 let genlabel info =
     to_L (genid("l", info))
 
