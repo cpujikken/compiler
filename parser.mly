@@ -204,10 +204,8 @@ exp: /* (* 一般の式 (caml2html: parser_exp) *) */
     %prec prec_app
     { Array($2, $3, (Info.parsing_get())  )}
 | error
-    { failwith
-    (
-        Printf.sprintf "%s: unknown expression" (Info.to_string (Info.parsing_get ()))
-    )
+    {
+        Info.exit (Info.parsing_get ()) "Unknown expression"
        }
 
 fundef:
