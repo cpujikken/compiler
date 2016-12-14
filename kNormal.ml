@@ -136,16 +136,17 @@ let rec generate env = function (* K正規化ルーチン本体 (caml2html: knor
   | Syntax.FloatRead info -> FloatRead info, Type.Float info
   | Syntax.Array(e, typ, info) ->
           insert_let (generate env e) (fun x -> Array(x, typ, info), Type.Array(typ, info)) info
-      (*insert_let (generate env e1)*)
-	(*(fun x ->*)
-	  (*let _, t2 as g_e2 = generate env e2 in*)
-	  (*insert_let g_e2*)
-		(*(fun y ->*)
-		  (*let l =*)
-		(*match t2 with*)
-		(*| Type.Float info -> "create_float_array", info*)
-		(*| x -> "create_array", (Type.get_info x) in*)
-		  (*ExtFunApp(l, [x; y], info), Type.Array(t2, info)) info) info*)
+  | Syntax.CreateArray(e1, e2, info) ->
+      insert_let (generate env e1)
+    (fun x ->
+      let _, t2 as g_e2 = generate env e2 in
+      insert_let g_e2
+        (fun y ->
+          let l =
+        match t2 with
+        | Type.Float info -> "create_float_array", info
+        | x -> "create_int_array", (Type.get_info x) in
+          ExtFunApp(l, [x; y], info), Type.Array(t2, info)) info) info
   | Syntax.Bool(b, info) -> Int((if b then 1 else 0), info), Type.Int info (* 論理値true, falseを整数1, 0に変換 (caml2html: knormal_bool) *)
   | Syntax.Int(i, info) -> Int(i, info), Type.Int info
   | Syntax.Float(d, info) -> Float(d, info), Type.Float info

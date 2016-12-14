@@ -20,4 +20,6 @@ let lib_funs = [
     "print_int";
     "print_space";
     "print_newline";
+    "create_int_array";
+    "create_float_array";
 ]
