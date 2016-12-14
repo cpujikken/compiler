@@ -125,6 +125,14 @@ let rec generate env = function (* 式の仮想マシンコード生成 (caml2ht
       | Type.Unit _ -> Ans(Nop, info)
       | Type.Float _ -> Ans(FLoad(Absolute (Label (fst x), None)), info)
       | _ -> Ans(Load(Absolute (Label (fst x), None)), info))
+  | Closure.Array (count, info) ->
+      Let(
+          (Reg reg_hp, Type.Int info),
+          Add (Reg reg_hp, ID count),
+          Ans (Move (Reg reg_hp), info),
+          info
+      )
+
   | Closure.MakeCls((start, t), { Closure.entry = entry; Closure.actual_fv = external_variable }, let_body, info) ->
           (* クロージャの生成 (caml2html: virtual_makecls) *)
       (* Closureのアドレスをセットしてから、自由変数の値をストア *)

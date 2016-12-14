@@ -15,6 +15,7 @@ let rec generate env = function (* β簡約ルーチン本体 (caml2html: beta_g
   | Add(x, y, info) -> Add(find x env, find y env, info)
   | Mul(x, y, info) -> Mul(find x env, find y env, info)
   | Div(x, y, info) -> Div(find x env, find y env, info)
+  | Array(x, t, info) -> Array(find x env, t, info)
   | ShiftLeft(x, y, info) -> ShiftLeft(find x env, find y env, info)
   | ShiftRight(x, y, info) -> ShiftRight(find x env, find y env, info)
   | Sub(x, y, info) -> Sub(find x env, find y env, info)

@@ -1,4 +1,4 @@
-let rec generate env exp = match exp with
+let rec generate env = function
     | KNormal.Let ((x, t), e1, e2, info) ->
             (
                 match e1 with
@@ -61,7 +61,9 @@ let rec generate env exp = match exp with
   | KNormal.IntRead _
   | KNormal.FloatRead _
   | KNormal.Print _
-  -> exp, env
+  | KNormal.Array _
+  as exp
+      -> exp, env
   | KNormal.LetTuple (a, b,e, info)
   -> KNormal.LetTuple(a, b, fst (generate env e), info), env
 

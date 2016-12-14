@@ -21,7 +21,7 @@ type t = (* MinCamlの構文を表現するデータ型 (caml2html: syntax_t) *)
   | App of t * t list * Info.t
   | Tuple of t list * Info.t
   | LetTuple of (Id.t * Type.t) list * t * t * Info.t
-  | Array of t * t * Info.t
+  | Array of t * Type.t * Info.t
   | Get of t * t * Info.t
   | Four of t * Info.t
   | Half of t * Info.t
@@ -66,7 +66,7 @@ let to_string (x: t) =
         | App (x, xlist, info) -> Printf.sprintf "%sAPP\t#%s\n%s%s" pre (Info.to_string info) (to_string_pre npre x) (to_string_list npre xlist)
         | Tuple (xlist, info) -> Printf.sprintf "%sTUPLE\t#%s%s" pre (Info.to_string info) (to_string_list npre xlist)
         | LetTuple (idlist, x, y, info) -> Printf.sprintf "%sLET_TUPLE\t#%s\n%s\n%s\n%s" pre (Info.to_string info) (to_string_idtype_list npre idlist) (to_string_pre npre x) (to_string_pre npre y)
-        | Array (x, y, info) -> Printf.sprintf "%sARRAY\t#%s\n%s\n%s" pre (Info.to_string info) (to_string_pre npre x) (to_string_pre npre y)
+        | Array (x, typ, info) -> Printf.sprintf "%sArray\t#%s\n%s" pre (Info.to_string info) (to_string_pre npre x) 
         | Get (x, y, info) -> Printf.sprintf "%sGET\t#%s\n%s\n%s" pre (Info.to_string info) (to_string_pre npre x) (to_string_pre npre y)
         | Put (x, y, z, info) -> Printf.sprintf "%sPUT\t#%s\n%s\n%s\n%s" pre (Info.to_string info) (to_string_pre npre x) (to_string_pre npre y ) (to_string_pre npre z)
   | ShiftLeft (x, y, info) -> Printf.sprintf "%sSHIFT_LEFT\t#%s\n%s\n%s" pre (Info.to_string info) (to_string_pre npre x) (to_string_pre npre y)

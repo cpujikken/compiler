@@ -34,6 +34,7 @@ type t = (* K正規化後の式 (caml2html: knormal_t) *)
   | Print of Id.t * Info.t
   | Mul of Id.t * Id.t * Info.t
   | Div of Id.t * Id.t * Info.t
+  | Array of Id.t * Type.t * Info.t
 and fundef = { name : Id.t * Type.t; args : (Id.t * Type.t) list; body : t }
 
 let to_string x =
@@ -73,6 +74,7 @@ let to_string x =
         | Get (x, y, info) -> Printf.sprintf "%sGET\t#%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
         | Put (x, y, z, info) -> Printf.sprintf "%sPUT\t#%s\n%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y) (Id.to_string_pre npre z)
         | ExtArray(x, info) -> Printf.sprintf "%sEXT_ARRAY\t#%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x)
+        | Array(x, typ, info) -> Printf.sprintf "%sARRAY\t#%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x)
         | ExtFunApp (x, xlist, info) -> Printf.sprintf "%sEXT_FUN_APP\t#%s\n%s%s" pre (Info.to_string info) (Id.to_string_pre npre x) (to_string_idlist npre xlist)
     and to_string_idlist pre = function
         | [] -> ""
@@ -99,6 +101,7 @@ let rec fv = function (* 式に出現する（自由な）変数 (caml2html: kno
   | Four(x, _) | Half(x, _)
   | FAbs(x, _)
   | Print(x, _)
+  | Array(x, _, _)
   -> S.singleton x
 
   | Add(x, y, _) | Sub(x, y, _) | FAdd(x, y, _) | FSub(x, y, _) | FMul(x, y, _) | FDiv(x, y, _) | Get(x, y, _)
@@ -131,6 +134,18 @@ let rec generate env = function (* K正規化ルーチン本体 (caml2html: knor
   | Syntax.Unit info -> Unit info, Type.Unit info
   | Syntax.IntRead info -> IntRead info, Type.Int info
   | Syntax.FloatRead info -> FloatRead info, Type.Float info
+  | Syntax.Array(e, typ, info) ->
+          insert_let (generate env e) (fun x -> Array(x, typ, info), Type.Array(typ, info)) info
+      (*insert_let (generate env e1)*)
+	(*(fun x ->*)
+	  (*let _, t2 as g_e2 = generate env e2 in*)
+	  (*insert_let g_e2*)
+		(*(fun y ->*)
+		  (*let l =*)
+		(*match t2 with*)
+		(*| Type.Float info -> "create_float_array", info*)
+		(*| x -> "create_array", (Type.get_info x) in*)
+		  (*ExtFunApp(l, [x; y], info), Type.Array(t2, info)) info) info*)
   | Syntax.Bool(b, info) -> Int((if b then 1 else 0), info), Type.Int info (* 論理値true, falseを整数1, 0に変換 (caml2html: knormal_bool) *)
   | Syntax.Int(i, info) -> Int(i, info), Type.Int info
   | Syntax.Float(d, info) -> Float(d, info), Type.Float info
@@ -259,17 +274,6 @@ let rec generate env = function (* K正規化ルーチン本体 (caml2html: knor
 	(fun y ->
 	  let e2', t2 = generate (M.add_list xts env) e2 in
 	  LetTuple(xts, y, e2', info), t2) info
-  | Syntax.Array(e1, e2, info) ->
-      insert_let (generate env e1)
-	(fun x ->
-	  let _, t2 as g_e2 = generate env e2 in
-	  insert_let g_e2
-	    (fun y ->
-	      let l =
-		match t2 with
-		| Type.Float info -> "create_float_array", info
-		| x -> "create_array", (Type.get_info x) in
-	      ExtFunApp(l, [x; y], info), Type.Array(t2, info)) info) info
   | Syntax.Get(e1, e2, info) ->
       (match generate env e1 with
       |	_, Type.Array(t, info) as g_e1 ->
@@ -320,6 +324,7 @@ let get_constructor_code = function
   | Div _ -> 30
   | IntRead _ -> 31
   | FloatRead _ -> 32
+  | Array _ -> 33
 
 
 let id_type_compare (id1, type1) (id2, type2) =

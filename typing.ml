@@ -49,7 +49,7 @@ let rec deref_term = function
   | App(e, es, info) -> App(deref_term e, List.map (deref_term) es, info)
   | Tuple(es, info) -> Tuple(List.map (deref_term) es, info)
   | LetTuple(xts, e1, e2, info) -> LetTuple(List.map deref_id_typ xts, deref_term e1, deref_term e2, info)
-  | Array(e1, e2, info) -> Array(deref_term e1, deref_term e2, info)
+  | Array(e1, typ, info) -> Array(deref_term e1, typ, info)
   | Get(e1, e2, info) -> Get(deref_term e1, deref_term e2, info)
   | Put(e1, e2, e3, info) -> Put(deref_term e1, deref_term e2, deref_term e3, info)
   | ShiftLeft(e1, e2, info) -> ShiftLeft(deref_term e1, deref_term e2, info)
@@ -440,13 +440,11 @@ let env = M.add x t env in
             unify (Type.Tuple(List.map snd xts, info)) typ1;
             typ2, LetTuple(xts, exp1, exp2, info)
 
-    | Array(e1, e2, info) -> (* must be a primitive for "polymorphic" typing *)
+    | Array(e1, typ, info) -> (* must be a primitive for "polymorphic" typing *)
         let typ1, exp1 = generate env e1
         in
-        let typ2, exp2 = generate env e2
-        in
             unify (Type.Int info) typ1;
-            Type.Array(typ2, info), Array(exp1, exp2, info)
+            Type.Array(typ, info), Array(exp1, typ, info)
 
     | Get(e1, e2, info) ->
         let typ1, exp1 = generate env e1
