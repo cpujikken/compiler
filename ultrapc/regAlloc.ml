@@ -311,7 +311,7 @@ let alloc_def { Asm.name = def_name; Asm.args = int_args; Asm.fargs = float_args
                     | ID id -> M.add id r regenv
                     )
                 )
-            (0, [], regenv)
+            (1, [], regenv)
         int_args
     in
     let (_, farg_regs, regenv) =

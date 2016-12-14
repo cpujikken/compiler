@@ -113,7 +113,7 @@ and generate' info = function (* 各命令のアセンブリ生成 (caml2html: e
                 append_cmd cmd_neg1 [ra] info
     | NonTail rd, Neg(ra) ->
                 append_cmd cmd_neg2 [rd; ra] info
-    | NonTail rd, FMove rs when rd = freg_dump || rs = freg_dump  -> ()
+    | NonTail rd, FMove rs when rd = reg_dump || rd = freg_dump  -> ()
     | NonTail rd, FMove rs when rd = rs -> ()
     | NonTail rd, FMove rs ->
             append_cmd cmd_fMove [rd; rs] info
@@ -364,15 +364,15 @@ and generate' info = function (* 各命令のアセンブリ生成 (caml2html: e
                     let stackset2 = !stackset
                     in
                     stackset := S.inter stackset1 stackset2;
-    | Tail, CallCls(rcls, params, fparams) ->
-            generate_args [(rcls, reg_cl)] params fparams info;
+    | Tail, CallCls(closure_name, params, fparams) ->
+            generate_args params fparams info @@ Some closure_name;
             append_cmd cmd_jumpCls [] info
     | Tail, CallDir(l, params, fparams) ->
-            generate_args [] params fparams info;
+            generate_args  params fparams info None;
             append_cmd cmd_jump [Cmd.label_to_string l] info
-    | NonTail rd, CallCls(rcls, params, fparams) ->
+    | NonTail rd, CallCls(closure_name, params, fparams) ->
             (*set param*)
-            generate_args [(rcls, reg_cl)] params fparams info;
+            generate_args  params fparams info @@ Some closure_name;
             let ss = stacksize ()
             in
             if ss > 0 then
@@ -385,14 +385,14 @@ and generate' info = function (* 各命令のアセンブリ生成 (caml2html: e
                 (*decrease stack*)
                 generate' info (NonTail reg_sp, Addi (reg_sp, Constant (-ss)));
             (*returned value is set to reg_ret by convention*)
-            if List.mem rd allregs && rd <> reg_ret then
+            if List.mem rd allregs then
                 generate' info (NonTail rd, Move reg_ret)
             else
-                if List.mem rd allfregs && rd <> freg_ret then
+                if List.mem rd allfregs  then
                     generate' info (NonTail rd, FMove freg_ret)
     | NonTail rd, CallDir(l, params, fparams) ->
             (*set param*)
-            generate_args [] params fparams info;
+            generate_args  params fparams info None;
             let ss = stacksize()
             in
             (*increase stack*)
@@ -404,18 +404,12 @@ and generate' info = function (* 各命令のアセンブリ生成 (caml2html: e
             if ss > 0 then
                 generate' info (NonTail reg_sp, Addi (reg_sp, Constant (-ss)));
             (*save returned value*)
-            if List.mem rd allregs && rd <> reg_ret then
+            if List.mem rd allregs  then
                 generate' info (NonTail rd, Move reg_ret)
             else
-                if List.mem rd allfregs && rd <> freg_ret then
+                if List.mem rd allfregs then
                     generate' info (NonTail rd, FMove freg_ret)
-and generate_args x_reg_cl params fparams info =
-    (*quick assertion*)
-    if List.length params > List.length allregs - List.length x_reg_cl then
-        failwith "number of parameter is larger than number of available registers";
-  if List.length fparams > List.length allfregs then
-      failwith "number of float params is larger than number of available float registers";
-
+and generate_args params fparams info closure_name_opt =
   let stacksize_backup = stacksize()
   in
   (*let sw = Printf.sprintf "%d(%s)" (stacksize ()) (Id.to_string_core reg_sp)*)
@@ -423,7 +417,10 @@ and generate_args x_reg_cl params fparams info =
   let (i, param_regs) =
     List.fold_left
       (fun (i, param_regs) y -> (i + 1, (y, reg_no i) :: param_regs))
-      (0, x_reg_cl)
+      (match closure_name_opt with
+        | None -> 0, []
+        | Some closure_name -> 1, [(closure_name, reg_cl)]
+      )
       params
   in
   List.iter
