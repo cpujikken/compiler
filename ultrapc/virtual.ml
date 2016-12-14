@@ -136,7 +136,8 @@ let rec generate env = function (* 式の仮想マシンコード生成 (caml2ht
       (*open a free space of 4 bytes*)
       (4, let_body')
       (fun var offset store_fv -> seq(FStore(ID var, Relative(ID start, Constant offset)), store_fv, info))
-      (fun var _ offset store_fv -> seq(Store(ID var, Relative(ID start, Constant offset)), store_fv, info)) in
+      (fun var _ offset store_fv -> seq(Store(ID var, Relative(ID start, Constant offset)), store_fv, info))
+  in
       Let(
           (ID start, t),
           (*move heap pointer to start variable*)
