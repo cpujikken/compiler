@@ -23,6 +23,10 @@ rule token = parse
     { LPAREN }
 | ')'
     { RPAREN }
+| '['
+    { OPEN_SQUARE_BRACE }
+| ']'
+    { CLOSE_SQUARE_BRACE }
 | "not"
     { NOT }
 | "true"
@@ -93,10 +97,8 @@ rule token = parse
     { COMMA }
 | '_'
     { IDENT(Id.gentmp (Type.Unit (Info.lex_get lexbuf)) (Info.lex_get lexbuf)) }
-| "Array.make" (* [XX] ad hoc *)
-    { ARRAY_CREATE }
-| "create_array" (* [XX] ad hoc *)
-    { ARRAY_CREATE }
+| "create_array" (* [XX] ad hoc *) (*because of such minrt's polymorphism*)
+    { CREATE_ARRAY }
 | '.'
     { DOT }
 | "<-"

@@ -22,6 +22,7 @@ let rec generate env = function (* α変換ルーチン本体 (caml2html: alpha_
   | Sub(x, y, info) -> Sub(find x env, find y env, info)
   | FNeg(x, info) -> FNeg(find x env, info)
   | FAbs(x, info) -> FAbs(find x env, info)
+  | Array(x, t, info) -> Array(find x env, t, info)
   | FAdd(x, y, info) -> FAdd(find x env, find y env, info)
   | FSub(x, y, info) -> FSub(find x env, find y env, info)
   | FMul(x, y, info) -> FMul(find x env, find y env, info)

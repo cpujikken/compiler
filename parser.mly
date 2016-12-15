@@ -11,6 +11,8 @@ let addtyp x info = (x, Type.gentyp info)
 %token FUN
 %token TRUE
 %token FALSE
+%token OPEN_SQUARE_BRACE
+%token CLOSE_SQUARE_BRACE
 %token NOT
 %token MINUS
 %token PLUS
@@ -41,10 +43,10 @@ let addtyp x info = (x, Type.gentyp info)
 %token IN
 %token REC
 %token COMMA
-%token ARRAY_CREATE
 %token DOT
 %token LESS_MINUS
 %token SEMICOLON
+%token CREATE_ARRAY
 %token LPAREN
 %token RPAREN
 %token EOF
@@ -89,6 +91,12 @@ simple_exp: /* (* 括弧をつけなくても関数の引数になれる式 (cam
 exp: /* (* 一般の式 (caml2html: parser_exp) *) */
 | simple_exp
     { $1 }
+| OPEN_SQUARE_BRACE exp CLOSE_SQUARE_BRACE
+    {
+        let
+        info = Info.parsing_get()
+        in
+        Array (Four($2, info), Type.gentyp info, info )}
 | NOT exp
     %prec prec_app
     { Not($2, (Info.parsing_get())  )}
@@ -200,9 +208,9 @@ exp: /* (* 一般の式 (caml2html: parser_exp) *) */
     { Let((Id.gentmp (Type.gentyp (Info.parsing_get())) (Info.parsing_get()), Type.gentyp (Info.parsing_get())), $1, $3, (Info.parsing_get())  )}
 | exp SEMICOLON
     { Let((Id.gentmp (Type.gentyp (Info.parsing_get())) (Info.parsing_get()), Type.gentyp (Info.parsing_get())), $1, (Unit (Info.parsing_get())), (Info.parsing_get())  )}
-| ARRAY_CREATE simple_exp simple_exp
-    %prec prec_app
-    { Array($2, $3, (Info.parsing_get())  )}
+| CREATE_ARRAY exp exp{
+    CreateArray($2, $3, Info.parsing_get())
+}
 | error
     {
         Info.exit (Info.parsing_get ()) "Unknown expression"

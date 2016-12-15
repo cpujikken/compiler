@@ -38,6 +38,7 @@ type t = (* クロージャ変換後の式 (caml2html: closure_t) *)
   | Get of Id.t * Id.t * Info.t
   | Put of Id.t * Id.t * Id.t * Info.t
   | ExtArray of Id.l * Info.t
+  | Array of Id.t * Info.t
 type fundef = { name : Id.l * Type.t;
 		args : (Id.t * Type.t) list;
 		formal_fv : (Id.t * Type.t) list;
@@ -56,6 +57,7 @@ let rec fv = function
   | Four(x, info)
   | Half(x, info)
   | FNeg(x, info)
+  | Array(x, info)
   | FAbs(x, info) -> S.singleton x
 
   | Add(x, y, info)
@@ -92,6 +94,7 @@ let rec generate env known = function (* クロージャ変換ルーチン本体
   | KNormal.ShiftLeft(x, y, info) -> ShiftLeft(x, y, info)
   | KNormal.ShiftRight(x, y, info) -> ShiftRight(x, y, info)
   | KNormal.Div(x, y, info) -> Div(x, y, info)
+  | KNormal.Array(x, t, info) -> Array(x, info)
   | KNormal.Mul(x, y, info) -> Mul(x, y, info)
   | KNormal.Sub(x, y, info) -> Sub(x, y, info)
   | KNormal.FNeg(x, info) -> FNeg(x, info)
@@ -249,6 +252,7 @@ let get_info = function
   | Get (_, _, info)
   | Put (_, _, _, info)
   | ExtArray(_, info)
+  | Array(_, info)
   -> info
 
 let to_string x =
@@ -273,6 +277,7 @@ let to_string x =
         | Sub (x, y, info) -> Printf.sprintf "%sSUB\t#%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
         | FNeg( t , info)-> Printf.sprintf "%sFNEG\t#%s\n%s" pre  (Info.to_string info) (Id.to_string_pre npre t)
         | FAbs( t , info)-> Printf.sprintf "%sFABS\t#%s\n%s" pre  (Info.to_string info) (Id.to_string_pre npre t)
+        | Array( t , info)-> Printf.sprintf "%sMAKE_ARRAY\t#%s\n%s" pre  (Info.to_string info) (Id.to_string_pre npre t)
         | FAdd (x, y, info) -> Printf.sprintf "%sFADD\t#%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
         | FSub (x, y, info) -> Printf.sprintf "%sFSUB\t#%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
         | FMul (x, y, info) -> Printf.sprintf "%sFMUL\t#%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
