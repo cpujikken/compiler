@@ -13,18 +13,26 @@ let lexbuf outchan l = (* バッファをコンパイルしてチャンネルへ
     Id.counter := 0;
   Typing.extenv := M.empty;
   Emit.f
-    (RegAlloc.f
-       (Simm.f
-      (Virtual.f
-      (ExpandTuple.f
-         (FlatTuple.f
-         (Closure.f
-        (iter !limit
-        (DuplicateLet.f
-           (Alpha.f
-              (KNormal.f
-             (Typing.f
-                (Parser.exp Lexer.token l))))))))))));
+    @@ RegAlloc.f
+    @@ Dfa.f
+    @@ Simm.f
+    @@ Virtual.f
+    @@ ExpandTuple.f
+    @@ FlatTuple.f
+    @@ Closure.f
+    @@ (iter !limit
+        @@
+        DuplicateLet.f
+        @@
+        Alpha.f
+        @@
+        KNormal.f
+        @@
+        Typing.f
+        @@
+        Parser.exp
+        Lexer.token l
+    );
     Cmd.f outchan
 in
 

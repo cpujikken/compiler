@@ -9,16 +9,11 @@ type t = (* クロージャ変換後の式 (caml2html: closure_t) *)
   | Print of Id.t * Info.t
   | Four of Id.t * Info.t
   | Half of Id.t * Info.t
-  | Add
-  of Id.t * Id.t * Info.t
-  | ShiftLeft
-  of Id.t * Id.t * Info.t
-  | ShiftRight
-  of Id.t * Id.t * Info.t
-  | Div
-  of Id.t * Id.t * Info.t
-  | Mul
-  of Id.t * Id.t * Info.t
+  | Add of Id.t * Id.t * Info.t
+  | ShiftLeft of Id.t * Id.t * Info.t
+  | ShiftRight of Id.t * Id.t * Info.t
+  | Div of Id.t * Id.t * Info.t
+  | Mul of Id.t * Id.t * Info.t
   | Sub of Id.t * Id.t * Info.t
   | FNeg of Id.t * Info.t
   | FAbs of Id.t * Info.t

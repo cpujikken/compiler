@@ -411,10 +411,15 @@ let rec static_def_map graph fun_by_name mapped_funs =
     else
         mapped_funs
 
-let gen_fundef fundefs =
+let fun_graph fundefs =
     let fun_by_name = List.fold_left (fun map fundef -> StringMap.add (fundef.name) fundef map) StringMap.empty fundefs
     in
     let graph = List.fold_left (fun map fundef -> StringMap.add fundef.name (calling_def fundef.body) map) StringMap.empty fundefs
+    in
+    fun_by_name, graph
+
+let gen_fundef fundefs =
+    let fun_by_name, graph = fun_graph fundefs
     in
     let static_defs = static_def_map graph fun_by_name StringMap.empty
     in

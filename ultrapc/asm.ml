@@ -67,12 +67,6 @@ type fundef = { name : label; args : Operand.t list; fargs : Operand.t list; bod
 (* プログラム全体 = 浮動小数点数テーブル + トップレベル関数 + メインの式 (caml2html: sparcasm_prog) *)
 type prog = Prog of (Id.l * int) list * (Id.l * float) list * fundef list * t
 
-let fletd(x, e1, e2, info) =
-    Let(
-        (x, Type.Float info),
-        e1,
-        e2,
-        info)
 (*connect 2 expression into 1*)
 let seq(e1, e2, info) =
     Let(
@@ -81,75 +75,6 @@ let seq(e1, e2, info) =
         e2,
         info
         )
-
-(* super-tenuki *)
-let rec remove_dup xs = function
-  | [] -> []
-  | x :: ys when OperandSet.mem x xs -> remove_dup xs ys
-  | x :: ys -> x :: remove_dup (OperandSet.add x xs) ys
-
-(* free variables in the order of use (for spilling) (caml2html: sparcasm_fv) *)
-let rec fv_exp = function
-    | Nop
-    | IntRead
-    | FloatRead
-    | Load (Absolute _ )
-    | FLoad (Absolute _)
-    | MoveImm _
-        -> []
-
-    | Add (a, b)
-    | ShiftLeft (a, b)
-    | ShiftRight (a, b)
-    | Div (a, b)
-    | Mul (a, b)
-    | Sub(a, b)
-    | Load ((Dynamic (a, _, b)))
-    | FLoad ((Dynamic (a, _, b)))
-    | FAdd(a, b)
-    | FSub(a, b)
-    | FMul(a, b)
-    | FDiv(a, b)
-    | Store(a, Relative (b, _))
-    | FStore(a, Relative (b, _))
-    (*| FCmp(a, b, _)*)
-        -> [a; b]
-
-    | Move r
-    | FMove r
-    | Addi (r, _)
-    | Four r
-    | Half r
-    | Load (Relative (r, _))
-    | FLoad (Relative(r, _))
-    | Store(r, Absolute _)
-    | FStore(r, Absolute _)
-    | Neg r
-    | FNeg r
-    | FAbs r
-    | Print r
-        ->  [r]
-
-    | Store(r1, Dynamic(r2, _, r3))
-    | FStore(r1, Dynamic(r2, _, r3))
-    -> [r1; r2; r3]
-
-    | IfEQ (u, v, e1, e2)
-    | FIfEQ(u, v, e1, e2)
-    | IfLT(u, v, e1, e2)
-    | FIfLT(u, v, e1, e2)
-    -> u :: v :: remove_dup OperandSet.empty (get_free_vars_ e1 @ get_free_vars_ e2)
-
-    | CallCls (x, ys, zs)
-    -> x :: ys @ zs
-    | CallDir(_, ys, zs)
-    -> ys @ zs
-
-and get_free_vars_ = function
-  | Ans(exp, info) -> fv_exp exp
-  | Let((x, t), exp, e, info) ->
-      fv_exp exp @ remove_dup (OperandSet.singleton x) (get_free_vars_ e)
-let get_free_vars e = remove_dup OperandSet.empty (get_free_vars_ e)
 
 (*let xt = e1 then evaluate e2*)
 let rec concat e1 xt e2 =
