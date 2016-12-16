@@ -58,3 +58,10 @@ included in this distribution.
 
 - The register allocator now uses a simpler algorithm.  It omits the
   backtracking (ToSpill and NoSpill) in previous versions.
+
+7. For developer
+
+To print trace
+
+```bash
+env OCAMLRUNPARAM=b ./min-caml example

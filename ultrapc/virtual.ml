@@ -160,14 +160,14 @@ let rec generate env = function (* 式の仮想マシンコード生成 (caml2ht
 
               (
                   (*make new var*)
-              let new_var = ID (Id.genid("l", info))
+              let new_var = ID (Id.genid("closure", info))
               in
               Let(
                   (new_var, Type.Int info),
                   MoveImm( Label (fst entry)),
                   -1,
                   seq(
-                      Store(new_var, Absolute(Label (fst start), None)),
+                      Store(new_var, Relative(Operand.ID start, Constant 0)),
                       store_fv,
                       info
                       ),

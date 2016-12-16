@@ -500,6 +500,11 @@ let find_def env =
 
 let graph_rev graph =
     graph_fold_edge (fun (u, v) rev_graph ->
+        let rev_graph =
+            if not (IntMap.mem u rev_graph) then IntMap.add u IntSet.empty rev_graph
+            else
+                rev_graph
+        in
         let current_v_innode = try IntMap.find v rev_graph with Not_found -> IntSet.empty
         in
             IntMap.add v (IntSet.add u current_v_innode) rev_graph
@@ -808,6 +813,9 @@ let rec get_const_exp const_env env = function
     -> if List.mem label const_env.call_stack then
         None
     else
+        (*external fun*)
+        if not (StringMap.mem label env.fun_by_name) then None
+    else(
         let _, const_env, env = const_fold env.tmp (StringMap.find label env.fun_by_name) env.fun_by_name
             (Some (M2.filter (fun op _ ->
                     List.mem op op_list1|| List.mem op op_list2
@@ -844,6 +852,7 @@ let rec get_const_exp const_env env = function
                 with Not_found -> None
             else
                 None
+    )
 
     | Add _
     | ShiftLeft _
@@ -961,7 +970,7 @@ find_const_commands_loop const_env use reach env =
                     else
                         const_env
                 )
-                (IntMap.find s use)
+                (try IntMap.find s use with Not_found -> IntSet.empty)
                 {const_env with
                     worklist = worklist
                 }
