@@ -88,12 +88,64 @@ env = {
     ret_assignments : IntSet.t;
     fun_by_name : fundef StringMap.t;
     calculable: bool;
+    no_side_effect_defs: StringSet.t;
 }
 and
 convert_data = {
     idata: (Id.l * int) list;
     fdata: (Id.l* float) list;
 }
+
+let rec has_side_effect no_side_effect_defs = function
+    | Ans (exp, _, _) -> has_side_effect_exp no_side_effect_defs exp
+    | Let(_, exp, _, body, _) -> has_side_effect_exp no_side_effect_defs exp || has_side_effect no_side_effect_defs body
+and
+has_side_effect_exp no_side_effect_defs = function
+    | Nop
+    | Int _
+    | Float _
+    | Add _
+    | ShiftLeft _
+    | ShiftRight _
+    | Div _
+    | Mul _
+    | Sub _
+    | Addi _
+    | Four _
+    | Half _
+    | Load _
+    | Neg _
+    | FNeg _
+    | FAbs _
+    | FAdd _
+    | FSub _
+    | FMul _
+    | FDiv _
+    | FLoad _
+    | MoveImm _
+    | Move _
+    | FMove _
+    -> false
+
+    | IntRead
+    | FloatRead
+    | Store _
+    | Print _
+    | FStore _
+    | CallCls _
+    -> true
+
+
+
+
+    | IfEQ (_, _, exp1, exp2)
+    | FIfEQ (_, _, exp1, exp2)
+    | IfLT (_, _, exp1, exp2)
+    | FIfLT (_, _, exp1, exp2)
+    -> has_side_effect no_side_effect_defs exp1 || has_side_effect no_side_effect_defs exp2
+
+    | CallDir (label, op_list1, op_list2)
+    -> not (StringSet.mem label no_side_effect_defs)
 
 let rec concat e1 xt e2 =
   match e1 with
@@ -824,6 +876,7 @@ let rec get_const_exp const_env env = function
             )
             )
             (const_env.call_stack @ [label])
+             env.no_side_effect_defs
         in
             if env.calculable then
                 let ret_assignments = env.ret_assignments
@@ -993,7 +1046,7 @@ find_const_commands use reach env arg_opt call_stack =
         find_const_commands_loop const_env use reach env
 
 and
-const_fold tmp {name = name; args = int_args; fargs = float_args; body = body; ret = ret_type; info = info} fun_by_name args_opt call_stack =
+const_fold tmp {name = name; args = int_args; fargs = float_args; body = body; ret = ret_type; info = info} fun_by_name args_opt call_stack no_side_effect_defs =
     (*fidn dest*)
     let dest = match ret_type with Type.Float _ -> Operand.Reg Reg.freg_ret | _ -> Operand.Reg Reg.reg_ret
     in
@@ -1015,6 +1068,7 @@ const_fold tmp {name = name; args = int_args; fargs = float_args; body = body; r
         command_map = IntMap.empty;
         ret_assignments = IntSet.empty;
         fun_by_name = fun_by_name;
+        no_side_effect_defs = no_side_effect_defs;
     }
     in
     let entry_block_id = env.id
@@ -1169,27 +1223,44 @@ convert_def_loop_branch const_env data exp1 exp2 f =
     in
         f data body1 body2
 
-let convert_def tmp fun_by_name data fundef =
-    let body, const_env, env = const_fold tmp fundef fun_by_name None []
+let convert_def tmp fun_by_name data fundef no_side_effect_defs =
+    let body, const_env, env = const_fold tmp fundef fun_by_name None [] no_side_effect_defs
     in convert_def_loop const_env data body
 
 let get_info = function
   | Ans (_, _, info)
   | Let (_, _, _, _, info) -> info
 
-let generate tmp data fun_by_name body =
+let generate tmp data fun_by_name body no_side_effect_defs =
     let info = get_info body
     in
     let fundef =
         {name = "min_caml_start"; args = []; fargs = []; body = body; ret = Type.Unit info; info = info}
     in
-        convert_def tmp fun_by_name data fundef
+        convert_def tmp fun_by_name data fundef no_side_effect_defs
+
+let rec gen_no_side_effect_defs fundefs set =
+    let set, found, left =
+        List.fold_left (fun (set, found, left) def ->
+            if has_side_effect set def.body then set, found, def::left
+            else
+                StringSet.add def.name set, true, left
+        )
+        (set, false, [])
+        fundefs
+    in
+    if found then gen_no_side_effect_defs left set
+    else
+        set
 
 let gen_fundefs tmp fundefs =
     let fun_by_name = List.fold_left (fun map fundef -> StringMap.add (fundef.name) fundef map) StringMap.empty fundefs
     in
+    let no_side_effect_defs = gen_no_side_effect_defs fundefs StringSet.empty
+    in
+    no_side_effect_defs,
     fun_by_name, List.fold_right (fun fundef (data, ret) ->
-        let data, converted_def =  convert_def tmp fun_by_name data fundef
+        let data, converted_def =  convert_def tmp fun_by_name data fundef no_side_effect_defs
         in
         let fundef = { Asm.name = fundef.name; args = fundef.args; fargs = fundef.fargs; body = converted_def; ret = fundef.ret ; info = fundef.info}
         in
@@ -1204,8 +1275,8 @@ let gen_fundefs tmp fundefs =
 let f (fundefs, e) =
     let tmp = Operand.ID (Id.genid ("dfa_tmp", get_info e))
     in
-    let fun_by_name, (data, fundefs) = gen_fundefs tmp fundefs
+    let no_side_effect_defs, fun_by_name, (data, fundefs) = gen_fundefs tmp fundefs
     in
-    let data, e = generate tmp data fun_by_name  e
+    let data, e = generate tmp data fun_by_name  e no_side_effect_defs
     in
         Asm.Prog(data.idata, data.fdata, fundefs, e)
