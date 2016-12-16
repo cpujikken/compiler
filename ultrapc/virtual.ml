@@ -291,4 +291,18 @@ let f (Closure.Prog(fundefs, e)) =
   (*idata := [];*)
   let fundefs = List.map fun_converter fundefs in
   let e = generate M.empty e in
-      fundefs, e
+  let info = Dfa.get_info e
+  in
+      fundefs,
+      Let ((Operand.Reg reg_hp, Type.Int info),
+          Int(Common.default_heap),
+          -1,
+          Let((Operand.Reg reg_sp, Type.Int info),
+            Int(Common.default_stack),
+            -1,
+              e,
+              info
+          )
+          ,
+          info
+      )
