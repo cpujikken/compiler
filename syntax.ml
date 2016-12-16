@@ -68,7 +68,7 @@ let to_string (x: t) =
         | Tuple (xlist, info) -> Printf.sprintf "%sTUPLE\t#%s%s" pre (Info.to_string info) (to_string_list npre xlist)
         | LetTuple (idlist, x, y, info) -> Printf.sprintf "%sLET_TUPLE\t#%s\n%s\n%s\n%s" pre (Info.to_string info) (to_string_idtype_list npre idlist) (to_string_pre npre x) (to_string_pre npre y)
         | Array (x, typ, info) -> Printf.sprintf "%sArray\t#%s\n%s" pre (Info.to_string info) (to_string_pre npre x) 
-        | CreateArray (x, y, info) -> Printf.sprintf "%sArray\t#%s\n%s\n%s" pre (Info.to_string info) (to_string_pre npre x) (to_string_pre npre y)
+        | CreateArray (x, y, info) -> Printf.sprintf "%sCreateArray\t#%s\n%s\n%s" pre (Info.to_string info) (to_string_pre npre x) (to_string_pre npre y)
         | Get (x, y, info) -> Printf.sprintf "%sGET\t#%s\n%s\n%s" pre (Info.to_string info) (to_string_pre npre x) (to_string_pre npre y)
         | Put (x, y, z, info) -> Printf.sprintf "%sPUT\t#%s\n%s\n%s\n%s" pre (Info.to_string info) (to_string_pre npre x) (to_string_pre npre y ) (to_string_pre npre z)
   | ShiftLeft (x, y, info) -> Printf.sprintf "%sSHIFT_LEFT\t#%s\n%s\n%s" pre (Info.to_string info) (to_string_pre npre x) (to_string_pre npre y)

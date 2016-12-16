@@ -77,6 +77,7 @@ let fun_converter { name = (fun_name , fun_type); args = args_id_types; formal_f
     in
     let new_body = wrap_after_flat replacements_fv new_body
     in
+  (*Printf.printf "%s -> %d\n" (fst fun_name) (List.length new_args_id_types);*)
     {
         name = fun_name, flat_type fun_type;
         args = new_args_id_types;

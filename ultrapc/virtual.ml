@@ -267,6 +267,7 @@ let fun_converter { Closure.name = (x , t); Closure.args = args; Closure.formal_
   in
   let (ints, floats) = separate args
   in
+  (*Printf.printf "%s -> %d\n" (fst x) (List.length ints);*)
   let all_args = M.add_list args (M.add_list free_args M.empty)
   in
   let all_vars = (M.add x t all_args)

@@ -342,10 +342,9 @@ let command_source = function
     | Entry (t, _) -> S1.empty
 
 let graph_add_edge u v graph =
-    IntMap.add u (IntSet.add v @@ IntMap.find u graph) graph
+    IntMap.add u (IntSet.add v @@ try IntMap.find u graph with Not_found -> IntSet.empty) graph
 
-
-    let get_block_id = snd
+let get_block_id = snd
 
 let env_new_block block env =
     let new_block_map =  IntMap.add (get_block_id block) block env.block_map
@@ -425,7 +424,7 @@ let env_append_assignment exp env =
     in
     let env = env_new_command assignment env
     in
-        env_append_assignments []  env
+        env_append_assignments [assignment]  env
 
 let rec gen_graph env = function
     | Ans (e, _, info) ->
@@ -442,6 +441,8 @@ and
 gen_graph_exp env = function
     | CallDir (label, op_list1, op_list2) as exp when env.tail && label = env.funname
         ->
+            (*Printf.printf "%s\n" label;*)
+            (*List.iter (fun x -> Printf.printf "%s\n" (Operand.to_string x)) env.int_params;*)
             exp,
             env.id,
             env_tail_call op_list1 op_list2 env
@@ -543,12 +544,19 @@ let effect_commands (command_list, _) =
     in
         M2.fold (fun key value set -> IntSet.add (command_get_id value) set) define_map IntSet.empty
 
+let empty_block_map env = IntMap.map (fun _ -> IntSet.empty) env.block_map
+
 let find_def env =
+    let def =
     IntMap.fold (fun u neighbors ->
         IntMap.add u @@ effect_commands @@ IntMap.find u @@ env.block_map
     )
     env.graph
-    IntMap.empty
+    (empty_block_map env)
+    in
+    (*IntMap.iter (fun i set -> IntSet.iter (Printf.printf "%d -> %d\n" i) set) env.graph;*)
+    (*IntMap.iter (fun i _ -> Printf.printf "%d\n" i) env.block_map;*)
+    def
 
 let graph_rev graph =
     graph_fold_edge (fun (u, v) rev_graph ->
@@ -568,7 +576,7 @@ let find_kill def env =
     let rev_graph = graph_rev env.graph
     in
     graph_fold_edge (fun (u, v) kill ->
-        let current_kill = try IntMap.find u kill with Not_found -> IntSet.empty
+        let current_kill = IntMap.find u kill
         in
         let sibling = IntMap.find v rev_graph
         in
@@ -601,7 +609,7 @@ let find_kill def env =
             IntMap.add u new_kill kill
     )
     env.graph
-    IntMap.empty
+    (empty_block_map env)
 
 let rec find_inout_loop rev_graph def kill env inset outset =
     let f block_id command_set =
@@ -623,7 +631,7 @@ let rec find_inout_loop rev_graph def kill env inset outset =
     in
         let inset, found =
         IntMap.fold (fun block_id old_in (inset, found) ->
-            let in_nodes = IntMap.find block_id rev_graph
+            let in_nodes = try IntMap.find block_id rev_graph with Not_found -> IntSet.empty
             in
             let new_in = IntSet.fold (fun x -> IntSet.union @@ IntMap.find x outset) in_nodes IntSet.empty
             in
@@ -644,9 +652,9 @@ let rec find_inout_loop rev_graph def kill env inset outset =
 let find_inout def kill env =
     let entry_block_id = 0
     in
-    let empty_map = IntMap.map (fun _ -> IntSet.empty) def
+    let empty_map = empty_block_map env
     in
-    let inset = IntMap.empty |> IntMap.add entry_block_id @@ IntMap.find entry_block_id def
+    let inset = empty_map |> IntMap.add entry_block_id @@ IntMap.find entry_block_id def
     in
     let outset = empty_map
     in
@@ -656,8 +664,10 @@ let find_inout def kill env =
 let find_reach inset env =
     IntMap.fold (fun block_id (command_list, _) reach ->
         let reach, _ =
+                (*Printf.printf "trang %d\n" (List.length command_list);*)
             (*for each block*)
             List.fold_left (fun (reach, last_def_command_id) command ->
+                    (*M2.iter (fun var id -> Printf.printf "%s -> %d\n" (Operand.to_string var) id) last_def_command_id;*)
                 let command_id = command_get_id command
                 in
                 let used_vars = command_source command
@@ -665,7 +675,10 @@ let find_reach inset env =
                     S1.fold (fun var reach ->
                         let reach_set =
                             if M2.mem var last_def_command_id then
+                                (
+                                (*Printf.printf "xxx %s\n" @@ Operand.to_string var;*)
                                 IntSet.singleton (M2.find var last_def_command_id)
+                                )
                             else
                                 IntSet.filter (fun def_command_id_outside ->
                                     S1.mem var @@ command_dest @@ IntMap.find def_command_id_outside env.command_map
@@ -695,19 +708,26 @@ let find_reach inset env =
 
     (*note: use set does not contain all command ids*)
 let find_use reach env =
-    M3.fold (fun (command_id, _) def_command_set use ->
-        IntSet.fold (fun def_command_id use ->
-            let old_use = try IntMap.find def_command_id use with Not_found -> IntSet.empty
-            in
-            let new_use = IntSet.add def_command_id old_use
-            in
-                IntMap.add def_command_id new_use use
+    let use =
+        M3.fold (fun (command_id, _) def_command_set use ->
+            (*
+             * def_command_set defines _ that is used in command_id
+             *)
+            IntSet.fold (fun def_command_id use ->
+                let old_use = try IntMap.find def_command_id use with Not_found -> IntSet.empty
+                in
+                let new_use = IntSet.add command_id old_use
+                in
+                    IntMap.add def_command_id new_use use
+            )
+            def_command_set
+            use
         )
-        def_command_set
-        use
-    )
-    reach
-    IntMap.empty
+        reach
+        IntMap.empty
+    in
+    (*IntSet.iter (Printf.printf "-->%d\n") (IntMap.find 2 use);*)
+    use
 
 type const =
     | Unit
@@ -732,7 +752,8 @@ let rec get_const_exp const_env env = function
 
     | Int i
         -> Some (CInt i)
-    | Float f -> Some (CFloat f)
+    | Float f ->
+            Some (CFloat f)
 
     | Add (op1, op2) when M2.mem op1 const_env.const_map && M2.mem op2 const_env.const_map
         ->(
@@ -826,43 +847,48 @@ let rec get_const_exp const_env env = function
     | _ -> None
         )
 
-    | CallDir (label, op_list1, [op]) when M2.mem op const_env.const_map && label = "min_caml_cos"
+    | CallDir (label, _, [op]) when M2.mem op const_env.const_map && label = "min_caml_cos"
     -> (match M2.find op const_env.const_map with
         CFloat f -> Some (CFloat ( Pervasives.cos f))
         | _ -> None
     )
-    | CallDir (label, op_list1, [op]) when M2.mem op const_env.const_map && label = "min_caml_sin"
-    -> (match M2.find op const_env.const_map with
+    | CallDir (label, _, [op]) when M2.mem op const_env.const_map && label = "min_caml_sin"
+    ->
+        (match M2.find op const_env.const_map with
         CFloat f -> Some (CFloat ( Pervasives.sin f))
         | _ -> None
     )
-    | CallDir (label, op_list1, [op]) when M2.mem op const_env.const_map && label = "min_caml_sqrt"
+    | CallDir (label, _, [op]) when M2.mem op const_env.const_map && label = "min_caml_sqrt"
     -> (match M2.find op const_env.const_map with
         CFloat f -> Some (CFloat ( Pervasives.sqrt f))
         | _ -> None
     )
-    | CallDir (label, op_list1, [op]) when M2.mem op const_env.const_map && label = "min_caml_atan"
+    | CallDir (label, _, [op]) when M2.mem op const_env.const_map && label = "min_caml_atan"
     -> (match M2.find op const_env.const_map with
         CFloat f -> Some (CFloat ( Pervasives.atan f))
         | _ -> None
     )
-    | CallDir (label, op_list1, [op]) when M2.mem op const_env.const_map && label = "min_caml_floor"
+    | CallDir (label, _, [op]) when M2.mem op const_env.const_map && label = "min_caml_floor"
     -> (match M2.find op const_env.const_map with
         CFloat f -> Some (CFloat ( Pervasives.floor f))
         | _ -> None
     )
-    | CallDir (label, op_list1, [op]) when M2.mem op const_env.const_map && label = "min_caml_int_of_float"
+    | CallDir (label, _, [op]) when M2.mem op const_env.const_map && label = "min_caml_int_of_float"
     -> (match M2.find op const_env.const_map with
         CFloat f -> Some (CInt ( Pervasives.int_of_float f))
         | _ -> None
     )
-    | CallDir (label, op_list1, [op]) when M2.mem op const_env.const_map && label = "min_caml_float_of_int"
+    | CallDir (label, [op], _) when M2.mem op const_env.const_map && label = "min_caml_float_of_int"
     -> (match M2.find op const_env.const_map with
         CInt i -> Some (CFloat ( Pervasives.float_of_int i))
         | _ -> None
     )
     | CallDir (label, op_list1, op_list2)
-    -> if List.mem label const_env.call_stack then
+    ->
+        (*M2.iter (fun op v -> Printf.printf "value: %s\n" @@ Operand.to_string op) const_env.const_map;*)
+        (*IntMap.iter (fun command_id (op, value) -> Printf.printf "value: %d -> %s\n" command_id  @@ Operand.to_string op) const_env.const_commands;*)
+        (*Printf.printf "halluuuuuuuuuuuuu%s\n" label;*)
+        if List.mem label const_env.call_stack then
         None
     else
         (*external fun*)
@@ -981,9 +1007,14 @@ find_const_commands_loop const_env use reach env =
         let const_env =
             let s, (x, value) = IntMap.choose const_env.worklist
             in
+                (*Printf.printf "haluuuuuuu\n";*)
+                (*Printf.printf "%s\n" @@ Operand.to_string x;*)
+                (*IntSet.iter (Printf.printf "%d\n") (try IntMap.find s use with Not_found -> IntSet.empty);*)
+                (*M3.iter (fun (op, id) set -> Printf.printf "%s %d\n" (Operand.to_string id) op) reach;*)
             let worklist = IntMap.remove s const_env.worklist
             in
                 IntSet.fold (fun t const_env ->
+                    (*Printf.printf "%d\n" t;*)
                     let reachable = IntSet.fold (fun sibling_id reachable ->
                         reachable &&
                         try
@@ -993,7 +1024,12 @@ find_const_commands_loop const_env use reach env =
                                 sibling_value = value
                         with Not_found -> false
                     )
-                    (M3.find (t, x) reach)
+                    (try
+                        M3.find (t, x) reach
+                    with Not_found ->
+                        Printf.printf "not found any reach command to command_id %d for variable %s\n" t (Operand.to_string x);
+                        assert false;
+                        )
                     true
                     in
                     if reachable then
@@ -1047,6 +1083,8 @@ find_const_commands use reach env arg_opt call_stack =
 
 and
 const_fold tmp {name = name; args = int_args; fargs = float_args; body = body; ret = ret_type; info = info} fun_by_name args_opt call_stack no_side_effect_defs =
+        (*Printf.printf "%s\n" name;*)
+        (*List.iter (fun x -> Printf.printf "%s\n" (Operand.to_string x)) int_args;*)
     (*fidn dest*)
     let dest = match ret_type with Type.Float _ -> Operand.Reg Reg.freg_ret | _ -> Operand.Reg Reg.reg_ret
     in

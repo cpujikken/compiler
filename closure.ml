@@ -185,6 +185,7 @@ let rec generate env known = function (* クロージャ変換ルーチン本体
             (*for all free variables*)
             external_variables
     in (* ここで自由変数zの型を引くために引数envが必要 *)
+  (*Printf.printf "%s -> %d\n" (fst fun_name) (List.length param_list);*)
         toplevel := { name = (Id.to_L fun_name, fun_type); args = param_list; formal_fv = external_variable_with_type; body = fun_body'; info = info } :: !toplevel; (* トップレベル関数を追加 *)
         (*parse let_body*)
         let let_body' = generate env' known' let_body
@@ -207,11 +208,6 @@ let rec generate env known = function (* クロージャ変換ルーチン本体
   | KNormal.Put(x, y, z, info) -> Put(x, y, z, info)
   | KNormal.ExtArray(x, info) -> ExtArray(Id.to_L(x), info)
   | KNormal.ExtFunApp(x, ys, info) -> AppDir(("min_caml_" ^ (fst x), snd x), ys, info)
-
-let f e =
-  toplevel := [];
-  let e' = generate M.empty S.empty e in
-  Prog(List.rev !toplevel, e')
 
 let get_info = function
   | Unit info
@@ -307,3 +303,8 @@ let fundef_to_string { name = (name, name_info), typ;
         body = body;
         info = info;} =
             Printf.sprintf "fun name: %s\n%s" name (to_string body)
+
+let f e =
+  toplevel := [];
+  let e' = generate M.empty S.empty e in
+  Prog(List.rev !toplevel, e')

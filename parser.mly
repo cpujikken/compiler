@@ -208,7 +208,9 @@ exp: /* (* 一般の式 (caml2html: parser_exp) *) */
     { Let((Id.gentmp (Type.gentyp (Info.parsing_get())) (Info.parsing_get()), Type.gentyp (Info.parsing_get())), $1, $3, (Info.parsing_get())  )}
 | exp SEMICOLON
     { Let((Id.gentmp (Type.gentyp (Info.parsing_get())) (Info.parsing_get()), Type.gentyp (Info.parsing_get())), $1, (Unit (Info.parsing_get())), (Info.parsing_get())  )}
-| CREATE_ARRAY exp exp{
+| CREATE_ARRAY exp exp
+    %prec prec_app
+{
     CreateArray($2, $3, Info.parsing_get())
 }
 | error
