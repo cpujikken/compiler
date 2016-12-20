@@ -402,7 +402,7 @@ and generate' info = function (* 各命令のアセンブリ生成 (caml2html: e
             (*call*)
             append_cmd cmd_addi [reg_sp; reg_sp; Loc.to_string @@ Constant 4] info;
             append_cmd cmd_storeIp [] info;
-            append_cmd cmd_link [Cmd.label_to_string l] info;
+            append_cmd cmd_jump [Cmd.label_to_string l] info;
             (*resstore stack*)
             if ss > 0 then
                 generate' info (NonTail reg_sp, Addi (reg_sp, Constant (-ss)));
