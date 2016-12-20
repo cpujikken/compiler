@@ -443,7 +443,7 @@ let gen_fundef fundefs =
 let f (Prog(idata, data, fundefs, e)) = (* プログラム全体のレジスタ割り当て (caml2html: regalloc_f) *)
     (*Format.eprintf "register allocation: may take some time (up to a few minutes, depending on the size of functions)@.";*)
       let fundefs' = gen_fundef fundefs in
-        Printf.printf "closure body:\n%s\n" (Asm.to_string e);
+        (*Printf.printf "closure body:\n%s\n" (Asm.to_string e);*)
       let e', _ =  alloc e M.empty M.empty
       in
       AsmReg.Prog(idata, data, fundefs', e')

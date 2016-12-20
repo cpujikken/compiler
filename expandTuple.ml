@@ -105,6 +105,8 @@ let rec expand_tuple idMap = function
         (*expand all x's usage in Var(_) and AppCls, AppDir*)
 
 let fun_converter { name = fname; args = args_id_types; formal_fv = free_args_id_types; body = body; info = info } =
+    (*Printf.printf "fun name: %s\n" @@ fst @@ fst  fname;*)
+    (*Printf.printf "Before expansion\n%s\n" (to_string body);*)
     let new_args_id_types, replacements = List.fold_right (fun (id,typ) (id_types, replacements) ->
         match typ with
         | Type.Tuple (typelist, info) ->
@@ -124,6 +126,7 @@ let fun_converter { name = fname; args = args_id_types; formal_fv = free_args_id
     in
     let new_body = expand_tuple M.empty new_body
     in
+    (*Printf.printf "After expansion\n%s\n" (to_string new_body);*)
     {
         name = fname;
         args = new_args_id_types;
@@ -134,8 +137,8 @@ let fun_converter { name = fname; args = args_id_types; formal_fv = free_args_id
 
 
 let f (Prog(fundefs, e)) =
-    Printf.printf "Before expansion\n%s\n" (to_string e);
+    (*Printf.printf "Before expansion\n%s\n" (to_string e);*)
     let new_exp  = expand_tuple M.empty e
     in
-    Printf.printf "After expansion\n%s\n" (to_string new_exp);
+    (*Printf.printf "After expansion\n%s\n" (to_string new_exp);*)
     Prog(List.map fun_converter fundefs, new_exp)
