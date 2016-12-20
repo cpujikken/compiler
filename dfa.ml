@@ -894,13 +894,24 @@ let rec get_const_exp const_env env = function
         (*external fun*)
         if not (StringMap.mem label env.fun_by_name) then None
     else(
+        let const_args_binder =
+            List.fold_left (fun (const_args, no) op ->
+                (
+                try
+                    IntMap.add no (M2.find op const_env.const_map) const_args
+                with Not_found -> const_args
+            ), no + 1
+            )
+            (IntMap.empty, 0)
+        in
+        let int_const_args, _ =
+            const_args_binder op_list1
+        in
+        let float_const_args, _ =
+            const_args_binder op_list2
+        in
         let _, const_env, env = const_fold env.tmp (StringMap.find label env.fun_by_name) env.fun_by_name
-            (Some (M2.filter (fun op _ ->
-                    List.mem op op_list1|| List.mem op op_list2
-                )
-                const_env.const_map
-            )
-            )
+            (Some (int_const_args, float_const_args))
             (const_env.call_stack @ [label])
              env.no_side_effect_defs
         in
@@ -910,6 +921,7 @@ let rec get_const_exp const_env env = function
                 try
                     let any = IntSet.choose ret_assignments
                     in
+                    Printf.printf "any %d\n" any;
                     let _, const = IntMap.find any const_env.const_commands
                     in
                     let same_value = IntSet.fold (fun command_id same_value ->
@@ -924,11 +936,13 @@ let rec get_const_exp const_env env = function
                         ret_assignments
                         true
                     in
-                    if same_value then Some const
+                    if same_value then
+                        Some const
                     else
                         None
 
-                with Not_found -> None
+                with Not_found ->
+                    None
             else
                 None
     )
@@ -1043,9 +1057,56 @@ find_const_commands_loop const_env use reach env =
                         }
                         in
                         match IntMap.find t env.command_map with
-                            Assignment (op, exp, _) ->(match get_const_exp const_env env exp with
+                            Assignment (op, exp, _) ->
+                        Printf.printf "hello %d\n" t;
+                        M2.iter (fun op _ -> Printf.printf "op %s\n" @@ Operand.to_string op) use_in_t;
+                        (
+                        match exp with
+    | Nop
+    | Int _
+    | Float _
+    | Add _
+    | ShiftLeft _
+    | ShiftRight _
+    | Div _
+    | Mul _
+    | Sub _
+    | Addi _
+    | Four _
+    | Half _
+    | Load _
+    | Neg _
+    | FNeg _
+    | FAbs _
+    | FAdd _
+    | FSub _
+    | FMul _
+    | FDiv _
+    | FLoad _
+    | MoveImm _
+    | Move _
+    | FMove _
+    | IntRead
+    | FloatRead
+    | Store _
+    | Print _
+    | FStore _
+    | CallCls _
+    | IfEQ _
+    | FIfEQ _
+    | IfLT _
+    | FIfLT _
+
+    -> Printf.printf "xxxxxxxxxxxxxxxxxxxx";
+    | CallDir (label, op_list1, op_list2) -> Printf.printf "calling %s\n" label
+                                | _ ->()
+                        )
+                                        ;
+                                (match get_const_exp const_env env exp with
                                 None -> const_env
                                 | Some const ->
+                        Printf.printf "op %s\n" @@ Operand.to_string op;
+                        Printf.printf "const %d\n" t;
                                         let const_commands =
                                             IntMap.add t (op, const) const_env.const_commands
                                         in {const_env with
@@ -1082,7 +1143,7 @@ find_const_commands use reach env arg_opt call_stack =
         find_const_commands_loop const_env use reach env
 
 and
-const_fold tmp {name = name; args = int_args; fargs = float_args; body = body; ret = ret_type; info = info} fun_by_name args_opt call_stack no_side_effect_defs =
+const_fold tmp {name = name; args = int_args; fargs = float_args; body = body; ret = ret_type; info = info} fun_by_name args_opt_by_no call_stack no_side_effect_defs =
         (*Printf.printf "%s\n" name;*)
         (*List.iter (fun x -> Printf.printf "%s\n" (Operand.to_string x)) int_args;*)
     (*fidn dest*)
@@ -1135,6 +1196,33 @@ const_fold tmp {name = name; args = int_args; fargs = float_args; body = body; r
     let reach = find_reach inset env
     in
     let use = find_use reach env
+    in
+    let args_opt =
+        match args_opt_by_no with
+            | None -> None
+            | Some (int_const_args, float_const_args) ->
+                    let m, _ = List.fold_left (fun (map, no) int_op ->
+                            (
+                            try
+                                M2.add int_op (IntMap.find no int_const_args) map
+                            with Not_found -> map
+                            ), no + 1
+                        )
+                        (M2.empty, 0)
+                        int_args
+                    in
+                    let m, _ = List.fold_left (fun (map, no) int_op ->
+                            (
+                            try
+                                M2.add int_op (IntMap.find no float_const_args) map
+                            with Not_found -> map
+                            ), no + 1
+                        )
+                        (m, 0)
+                        float_args
+                    in
+                    M2.iter (fun op va -> Printf.printf "const for arg const_fold %s\n" @@ Operand.to_string op) m;
+                    Some m
     in
     let const_env = find_const_commands use reach env args_opt call_stack
     in
