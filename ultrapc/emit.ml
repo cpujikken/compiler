@@ -378,7 +378,9 @@ and generate' info = function (* 各命令のアセンブリ生成 (caml2html: e
                 (*increase stack*)
                 generate' info (NonTail reg_sp, Addi (reg_sp, Constant ss));
             (*jump and link to closure register*)
-            append_cmd cmd_jLinkCls [] info;
+            append_cmd cmd_addi [reg_sp; reg_sp; Loc.to_string @@ Constant 4] info;
+            append_cmd cmd_storeIp [] info;
+            append_cmd cmd_jumpCls [] info;
             (*the subroutines will automatically jump back here*)
             if ss > 0 then
                 (*decrease stack*)
@@ -398,7 +400,9 @@ and generate' info = function (* 各命令のアセンブリ生成 (caml2html: e
             if ss > 0 then
                 generate' info (NonTail reg_sp, Addi(reg_sp, Constant ss));
             (*call*)
-            append_cmd cmd_jLink [Cmd.label_to_string l] info;
+            append_cmd cmd_addi [reg_sp; reg_sp; Loc.to_string @@ Constant 4] info;
+            append_cmd cmd_storeIp [] info;
+            append_cmd cmd_link [Cmd.label_to_string l] info;
             (*resstore stack*)
             if ss > 0 then
                 generate' info (NonTail reg_sp, Addi (reg_sp, Constant (-ss)));

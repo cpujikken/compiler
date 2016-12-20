@@ -134,8 +134,8 @@ let fun_converter { name = fname; args = args_id_types; formal_fv = free_args_id
 
 
 let f (Prog(fundefs, e)) =
-    (*Printf.printf "Before expansion\n%s\n" (to_string e);*)
+    Printf.printf "Before expansion\n%s\n" (to_string e);
     let new_exp  = expand_tuple M.empty e
     in
-    (*Printf.printf "After expansion\n%s\n" (to_string new_exp);*)
+    Printf.printf "After expansion\n%s\n" (to_string new_exp);
     Prog(List.map fun_converter fundefs, new_exp)

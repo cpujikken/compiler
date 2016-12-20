@@ -91,7 +91,7 @@ let float_size = 4
 let imm_length = 21
 
 let rec to_string_pre pre e =
-    let npre = pre ^ "\t"
+    let npre = pre ^ "  "
     in
     match e with
   | Ans (exp, info) -> Printf.sprintf "%sAns of\t#%s\n%s" pre (Info.to_string info) (exp_to_string_pre npre exp)
