@@ -96,13 +96,16 @@ let rec to_string_pre pre e =
     match e with
   | Ans (exp, info) -> Printf.sprintf "%sAns of\t#%s\n%s" pre (Info.to_string info) (exp_to_string_pre npre exp)
   | Let ((operand, operand_type), exp, t, info) ->
-          Printf.sprintf "%sLET %s:%s\t#%s\n%s=\n%s\n%sIN\n%s" pre (Operand.to_string operand) (Type.to_string operand_type) (Info.to_string info)
+          Printf.sprintf "%sLET %s\t%s\n%s\n%s=\n%s\n%sIN\n%s" pre (Operand.to_string operand) (Info.to_string info) (Type.to_string_pre npre operand_type)
             pre (exp_to_string_pre npre exp) pre (to_string_pre npre t)
 and
 to_string exp =
     to_string_pre "" exp
 and
-exp_to_string_pre pre = function
+exp_to_string_pre pre exp =
+    let npre = pre ^ "  "
+    in
+    match exp with
     | Nop -> "Nop"
     | IntRead -> "IntRead"
     | FloatRead -> "FloatRead"
@@ -133,12 +136,12 @@ exp_to_string_pre pre = function
     | Move op -> Printf.sprintf "%sMove %s" pre (Operand.to_string op)
     | FMove op -> Printf.sprintf "%sFMove %s" pre (Operand.to_string op)
 
-    | IfEQ (op1, op2, exp1, exp2) -> Printf.sprintf "%sIfEQ %s, %s\n%s\n%s" pre (Operand.to_string op1) (Operand.to_string op2) (to_string_pre (pre ^ "\t") exp1) (to_string_pre (pre ^ "\t") exp2)
-    | FIfEQ (op1, op2, exp1, exp2) -> Printf.sprintf "%sFIfEQ %s, %s\n%s\n%s" pre (Operand.to_string op1) (Operand.to_string op2) (to_string_pre (pre ^ "\t") exp1) (to_string_pre (pre ^ "\t") exp2)
-    | IfLT (op1, op2, exp1, exp2) -> Printf.sprintf "%sIfLT %s, %s\n%s\n%s" pre (Operand.to_string op1) (Operand.to_string op2) (to_string_pre (pre ^ "\t") exp1) (to_string_pre (pre ^ "\t") exp2)
-    | FIfLT (op1, op2, exp1, exp2) -> Printf.sprintf "%sFIfLT %s, %s\n%s\n%s" pre (Operand.to_string op1) (Operand.to_string op2) (to_string_pre (pre ^ "\t") exp1) (to_string_pre (pre ^ "\t") exp2)
-    | CallCls (op, op_list1, op_list2) -> Printf.sprintf "%sCallCls %s%s%s" pre (Operand.to_string op) (op_list_to_string op_list1 (pre ^ "\t")) (op_list_to_string op_list2 (pre ^ "\t"))
-    | CallDir (label, op_list1, op_list2) -> Printf.sprintf "%sCallDir %s%s%s" pre label (op_list_to_string op_list1 (pre ^ "\t")) (op_list_to_string op_list2 (pre ^ "\t"))
+    | IfEQ (op1, op2, exp1, exp2) -> Printf.sprintf "%sIfEQ %s, %s\n%s\n%s" pre (Operand.to_string op1) (Operand.to_string op2) (to_string_pre npre exp1) (to_string_pre npre exp2)
+    | FIfEQ (op1, op2, exp1, exp2) -> Printf.sprintf "%sFIfEQ %s, %s\n%s\n%s" pre (Operand.to_string op1) (Operand.to_string op2) (to_string_pre npre exp1) (to_string_pre npre exp2)
+    | IfLT (op1, op2, exp1, exp2) -> Printf.sprintf "%sIfLT %s, %s\n%s\n%s" pre (Operand.to_string op1) (Operand.to_string op2) (to_string_pre npre exp1) (to_string_pre npre exp2)
+    | FIfLT (op1, op2, exp1, exp2) -> Printf.sprintf "%sFIfLT %s, %s\n%s\n%s" pre (Operand.to_string op1) (Operand.to_string op2) (to_string_pre npre exp1) (to_string_pre npre exp2)
+    | CallCls (op, op_list1, op_list2) -> Printf.sprintf "%sCallCls %s%s%s" pre (Operand.to_string op) (op_list_to_string op_list1 npre) (op_list_to_string op_list2 npre)
+    | CallDir (label, op_list1, op_list2) -> Printf.sprintf "%sCallDir %s%s%s" pre label (op_list_to_string op_list1 npre) (op_list_to_string op_list2 npre)
 and
 op_list_to_string ll pre = List.fold_left
     (fun current op  -> Printf.sprintf "\n%s%s" pre (Operand.to_string op))
