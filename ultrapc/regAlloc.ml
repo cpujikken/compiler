@@ -446,4 +446,26 @@ let f (Prog(idata, data, fundefs, e)) = (* プログラム全体のレジスタ�
         (*Printf.printf "closure body:\n%s\n" (Asm.to_string e);*)
       let e', _ =  alloc e M.empty M.empty
       in
-      AsmReg.Prog(idata, data, fundefs', e')
+      let info = get_info e
+      in
+      let default_reg_hp_label = Id.genlabel info
+      in
+      let default_reg_st_label = Id.genlabel info
+      in
+      let idata = (default_reg_hp_label, Common.default_heap)::idata
+      in
+      let idata = (default_reg_st_label, Common.default_stack)::idata
+      in
+      AsmReg.Prog(idata, data, fundefs',
+
+      AsmReg.Let ((reg_hp, Type.Int info),
+          (AsmReg.Load (AsmReg.Absolute (Loc.Label ( fst default_reg_hp_label), None))),
+          AsmReg.Let(
+              (reg_sp, Type.Int info),
+              (AsmReg.Load (AsmReg.Absolute (Loc.Label (fst default_reg_st_label), None))),
+              e',
+              info
+          ),
+          info
+          )
+      )
