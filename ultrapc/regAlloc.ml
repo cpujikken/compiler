@@ -264,7 +264,7 @@ replace_id_exp id new_id e =
     *)
 
 let rec alloc e regenv vars_type =
-    let color_map, spilled_vars = Graph.coloring e regenv
+    let color_map, spilled_vars = Graph.coloring e regenv (has_sub_call e)
     in
     let info = Asm.get_info e
     in

@@ -153,3 +153,47 @@ addr_to_string = function
     | Dynamic (op1, size4, op2) -> Printf.sprintf "Dynamic (%s * %d)(%s)" (Operand.to_string op2) size4 (Operand.to_string op1)
     | Absolute (loc1, Some loc2) -> Printf.sprintf "Absolute %s + %s" (Loc.to_string loc1) (Loc.to_string loc2)
     | Absolute(loc, None) -> Printf.sprintf "Absolute %s" (Loc.to_string loc)
+
+let rec has_sub_call = function
+  | Ans (e, _) -> has_sub_call_exp e
+  | Let (_, exp, body, _) -> has_sub_call_exp exp || has_sub_call body
+and
+has_sub_call_exp = function
+    | Nop
+    | IntRead
+    | FloatRead
+    | Add _
+    | ShiftLeft _
+    | ShiftRight _
+    | Div _
+    | Mul _
+    | Sub _
+    | Addi _
+    | Four _
+    | Half _
+    | Load _
+    | Store _
+    | Neg _
+    | FNeg _
+    | FAbs _
+    | Print _
+    | FAdd _
+    | FSub _
+    | FMul _
+    | FDiv _
+    | FLoad _
+    | FStore _
+    | MoveImm _
+    | Move _
+    | FMove _
+    -> false
+
+    | IfEQ (_, _, t1, t2)
+    | FIfEQ (_, _, t1, t2)
+    | IfLT (_, _, t1, t2)
+    | FIfLT (_, _, t1, t2)
+    -> has_sub_call t1 || has_sub_call t2
+
+    | CallCls _
+    | CallDir _
+    -> true
