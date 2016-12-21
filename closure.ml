@@ -9,16 +9,11 @@ type t = (* クロージャ変換後の式 (caml2html: closure_t) *)
   | Print of Id.t * Info.t
   | Four of Id.t * Info.t
   | Half of Id.t * Info.t
-  | Add
-  of Id.t * Id.t * Info.t
-  | ShiftLeft
-  of Id.t * Id.t * Info.t
-  | ShiftRight
-  of Id.t * Id.t * Info.t
-  | Div
-  of Id.t * Id.t * Info.t
-  | Mul
-  of Id.t * Id.t * Info.t
+  | Add of Id.t * Id.t * Info.t
+  | ShiftLeft of Id.t * Id.t * Info.t
+  | ShiftRight of Id.t * Id.t * Info.t
+  | Div of Id.t * Id.t * Info.t
+  | Mul of Id.t * Id.t * Info.t
   | Sub of Id.t * Id.t * Info.t
   | FNeg of Id.t * Info.t
   | FAbs of Id.t * Info.t
@@ -150,7 +145,7 @@ let rec generate env known = function (* クロージャ変換ルーチン本体
         else
             (* 駄目だったら状態(toplevelの値)を戻して、クロージャ変換をやり直す *)
             (
-                Format.eprintf "free variable(s) %s found in function %s@." (Id.pp_list (S.elements external_variables)) (Id.to_string fun_name);
+                (*Format.eprintf "free variable(s) %s found in function %s@." (Id.pp_list (S.elements external_variables)) (Id.to_string fun_name);*)
                  Format.eprintf "function %s cannot be directly applied in fact@." (Id.to_string fun_name);
                  toplevel := toplevel_backup;
 
@@ -190,6 +185,7 @@ let rec generate env known = function (* クロージャ変換ルーチン本体
             (*for all free variables*)
             external_variables
     in (* ここで自由変数zの型を引くために引数envが必要 *)
+  (*Printf.printf "%s -> %d\n" (fst fun_name) (List.length param_list);*)
         toplevel := { name = (Id.to_L fun_name, fun_type); args = param_list; formal_fv = external_variable_with_type; body = fun_body'; info = info } :: !toplevel; (* トップレベル関数を追加 *)
         (*parse let_body*)
         let let_body' = generate env' known' let_body
@@ -200,10 +196,11 @@ let rec generate env known = function (* クロージャ変換ルーチン本体
                 MakeCls((fun_name, fun_type), { entry = Id.to_L fun_name; actual_fv = external_variables }, let_body', info) (* 出現していたら削除しない *)
             else
                 (*just return let_body if function is not used*)
-                (Format.eprintf "eliminating closure(s) %s@." (Id.to_string fun_name);
+                (
+                    (*Format.eprintf "eliminating closure(s) %s@." (Id.to_string fun_name);*)
                 let_body') (* 出現しなければMakeClsを削除 *)
   | KNormal.App(x, ys, info) when S.mem x known -> (* 関数適用の場合 (caml2html: closure_app) *)
-      Format.eprintf "directly applying %s@." (Id.to_string x);
+      (*Format.eprintf "directly applying %s@." (Id.to_string x);*)
       AppDir(Id.to_L x, ys, info)
   | KNormal.App(f, xs, info) -> AppCls(f, xs, info)
   | KNormal.Tuple(xs, info) -> Tuple(xs, info)
@@ -212,11 +209,6 @@ let rec generate env known = function (* クロージャ変換ルーチン本体
   | KNormal.Put(x, y, z, info) -> Put(x, y, z, info)
   | KNormal.ExtArray(x, info) -> ExtArray(Id.to_L(x), info)
   | KNormal.ExtFunApp(x, ys, info) -> AppDir(("min_caml_" ^ (fst x), snd x), ys, info)
-
-let f e =
-  toplevel := [];
-  let e' = generate M.empty S.empty e in
-  Prog(List.rev !toplevel, e')
 
 let get_info = function
   | Unit info
@@ -312,3 +304,8 @@ let fundef_to_string { name = (name, name_info), typ;
         body = body;
         info = info;} =
             Printf.sprintf "fun name: %s\n%s" name (to_string body)
+
+let f e =
+  toplevel := [];
+  let e' = generate M.empty S.empty e in
+  Prog(List.rev !toplevel, e')

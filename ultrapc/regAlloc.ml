@@ -264,7 +264,7 @@ replace_id_exp id new_id e =
     *)
 
 let rec alloc e regenv vars_type =
-    let color_map, spilled_vars = Graph.coloring e regenv
+    let color_map, spilled_vars = Graph.coloring e regenv (has_sub_call e)
     in
     let info = Asm.get_info e
     in
@@ -411,10 +411,15 @@ let rec static_def_map graph fun_by_name mapped_funs =
     else
         mapped_funs
 
-let gen_fundef fundefs =
+let fun_graph fundefs =
     let fun_by_name = List.fold_left (fun map fundef -> StringMap.add (fundef.name) fundef map) StringMap.empty fundefs
     in
     let graph = List.fold_left (fun map fundef -> StringMap.add fundef.name (calling_def fundef.body) map) StringMap.empty fundefs
+    in
+    fun_by_name, graph
+
+let gen_fundef fundefs =
+    let fun_by_name, graph = fun_graph fundefs
     in
     let static_defs = static_def_map graph fun_by_name StringMap.empty
     in
@@ -441,4 +446,26 @@ let f (Prog(idata, data, fundefs, e)) = (* プログラム全体のレジスタ�
         (*Printf.printf "closure body:\n%s\n" (Asm.to_string e);*)
       let e', _ =  alloc e M.empty M.empty
       in
-      AsmReg.Prog(idata, data, fundefs', e')
+      let info = get_info e
+      in
+      let default_reg_hp_label = Id.genlabel info
+      in
+      let default_reg_st_label = Id.genlabel info
+      in
+      let idata = (default_reg_hp_label, Common.default_heap)::idata
+      in
+      let idata = (default_reg_st_label, Common.default_stack)::idata
+      in
+      AsmReg.Prog(idata, data, fundefs',
+
+      AsmReg.Let ((reg_hp, Type.Int info),
+          (AsmReg.Load (AsmReg.Absolute (Loc.Label ( fst default_reg_hp_label), None))),
+          AsmReg.Let(
+              (reg_sp, Type.Int info),
+              (AsmReg.Load (AsmReg.Absolute (Loc.Label (fst default_reg_st_label), None))),
+              e',
+              info
+          ),
+          info
+          )
+      )

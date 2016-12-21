@@ -28,11 +28,10 @@ let offset x =
 let stacksize () = List.length !stackmap * 4
 
 (* 関数呼び出しのために引数を並べ替える(register shuffling) (caml2html: emit_shuffle) *)
-type param = Go of Reg.t | Hide
-
-(*(shuffle (List.map (fun (x, y) -> Go x, Go y) param_regs));*)
-(*regs = list of (Go argument_reg * Go regs[ind])*)
-let rec shuffle regs =
+(*note that one variable appears in left or right at most once*)
+(*(shuffle (List.map (fun (x, y) -> Some x, Some y) param_regs));*)
+(*regs = list of (Some argument_reg * Some regs[ind])*)
+let rec shuffle tmp regs =
   (* remove identical moves *)
   let _, regs = List.partition (fun (x, y) -> x = y) regs in
   (* find acyclic moves *)
@@ -46,16 +45,16 @@ let rec shuffle regs =
           (*prepend new assignment
            * y points to stack top
            *)
-      (y, Hide) :: (x, y) :: shuffle (List.map
+      (y, tmp ) :: (x, y) :: shuffle tmp (List.map
          (function
              (*find the place where y points to
               * something like: (x -> y) & (y -> z) ==> (x -> y) (y -> sw) (sw -> z)
               * *)
-           | (y', z) when y = y' -> (Hide, z)
+           | (y', z) when y = y' -> (tmp, z)
            | other -> other
          )
          regs)
-  | regs, acyc -> acyc  @ shuffle regs
+  | regs, acyc -> acyc  @ shuffle tmp regs
 
 type dest = Tail | NonTail of Reg.t (* 末尾かどうかを表すデータ型 (caml2html: emit_dest) *)
 let rec generate = function (* 命令列のアセンブリ生成 (caml2html: emit_g) *)
@@ -379,7 +378,9 @@ and generate' info = function (* 各命令のアセンブリ生成 (caml2html: e
                 (*increase stack*)
                 generate' info (NonTail reg_sp, Addi (reg_sp, Constant ss));
             (*jump and link to closure register*)
-            append_cmd cmd_jLinkCls [] info;
+            append_cmd cmd_addi [reg_sp; reg_sp; Loc.to_string @@ Constant 4] info;
+            append_cmd cmd_storeIp [] info;
+            append_cmd cmd_jumpCls [] info;
             (*the subroutines will automatically jump back here*)
             if ss > 0 then
                 (*decrease stack*)
@@ -399,7 +400,9 @@ and generate' info = function (* 各命令のアセンブリ生成 (caml2html: e
             if ss > 0 then
                 generate' info (NonTail reg_sp, Addi(reg_sp, Constant ss));
             (*call*)
-            append_cmd cmd_jLink [Cmd.label_to_string l] info;
+            append_cmd cmd_addi [reg_sp; reg_sp; Loc.to_string @@ Constant 4] info;
+            append_cmd cmd_storeIp [] info;
+            append_cmd cmd_jump [Cmd.label_to_string l] info;
             (*resstore stack*)
             if ss > 0 then
                 generate' info (NonTail reg_sp, Addi (reg_sp, Constant (-ss)));
@@ -426,15 +429,15 @@ and generate_args params fparams info closure_name_opt =
   List.iter
     (fun (y, r) ->
         match y, r with
-        | Go reg, Hide ->
+        | Some reg, None ->
                 generate' info (NonTail reg_dump , Store(reg, Relative (reg_sp, Constant stacksize_backup)))
-        | Hide, Go reg ->
+        | None, Some reg ->
                 generate' info (NonTail reg, Load (Relative(reg_sp, Constant stacksize_backup)))
-        | Go r1, Go r2 ->
+        | Some r1, Some r2 ->
                 generate' info (NonTail r2, Move r1)
         | _ -> ()
     )
-    (shuffle (List.map (fun (x, y) -> Go x, Go y) param_regs));
+    (shuffle None (List.map (fun (x, y) -> Some x, Some y) param_regs));
 
   let (d, param_fregs) =
     List.fold_left
@@ -444,15 +447,15 @@ and generate_args params fparams info closure_name_opt =
   List.iter
     (fun (y, fr) ->
         match y, fr with
-        | Go reg, Hide ->
+        | Some reg, None ->
                 generate' info (Tail , FStore(reg, Relative (reg_sp, Constant stacksize_backup)))
-        | Hide, Go reg ->
+        | None, Some reg ->
                 generate' info (NonTail reg, FLoad (Relative(reg_sp, Constant stacksize_backup)))
-        | Go r1, Go r2 ->
+        | Some r1, Some r2 ->
                 generate' info (NonTail r2, FMove r1)
         | _ -> ()
     )
-    (shuffle (List.map (fun (x, y) -> Go x, Go y)  param_fregs))
+    (shuffle None (List.map (fun (x, y) -> Some x, Some y)  param_fregs))
 
 let print_fun { name = x; args = _; fargs = _; body = e; ret = _ } =
     append (Label (x, None));

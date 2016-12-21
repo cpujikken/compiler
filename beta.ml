@@ -30,7 +30,7 @@ let rec generate env = function (* β簡約ルーチン本体 (caml2html: beta_g
   | Let((x, t), e1, e2, info) -> (* letのβ簡約 (caml2html: beta_let) *)
       (match generate env e1 with
       | Var(y, info) ->
-	  Format.eprintf "beta-reducing %s = %s@." (Id.to_string x) (Id.to_string y);
+	  (*Format.eprintf "beta-reducing %s = %s@." (Id.to_string x) (Id.to_string y);*)
 	  generate (M.add x y env) e2
       | e1' ->
 	  let e2' = generate env e2 in
@@ -46,4 +46,5 @@ let rec generate env = function (* β簡約ルーチン本体 (caml2html: beta_g
   | ExtArray(x, info) -> ExtArray(x, info)
   | ExtFunApp(x, ys, info) -> ExtFunApp(x, List.map (fun y -> find y env) ys, info)
 
-let f = generate M.empty
+let f =
+    generate M.empty

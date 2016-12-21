@@ -368,7 +368,7 @@ exception Spill of Id.t
     * if all nodes of graph are already spilled
     * -> this graph can not be colored by this algorithm
     *)
-let coloring_graph graph regs regenv spilled =
+let coloring_graph graph regs regenv spilled has_subcall =
     let stack, _,  spillable = coloring_make_stack [] graph S.empty (StringSet.size regs)
     in
     (*List.iter (fun x -> Printf.printf "%s\n" (Operand.to_string x)) stack;*)
@@ -401,8 +401,11 @@ let coloring_graph graph regs regenv spilled =
                     try
                         let color =
                             (*if S.mem id spilled then*)
-                                (*choose from bottom*)
+                                (*choose from top*)
+                            if has_subcall then
                                 StringSet.max_elt selectable_color
+                            else
+                                StringSet.min_elt selectable_color
                             (*else*)
                                 (*StringSet.max_elt selectable_color*)
                         in
@@ -446,7 +449,7 @@ let coloring_graph graph regs regenv spilled =
 
     (*need to separate to int_graph and float_graph because sets of register are difference (Reg.allregs and Reg.allfregs)*)
 
-let rec coloring_loop regenv spilled_vars e =
+let rec coloring_loop regenv spilled_vars has_subcall e =
     (*Printf.printf "closure body:\n%s\n" (Asm.to_string e);*)
     let int_graph, float_graph, unit_vars = gen_graph e (S.fold (fun id set -> S1.add (Operand.ID id) set) spilled_vars S1.empty)
     in
@@ -458,15 +461,15 @@ let rec coloring_loop regenv spilled_vars e =
     in
     (*Printf.printf "%s\n" (to_string int_graph);*)
     try
-        let int_color_map = coloring_graph int_graph (StringSet.of_list Reg.allregs) regenv' spilled_vars
+        let int_color_map = coloring_graph int_graph (StringSet.of_list Reg.allregs) regenv' spilled_vars has_subcall
         in
-        let color_map = coloring_graph float_graph (StringSet.of_list Reg.allfregs) int_color_map spilled_vars
+        let color_map = coloring_graph float_graph (StringSet.of_list Reg.allfregs) int_color_map spilled_vars has_subcall
         in
             color_map, spilled_vars
     with
         Spill id ->
             Printf.printf "Spill %s ...\n" (Id.to_string id);
-            coloring_loop regenv (S.add id spilled_vars) e
+            coloring_loop regenv (S.add id spilled_vars) has_subcall e
 
-let coloring e regenv =
-    coloring_loop regenv S.empty e
+let coloring e regenv has_subcall =
+    coloring_loop regenv S.empty has_subcall e

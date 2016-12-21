@@ -336,13 +336,13 @@ let rec generate env e = (* 型推論ルーチン (caml2html: typing_g) *)
     | Var(x, info) when M.mem x env -> M.find x env, e (* 変数の型推論 (caml2html: typing_var) *)
     | Var(x, info) when M.mem x !extenv -> M.find x !extenv, e
     | Var(x, info) -> (* 外部変数の型推論 (caml2html: typing_extvar) *)
-	Format.eprintf "free variable %s assumed as external@." (Id.to_string x);
+	(*Format.eprintf "free variable %s assumed as external@." (Id.to_string x);*)
 	let t = Type.gentyp info in
 	extenv := M.add x t !extenv;
 	t, e
 
-| LetRec({ name = (x, t); args = id_types; body = let_rec_fun_body }, let_rec_body, info) -> (* let recの型推論 (caml2html: typing_letrec) *)
-let env = M.add x t env in
+    | LetRec({ name = (x, t); args = id_types; body = let_rec_fun_body }, let_rec_body, info) -> (* let recの型推論 (caml2html: typing_letrec) *)
+    let env = M.add x t env in
     let typ1, exp1 = generate (M.add_list id_types env) let_rec_fun_body
     in
 	unify (Type.Fun(List.map snd id_types, typ1, info)) t;
@@ -366,58 +366,58 @@ let env = M.add x t env in
                           (*generate lambda*)
                   (*test example: # let m = ref 10 in let n = ref 5 in let _ = (let t = fun x y z -> Printf.printf "%d\n" x in m := 1; t) (n := 3; 10) in Printf.printf "m = %d\n n = %d\n" !m !n;;
 * should print 1, 3 (not 10, 5)*)
-                  let rec seperate_params params args param_id_exps param_exps = function
-                      | [] -> params, args, param_id_exps
-                      | param::rest -> match param_exps with
-                        | [] ->
-                                  let id = Id.genid ("partial_eval_param_new", info)
-                                  in
-                                  let var = Var(id, info)
-                                  in
-                                  seperate_params ((id, param)::params) (var::args) param_id_exps [] rest
-                        | param_exp::param_exps_rest ->
-                                let id = Id.genid ("partial_eval_param_org", get_info param_exp)
-                                in
-                                  seperate_params params args ((id, param_exp)::param_id_exps) param_exps_rest rest
-                  in
-                  let last_params, last_args, param_id_exps = seperate_params [] [] [] param_exps t1s
-                  in
-                  let partial_fun_id = Id.genid ("partial_fun_new", info)
-                  in
-                  let partial_fun_var = Var(partial_fun_id, info)
-                  in
-                  let original_fun_id = Id.genid("partial_fun_org", info)
-                  in
-                  let original_fun_var = Var(original_fun_id, info)
-                  in
-                    let param_vars = List.map (fun (id, _) -> Var(id, Id.get_info id)) param_id_exps
+let rec seperate_params params args param_id_exps param_exps = function
+    | [] -> params, args, param_id_exps
+    | param::rest -> match param_exps with
+    | [] ->
+              let id = Id.genid ("partial_eval_param_new", info)
+              in
+              let var = Var(id, info)
+              in
+              seperate_params ((id, param)::params) (var::args) param_id_exps [] rest
+    | param_exp::param_exps_rest ->
+            let id = Id.genid ("partial_eval_param_org", get_info param_exp)
+            in
+              seperate_params params args ((id, param_exp)::param_id_exps) param_exps_rest rest
+      in
+      let last_params, last_args, param_id_exps = seperate_params [] [] [] param_exps t1s
+      in
+      let partial_fun_id = Id.genid ("partial_fun_new", info)
+      in
+      let partial_fun_var = Var(partial_fun_id, info)
+      in
+      let original_fun_id = Id.genid("partial_fun_org", info)
+      in
+      let original_fun_var = Var(original_fun_id, info)
+      in
+        let param_vars = List.map (fun (id, _) -> Var(id, Id.get_info id)) param_id_exps
+        in
+        let ee =
+              List.fold_right
+                (fun (id, exp) current_let ->
+                    let typ, dexp = generate env exp
                     in
-                    let ee =
-                          List.fold_right
-                            (fun (id, exp) current_let ->
-                                let typ, dexp = generate env exp
-                                in
-                                Let(
-                                    (id, typ),
-                                    dexp,
-                                    current_let,
-                                    Id.get_info id
-                                )
-                            )
-                            param_id_exps
-                            (
-                          Let(
-                              (original_fun_id, fun_type),
-                              f_exp,
-                              LetRec (
-                                  { name = partial_fun_id, Type.gentyp info ; args = last_params; body = App(original_fun_var, (param_vars @ last_args), info) },
-                                partial_fun_var,
-                                info
-                                  ),
-                              info
-                          )
-                                )
-                    in generate env ee
+                    Let(
+                        (id, typ),
+                        dexp,
+                        current_let,
+                        Id.get_info id
+                    )
+                )
+                param_id_exps
+                (
+              Let(
+                  (original_fun_id, fun_type),
+                  f_exp,
+                  LetRec (
+                      { name = partial_fun_id, Type.gentyp info ; args = last_params; body = App(original_fun_var, (param_vars @ last_args), info) },
+                    partial_fun_var,
+                    info
+                      ),
+                  info
+              )
+                    )
+        in generate env ee
           | _  ->
             let t1 = Type.gentyp info
             in
@@ -472,9 +472,15 @@ let env = M.add x t env in
         in
         let typ3, exp3 = generate env e3
         in
+            (*Printf.printf "%s\n" @@ Syntax.to_string exp1;*)
+            (*Printf.printf "the type %s\n" @@ Type.to_string typ1;*)
+            (*Printf.printf "%s\n" @@ Syntax.to_string exp2;*)
+            (*Printf.printf "the type %s\n" @@ Type.to_string typ2;*)
+            (*Printf.printf "%s\n" @@ Syntax.to_string exp3;*)
+            (*Printf.printf "the type %s\n" @@ Type.to_string typ3;*)
             unify (Type.Array(typ3, info)) typ1;
             unify (Type.Int info) typ2;
-                Type.Unit info, Put(exp1, exp2, exp3, info)
+            Type.Unit info, Put(exp1, exp2, exp3, info)
 
   | IntRead info -> Type.Int info, e
   | FloatRead info -> Type.Float info, e

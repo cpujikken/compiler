@@ -67,12 +67,6 @@ type fundef = { name : label; args : Operand.t list; fargs : Operand.t list; bod
 (* プログラム全体 = 浮動小数点数テーブル + トップレベル関数 + メインの式 (caml2html: sparcasm_prog) *)
 type prog = Prog of (Id.l * int) list * (Id.l * float) list * fundef list * t
 
-let fletd(x, e1, e2, info) =
-    Let(
-        (x, Type.Float info),
-        e1,
-        e2,
-        info)
 (*connect 2 expression into 1*)
 let seq(e1, e2, info) =
     Let(
@@ -81,75 +75,6 @@ let seq(e1, e2, info) =
         e2,
         info
         )
-
-(* super-tenuki *)
-let rec remove_dup xs = function
-  | [] -> []
-  | x :: ys when OperandSet.mem x xs -> remove_dup xs ys
-  | x :: ys -> x :: remove_dup (OperandSet.add x xs) ys
-
-(* free variables in the order of use (for spilling) (caml2html: sparcasm_fv) *)
-let rec fv_exp = function
-    | Nop
-    | IntRead
-    | FloatRead
-    | Load (Absolute _ )
-    | FLoad (Absolute _)
-    | MoveImm _
-        -> []
-
-    | Add (a, b)
-    | ShiftLeft (a, b)
-    | ShiftRight (a, b)
-    | Div (a, b)
-    | Mul (a, b)
-    | Sub(a, b)
-    | Load ((Dynamic (a, _, b)))
-    | FLoad ((Dynamic (a, _, b)))
-    | FAdd(a, b)
-    | FSub(a, b)
-    | FMul(a, b)
-    | FDiv(a, b)
-    | Store(a, Relative (b, _))
-    | FStore(a, Relative (b, _))
-    (*| FCmp(a, b, _)*)
-        -> [a; b]
-
-    | Move r
-    | FMove r
-    | Addi (r, _)
-    | Four r
-    | Half r
-    | Load (Relative (r, _))
-    | FLoad (Relative(r, _))
-    | Store(r, Absolute _)
-    | FStore(r, Absolute _)
-    | Neg r
-    | FNeg r
-    | FAbs r
-    | Print r
-        ->  [r]
-
-    | Store(r1, Dynamic(r2, _, r3))
-    | FStore(r1, Dynamic(r2, _, r3))
-    -> [r1; r2; r3]
-
-    | IfEQ (u, v, e1, e2)
-    | FIfEQ(u, v, e1, e2)
-    | IfLT(u, v, e1, e2)
-    | FIfLT(u, v, e1, e2)
-    -> u :: v :: remove_dup OperandSet.empty (get_free_vars_ e1 @ get_free_vars_ e2)
-
-    | CallCls (x, ys, zs)
-    -> x :: ys @ zs
-    | CallDir(_, ys, zs)
-    -> ys @ zs
-
-and get_free_vars_ = function
-  | Ans(exp, info) -> fv_exp exp
-  | Let((x, t), exp, e, info) ->
-      fv_exp exp @ remove_dup (OperandSet.singleton x) (get_free_vars_ e)
-let get_free_vars e = remove_dup OperandSet.empty (get_free_vars_ e)
 
 (*let xt = e1 then evaluate e2*)
 let rec concat e1 xt e2 =
@@ -166,18 +91,21 @@ let float_size = 4
 let imm_length = 21
 
 let rec to_string_pre pre e =
-    let npre = pre ^ "\t"
+    let npre = pre ^ "  "
     in
     match e with
   | Ans (exp, info) -> Printf.sprintf "%sAns of\t#%s\n%s" pre (Info.to_string info) (exp_to_string_pre npre exp)
   | Let ((operand, operand_type), exp, t, info) ->
-          Printf.sprintf "%sLET %s:%s\t#%s\n%s=\n%s\n%sIN\n%s" pre (Operand.to_string operand) (Type.to_string operand_type) (Info.to_string info)
+          Printf.sprintf "%sLET %s\t%s\n%s\n%s=\n%s\n%sIN\n%s" pre (Operand.to_string operand) (Info.to_string info) (Type.to_string_pre npre operand_type)
             pre (exp_to_string_pre npre exp) pre (to_string_pre npre t)
 and
 to_string exp =
     to_string_pre "" exp
 and
-exp_to_string_pre pre = function
+exp_to_string_pre pre exp =
+    let npre = pre ^ "  "
+    in
+    match exp with
     | Nop -> "Nop"
     | IntRead -> "IntRead"
     | FloatRead -> "FloatRead"
@@ -208,12 +136,12 @@ exp_to_string_pre pre = function
     | Move op -> Printf.sprintf "%sMove %s" pre (Operand.to_string op)
     | FMove op -> Printf.sprintf "%sFMove %s" pre (Operand.to_string op)
 
-    | IfEQ (op1, op2, exp1, exp2) -> Printf.sprintf "%sIfEQ %s, %s\n%s\n%s" pre (Operand.to_string op1) (Operand.to_string op2) (to_string_pre (pre ^ "\t") exp1) (to_string_pre (pre ^ "\t") exp2)
-    | FIfEQ (op1, op2, exp1, exp2) -> Printf.sprintf "%sFIfEQ %s, %s\n%s\n%s" pre (Operand.to_string op1) (Operand.to_string op2) (to_string_pre (pre ^ "\t") exp1) (to_string_pre (pre ^ "\t") exp2)
-    | IfLT (op1, op2, exp1, exp2) -> Printf.sprintf "%sIfLT %s, %s\n%s\n%s" pre (Operand.to_string op1) (Operand.to_string op2) (to_string_pre (pre ^ "\t") exp1) (to_string_pre (pre ^ "\t") exp2)
-    | FIfLT (op1, op2, exp1, exp2) -> Printf.sprintf "%sFIfLT %s, %s\n%s\n%s" pre (Operand.to_string op1) (Operand.to_string op2) (to_string_pre (pre ^ "\t") exp1) (to_string_pre (pre ^ "\t") exp2)
-    | CallCls (op, op_list1, op_list2) -> Printf.sprintf "%sCallCls %s%s%s" pre (Operand.to_string op) (op_list_to_string op_list1 (pre ^ "\t")) (op_list_to_string op_list2 (pre ^ "\t"))
-    | CallDir (label, op_list1, op_list2) -> Printf.sprintf "%sCallDir %s%s%s" pre label (op_list_to_string op_list1 (pre ^ "\t")) (op_list_to_string op_list2 (pre ^ "\t"))
+    | IfEQ (op1, op2, exp1, exp2) -> Printf.sprintf "%sIfEQ %s, %s\n%s\n%s" pre (Operand.to_string op1) (Operand.to_string op2) (to_string_pre npre exp1) (to_string_pre npre exp2)
+    | FIfEQ (op1, op2, exp1, exp2) -> Printf.sprintf "%sFIfEQ %s, %s\n%s\n%s" pre (Operand.to_string op1) (Operand.to_string op2) (to_string_pre npre exp1) (to_string_pre npre exp2)
+    | IfLT (op1, op2, exp1, exp2) -> Printf.sprintf "%sIfLT %s, %s\n%s\n%s" pre (Operand.to_string op1) (Operand.to_string op2) (to_string_pre npre exp1) (to_string_pre npre exp2)
+    | FIfLT (op1, op2, exp1, exp2) -> Printf.sprintf "%sFIfLT %s, %s\n%s\n%s" pre (Operand.to_string op1) (Operand.to_string op2) (to_string_pre npre exp1) (to_string_pre npre exp2)
+    | CallCls (op, op_list1, op_list2) -> Printf.sprintf "%sCallCls %s%s%s" pre (Operand.to_string op) (op_list_to_string op_list1 npre) (op_list_to_string op_list2 npre)
+    | CallDir (label, op_list1, op_list2) -> Printf.sprintf "%sCallDir %s%s%s" pre label (op_list_to_string op_list1 npre) (op_list_to_string op_list2 npre)
 and
 op_list_to_string ll pre = List.fold_left
     (fun current op  -> Printf.sprintf "\n%s%s" pre (Operand.to_string op))
@@ -225,3 +153,47 @@ addr_to_string = function
     | Dynamic (op1, size4, op2) -> Printf.sprintf "Dynamic (%s * %d)(%s)" (Operand.to_string op2) size4 (Operand.to_string op1)
     | Absolute (loc1, Some loc2) -> Printf.sprintf "Absolute %s + %s" (Loc.to_string loc1) (Loc.to_string loc2)
     | Absolute(loc, None) -> Printf.sprintf "Absolute %s" (Loc.to_string loc)
+
+let rec has_sub_call = function
+  | Ans (e, _) -> has_sub_call_exp e
+  | Let (_, exp, body, _) -> has_sub_call_exp exp || has_sub_call body
+and
+has_sub_call_exp = function
+    | Nop
+    | IntRead
+    | FloatRead
+    | Add _
+    | ShiftLeft _
+    | ShiftRight _
+    | Div _
+    | Mul _
+    | Sub _
+    | Addi _
+    | Four _
+    | Half _
+    | Load _
+    | Store _
+    | Neg _
+    | FNeg _
+    | FAbs _
+    | Print _
+    | FAdd _
+    | FSub _
+    | FMul _
+    | FDiv _
+    | FLoad _
+    | FStore _
+    | MoveImm _
+    | Move _
+    | FMove _
+    -> false
+
+    | IfEQ (_, _, t1, t2)
+    | FIfEQ (_, _, t1, t2)
+    | IfLT (_, _, t1, t2)
+    | FIfLT (_, _, t1, t2)
+    -> has_sub_call t1 || has_sub_call t2
+
+    | CallCls _
+    | CallDir _
+    -> true

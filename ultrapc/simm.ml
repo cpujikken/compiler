@@ -1,20 +1,20 @@
-open Asm
+open Dfa
 open Operand
 open Reg
 open Loc
 
 (*remove unused let if all of place can be replacable*)
 let rec generate env = function (* 命令列の即値最適化 (caml2html: simm13_g) *)
-  | Ans(exp, info) -> Ans(generate' env exp, info)
-  | Let((ID x, t), MoveImm(Constant i), e, info) ->
+  | Ans(exp, id, info) -> Ans(generate' env exp, id, info)
+  | Let((ID x, t), MoveImm(Constant i), id, e, info) ->
       (* Format.eprintf "found simm %s = %d@." x i; *)
       let e' = generate (M.add x i env) e in
       if List.mem (ID x) (get_free_vars e') then
-          Let((ID x, t),MoveImm(Constant i), e', info)
+          Let((ID x, t),MoveImm(Constant i), id, e', info)
       else
       ((* Format.eprintf "erased redundant Set to %s@." x; *)
        e')
-  | Let(xt, exp, e, info) -> Let(xt, generate' env exp, generate env e, info)
+  | Let(xt, exp, id, e, info) -> Let(xt, generate' env exp, id, generate env e, info)
 and generate' env = function (* 各命令の即値最適化 (caml2html: simm13_gprime) *)
   | Add(x, ID y) when M.mem y env -> Addi(x, Constant (M.find y env))
   | Add(ID x, y) when M.mem x env -> Addi(y, Constant (M.find x env))
@@ -52,5 +52,5 @@ and generate' env = function (* 各命令の即値最適化 (caml2html: simm13_g
 let fun_converter { name = l; args = xs; fargs = ys; body = e; ret = t ; info = info} = (* トップレベル関数の即値最適化 *)
     { name = l; args = xs; fargs = ys; body = generate M.empty e; ret = t; info = info }
 
-let f (Prog(idata, data, fundefs, e)) = (* プログラム全体の即値最適化 *)
-  Prog(idata, data, List.map fun_converter fundefs, generate M.empty e)
+let f (fundefs, e) = (* プログラム全体の即値最適化 *)
+  List.map fun_converter fundefs, generate M.empty e

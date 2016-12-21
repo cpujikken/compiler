@@ -21,17 +21,23 @@ clean:: nobackup
 # ↓もし実装を改造したら、それに合わせて変える
 SOURCES = float.c common.ml info.ml cmd.ml type.ml id.ml stringSet.ml m.ml s.ml \
 		  stringMap.ml \
+	intMap.ml \
+	intSet.ml \
 		  loc.ml \
 		  reg.ml operand.ml operandSet.ml \
 		  m2.ml \
+		  s2.ml \
 		  s1.ml \
 		syntax.ml parser.mly lexer.mll typing.ml kNormal.ml \
 		m1.ml \
 		alpha.ml beta.ml assoc.ml \
 		inline.ml constFold.ml elim.ml duplicateLet.ml \
-		closure.ml expandTuple.ml flatTuple.ml asmReg.ml asm.ml virtual.ml \
+			closure.ml expandTuple.ml flatTuple.ml asmReg.ml asm.ml \
 		  graph.ml \
-		simm.ml regAlloc.ml emit.ml \
+		regAlloc.ml emit.ml \
+		m3.ml\
+		elimAsm.ml \
+		dfa.ml virtual.ml simm.ml \
 		main.ml
 
 # ↓テストプログラムが増えたら、これも増やす
@@ -59,18 +65,24 @@ test/%.cmp: test/%.res test/%.ans
 	diff $^ > $@
 
 min-caml.html: main.ml id.ml m.ml stringSet.ml s.ml \
+	intMap.ml \
+	intSet.ml \
 	loc.ml \
 	reg.ml \
 	operand.ml \
 	m2.ml \
+		  s2.ml \
 		s1.ml \
 		stringMap.ml \
 		syntax.ml type.ml parser.mly lexer.mll typing.ml kNormal.ml \
 		alpha.ml beta.ml assoc.ml \
 		inline.ml constFold.ml elim.ml \
-		closure.ml expandTuple.ml flatTuple.ml asmReg.ml asm.ml virtual.ml \
+		closure.ml expandTuple.ml flatTuple.ml asmReg.ml asm.ml \
 	graph.ml \
-		simm.ml regAlloc.ml emit.ml info.ml \
+		regAlloc.ml emit.ml info.ml \
+		m3.ml\
+		elimAsm.ml \
+dfa.ml virtual.ml simm.ml \
 		duplicateLet.ml common.ml m1.ml cmd.ml operandSet.ml
 	./to_sparc
 	caml2html -o min-caml.html $^
