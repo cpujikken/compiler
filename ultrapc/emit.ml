@@ -508,4 +508,5 @@ let f (Prog(idata, fdata, fundefs, e)) =
         stackset := S.empty;
         stackmap := [];
         generate (Tail, e);
+        append_cmd_noinfo cmd_finish [];
       )
