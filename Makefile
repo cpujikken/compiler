@@ -36,6 +36,7 @@ SOURCES = float.c common.ml info.ml cmd.ml type.ml id.ml stringSet.ml m.ml s.ml 
 		  graph.ml \
 		regAlloc.ml emit.ml \
 		m3.ml\
+		elimAsm.ml \
 		dfa.ml virtual.ml simm.ml \
 		main.ml
 
@@ -80,6 +81,7 @@ min-caml.html: main.ml id.ml m.ml stringSet.ml s.ml \
 	graph.ml \
 		regAlloc.ml emit.ml info.ml \
 		m3.ml\
+		elimAsm.ml \
 dfa.ml virtual.ml simm.ml \
 		duplicateLet.ml common.ml m1.ml cmd.ml operandSet.ml
 	./to_sparc

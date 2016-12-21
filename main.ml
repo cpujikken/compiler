@@ -14,6 +14,7 @@ let lexbuf outchan l = (* バッファをコンパイルしてチャンネルへ
   Typing.extenv := M.empty;
   Emit.f
     @@ RegAlloc.f
+    @@ ElimAsm.f
     @@ Dfa.f
     @@ Simm.f
     @@ Virtual.f
