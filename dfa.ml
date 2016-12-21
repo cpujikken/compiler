@@ -89,6 +89,8 @@ env = {
     fun_by_name : fundef StringMap.t;
     calculable: bool;
     no_side_effect_defs: StringSet.t;
+    after_entry_block_id : int;
+    first_block_id : int;
 }
 and
 convert_data = {
@@ -353,8 +355,18 @@ let env_new_block block env =
         block_map = new_block_map
     }
 
+    (*call from env_append_assignments
+     * or env_append_branch
+     * *)
+    (*return new_block_id and env*)
 let env_append_block_force assigns env =
+    (*new block id is the last id of first force assignment  + 1*)
     let new_block_id = env.id
+    in
+    let env = {env with
+        after_entry_block_id = if env.after_entry_block_id = -1 then new_block_id else env.after_entry_block_id;
+        first_block_id = if env.last_blocks = [] then new_block_id else env.first_block_id;
+    }
     in
     let new_block = (assigns, new_block_id)
     in
@@ -366,23 +378,43 @@ let env_append_block_force assigns env =
         env.graph
         env.last_blocks
     in
+    new_block_id,
         {env with
             graph = graph;
             last_blocks = [new_block];
         }
 
-let env_append_assignments assigns env =
+let env_append_assignments assigns env is_tail =
     match env.last_blocks with
         [(assign_list, block_id)] ->
             let last_block = assign_list @ assigns, block_id
             in
             let block_map = IntMap.add block_id last_block env.block_map
             in
-            {env with
+            let env = {env with
                 last_blocks = [last_block];
                 block_map = block_map
-        }
-        | _ -> env_append_block_force assigns env
+            }
+            in
+            let graph = env.graph
+            in
+            let graph =
+                if is_tail then
+                graph_add_edge block_id env.after_entry_block_id graph
+                else graph
+            in {env with
+                    graph = graph
+                }
+        | _ ->
+                let new_block_id, env =
+                    env_append_block_force assigns env
+                in
+                let graph = if is_tail then graph_add_edge new_block_id env.after_entry_block_id env.graph
+                else
+                    env.graph
+                in {env with
+                    graph = graph
+                }
 
 let env_new_command command env =
     {env with
@@ -408,7 +440,8 @@ let env_tail_call int_args float_args env =
         assigns
         ([], env)
     in
-        env_append_assignments assigns env
+        env_append_assignments assigns env true
+        (*link to first block after entry*)
 
 let env_append_assignment exp env =
     let ret_assignments = env.ret_assignments
@@ -424,7 +457,7 @@ let env_append_assignment exp env =
     in
     let env = env_new_command assignment env
     in
-        env_append_assignments [assignment]  env
+        env_append_assignments [assignment]  env false
 
 let rec gen_graph env = function
     | Ans (e, _, info) ->
@@ -439,6 +472,11 @@ let rec gen_graph env = function
             Let((op, op_typ), let_e, id, body, info), env
 and
 gen_graph_exp env = function
+    (*there are 3 types of adding commands:
+        * env_append_assignment -> call env_append_assignments
+        * env_tail_call -> call env_append_assignments
+        * env_append_branch
+        *)
     | CallDir (label, op_list1, op_list2) as exp when env.tail && label = env.funname
         ->
             (*Printf.printf "%s\n" label;*)
@@ -507,13 +545,22 @@ env_append_branch e exp1 exp2 env =
     in
     let env = env_new_command branch_command env
     in
-    let env = env_append_block_force [branch_command]  env
+    let branch_block_id, env = env_append_block_force [branch_command]  env
     in
-    let body_true, env_true = gen_graph env exp1
+    let body_true, env_true = gen_graph {env with last_blocks = []} exp1
     in
-    let body_false, env_false = gen_graph {env_true with last_blocks = env.last_blocks; dest = env.dest} exp2
+    let body_false, env_false = gen_graph {env_true with last_blocks = []; dest = env.dest} exp2
     in
-        body_true, body_false, {env_false with last_blocks = env_true.last_blocks @ env_false.last_blocks}
+    let graph = graph_add_edge branch_block_id env_true.first_block_id  env.graph
+    in
+    let graph = graph_add_edge branch_block_id env_false.first_block_id graph
+    in
+    (*update graph*)
+        body_true, body_false,
+        {env_false with
+            last_blocks = env_true.last_blocks @ env_false.last_blocks;
+            graph = graph
+    }
 
 let graph_fold_edge f graph init =
     IntMap.fold (fun u ->
@@ -667,19 +714,22 @@ let find_reach inset env =
                 (*Printf.printf "trang %d\n" (List.length command_list);*)
             (*for each block*)
             List.fold_left (fun (reach, last_def_command_id) command ->
-                    (*M2.iter (fun var id -> Printf.printf "%s -> %d\n" (Operand.to_string var) id) last_def_command_id;*)
                 let command_id = command_get_id command
                 in
                 let used_vars = command_source command
                 in
+                (*Printf.printf "used_vars of command id %d block id %d\n" command_id block_id;*)
+                (*S1.iter (fun x -> Printf.printf "%s, " @@ Operand.to_string x) used_vars; Printf.printf "\n";*)
+                    (*M2.iter (fun var id -> Printf.printf "%s -> %d\n" (Operand.to_string var) id) last_def_command_id;*)
                     S1.fold (fun var reach ->
                         let reach_set =
-                            if M2.mem var last_def_command_id then
-                                (
+                            try
+                                (*var is defined in some commands same block*)
                                 (*Printf.printf "xxx %s\n" @@ Operand.to_string var;*)
                                 IntSet.singleton (M2.find var last_def_command_id)
-                                )
-                            else
+                            with Not_found ->
+                                (*find from reach[block_id] i.e. inset[block_id]*)
+                                (*IntSet.iter (Printf.printf "masdfasdf %d\n") (IntMap.find block_id inset);*)
                                 IntSet.filter (fun def_command_id_outside ->
                                     S1.mem var @@ command_dest @@ IntMap.find def_command_id_outside env.command_map
                                 )
@@ -761,6 +811,14 @@ let rec get_const_exp const_env env = function
             CInt x, CInt y -> Some (CInt (x + y))
             | _ -> None
         )
+    (*| Add (op1, op2) ->*)
+            (*Printf.printf "const_map \n";*)
+            (*M2.iter (fun op v ->*)
+                (*Printf.printf "const %s\n" @@ Operand.to_string op*)
+            (* )*)
+            (*const_env.const_map;*)
+            (*Printf.printf "%s + %s\n" (Operand.to_string op1) @@ Operand.to_string op2;*)
+            (*None*)
     | ShiftLeft (op1, op2) when M2.mem op1 const_env.const_map && M2.mem op2 const_env.const_map
         -> (match M2.find op1 const_env.const_map, M2.find op2 const_env.const_map with
             CInt x, CInt y -> Some (CInt (x lsl y))
@@ -921,7 +979,7 @@ let rec get_const_exp const_env env = function
                 try
                     let any = IntSet.choose ret_assignments
                     in
-                    Printf.printf "any %d\n" any;
+                    (*Printf.printf "any %d\n" any;*)
                     let _, const = IntMap.find any const_env.const_commands
                     in
                     let same_value = IntSet.fold (fun command_id same_value ->
@@ -1027,6 +1085,9 @@ find_const_commands_loop const_env use reach env =
                 (*M3.iter (fun (op, id) set -> Printf.printf "%s %d\n" (Operand.to_string id) op) reach;*)
             let worklist = IntMap.remove s const_env.worklist
             in
+                (*Printf.printf "%s debug use for %d\n" env.funname s;*)
+                (*IntMap.iter (fun s set -> Printf.printf "use of %d: " s; IntSet.iter (Printf.printf "%d, ") set; Printf.printf "\n") use;*)
+
                 IntSet.fold (fun t const_env ->
                     (*Printf.printf "%d\n" t;*)
                     let reachable = IntSet.fold (fun sibling_id reachable ->
@@ -1046,6 +1107,7 @@ find_const_commands_loop const_env use reach env =
                         )
                     true
                     in
+                    (*Printf.printf "check reachable %d %d\n" t (if reachable then 1 else 0);*)
                     if reachable then
                         let use_in_t = try IntMap.find t const_env.use_const with Not_found -> M2.empty
                         in
@@ -1058,55 +1120,13 @@ find_const_commands_loop const_env use reach env =
                         in
                         match IntMap.find t env.command_map with
                             Assignment (op, exp, _) ->
-                        Printf.printf "hello %d\n" t;
-                        M2.iter (fun op _ -> Printf.printf "op %s\n" @@ Operand.to_string op) use_in_t;
-                        (
-                        match exp with
-    | Nop
-    | Int _
-    | Float _
-    | Add _
-    | ShiftLeft _
-    | ShiftRight _
-    | Div _
-    | Mul _
-    | Sub _
-    | Addi _
-    | Four _
-    | Half _
-    | Load _
-    | Neg _
-    | FNeg _
-    | FAbs _
-    | FAdd _
-    | FSub _
-    | FMul _
-    | FDiv _
-    | FLoad _
-    | MoveImm _
-    | Move _
-    | FMove _
-    | IntRead
-    | FloatRead
-    | Store _
-    | Print _
-    | FStore _
-    | CallCls _
-    | IfEQ _
-    | FIfEQ _
-    | IfLT _
-    | FIfLT _
-
-    -> Printf.printf "xxxxxxxxxxxxxxxxxxxx";
-    | CallDir (label, op_list1, op_list2) -> Printf.printf "calling %s\n" label
-                                | _ ->()
-                        )
-                                        ;
+                        (*Printf.printf "hello %d\n" t;*)
+                        (*M2.iter (fun op _ -> Printf.printf "op %s\n" @@ Operand.to_string op) use_in_t;*)
                                 (match get_const_exp const_env env exp with
                                 None -> const_env
                                 | Some const ->
-                        Printf.printf "op %s\n" @@ Operand.to_string op;
-                        Printf.printf "const %d\n" t;
+                        (*Printf.printf "op %s\n" @@ Operand.to_string op;*)
+                        (*Printf.printf "const %d\n" t;*)
                                         let const_commands =
                                             IntMap.add t (op, const) const_env.const_commands
                                         in {const_env with
@@ -1149,10 +1169,14 @@ const_fold tmp {name = name; args = int_args; fargs = float_args; body = body; r
     (*fidn dest*)
     let dest = match ret_type with Type.Float _ -> Operand.Reg Reg.freg_ret | _ -> Operand.Reg Reg.reg_ret
     in
-    (*entry block link to first block (id = 1) *)
-    let graph = IntMap.empty |> IntMap.add 0 @@ IntSet.singleton 1
-    in
+    (*convention:
+        * block id 0: parameter setup (if exists)
+        * block id1: entry block
+        *)
+    (*entry block link to first block (id = env.after_entry_block_id) *)
     let env = {
+        after_entry_block_id = -1;
+        first_block_id = -1;
         calculable = true;
         tail = true;
         id = 0;
@@ -1160,7 +1184,7 @@ const_fold tmp {name = name; args = int_args; fargs = float_args; body = body; r
         funname = name;
         int_params = int_args;
         float_params = float_args;
-        graph = graph;
+        graph = IntMap.empty;
         last_blocks = [];
         block_map = IntMap.empty;
         tmp = tmp;
@@ -1172,20 +1196,26 @@ const_fold tmp {name = name; args = int_args; fargs = float_args; body = body; r
     in
     let entry_block_id = env.id
     in
-    let env, entry_block = List.fold_right (fun arg (env, entry_block) ->
+    (*fixed: here, fold_left must be used, not fold_right because of the env.id generator order for command*)
+    (*update entry block: parameter setup*)
+    let env, entry_block = List.fold_left (fun (env, entry_block) arg ->
         let new_command = Entry (arg, env.id)
         in
         let env = env_new_command new_command env
         in
-            env, new_command::entry_block
+            env, entry_block @ [new_command]
 
         )
-        (int_args @ float_args)
         (env, [])
+        (int_args @ float_args)
     in
     let env = env_new_block (entry_block, entry_block_id) env
     in
     let body, env = gen_graph env body
+    in
+    let env = {env with
+        graph = graph_add_edge entry_block_id env.first_block_id env.graph
+    }
     in
     let def = find_def env
     in
@@ -1195,9 +1225,17 @@ const_fold tmp {name = name; args = int_args; fargs = float_args; body = body; r
     in
     let reach = find_reach inset env
     in
+    (*Printf.printf "debug reach for fun %s\n" name;*)
+    (*M3.iter (fun (cmd, op) set ->*)
+        (*Printf.printf "cmd no %d operand %s\n" cmd (Operand.to_string op);*)
+        (*IntSet.iter (Printf.printf "%d, ") set;*)
+        (*Printf.printf "\n"*)
+    (* )*)
+    (*reach;*)
     let use = find_use reach env
     in
     let args_opt =
+        (*the order is not by original order, but follow by M2.t's order*)
         match args_opt_by_no with
             | None -> None
             | Some (int_const_args, float_const_args) ->
@@ -1221,7 +1259,7 @@ const_fold tmp {name = name; args = int_args; fargs = float_args; body = body; r
                         (m, 0)
                         float_args
                     in
-                    M2.iter (fun op va -> Printf.printf "const for arg const_fold %s\n" @@ Operand.to_string op) m;
+                    (*M2.iter (fun op va -> Printf.printf "const for arg const_fold %s\n" @@ Operand.to_string op) m;*)
                     Some m
     in
     let const_env = find_const_commands use reach env args_opt call_stack
