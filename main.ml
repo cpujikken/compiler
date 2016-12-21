@@ -4,7 +4,15 @@ in
 let rec iter n e = (* 最適化処理をくりかえす (caml2html: main_iter) *)
     Format.eprintf "iteration %d@." n;
   if n = 0 then e else
-      let e' = Elim.f (DuplicateLet.f (ConstFold.f (Inline.f (Assoc.f (Beta.f e))))) in
+      let e' =
+          Elim.f
+          @@ DuplicateLet.f
+          @@ ConstFold.f
+          @@ Inline.f
+          @@ Assoc.f
+          @@ Beta.f
+          @@ e
+        in
       if e = e' then e else
           iter (n - 1) e'
 in
@@ -21,19 +29,20 @@ let lexbuf outchan l = (* バッファをコンパイルしてチャンネルへ
     @@ ExpandTuple.f
     @@ FlatTuple.f
     @@ Closure.f
-    @@ (iter !limit
-        @@
-        DuplicateLet.f
-        @@
-        Alpha.f
-        @@
-        KNormal.f
-        @@
-        Typing.f
-        @@
-        Parser.exp
-        Lexer.token l
-    );
+    @@
+    iter !limit
+    @@
+    DuplicateLet.f
+    @@
+    Alpha.f
+    @@
+    KNormal.f
+    @@
+    Typing.f
+    @@
+    Parser.exp
+    Lexer.token l
+    ;
     Cmd.f outchan
 in
 

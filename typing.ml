@@ -336,7 +336,7 @@ let rec generate env e = (* 型推論ルーチン (caml2html: typing_g) *)
     | Var(x, info) when M.mem x env -> M.find x env, e (* 変数の型推論 (caml2html: typing_var) *)
     | Var(x, info) when M.mem x !extenv -> M.find x !extenv, e
     | Var(x, info) -> (* 外部変数の型推論 (caml2html: typing_extvar) *)
-	Format.eprintf "free variable %s assumed as external@." (Id.to_string x);
+	(*Format.eprintf "free variable %s assumed as external@." (Id.to_string x);*)
 	let t = Type.gentyp info in
 	extenv := M.add x t !extenv;
 	t, e

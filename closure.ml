@@ -145,7 +145,7 @@ let rec generate env known = function (* クロージャ変換ルーチン本体
         else
             (* 駄目だったら状態(toplevelの値)を戻して、クロージャ変換をやり直す *)
             (
-                Format.eprintf "free variable(s) %s found in function %s@." (Id.pp_list (S.elements external_variables)) (Id.to_string fun_name);
+                (*Format.eprintf "free variable(s) %s found in function %s@." (Id.pp_list (S.elements external_variables)) (Id.to_string fun_name);*)
                  Format.eprintf "function %s cannot be directly applied in fact@." (Id.to_string fun_name);
                  toplevel := toplevel_backup;
 
@@ -196,10 +196,11 @@ let rec generate env known = function (* クロージャ変換ルーチン本体
                 MakeCls((fun_name, fun_type), { entry = Id.to_L fun_name; actual_fv = external_variables }, let_body', info) (* 出現していたら削除しない *)
             else
                 (*just return let_body if function is not used*)
-                (Format.eprintf "eliminating closure(s) %s@." (Id.to_string fun_name);
+                (
+                    (*Format.eprintf "eliminating closure(s) %s@." (Id.to_string fun_name);*)
                 let_body') (* 出現しなければMakeClsを削除 *)
   | KNormal.App(x, ys, info) when S.mem x known -> (* 関数適用の場合 (caml2html: closure_app) *)
-      Format.eprintf "directly applying %s@." (Id.to_string x);
+      (*Format.eprintf "directly applying %s@." (Id.to_string x);*)
       AppDir(Id.to_L x, ys, info)
   | KNormal.App(f, xs, info) -> AppCls(f, xs, info)
   | KNormal.Tuple(xs, info) -> Tuple(xs, info)
