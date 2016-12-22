@@ -131,8 +131,8 @@ has_side_effect_exp no_side_effect_defs = function
 
     | IntRead
     | FloatRead
-    | Store _
     | Print _
+    | Store _
     | FStore _
     | CallCls _
     -> true
