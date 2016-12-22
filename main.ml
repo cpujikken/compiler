@@ -45,8 +45,10 @@ let lexbuf file_name l = (* バッファをコンパイルしてチャンネル�
     let knormal_out = out_with_ext "knormal"
     in
     let syntax_out = out_with_ext "syntax"
+    in
+    let elim_closure_out = out_with_ext "elim_closure"
    in
-    let outs = [asm_out; reg_alloc_out; elim_asm_out; dfa_out; simm_out; virtual_out; expand_tuple_out; flat_tuple_out; closure_out; duplicate_let_out; alpha_out; knormal_out; syntax_out;]
+    let outs = [asm_out; reg_alloc_out; elim_asm_out; elim_closure_out; dfa_out; simm_out; virtual_out; expand_tuple_out; flat_tuple_out; closure_out; duplicate_let_out; alpha_out; knormal_out; syntax_out;]
     in
 try
     Id.counter := 0;
@@ -57,6 +59,7 @@ try
     @@ Dfa.f dfa_out
     @@ Simm.f simm_out
     @@ Virtual.f virtual_out
+    @@ ElimClosure.f elim_closure_out
     @@ ExpandTuple.f expand_tuple_out
     @@ FlatTuple.f flat_tuple_out
     @@ Closure.f closure_out

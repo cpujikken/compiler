@@ -33,6 +33,7 @@ SOURCES = float.c common.ml info.ml cmd.ml type.ml id.ml stringSet.ml m.ml s.ml 
 		alpha.ml beta.ml assoc.ml \
 		inline.ml constFold.ml elim.ml duplicateLet.ml \
 			closure.ml expandTuple.ml flatTuple.ml asmReg.ml asm.ml \
+			elimClosure.ml \
 		  graph.ml \
 		regAlloc.ml emit.ml \
 		m3.ml\
@@ -78,6 +79,7 @@ min-caml.html: main.ml id.ml m.ml stringSet.ml s.ml \
 		alpha.ml beta.ml assoc.ml \
 		inline.ml constFold.ml elim.ml \
 		closure.ml expandTuple.ml flatTuple.ml asmReg.ml asm.ml \
+			elimClosure.ml \
 	graph.ml \
 		regAlloc.ml emit.ml info.ml \
 		m3.ml\

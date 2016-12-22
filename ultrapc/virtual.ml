@@ -123,8 +123,8 @@ let rec generate env = function (* 式の仮想マシンコード生成 (caml2ht
   | Closure.Var(x, info) ->
       (match M.find x env with
       | Type.Unit _ -> Ans(Nop, -1, info)
-      | Type.Float _ -> Ans(FLoad(Absolute (Label (fst x), None)), -1, info)
-      | _ -> Ans(Load(Absolute (Label (fst x), None)), -1, info))
+      | Type.Float _ -> Ans(FMove(Operand.ID x), -1, info)
+      | _ -> Ans(Move(Operand.ID x), -1, info))
   | Closure.Array (count, info) ->
       Let(
           (Reg reg_hp, Type.Int info),
