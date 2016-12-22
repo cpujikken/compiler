@@ -440,7 +440,7 @@ let gen_fundef fundefs =
         mapped_list
 
 (*assign register*)
-let f (Prog(idata, data, fundefs, e)) = (* プログラム全体のレジスタ割り当て (caml2html: regalloc_f) *)
+let f out (Prog(idata, data, fundefs, e)) = (* プログラム全体のレジスタ割り当て (caml2html: regalloc_f) *)
     (*Format.eprintf "register allocation: may take some time (up to a few minutes, depending on the size of functions)@.";*)
       let fundefs' = gen_fundef fundefs in
         (*Printf.printf "closure body:\n%s\n" (Asm.to_string e);*)
@@ -456,8 +456,7 @@ let f (Prog(idata, data, fundefs, e)) = (* プログラム全体のレジスタ�
       in
       let idata = (default_reg_st_label, Common.default_stack)::idata
       in
-      AsmReg.Prog(idata, data, fundefs',
-
+      let new_body =
       AsmReg.Let ((reg_hp, Type.Int info),
           (AsmReg.Load (AsmReg.Absolute (Loc.Label ( fst default_reg_hp_label), None))),
           AsmReg.Let(
@@ -468,4 +467,8 @@ let f (Prog(idata, data, fundefs, e)) = (* プログラム全体のレジスタ�
           ),
           info
           )
-      )
+      in
+      let prog = AsmReg.Prog(idata, data, fundefs', new_body )
+      in
+      AsmReg.print_all out prog;
+      prog

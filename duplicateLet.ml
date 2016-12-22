@@ -80,10 +80,8 @@ let rec generate env = function
       }, fst (generate env e), info), env
 
     (*env maps expression to variable (Syntax.Var type)*)
-let f e =
-    (*fst (generate M1.empty e)*)
+let f out e =
     let refined = fst (generate M1.empty e)
     in
-    (*Printf.printf "\n\n code before removing duplicate elements:\n%s" (KNormal.to_string e);*)
-    (*Printf.printf "\n\ncode after removing duplicate elements:\n%s" (KNormal.to_string refined);*)
-    refined
+        KNormal.print_all out refined;
+        refined

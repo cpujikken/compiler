@@ -298,14 +298,21 @@ let to_string x =
     in
     to_string_pre "" x
 
-let fundef_to_string { name = (name, name_info), typ;
-        args = _;(*(Id.t * Type.t) list;*)
-        formal_fv = _ ;(*(Id.t * Type.t) list;*)
-        body = body;
-        info = info;} =
-            Printf.sprintf "fun name: %s\n%s" name (to_string body)
+let print_all out (Prog(fundefs, body)) =
+    Printf.fprintf out "body:\n";
+    Printf.fprintf out "%s\n" @@ to_string body;
+    List.iter (fun fundef -> Printf.fprintf out "closure %s\n" @@ Id.to_string @@ fst fundef.name;
+    Printf.fprintf out "int args:\n";
+    List.iter (fun (id, typ) -> Printf.fprintf out "%s\nof type\n%s\n" (Id.to_string id) @@ Type.to_string typ) fundef.args;
+    Printf.fprintf out "float args:\n";
+    List.iter (fun (id, typ) -> Printf.fprintf out "%s\nof type\n%s\n" (Id.to_string id) @@ Type.to_string typ) fundef.formal_fv;
+    Printf.fprintf out "closre body: \n%s\n" @@ to_string fundef.body;
+    ) fundefs
 
-let f e =
+let f out e =
   toplevel := [];
   let e' = generate M.empty S.empty e in
-  Prog(List.rev !toplevel, e')
+  let prog = Prog(List.rev !toplevel, e')
+  in
+      print_all out prog;
+      prog

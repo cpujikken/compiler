@@ -91,6 +91,7 @@ let to_string x =
     and to_string_idtype_list pre x = to_string_args pre x
     in
     to_string_pre "" x
+let print_all out exp = Printf.fprintf out "%s\n" @@ to_string exp
 
 let rec fv = function (* 式に出現する（自由な）変数 (caml2html: knormal_fv) *)
   | Unit (_) | Int(_, _) | Float(_, _) | ExtArray(_, _)
@@ -288,9 +289,11 @@ let rec generate env = function (* K正規化ルーチン本体 (caml2html: knor
 	    (fun y -> insert_let (generate env e3)
 		(fun z -> Put(x, y, z, info), Type.Unit info) info) info) info
 
-let f e =
-    (*Printf.printf "kNormal form\n%s" (Syntax.to_string e);*)
-    fst (generate M.empty e)
+let f out e =
+    let ret = fst (generate M.empty e)
+    in
+    print_all out ret;
+    ret
 let get_constructor_code = function
   | Unit _ -> 0
   | Int _ ->  1
@@ -413,3 +416,4 @@ let rec compare x y = match x, y with
                 failwith "equivalent KNormal.t construct code auto comparison found. Please check KNormal.compare"
             else
                 Pervasives.compare code_x code_y
+

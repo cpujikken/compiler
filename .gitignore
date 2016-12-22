@@ -2,7 +2,6 @@
 /min-caml.top
 /min-caml
 /*.cmo
-/example.s
 /test/*.cmo
 /test/*.s
 /*.cmi
@@ -12,9 +11,7 @@
 /lexer.ml
 /._d/
 /._bcdi/
-/example.ml
-/example
-/example.s
+/example*
 /test/*.s
 /test/ultrapc/*.s
 /minrt.s

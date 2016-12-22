@@ -52,5 +52,8 @@ and generate' env = function (* 各命令の即値最適化 (caml2html: simm13_g
 let fun_converter { name = l; args = xs; fargs = ys; body = e; ret = t ; info = info} = (* トップレベル関数の即値最適化 *)
     { name = l; args = xs; fargs = ys; body = generate M.empty e; ret = t; info = info }
 
-let f (fundefs, e) = (* プログラム全体の即値最適化 *)
-  List.map fun_converter fundefs, generate M.empty e
+let f out (fundefs, e) = (* プログラム全体の即値最適化 *)
+    let prog = List.map fun_converter fundefs, generate M.empty e
+    in
+        Dfa.print_all out prog;
+        prog

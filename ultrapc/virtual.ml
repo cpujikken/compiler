@@ -285,11 +285,14 @@ let fun_converter { Closure.name = (x , t); Closure.args = args; Closure.formal_
   | _ -> Info.exit info "Cannot apply non-function type"
 
 (* プログラム全体の仮想マシンコード生成 (caml2html: virtual_f) *)
-let f (Closure.Prog(fundefs, e)) =
+let f out (Closure.Prog(fundefs, e)) =
     (*Printf.printf "before transform to asm\n%s\n" (Closure.to_string e);*)
     (*List.iter (fun def -> Printf.printf "%s\n" (Closure.fundef_to_string def)) fundefs;*)
   (*data := [];*)
   (*idata := [];*)
   let fundefs = List.map fun_converter fundefs in
   let e = generate M.empty e in
-      fundefs, e
+  let prog = fundefs, e
+  in
+        Dfa.print_all out prog;
+        prog

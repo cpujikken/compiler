@@ -1,12 +1,12 @@
 let limit = ref 1000
 in
 
-let rec iter n e = (* 最適化処理をくりかえす (caml2html: main_iter) *)
+let rec iter out n e = (* 最適化処理をくりかえす (caml2html: main_iter) *)
     Format.eprintf "iteration %d@." n;
   if n = 0 then e else
       let e' =
           Elim.f
-          @@ DuplicateLet.f
+          @@ DuplicateLet.f out
           @@ ConstFold.f
           @@ Inline.f
           @@ Assoc.f
@@ -14,54 +14,84 @@ let rec iter n e = (* 最適化処理をくりかえす (caml2html: main_iter) *
           @@ e
         in
       if e = e' then e else
-          iter (n - 1) e'
+          iter out (n - 1) e'
 in
 
-let lexbuf outchan l = (* バッファをコンパイルしてチャンネルへ出力する (caml2html: main_lexbuf) *)
+let lexbuf file_name l = (* バッファをコンパイルしてチャンネルへ出力する (caml2html: main_lexbuf) *)
+    let out_with_ext ext = open_out (file_name ^ "-" ^ ext ^ ".out")
+    in
+    let asm_out = open_out (file_name ^ ".s")
+    in
+    let reg_alloc_out = out_with_ext "reg_alloc"
+    in
+    let elim_asm_out = out_with_ext "elim_asm"
+    in
+    let dfa_out = out_with_ext "dfa"
+    in
+    let simm_out = out_with_ext "simm"
+    in
+    let virtual_out = out_with_ext "virtual"
+    in
+    let expand_tuple_out = out_with_ext "expand_tuple"
+    in
+    let flat_tuple_out = out_with_ext "flat_tuple"
+    in
+    let closure_out = out_with_ext "closure"
+    in
+    let duplicate_let_out = out_with_ext "duplicate_let"
+    in
+    let alpha_out = out_with_ext "alpha"
+    in
+    let knormal_out = out_with_ext "knormal"
+    in
+    let syntax_out = out_with_ext "syntax"
+   in
+    let outs = [asm_out; reg_alloc_out; elim_asm_out; dfa_out; simm_out; virtual_out; expand_tuple_out; flat_tuple_out; closure_out; duplicate_let_out; alpha_out; knormal_out; syntax_out;]
+    in
+try
     Id.counter := 0;
   Typing.extenv := M.empty;
-  Emit.f
-    @@ RegAlloc.f
-    @@ ElimAsm.f
-    @@ Dfa.f
-    @@ Simm.f
-    @@ Virtual.f
-    @@ ExpandTuple.f
-    @@ FlatTuple.f
-    @@ Closure.f
+  Emit.f asm_out
+    @@ RegAlloc.f reg_alloc_out
+    @@ ElimAsm.f elim_asm_out
+    @@ Dfa.f dfa_out
+    @@ Simm.f simm_out
+    @@ Virtual.f virtual_out
+    @@ ExpandTuple.f expand_tuple_out
+    @@ FlatTuple.f flat_tuple_out
+    @@ Closure.f closure_out
     @@
-    iter !limit
+    iter duplicate_let_out !limit
     @@
-    DuplicateLet.f
+    DuplicateLet.f duplicate_let_out
     @@
-    Alpha.f
+    Alpha.f alpha_out
     @@
-    KNormal.f
+    KNormal.f knormal_out
     @@
-    Typing.f
+    Typing.f syntax_out
     @@
     Parser.exp
     Lexer.token l
     ;
-    Cmd.f outchan
+    List.iter close_out outs;
+with e -> (List.iter close_out outs; raise e)
 in
 
 (*let string s = lexbuf stdout (Lexing.from_string s) (* 文字列をコンパイルして標準出力に表示する (caml2html: main_string) *)*)
 (*in*)
 
-let file f = (* ファイルをコンパイルしてファイルに出力する (caml2html: main_file) *)
-    let inchan = open_in (f ^ ".ml") in
-    let outchan = open_out (f ^ ".s") in
+let file file_name = (* ファイルをコンパイルしてファイルに出力する (caml2html: main_file) *)
+    let inchan = open_in (file_name ^ ".ml") in
     try
         let lbuf = Lexing.from_channel inchan
       in
       lbuf.Lexing.lex_curr_p <- {
-          lbuf.Lexing.lex_curr_p with Lexing.pos_fname = f ^ ".ml"
+          lbuf.Lexing.lex_curr_p with Lexing.pos_fname = file_name ^ ".ml"
       };
-    lexbuf outchan lbuf;
+    lexbuf file_name lbuf;
     close_in inchan;
-    close_out outchan;
-    with e -> (close_in inchan; close_out outchan; raise e)
+    with e -> (close_in inchan; raise e)
 in
 
 let main _ = (* ここからコンパイラの実行が開始される (caml2html: main_entry) *)

@@ -154,3 +154,4 @@ let get_info = function
   | Div(_, _, info)
   | Mul(_, _, info)
   -> info
+let print_all out x = Printf.fprintf out "%s\n" @@ to_string x

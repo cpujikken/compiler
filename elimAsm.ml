@@ -243,7 +243,7 @@ let optimize e =
     in
     get_labels new_e, new_e
 
-let rec f (Prog (idata, fdata, fundefs, e) )=
+let rec f out (Prog (idata, fdata, fundefs, e) )=
     let label_set, new_e= optimize e
     in
     let label_set, new_fundefs = List.fold_left (fun (label_set, new_fundefs) fundef ->
@@ -260,4 +260,7 @@ let rec f (Prog (idata, fdata, fundefs, e) )=
     in
     let new_fdata = List.filter filter fdata
     in
-        Prog(new_idata, new_fdata, new_fundefs, new_e)
+    let prog = Prog(new_idata, new_fdata, new_fundefs, new_e)
+    in
+        Asm.print_all out prog;
+        prog

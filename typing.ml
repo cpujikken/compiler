@@ -486,7 +486,8 @@ let rec seperate_params params args param_id_exps param_exps = function
   | FloatRead info -> Type.Float info, e
   with Unify(t1, t2) -> raise (Error(deref_term e, deref_typ t1, deref_typ t2))
 
-let f e =
+let f out e =
+    print_all out e;
   extenv := M.empty;
 (*
   (match deref_typ (generate M.empty e) with

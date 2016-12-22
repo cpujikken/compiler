@@ -174,3 +174,20 @@ let save_and_restore to_save_global_regs cmd =
     in
     concat cmd (reg_dump, Type.Unit info) restore
 
+let print_all out (Prog(idata, fdata, fundefs, body ) )=
+      Printf.fprintf out "int data:\n";
+      List.iter (fun (label, i) -> Printf.fprintf out "%s -> %d\n"  (Id.to_string label) i) idata;
+      Printf.fprintf out "float data:\n";
+      List.iter (fun (label, i) -> Printf.fprintf out "%s -> %.3f\n"  (Id.to_string label) i) fdata;
+      Printf.fprintf out "main:\n%s\n" @@ to_string body;
+      List.iter (fun fundef ->
+          Printf.fprintf out "closure %s\n" fundef.name ;
+          Printf.fprintf out "int args:\n";
+          List.iter (Printf.fprintf out "%s, ") fundef.args;
+          Printf.fprintf out "\n";
+          Printf.fprintf out "float args:\n";
+          List.iter (Printf.fprintf out "%s, ") fundef.fargs;
+          Printf.fprintf out "\n";
+          Printf.fprintf out "closure body\n";
+          Printf.fprintf out "%s\n" @@ to_string fundef.body
+      ) fundefs;

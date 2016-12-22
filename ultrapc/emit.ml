@@ -464,7 +464,7 @@ let print_fun { name = x; args = _; fargs = _; body = e; ret = _ } =
   generate (Tail, e)
 
 (* type prog = Prog of (Id.l * float) list * fundef list * t *)
-let f (Prog(idata, fdata, fundefs, e)) =
+let f out (Prog(idata, fdata, fundefs, e)) =
   Format.eprintf "generating assembly...@.";
 
     (*.start label: starting point*)
@@ -509,4 +509,5 @@ let f (Prog(idata, fdata, fundefs, e)) =
         stackmap := [];
         generate (Tail, e);
         append_cmd_noinfo cmd_finish [];
-      )
+      );
+    Cmd.f out;

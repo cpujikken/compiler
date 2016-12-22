@@ -171,9 +171,10 @@ let fun_converter { name = (fun_name , fun_type); args = args_id_types; formal_f
     }
 
 
-let f (Prog(fundefs, e)) =
-(*Printf.printf "Before flatten\n%s\n" (to_string e);*)
+let f out (Prog(fundefs, e)) =
     let new_e = flat M.empty e
     in
-    (*Printf.printf "After flatten\n%s\n" (to_string new_e);*)
-    Prog(List.map fun_converter fundefs, new_e)
+    let prog = Prog(List.map fun_converter fundefs, new_e)
+    in
+        print_all out prog;
+        prog

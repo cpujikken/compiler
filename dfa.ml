@@ -1436,11 +1436,94 @@ let gen_fundefs tmp fundefs =
         fdata = [];
     }, [])
 
-let f (fundefs, e) =
+let f out (fundefs, e) =
     let tmp = Operand.ID (Id.genid ("dfa_tmp", get_info e))
     in
     let no_side_effect_defs, fun_by_name, (data, fundefs) = gen_fundefs tmp fundefs
     in
     let data, e = generate tmp data fun_by_name  e no_side_effect_defs
     in
-        Asm.Prog(data.idata, data.fdata, fundefs, e)
+    let prog = Asm.Prog(data.idata, data.fdata, fundefs, e)
+    in
+        Asm.print_all out prog;
+        prog
+
+let rec to_string_pre pre e =
+    let npre = pre ^ "  "
+    in
+    match e with
+  | Ans (exp, t, info) -> Printf.sprintf "%s%d:Ans of \t#%s\n%s" pre t (Info.to_string info) (exp_to_string_pre npre exp)
+  | Let ((operand, operand_type), exp, id, t, info) ->
+          Printf.sprintf "%s%d: LET %s\t%s\n%s\n%s=\n%s\n%sIN\n%s" pre id (Operand.to_string operand) (Info.to_string info) (Type.to_string_pre npre operand_type)
+            pre (exp_to_string_pre npre exp) pre (to_string_pre npre t)
+and
+to_string exp =
+    to_string_pre "" exp
+and
+exp_to_string_pre pre exp =
+    let npre = pre ^ "  "
+    in
+    match exp with
+    | Nop -> "Nop"
+    | IntRead -> "IntRead"
+    | FloatRead -> "FloatRead"
+    | Int i -> Printf.sprintf "%sInt %d" pre i
+    | Float i -> Printf.sprintf "%sInt %.5f" pre i
+    | Add (op1, op2) -> Printf.sprintf "%sAdd %s, %s" pre (Operand.to_string op1) (Operand.to_string op2)
+    | ShiftLeft (op1, op2) -> Printf.sprintf "%sShiftLeft %s, %s" pre (Operand.to_string op1) (Operand.to_string op2)
+    | ShiftRight (op1, op2) -> Printf.sprintf "%sShiftRight %s, %s" pre (Operand.to_string op1) (Operand.to_string op2)
+    | Div (op1, op2) -> Printf.sprintf "%sDiv %s, %s" pre (Operand.to_string op1) (Operand.to_string op2)
+    | Mul (op1, op2) -> Printf.sprintf "%sMul %s, %s" pre (Operand.to_string op1) (Operand.to_string op2)
+    | Sub (op1, op2) -> Printf.sprintf "%sSub %s, %s" pre (Operand.to_string op1) (Operand.to_string op2)
+    | Addi (op1, loc) -> Printf.sprintf "%sAddi %s, %s" pre (Operand.to_string op1) (Loc.to_string loc)
+    | Four op -> Printf.sprintf "%sFour %s" pre (Operand.to_string op)
+    | Half op -> Printf.sprintf "%sHalf %s" pre (Operand.to_string op)
+    | Load addr -> Printf.sprintf "%sLoad %s" pre (addr_to_string addr)
+    | Store (op, add) -> Printf.sprintf "%sStore %s, %s" pre (Operand.to_string op) (addr_to_string add)
+    | Neg op -> Printf.sprintf "%sNeg %s" pre (Operand.to_string op)
+    | FNeg op -> Printf.sprintf "%sFNeg %s" pre (Operand.to_string op)
+    | FAbs op -> Printf.sprintf "%sFAbs %s" pre (Operand.to_string op)
+    | Print op -> Printf.sprintf "%sPrint %s" pre (Operand.to_string op)
+    | FAdd (op1, op2) -> Printf.sprintf "%sFAdd %s, %s" pre (Operand.to_string op1) (Operand.to_string op2)
+    | FSub (op1, op2) -> Printf.sprintf "%sFSub %s, %s" pre (Operand.to_string op1) (Operand.to_string op2)
+    | FMul (op1, op2) -> Printf.sprintf "%sFMul %s, %s" pre (Operand.to_string op1) (Operand.to_string op2)
+    | FDiv (op1, op2) -> Printf.sprintf "%sFDiv %s, %s" pre (Operand.to_string op1) (Operand.to_string op2)
+    | FLoad addr -> Printf.sprintf "%sFLoat %s" pre (addr_to_string addr)
+    | FStore (op, add) -> Printf.sprintf "%sFStore %s, %s" pre (Operand.to_string op) (addr_to_string add)
+
+
+    | MoveImm loc -> Printf.sprintf "%sMoveImm %s" pre (Loc.to_string loc)
+    | Move op -> Printf.sprintf "%sMove %s" pre (Operand.to_string op)
+    | FMove op -> Printf.sprintf "%sFMove %s" pre (Operand.to_string op)
+
+    | IfEQ (op1, op2, exp1, exp2) -> Printf.sprintf "%sIfEQ %s, %s\n%s\n%s" pre (Operand.to_string op1) (Operand.to_string op2) (to_string_pre npre exp1) (to_string_pre npre exp2)
+    | FIfEQ (op1, op2, exp1, exp2) -> Printf.sprintf "%sFIfEQ %s, %s\n%s\n%s" pre (Operand.to_string op1) (Operand.to_string op2) (to_string_pre npre exp1) (to_string_pre npre exp2)
+    | IfLT (op1, op2, exp1, exp2) -> Printf.sprintf "%sIfLT %s, %s\n%s\n%s" pre (Operand.to_string op1) (Operand.to_string op2) (to_string_pre npre exp1) (to_string_pre npre exp2)
+    | FIfLT (op1, op2, exp1, exp2) -> Printf.sprintf "%sFIfLT %s, %s\n%s\n%s" pre (Operand.to_string op1) (Operand.to_string op2) (to_string_pre npre exp1) (to_string_pre npre exp2)
+    | CallCls (op, op_list1, op_list2) -> Printf.sprintf "%sCallCls %s%s%s" pre (Operand.to_string op) (op_list_to_string op_list1 npre) (op_list_to_string op_list2 npre)
+    | CallDir (label, op_list1, op_list2) -> Printf.sprintf "%sCallDir %s%s%s" pre label (op_list_to_string op_list1 npre) (op_list_to_string op_list2 npre)
+and
+op_list_to_string ll pre = List.fold_left
+    (fun current op  -> Printf.sprintf "\n%s%s" pre (Operand.to_string op))
+    ""
+    ll
+and
+addr_to_string = function
+    | Relative (op, loc) -> Printf.sprintf "Relative %s(%s)" (Loc.to_string loc) (Operand.to_string op)
+    | Dynamic (op1, size4, op2) -> Printf.sprintf "Dynamic (%s * %d)(%s)" (Operand.to_string op2) size4 (Operand.to_string op1)
+    | Absolute (loc1, Some loc2) -> Printf.sprintf "Absolute %s + %s" (Loc.to_string loc1) (Loc.to_string loc2)
+    | Absolute(loc, None) -> Printf.sprintf "Absolute %s" (Loc.to_string loc)
+
+let print_all out (fundefs, body )=
+      Printf.fprintf out "main:\n%s\n" @@ to_string body;
+      List.iter (fun fundef ->
+          Printf.fprintf out "closure %s\n" fundef.name ;
+          Printf.fprintf out "int args:\n";
+          List.iter (fun x->Printf.fprintf out "%s, " @@ Operand.to_string x) fundef.args;
+          Printf.fprintf out "\n";
+          Printf.fprintf out "float args:\n";
+          List.iter (fun x->Printf.fprintf out "%s, " @@ Operand.to_string x) fundef.fargs;
+          Printf.fprintf out "\n";
+          Printf.fprintf out "closure body\n";
+          Printf.fprintf out "%s\n" @@ to_string fundef.body
+      ) fundefs;
