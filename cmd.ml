@@ -67,9 +67,9 @@ let rec f output =
         | Command (a, b, c) ->
                 Printf.fprintf output "%s\n" (to_string a b c)
         | IData i ->
-                Printf.fprintf output "\t.long\t%x\n" i
-        | FData i ->
-                Printf.fprintf output "\t.long\t%x\n" (Int32.to_int (Int32.bits_of_float i))
+                Printf.fprintf output "\t.long\t%08x\n" i
+        | FData f ->
+                Printf.fprintf output "\t.long\t%08x\n" (Int32.to_int (Int32.bits_of_float f))
     in
     List.iter g (List.rev !cmd_list)
 
