@@ -103,8 +103,6 @@ and generate' info = function (* 各命令のアセンブリ生成 (caml2html: e
     | NonTail rd, Move (rs) ->
             append_cmd cmd_move [rd; rs] info
     | NonTail rd, MoveImm loc when rd = reg_dump  ->()
-    | NonTail rd, MoveImm (Constant c) when c = 0 ->
-            append_cmd cmd_xor [rd; rd; rd] info
     | NonTail rd, MoveImm loc ->
             append_cmd cmd_moveImm [rd; Loc.to_string loc] info
     | NonTail rd, Neg(ra) when rd = reg_dump || ra = reg_dump -> ()
@@ -228,7 +226,7 @@ and generate' info = function (* 各命令のアセンブリ生成 (caml2html: e
             append_cmd cmd_link [] info
             )
     | Tail, IfEQ(r1, r2, e1, e2) ->
-          append_cmd cmd_xor [reg_dump; r1; r2] info;
+          append_cmd cmd_compareEqual [r1; r2] info;
           let b_eq = fst (Id.genid("if_eq", info))
           in
             append_cmd cmd_jumpZero [Cmd.label_to_string b_eq] info;
@@ -272,7 +270,7 @@ and generate' info = function (* 各命令のアセンブリ生成 (caml2html: e
                 stackset := stackset_backup;
                 generate (Tail, e1);
     | NonTail rd as dest, IfEQ(r1, r2, e1, e2) ->
-          append_cmd cmd_xor [r1; r2] info;
+          append_cmd cmd_compareEqual [r1; r2] info;
           let b_eq = fst (Id.genid("if_eq", info))
           in
           let b_cont = fst (Id.genid("if_eq_cont", info))
