@@ -12,6 +12,6 @@
 /._d/
 /._bcdi/
 /example*
+/minrt*
 /test/*.s
 /test/ultrapc/*.s
-/minrt.s
