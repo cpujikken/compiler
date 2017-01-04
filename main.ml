@@ -104,7 +104,8 @@ let main _ = (* ここからコンパイラの実行が開始される (caml2htm
         Arg.parse
             [("-inline", Arg.Int(fun i -> Inline.threshold := i), "maximum size of functions inlined");
              ("-iter", Arg.Int(fun i -> limit := i), "maximum number of optimizations iterated");
-             ("-lib", Arg.Bool (fun b -> Common.is_lib := b), "compile for library")
+             ("-lib", Arg.Bool (fun b -> Common.is_lib := b), "compile for library");
+             ("-dfa", Arg.Int(fun i-> Dfa.call_stack_threshold := i), "data flow analysis call stack threshold");
             ]
             (fun s -> files := !files @ [s])
             ("Mitou Min-Caml Compiler (C) Eijiro Sumii\n" ^

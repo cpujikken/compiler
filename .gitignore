@@ -13,5 +13,4 @@
 /._bcdi/
 /example*
 /minrt*
-/test/*.s
 /test/ultrapc/*.s
