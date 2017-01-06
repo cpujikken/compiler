@@ -190,6 +190,7 @@ get_labels_exp = function
     | FLoad (Relative (_, Loc.Label l))
     | Store (_, Relative(_, Loc.Label l))
     | FStore (_, Relative(_, Loc.Label l))
+    | CallDir (l, _, _)
         -> StringSet.singleton l
     | Load (Absolute (loc1, loc2_opt))
     | FLoad (Absolute (loc1, loc2_opt))
@@ -230,13 +231,13 @@ get_labels_exp = function
     | Move _
     | FMove _
 
-    | IfEQ _
-    | FIfEQ _
-    | IfLT _
-    | FIfLT _
     | CallCls _
-    | CallDir _
     -> StringSet.empty
+    | IfEQ (_, _, if_true, if_false)
+    | FIfEQ(_, _, if_true, if_false)
+    | IfLT (_, _, if_true, if_false)
+    | FIfLT (_, _, if_true, if_false)
+    -> StringSet.union (get_labels if_true) (get_labels if_false)
 
 let optimize e =
     let new_e = elim e
