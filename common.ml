@@ -31,4 +31,5 @@ let lib_funs = [
     "fsqr";
     "fhalf";
     "fless";
+    "fisneg";
 ]
