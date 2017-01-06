@@ -67,7 +67,7 @@ rule token = parse
     {READ_INT}
 | "print_byte"
     {PRINT_BYTE}
-| "abs_float"
+| "fabs"
     {ABS_FLOAT}
 | '='
     { EQUAL }

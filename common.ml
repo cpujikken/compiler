@@ -24,4 +24,11 @@ let lib_funs = [
     "print_newline";
     "create_int_array";
     "create_float_array";
+    "print_char";
+    "fiszero";
+    "fispos";
+    "fneg";
+    "fsqr";
+    "fhalf";
+    "fless";
 ]
