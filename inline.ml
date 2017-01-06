@@ -31,4 +31,6 @@ let rec generate env = function (* インライン展開ルーチン本体 (caml
   | LetTuple(xts, y, e, info) -> LetTuple(xts, y, generate env e, info)
   | e -> e
 
-let f e = generate M.empty e
+let f e =
+    if !Common.is_lib then threshold := 0;
+    generate M.empty e
