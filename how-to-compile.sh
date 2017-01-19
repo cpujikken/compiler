@@ -2,8 +2,8 @@ make clean
 make
 ./min-caml minrt
 cd ../assembler
-../min-caml -lib true lib
-cat ../min-caml/minrt.s ../min-caml/globals.s lib.s > example.s
+../compiler/min-caml -lib true lib
+cat ../compiler/minrt.s ../compiler/globals.s lib.s > example.s
 make
 make test
 cp example ../Simulator/
