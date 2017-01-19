@@ -505,7 +505,7 @@ let f out (Prog(idata, fdata, fundefs, e)) =
         (*backup all regs*)
         stackset := S.empty;
         stackmap := [];
-        generate (Tail, e);
+        generate (NonTail reg_ret, e);
         append_cmd_noinfo cmd_finish [];
       );
     Cmd.f out;

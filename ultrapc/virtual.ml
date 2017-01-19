@@ -257,7 +257,7 @@ let rec generate env = function (* 式の仮想マシンコード生成 (caml2ht
       )
   | Closure.ExtArray((x, _), info) ->
           Ans(
-              Load(Absolute(Label ("min_caml_" ^ x), None)),
+              MoveImm(Label ("min_caml_" ^ x)),
               -1, info
           )
 
