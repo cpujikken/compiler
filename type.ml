@@ -11,7 +11,7 @@ type t = (* MinCamlの型を表現するデータ型 (caml2html: type_t) *)
 let gentyp info = Var(ref None, info) (* 新しい型変数を作る *)
 
 let rec to_string_pre pre typ =
-    let npre = pre ^ " "
+    let npre = pre ^ Common.indent
     in
     match typ with
     | Unit info -> Printf.sprintf "%sUnit_t\t#%s" pre (Info.to_string info)

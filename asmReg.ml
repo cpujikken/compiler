@@ -97,7 +97,10 @@ and
 to_string exp =
     to_string_pre "" exp
 and
-exp_to_string_pre pre = function
+exp_to_string_pre pre exp =
+    let npre = pre ^ Common.indent
+    in
+    match exp with
     | Nop -> "Nop"
     | IntRead -> "IntRead"
     | FloatRead -> "FloatRead"
@@ -128,12 +131,12 @@ exp_to_string_pre pre = function
     | Move op -> Printf.sprintf "%sMove %s" pre (Reg.to_string op)
     | FMove op -> Printf.sprintf "%sFMove %s" pre (Reg.to_string op)
 
-    | IfEQ (op1, op2, exp1, exp2) -> Printf.sprintf "%sIfEQ %s, %s\n%s\n%s" pre (Reg.to_string op1) (Reg.to_string op2) (to_string_pre (pre ^ "\t") exp1) (to_string_pre (pre ^ "\t") exp2)
-    | FIfEQ (op1, op2, exp1, exp2) -> Printf.sprintf "%sFIfEQ %s, %s\n%s\n%s" pre (Reg.to_string op1) (Reg.to_string op2) (to_string_pre (pre ^ "\t") exp1) (to_string_pre (pre ^ "\t") exp2)
-    | IfLT (op1, op2, exp1, exp2) -> Printf.sprintf "%sIfLT %s, %s\n%s\n%s" pre (Reg.to_string op1) (Reg.to_string op2) (to_string_pre (pre ^ "\t") exp1) (to_string_pre (pre ^ "\t") exp2)
-    | FIfLT (op1, op2, exp1, exp2) -> Printf.sprintf "%sFIfLT %s, %s\n%s\n%s" pre (Reg.to_string op1) (Reg.to_string op2) (to_string_pre (pre ^ "\t") exp1) (to_string_pre (pre ^ "\t") exp2)
-    | CallCls (op, op_list1, op_list2) -> Printf.sprintf "%sCallCls %s%s%s" pre (Reg.to_string op) (op_list_to_string op_list1 (pre ^ "\t")) (op_list_to_string op_list2 (pre ^ "\t"))
-    | CallDir (label, op_list1, op_list2) -> Printf.sprintf "%sCallDir %s%s%s" pre label (op_list_to_string op_list1 (pre ^ "\t")) (op_list_to_string op_list2 (pre ^ "\t"))
+    | IfEQ (op1, op2, exp1, exp2) -> Printf.sprintf "%sIfEQ %s, %s\n%s\n%s" pre (Reg.to_string op1) (Reg.to_string op2) (to_string_pre npre exp1) (to_string_pre npre exp2)
+    | FIfEQ (op1, op2, exp1, exp2) -> Printf.sprintf "%sFIfEQ %s, %s\n%s\n%s" pre (Reg.to_string op1) (Reg.to_string op2) (to_string_pre npre exp1) (to_string_pre npre exp2)
+    | IfLT (op1, op2, exp1, exp2) -> Printf.sprintf "%sIfLT %s, %s\n%s\n%s" pre (Reg.to_string op1) (Reg.to_string op2) (to_string_pre npre exp1) (to_string_pre npre exp2)
+    | FIfLT (op1, op2, exp1, exp2) -> Printf.sprintf "%sFIfLT %s, %s\n%s\n%s" pre (Reg.to_string op1) (Reg.to_string op2) (to_string_pre npre exp1) (to_string_pre npre exp2)
+    | CallCls (op, op_list1, op_list2) -> Printf.sprintf "%sCallCls %s%s%s" pre (Reg.to_string op) (op_list_to_string op_list1 npre) (op_list_to_string op_list2 npre)
+    | CallDir (label, op_list1, op_list2) -> Printf.sprintf "%sCallDir %s%s%s" pre label (op_list_to_string op_list1 npre) (op_list_to_string op_list2 npre)
     | Restore id -> Printf.sprintf "%sRestore %s" pre (Id.to_string id)
     | Save (reg, t) -> Printf.sprintf "%sSave %s, %s" pre (Reg.to_string reg) (Id.to_string t)
 and

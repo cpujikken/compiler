@@ -33,3 +33,4 @@ let lib_funs = [
     "fless";
     "fisneg";
 ]
+let indent = " "
