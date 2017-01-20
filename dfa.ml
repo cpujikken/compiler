@@ -1481,7 +1481,7 @@ to_string exp =
     to_string_pre "" exp
 and
 exp_to_string_pre pre exp =
-    let npre = pre ^ "  "
+    let npre = pre ^ Common.indent
     in
     match exp with
     | Nop -> "Nop"

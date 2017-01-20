@@ -249,7 +249,7 @@ let get_info = function
 
 let to_string x =
     let rec to_string_pre pre k =
-        let npre = pre ^ " "
+        let npre = pre ^ Common.indent
         in
         match k with
         | Unit info -> Printf.sprintf "%sUnit\t#%s" pre (Info.to_string info)
