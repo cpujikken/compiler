@@ -1,6 +1,6 @@
 #!/bin/sh
 
-recompile_compiler = false
+recompile_compiler=false
 
 if [ "$recompile_compiler" = true ]; then
 	echo "Clean compiler..."
