@@ -43,7 +43,7 @@ cd ../assembler
 cat ../compiler/minrt.s ../compiler/globals.s lib.s > example.s
 make
 make test
-cp example ../Simulator/
+mv example ../Simulator/
 cd ../Simulator
 make clean
 #edit define.c for seting
