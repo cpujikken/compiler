@@ -1,13 +1,16 @@
 #!/bin/sh
 
-echo "Clean project..."
-make clean
+recompile_compiler=false
 
-echo "Compile compiler..."
-make
-if [ $? -ne 0 ]; then
-	echo "Compile compiler failed. Exit"
-	exit 1
+if [ "$recompile_compiler" = true ]; then
+	echo "Clean compiler..."
+	make clean
+	echo "Compile compiler..."
+	make
+	if [ $? -ne 0 ]; then
+		echo "Compile compiler failed. Exit"
+		exit 1
+	fi
 fi
 
 echo "Compile example.ml..."
@@ -35,11 +38,11 @@ fi
 echo "Link library..."
 cat ../compiler/example.s ../compiler/globals.s lib.s > example.s
 if [ $? -ne 0 ]; then
-	echo "Link library failed. Check if example.s, global.s, lib.s exist. Exit"
+	echo "Link library failed. Check if example.s, globals.s, lib.s exist. Exit"
 	cd ../compiler
 	exit 1
 fi
-cp example.s ../compiler/
+cp example.s ../compiler/linked-example.s
 
 echo "Compile assembler..."
 make

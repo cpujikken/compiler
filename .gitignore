@@ -14,3 +14,4 @@
 /example*
 /minrt*
 /test/ultrapc/*.s
+/linked-example.s
