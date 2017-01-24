@@ -419,7 +419,7 @@ and generate_args params fparams info closure_name_opt =
     List.fold_left
       (fun (i, param_regs) y -> (i + 1, (y, reg_no i) :: param_regs))
       (match closure_name_opt with
-        | None -> 0, []
+        | None -> 1, []
         | Some closure_name -> 1, [(closure_name, reg_cl)]
       )
       params
