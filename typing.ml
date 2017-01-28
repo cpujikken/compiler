@@ -33,7 +33,7 @@ let rec deref_term = function
   | Add(e1, e2, info) -> Add(deref_term e1, deref_term e2, info)
   | Sub(e1, e2, info) -> Sub(deref_term e1, deref_term e2, info)
   | Eq(e1, e2, info) -> Eq(deref_term e1, deref_term e2, info)
-  | LE(e1, e2, info) -> LE(deref_term e1, deref_term e2, info)
+  | LT(e1, e2, info) -> LT(deref_term e1, deref_term e2, info)
   | FNeg(e, info) -> FNeg(deref_term e, info)
   | FAdd(e1, e2, info) -> FAdd(deref_term e1, deref_term e2, info)
   | FSub(e1, e2, info) -> FSub(deref_term e1, deref_term e2, info)
@@ -305,14 +305,14 @@ let rec generate env e = (* 型推論ルーチン (caml2html: typing_g) *)
         in
             unify typ1 typ2;
             Type.Bool info, Eq(exp1, exp2, info)
-    | LE(e1, e2, info)
+    | LT(e1, e2, info)
     ->
         let typ1, exp1 = generate env e1
         in
         let typ2, exp2 = generate env e2
         in
             unify typ1 typ2;
-            Type.Bool info, LE(exp1, exp2, info)
+            Type.Bool info, LT(exp1, exp2, info)
 
     | If(e1, e2, e3, info) ->
         let typ1, exp1 = generate env e1
