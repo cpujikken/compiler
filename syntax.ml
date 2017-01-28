@@ -13,7 +13,7 @@ type t = (* MinCamlの構文を表現するデータ型 (caml2html: syntax_t) *)
   | FMul of t * t * Info.t
   | FDiv of t * t * Info.t
   | Eq of t * t * Info.t
-  | LE of t * t * Info.t
+  | LT of t * t * Info.t
   | If of t * t * t * Info.t
   | Let of (Id.t * Type.t) * t * t * Info.t
   | Var of Id.t * Info.t
@@ -59,7 +59,7 @@ let to_string (x: t) =
         | FMul (x, y, info) -> Printf.sprintf "%sFMUL\t#%s\n%s\n%s" pre (Info.to_string info) (to_string_pre npre x) (to_string_pre npre y)
         | FDiv (x, y, info) -> Printf.sprintf "%sFDIV\t#%s\n%s\n%s" pre (Info.to_string info) (to_string_pre npre x) (to_string_pre npre y)
         | Eq (x, y, info) -> Printf.sprintf "%sEQ\t#%s\n%s\n%s" pre (Info.to_string info) (to_string_pre npre x) (to_string_pre npre y)
-        | LE (x, y, info) -> Printf.sprintf "%sLE\t#%s\n%s\n%s" pre (Info.to_string info) (to_string_pre npre x) (to_string_pre npre y)
+        | LT (x, y, info) -> Printf.sprintf "%sLE\t#%s\n%s\n%s" pre (Info.to_string info) (to_string_pre npre x) (to_string_pre npre y)
         | If (x, y, z, info) -> Printf.sprintf "%sIF\t#%s\n%s\n%sTHEN\t#%s\n%s\n%sELSE\t#%s\n%s" pre (Info.to_string info) (to_string_pre npre x) pre (Info.to_string info) (to_string_pre npre y) pre (Info.to_string info) (to_string_pre npre z)
         | Let ((id, typ), x, y, info) -> Printf.sprintf "%sLET\t#%s\n%s\n%s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre id) (Type.to_string_pre npre typ) (to_string_pre npre x) (to_string_pre npre y)
         | Var (id, info) -> Printf.sprintf "%sVAR\t#%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre id)
@@ -133,7 +133,7 @@ let get_info = function
   | FMul (_, _, info)
   | FDiv (_, _, info)
   | Eq (_, _, info)
-  | LE (_, _, info)
+  | LT (_, _, info)
   | If (_, _, _, info)
   | Let (_, _, _, info)
   | Var (_, info)
