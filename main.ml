@@ -1,20 +1,37 @@
 let limit = ref 1000
 in
 
-let rec iter out n e = (* 最適化処理をくりかえす (caml2html: main_iter) *)
+let rec iter
+        elim_out
+        duplicate_let_out
+        const_fold_out
+        inline_out
+        assoc_out
+        beta_out
+        n
+        e
+    = (* 最適化処理をくりかえす (caml2html: main_iter) *)
     Format.eprintf "iteration %d@." n;
   if n = 0 then e else
       let e' =
-          Elim.f
-          @@ DuplicateLet.f out
-          @@ ConstFold.f
-          @@ Inline.f
-          @@ Assoc.f
-          @@ Beta.f
+          Elim.f elim_out
+          @@ DuplicateLet.f duplicate_let_out
+          @@ ConstFold.f const_fold_out
+          @@ Inline.f inline_out
+          @@ Assoc.f assoc_out
+          @@ Beta.f beta_out
           @@ e
         in
       if e = e' then e else
-          iter out (n - 1) e'
+          iter
+            elim_out
+            duplicate_let_out
+            const_fold_out
+            inline_out
+            assoc_out
+            beta_out
+              (n - 1)
+              e'
 in
 
 let lexbuf file_name l = (* バッファをコンパイルしてチャンネルへ出力する (caml2html: main_lexbuf) *)
@@ -47,8 +64,38 @@ let lexbuf file_name l = (* バッファをコンパイルしてチャンネル�
     let syntax_out = out_with_ext "syntax"
     in
     let elim_closure_out = out_with_ext "elim_closure"
+    in
+    let const_fold_out = out_with_ext "const_fold"
+    in
+    let inline_out = out_with_ext "inline"
+    in
+    let assoc_out = out_with_ext "assoc"
+    in
+    let beta_out = out_with_ext "beta"
+    in
+    let elim_out = out_with_ext "elim"
    in
-    let outs = [asm_out; reg_alloc_out; elim_asm_out; elim_closure_out; dfa_out; simm_out; virtual_out; expand_tuple_out; flat_tuple_out; closure_out; duplicate_let_out; alpha_out; knormal_out; syntax_out;]
+    let outs = [asm_out;
+    reg_alloc_out;
+    elim_asm_out;
+    elim_closure_out;
+    dfa_out;
+    simm_out;
+    virtual_out;
+    expand_tuple_out;
+    flat_tuple_out;
+    closure_out;
+    duplicate_let_out;
+    alpha_out;
+    knormal_out;
+    syntax_out;
+    elim_closure_out;
+    const_fold_out;
+    inline_out;
+    assoc_out;
+    beta_out;
+    elim_out;
+    ]
     in
 try
     Id.counter := 0;
@@ -63,8 +110,14 @@ try
     @@ ExpandTuple.f expand_tuple_out
     @@ FlatTuple.f flat_tuple_out
     @@ Closure.f closure_out
-    @@
-    iter duplicate_let_out !limit
+    @@ iter
+        elim_out
+        duplicate_let_out
+        const_fold_out
+        inline_out
+        assoc_out
+        beta_out
+        !limit
     @@
     DuplicateLet.f duplicate_let_out
     @@

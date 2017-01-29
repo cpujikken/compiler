@@ -2,11 +2,8 @@ let rec generate env = function
     | KNormal.Let ((x, t), e1, e2, info) ->
             (
             match e1 with
-              | KNormal.Unit _ | KNormal.Int _ | KNormal.Float _ ->
-                        let e2', _ = generate env e2
-                        in
-                            KNormal.Let ((x, t), e1, e2', info), env
-
+                | KNormal.Unit _ | KNormal.Int _ | KNormal.Float _ ->
+                    KNormal.Let ((x, t), e1, fst @@ generate env e2, info), env
                 | _ ->
                     try
                         (*try finding occurence of exxpression e1 in current enviroment*)

@@ -46,5 +46,8 @@ let rec generate env = function (* β簡約ルーチン本体 (caml2html: beta_g
   | ExtArray(x, info) -> ExtArray(x, info)
   | ExtFunApp(x, ys, info) -> ExtFunApp(x, List.map (fun y -> find y env) ys, info)
 
-let f =
-    generate M.empty
+let f out x =
+    let r = generate M.empty x
+    in
+        print_all out r;
+        r

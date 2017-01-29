@@ -7,7 +7,6 @@ let rec effect = function
         | Int _
         | Float _
         | Neg _
-        | Print _
         | Four _
         | Half _
         | Add _
@@ -39,6 +38,7 @@ let rec effect = function
 
         | AppCls _
         | AppDir _
+        | Print _
         -> true
 
         | LetTuple (_, _, x, _) -> effect x

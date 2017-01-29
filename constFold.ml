@@ -52,4 +52,8 @@ let rec generate env = function (* 定数畳み込みルーチン本体 (caml2ht
   | LetTuple(xts, y, e, info) -> LetTuple(xts, y, generate env e, info)
   | e -> e
 
-let f = generate M.empty
+let f out x =
+    let r = generate M.empty x
+    in
+        print_all out r;
+        r
