@@ -249,7 +249,7 @@ and generate' info = function (* 各命令のアセンブリ生成 (caml2html: e
                 generate (Tail, e1);
     | Tail, FIfEQ(r1, r2, e1, e2) ->
             append_cmd cmd_fCmp [r1; r2; int_to_string 0] info;
-          let b_eq = fst (Id.genid("if_eq", info))
+          let b_eq = fst (Id.genid("if_feq", info))
           in
             append_cmd cmd_fJumpEqual [Cmd.label_to_string b_eq] info;
             let stackset_backup = !stackset
