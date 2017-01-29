@@ -206,7 +206,7 @@ let rec generate env = function (* K正規化ルーチン本体 (caml2html: knor
       insert_let (generate env e1)
 	(fun x -> insert_let (generate env e2)
 	    (fun y -> FDiv(x, y, info), Type.Float info) info) info
-  | Syntax.Eq (_, _, info) | Syntax.LE (_, _, info) as cmp ->
+  | Syntax.Eq (_, _, info) | Syntax.LT (_, _, info) as cmp ->
       generate env (Syntax.If(cmp, Syntax.Bool(true, info), Syntax.Bool(false, info), info))
   | Syntax.If(Syntax.Not(e1, _), e2, e3, info) -> generate env (Syntax.If(e1, e3, e2, info)) (* notによる分岐を変換 (caml2html: knormal_not) *)
   | Syntax.If(Syntax.Eq(e1, e2, _), e3, e4, info) ->
@@ -216,7 +216,7 @@ let rec generate env = function (* K正規化ルーチン本体 (caml2html: knor
 	      let e3', t3 = generate env e3 in
 	      let e4', t4 = generate env e4 in
 	      IfEq(x, y, e3', e4', info), t3) info) info
-  | Syntax.If(Syntax.LE(e1, e2, _), e3, e4, info) ->
+  | Syntax.If(Syntax.LT(e1, e2, _), e3, e4, info) ->
       insert_let (generate env e1)
 	(fun x -> insert_let (generate env e2)
 	    (fun y ->

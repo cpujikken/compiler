@@ -133,13 +133,13 @@ exp: /* (* 一般の式 (caml2html: parser_exp) *) */
 | exp LESS_GREATER exp
     { Not(Eq($1, $3, (Info.parsing_get())), (Info.parsing_get())  )}
 | exp LESS exp
-    { Not(LE($3, $1, (Info.parsing_get())  ), (Info.parsing_get())  )}
+    { LT($1, $3, (Info.parsing_get())  ) }
 | exp GREATER exp
-    { Not(LE($1, $3, (Info.parsing_get())  ), (Info.parsing_get())  )}
+    { LT($3, $1, (Info.parsing_get())  ) }
 | exp LESS_EQUAL exp
-    { LE($1, $3, (Info.parsing_get())  )}
+    { Not(LT($3, $1, Info.parsing_get()), Info.parsing_get()) }
 | exp GREATER_EQUAL exp
-    { LE($3, $1, (Info.parsing_get())  )}
+    { Not(LT($1, $3, Info.parsing_get()), Info.parsing_get()) }
 | IF exp THEN exp ELSE exp
     %prec prec_if
     { If($2, $4, $6, (Info.parsing_get())  )}
