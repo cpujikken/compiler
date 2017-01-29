@@ -15,6 +15,7 @@ let rec effect_exp = function
     | FStore _
     | CallCls _
     | CallDir _
+    | Print _
     -> true
 
     | Nop
@@ -30,7 +31,6 @@ let rec effect_exp = function
     | Neg _
     | FNeg _
     | FAbs _
-    | Print _
     | FAdd _
     | FSub _
     | FMul _
