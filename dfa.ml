@@ -785,18 +785,29 @@ type const =
     | CInt of int
     | CFloat of float
 
+let to_string_const = function
+    | Unit -> "Unit"
+    | CInt i -> Printf.sprintf "CInt %d" i
+    | CFloat f -> Printf.sprintf "CFloat %.5f" f
+
+    (*int map of int param by param order;
+     *int map of float param by param order;
+     -> point to caculated value
+     *)
 module ArgMap = Map.Make (struct
     type t = const IntMap.t * const IntMap.t
     let compare = Pervasives.compare
 end
 )
 type const_env = {
+    (*const mapping for current evaluating expression*)
     const_map: const M2.t;
     const_commands: (Operand.t * const) IntMap.t;
     use_const:  const M2.t IntMap.t;
     worklist: (Operand.t * const) IntMap.t;
     call_stack: string list;
     args: const M2.t option;
+    (*label name -> Argmap of const*)
     calculated: const option ArgMap.t StringMap.t;
 }
 
@@ -986,25 +997,23 @@ let rec get_const_exp const_env env = function
             try
                 let any = IntSet.choose ret_assignments
                 in
-                (*Printf.printf "any %d\n" any;*)
+                Printf.printf "any from %s %d\n" label any;
+                List.iter (Printf.printf "%s\n") const_env.call_stack;
                 let _, const = IntMap.find any const_env'.const_commands
                 in
-                let same_value = IntSet.fold (fun command_id same_value ->
-                    if not same_value then same_value
-                        else
-                            try
-                                let _, c = IntMap.find command_id const_env'.const_commands
+                (*check if there is any diff*)
+                if IntSet.exists (fun command_id ->
+                        try
+                            let _, c = IntMap.find command_id const_env'.const_commands
                             in
-                                c = const
-                            with Not_found -> false
+                                c != const
+                        with Not_found -> true
                     )
                     ret_assignments
-                    true
-                in
-                if same_value then
-                    Some const
-                else
+                then
                     None
+                else
+                    Some const
             with Not_found ->
                 None
         else
@@ -1095,39 +1104,43 @@ find_const_commands_loop const_env use reach env =
     if IntMap.is_empty const_env.worklist then const_env
     else
         let const_env =
+            (*select any command from worklist*)
             let s, (x, value) = IntMap.choose const_env.worklist
             in
-                (*Printf.printf "haluuuuuuu\n";*)
-                (*Printf.printf "%s\n" @@ Operand.to_string x;*)
+                Printf.printf "select from work list: ";
+                Printf.printf "Command no %d of operand %s with value = %s\n" s (Operand.to_string x) (to_string_const value);
                 (*IntSet.iter (Printf.printf "%d\n") (try IntMap.find s use with Not_found -> IntSet.empty);*)
                 (*M3.iter (fun (op, id) set -> Printf.printf "%s %d\n" (Operand.to_string id) op) reach;*)
-            let worklist = IntMap.remove s const_env.worklist
-            in
                 (*Printf.printf "%s debug use for %d\n" env.funname s;*)
                 (*IntMap.iter (fun s set -> Printf.printf "use of %d: " s; IntSet.iter (Printf.printf "%d, ") set; Printf.printf "\n") use;*)
 
                 IntSet.fold (fun t const_env ->
-                    (*Printf.printf "%d\n" t;*)
-                    let reachable = IntSet.fold (fun sibling_id reachable ->
-                        reachable &&
+                    Printf.printf "Command no %d uses %d's result \n" t s;
+                    (*check if all other positions also leave same value*)
+                    if IntSet.exists (fun sibling_id ->
                         try
                             let _, sibling_value =
                                 IntMap.find sibling_id const_env.const_commands
                             in
-                                sibling_value = value
-                        with Not_found -> false
+                                sibling_value != value
+                        with Not_found -> true
                     )
                     (try
+                        (*list all positions that give command t of x's variable*)
                         M3.find (t, x) reach
                     with Not_found ->
-                        Printf.printf "not found any reach command to command_id %d for variable %s\n" t (Operand.to_string x);
+                        Printf.printf "Algorithm logic error: not found any reach command to command_id %d for variable %s\n" t (Operand.to_string x);
                         List.iter (Printf.printf "%s\n") const_env.call_stack;
                         assert false;
                         )
-                    true
-                    in
-                    (*Printf.printf "check reachable %d %d\n" t (if reachable then 1 else 0);*)
-                    if reachable then
+                    then
+                        (
+                        Printf.printf "There are some position that give %d command different value of %s\n" t (Operand.to_string x);
+                        const_env
+                        )
+                    else
+                        let _ = Printf.printf "%d command gets %s variable as constant\n" t (Operand.to_string x)
+                        in
                         let use_in_t = try IntMap.find t const_env.use_const with Not_found -> M2.empty
                         in
                         let use_in_t = M2.add x value use_in_t
@@ -1144,24 +1157,23 @@ find_const_commands_loop const_env use reach env =
                                 (match get_const_exp const_env env exp with
                                 None, const_env -> const_env
                                 | Some const, const_env ->
-                        (*Printf.printf "op %s\n" @@ Operand.to_string op;*)
-                        (*Printf.printf "const %d\n" t;*)
+                                        Printf.printf "operand %s in command %d got evaluated as %s\n" (Operand.to_string op) t (to_string_const const);
                                         let const_commands =
                                             IntMap.add t (op, const) const_env.const_commands
                                         in {const_env with
-                                            const_commands = const_commands
+                                            const_commands = const_commands;
+                                            worklist = IntMap.add t (op, const) const_env.worklist
                                         }
                             )
                             | Alias _
                             | Branch _
                             | Entry _
                             -> const_env
-                    else
-                        const_env
                 )
+                (*iterate all places where s is used*)
                 (try IntMap.find s use with Not_found -> IntSet.empty)
                 {const_env with
-                    worklist = worklist
+                    worklist = IntMap.remove s const_env.worklist
                 }
         in
             find_const_commands_loop const_env use reach env
@@ -1184,8 +1196,21 @@ find_const_commands use reach env arg_opt call_stack calculated=
 
 and
 const_fold tmp {name = name; args = int_args; fargs = float_args; body = body; ret = ret_type; info = info} fun_by_name args_opt_by_no call_stack no_side_effect_defs calculated =
-        (*Printf.printf "%s\n" name;*)
-        (*List.iter (fun x -> Printf.printf "%s\n" (Operand.to_string x)) int_args;*)
+        Printf.printf "const_folding closure %s\n" name;
+        Printf.printf "Paramter list:\n";
+        List.iter (fun x -> Printf.printf "%s\n" (Operand.to_string x)) int_args;
+        Printf.printf "\n";
+        (
+        match args_opt_by_no with
+            Some (int_args, float_args) ->
+                Printf.printf "int param list:\n";
+                IntMap.iter (fun no v -> Printf.printf "%d -> %s\n" no (to_string_const v)) int_args;
+                Printf.printf "\n";
+                Printf.printf "float param list:\n";
+                IntMap.iter (fun no v -> Printf.printf "%d -> %s\n" no (to_string_const v)) float_args;
+                Printf.printf "\n";
+            | None -> ()
+        );
     (*fidn dest*)
     let dest = match ret_type with Type.Float _ -> Operand.Reg Reg.freg_ret | _ -> Operand.Reg Reg.reg_ret
     in
