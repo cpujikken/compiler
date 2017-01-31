@@ -65,8 +65,14 @@ if [ ! -d "../Simulator" ]; then
 	cd ../compiler
 	exit 1
 fi
-echo "Copy program to simulator..."
+echo "Copy program and label file to simulator..."
 mv example ../Simulator/
+if [ $? -ne 0 ]; then
+	echo "Cannot move file. Exit"
+	cd ../compiler
+	exit 1
+fi
+mv example_label.s ../Simulator/example_label
 if [ $? -ne 0 ]; then
 	echo "Cannot move file. Exit"
 	cd ../compiler
@@ -96,10 +102,10 @@ if [ $? -ne 0 ]; then
 	exit 1
 fi
 
-echo "Move running result..."
-mv example_out ../compiler
+echo "Copy program and running result..."
+cp example_out example_label example ../compiler
 if [ $? -ne 0 ]; then
-	echo "Cannot move file. Exit"
+	echo "Cannot copy files. Exit"
 	cd ../compiler
 	exit 1
 fi
