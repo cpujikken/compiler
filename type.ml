@@ -8,6 +8,68 @@ type t = (* MinCamlの型を表現するデータ型 (caml2html: type_t) *)
   | Array of t * Info.t
   | Var of t option ref * Info.t
 
+let external_func_type =
+    let float_float = fun info -> Fun ([Float info], Float info, info)
+    in
+    let float_int = fun info -> Fun ([Float info], Int info, info)
+    in
+    let int_float = fun info -> Fun ([Int info], Float info, info)
+    in
+    let int_unit = fun info -> Fun ([Int info], Unit info, info)
+    in
+    let unit_unit = fun info -> Fun([Unit info], Unit info, info)
+    in
+    let int_int_intarr = fun info -> Fun([Int info; Int info], Array (Int info, info), info)
+    in
+    let int_float_floatarr = fun info -> Fun([Int info; Float info], Array(Float info, info), info)
+    in
+    let float_bool = fun info -> Fun([Float info], Bool info, info)
+    in
+    let float_float_bool = fun info -> Fun([Float info; Float info], Bool info, info)
+    in
+    StringMap.add "cos" float_float
+    @@
+    StringMap.add "sin" float_float
+    @@
+    StringMap.add "sqrt" float_float
+    @@
+    StringMap.add "sqrt" float_float
+    @@
+    StringMap.add "atan" float_float
+    @@
+    StringMap.add "floor" float_float
+    @@
+    StringMap.add "int_of_float" float_int
+    @@
+    StringMap.add "float_of_int" int_float
+    @@
+    StringMap.add "print_int" int_unit
+    @@
+    StringMap.add "print_space" unit_unit
+    @@
+    StringMap.add "print_newline" unit_unit
+    @@
+    StringMap.add "create_int_array" int_int_intarr
+    @@
+    StringMap.add "create_float_array" int_float_floatarr
+    @@
+    StringMap.add "print_char" int_unit
+    @@
+    StringMap.add "fiszero" float_bool
+    @@
+    StringMap.add "fipos" float_bool
+    @@
+    StringMap.add "fneg" float_float
+    @@
+    StringMap.add "fsqr" float_float
+    @@
+    StringMap.add "fhalf" float_float
+    @@
+    StringMap.add "fless" float_float_bool
+    @@
+    StringMap.add "fisneg" float_bool
+    @@
+    StringMap.empty
 let gentyp info = Var(ref None, info) (* 新しい型変数を作る *)
 
 let rec to_string_pre pre typ =

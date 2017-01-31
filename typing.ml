@@ -335,6 +335,11 @@ let rec generate env e = (* 型推論ルーチン (caml2html: typing_g) *)
 
     | Var(x, info) when M.mem x env -> M.find x env, e (* 変数の型推論 (caml2html: typing_var) *)
     | Var(x, info) when M.mem x !extenv -> M.find x !extenv, e
+    | Var((ext_var,_) as x, info) when StringMap.mem ext_var Type.external_func_type ->
+            let t = (StringMap.find ext_var Type.external_func_type ) info
+            in
+                extenv := M.add x t !extenv;
+                t, e
     | Var(x, info) -> (* 外部変数の型推論 (caml2html: typing_extvar) *)
     Format.eprintf "free variable %s assumed as external@." (Id.to_string x);
 	let t = Type.gentyp info in
@@ -516,13 +521,13 @@ let rec rep e cnt =
 in
   try
       let ee = rep e partial_evaluation_threshold
-      in (
-          extenv := M.map deref_typ !extenv;
+      in
+      extenv := M.map deref_typ !extenv;
           let ret = deref_term ee
           in
           (*Printf.printf "after function expasion: %s\n" (Syntax.to_string ret);*)
           ret
-      )
+
   with
     | Error(e, t1, t2) ->
             Format.eprintf "expect type\n%s\nbut type\n%s\nis passed while evaluating\n%s" (Type.to_string t2) (Type.to_string t1) (Syntax.to_string e);
