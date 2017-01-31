@@ -72,7 +72,7 @@ if [ $? -ne 0 ]; then
 	cd ../compiler
 	exit 1
 fi
-mv example_label.s ../Simulator/example_label
+mv example_label ../Simulator/example_label
 if [ $? -ne 0 ]; then
 	echo "Cannot move file. Exit"
 	cd ../compiler
