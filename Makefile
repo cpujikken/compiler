@@ -19,8 +19,9 @@ $(RESULT): debug-code top
 clean:: nobackup
 
 # ↓もし実装を改造したら、それに合わせて変える
-SOURCES = float.c common.ml info.ml cmd.ml type.ml id.ml stringSet.ml m.ml s.ml \
+SOURCES = float.c common.ml info.ml cmd.ml id.ml stringSet.ml m.ml s.ml \
 		  stringMap.ml \
+type.ml \
 	intMap.ml \
 	intSet.ml \
 		  loc.ml \
