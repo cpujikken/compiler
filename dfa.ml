@@ -1027,7 +1027,7 @@ let rec get_const_exp const_env env = function
         CInt i -> Some (CFloat ( Pervasives.float_of_int i))
         | _ -> None
     ), const_env
-    | CallDir (label, op_list1, op_list2) when not (List.mem label const_env.call_stack) && (StringMap.mem label env.fun_by_name) && (List.length const_env.call_stack < (!call_stack_threshold) || !call_stack_threshold < 0)
+    | CallDir (label, op_list1, op_list2) when (StringSet.mem label env.no_side_effect_defs) && not (List.mem label const_env.call_stack) && (StringMap.mem label env.fun_by_name) && (List.length const_env.call_stack < (!call_stack_threshold) || !call_stack_threshold < 0)
     ->
         (*Printf.printf "process a direct call %s\n" label;*)
     (*external fun*)
