@@ -21,7 +21,7 @@ let compare = Pervasives.compare
 let local_regs_list = Array.to_list (Array.init  global_reg_threshold reg_no)
 let local_fregs_list = Array.to_list (Array.init  global_reg_threshold freg_no)
 let local_regs = StringSet.union (StringSet.of_list local_regs_list) (StringSet.of_list local_fregs_list)
-let global_regs = StringSet.diff (StringSet.of_list allregs) local_regs
+let global_regs = StringSet.diff (StringSet.union (StringSet.of_list allfregs) @@ StringSet.of_list allregs) local_regs
 
 let is_freg reg =
     List.mem reg allfregs

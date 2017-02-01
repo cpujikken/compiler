@@ -276,8 +276,8 @@ let fun_converter { Closure.name = (x , t); Closure.args = args; Closure.formal_
     expand
       free_args
       (4, generate all_vars e)
-      (fun z offset load -> Let((ID z, Type.Float info), FLoad(Absolute(Label (fst x), Some (Constant offset))), -1, load, info))
-      (fun z t offset load -> Let((ID z, t), Load(Absolute(Label (fst x),Some (Constant offset))), -1, load, info))
+      (fun z offset load -> Let((ID z, Type.Float info), FLoad(Relative(Reg reg_cl, Constant offset)), -1, load, info))
+      (fun z t offset load -> Let((ID z, t), Load(Relative(Reg reg_cl, Constant offset)), -1, load, info))
   in
   match t with
   | Type.Fun(_, t2, _) ->
