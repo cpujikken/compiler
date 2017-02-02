@@ -42,7 +42,7 @@ let rec map_all ret_type color_map spilled_vars spilled_vars_type restored_vars 
             let overwritten_local_regs = match calldir_opt with
                 None -> local_regs
                 | Some label ->
-                        Printf.printf "Call guard for label %s\n" label;
+                        (*Printf.printf "Call guard for label %s\n" label;*)
                         StringSet.inter local_regs (StringMap.find label !used_local_regs_map_global)
             in
             (*manually remove reg_ret and freg_ret from auto restore/save reg set*)

@@ -2,6 +2,8 @@
 
 recompile_compiler=false
 
+name=$1
+
 if [ "$recompile_compiler" = true ]; then
 	echo "Clean compiler..."
 	make clean
@@ -13,10 +15,16 @@ if [ "$recompile_compiler" = true ]; then
 	fi
 fi
 
-echo "Compile example.ml..."
-./min-caml example
+if [ ! -f "${name}.ml" ]; then
+	echo "File ${name}.ml not found. Exit"
+	exit 1;
+fi
+cp "${name}.ml" "./build/${name}.ml"
+
+echo "Compile ${name}.ml..."
+./min-caml "build/${name}" 2>/dev/null
 if [ $? -ne 0 ]; then
-	echo "Compile example.ml failed. Exit"
+	echo "Compile ${name}.ml failed. Exit"
 	exit 1
 fi
 
@@ -24,94 +32,72 @@ if [ ! -d "../assembler" ]; then
 	echo "Assembler is not found. Exit"
 	exit 1
 fi
-echo "cd to assembler..."
-cd ../assembler
+
+if [ ! -f "../assembler/lib.ml" ]; then
+	echo "Library is not found. Exit"
+	exit 1
+fi
 
 echo "Compile library..."
-../compiler/min-caml -lib true lib
+cp ../assembler/lib.ml build/lib.ml
+./min-caml build/lib -lib true 2>/dev/null
+
 if [ $? -ne 0 ]; then
-	echo "Compile library failed. Edit"
+	echo "Compile library failed. Exit"
 	cd ../compiler
 	exit 1
 fi
 
 echo "Link library..."
-cat ../compiler/example.s ../compiler/globals.s lib.s > example.s
+cat "build/${name}.s" globals.s build/lib.s > "build/${name}-linked.s"
 if [ $? -ne 0 ]; then
-	echo "Link library failed. Check if example.s, globals.s, lib.s exist. Exit"
-	cd ../compiler
+	echo "Link library failed. Check if ${name}.s, globals.s, lib.s exist. Exit"
 	exit 1
 fi
-cp example.s ../compiler/linked-example.s
 
 echo "Compile assembler..."
-make
+make -C ../assembler >/dev/null 2>&1
 if [ $? -ne 0 ]; then
 	echo "Compile assembler failed. Exit"
-	cd ../compiler
 	exit 1
 fi
 
 echo "Assemble..."
-make test
+cp "build/${name}-linked.s" ../assembler/example.s
+make test -C ../assembler >/dev/null 2>&1
 if [ $? -ne 0 ]; then
 	echo "Assemble program failed. Exit"
-	cd ../compiler
 	exit 1
 fi
 
 if [ ! -d "../Simulator" ]; then
 	echo "simulator is not found. Exit"
-	cd ../compiler
-	exit 1
-fi
-echo "Copy program and label file to simulator..."
-mv example ../Simulator/
-if [ $? -ne 0 ]; then
-	echo "Cannot move file. Exit"
-	cd ../compiler
-	exit 1
-fi
-mv example_label ../Simulator/example_label
-if [ $? -ne 0 ]; then
-	echo "Cannot move file. Exit"
-	cd ../compiler
 	exit 1
 fi
 
-echo "cd to simulator..."
-cd ../Simulator
+cp ../assembler/example_label "build/${name}_label"
+cp ../assembler/example "build/${name}"
+if [ $? -ne 0 ]; then
+	echo "Cannot move file. Exit"
+	exit 1
+fi
 
 echo "Clean simulator..."
-make clean
+make clean -C ../Simulator >/dev/null 2>&1
 
 echo "Compile simulator..."
-make
+make -C ../Simulator >/dev/null 2>&1
 if [ $? -ne 0 ]; then
 	echo "Compile simulator failed. Exit"
-	cd ../compiler
 	exit 1
 fi
-cp example ../compiler/
 
 echo "Run program..."
-./bsim example
+../Simulator/bsim "build/${name}"
 if [ $? -ne 0 ]; then
 	echo "Simulate program failed. Exit"
-	cd ../compiler
 	exit 1
 fi
-
-echo "Copy program and running result..."
-cp example_out example_label example ../compiler
-if [ $? -ne 0 ]; then
-	echo "Cannot copy files. Exit"
-	cd ../compiler
-	exit 1
-fi
-
-echo "cd back to compiler..."
-cd ../compiler
 
 echo "Show running result..."
-cat example_out
+cat "build/${name}_out"

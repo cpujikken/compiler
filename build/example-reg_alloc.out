@@ -1,0 +1,36 @@
+int data:
+ID(l.6,build/example.ml#1:11->1:13) -> 33554432
+ID(l.5,build/example.ml#1:11->1:13) -> 1048576
+float data:
+main:
+LET %r30:Int_t	#build/example.ml#1:11->1:13	#build/example.ml#1:11->1:13
+=
+	Load Absolute $l.5
+IN
+	LET %r31:Int_t	#build/example.ml#1:11->1:13	#build/example.ml#1:11->1:13
+	=
+		Load Absolute $l.6
+	IN
+		LET %rd:Unit_t	#build/example.ml#1:11->1:13	#build/example.ml#1:11->1:13
+		=
+			Save %r9, ID(global_var.4,build/example.ml#1:11->1:13)
+		IN
+			LET %r9:Int_t	#build/example.ml#1:11->1:13	#build/example.ml#1:11->1:13
+			=
+				MoveImm $10
+			IN
+				LET %rd:Unit_t	#build/example.ml#1:11->1:13	#build/example.ml#1:1->1:13
+				=
+					CallDir min_caml_print_int
+					 %r9
+				IN
+					LET %rd:Unit_t	#build/example.ml#1:11->1:13	#build/example.ml#1:1->1:13
+					=
+						Move %rd
+					IN
+						LET %r9:Int_t	#build/example.ml#1:11->1:13	#build/example.ml#1:11->1:13
+						=
+							Restore ID(global_var.4,build/example.ml#1:11->1:13)
+						IN
+							Ans of	#build/example.ml#1:11->1:13
+Nop
