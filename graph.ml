@@ -461,9 +461,9 @@ let rec coloring_loop regenv spilled_vars has_subcall e =
     in
     (*Printf.printf "%s\n" (to_string int_graph);*)
     try
-        let int_color_map = coloring_graph int_graph (StringSet.of_list Reg.allregs) regenv' spilled_vars has_subcall
+        let int_color_map = coloring_graph int_graph (StringSet.remove Reg.reg_cl @@ StringSet.remove Reg.reg_ret @@ StringSet.of_list Reg.allregs) regenv' spilled_vars has_subcall
         in
-        let color_map = coloring_graph float_graph (StringSet.of_list Reg.allfregs) int_color_map spilled_vars has_subcall
+        let color_map = coloring_graph float_graph (StringSet.remove Reg.freg_ret @@ StringSet.of_list Reg.allfregs) int_color_map spilled_vars has_subcall
         in
             color_map, spilled_vars
     with
