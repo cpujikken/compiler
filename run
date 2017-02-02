@@ -1,0 +1,103 @@
+#!/bin/sh
+
+recompile_compiler=false
+
+name=$1
+
+if [ "$recompile_compiler" = true ]; then
+	echo "Clean compiler..."
+	make clean
+	echo "Compile compiler..."
+	make
+	if [ $? -ne 0 ]; then
+		echo "Compile compiler failed. Exit"
+		exit 1
+	fi
+fi
+
+if [ ! -f "${name}.ml" ]; then
+	echo "File ${name}.ml not found. Exit"
+	exit 1;
+fi
+cp "${name}.ml" "./build/${name}.ml"
+
+echo "Compile ${name}.ml..."
+./min-caml "build/${name}" 2>/dev/null
+if [ $? -ne 0 ]; then
+	echo "Compile ${name}.ml failed. Exit"
+	exit 1
+fi
+
+if [ ! -d "../assembler" ]; then
+	echo "Assembler is not found. Exit"
+	exit 1
+fi
+
+if [ ! -f "../assembler/lib.ml" ]; then
+	echo "Library is not found. Exit"
+	exit 1
+fi
+
+echo "Compile library..."
+cp ../assembler/lib.ml build/lib.ml
+./min-caml build/lib -lib true 2>/dev/null
+
+if [ $? -ne 0 ]; then
+	echo "Compile library failed. Exit"
+	cd ../compiler
+	exit 1
+fi
+
+echo "Link library..."
+cat "build/${name}.s" globals.s build/lib.s > "build/${name}-linked.s"
+if [ $? -ne 0 ]; then
+	echo "Link library failed. Check if ${name}.s, globals.s, lib.s exist. Exit"
+	exit 1
+fi
+
+echo "Compile assembler..."
+make -C ../assembler >/dev/null 2>&1
+if [ $? -ne 0 ]; then
+	echo "Compile assembler failed. Exit"
+	exit 1
+fi
+
+echo "Assemble..."
+cp "build/${name}-linked.s" ../assembler/example.s
+make test -C ../assembler >/dev/null 2>&1
+if [ $? -ne 0 ]; then
+	echo "Assemble program failed. Exit"
+	exit 1
+fi
+
+if [ ! -d "../Simulator" ]; then
+	echo "simulator is not found. Exit"
+	exit 1
+fi
+
+cp ../assembler/example_label "build/${name}_label"
+cp ../assembler/example "build/${name}"
+if [ $? -ne 0 ]; then
+	echo "Cannot move file. Exit"
+	exit 1
+fi
+
+echo "Clean simulator..."
+make clean -C ../Simulator >/dev/null 2>&1
+
+echo "Compile simulator..."
+make -C ../Simulator >/dev/null 2>&1
+if [ $? -ne 0 ]; then
+	echo "Compile simulator failed. Exit"
+	exit 1
+fi
+
+echo "Run program..."
+../Simulator/bsim "build/${name}"
+if [ $? -ne 0 ]; then
+	echo "Simulate program failed. Exit"
+	exit 1
+fi
+
+echo "Show running result..."
+cat "build/${name}_out"

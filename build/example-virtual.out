@@ -1,0 +1,9 @@
+main:
+-1: LET ID(ID(Ti1.2,build/example.ml#1:1->1:13))	build/example.ml#1:11->1:13
+  Int_t	#build/example.ml#1:11->1:13
+=
+  Int 10
+IN
+  -1:Ans of 	#build/example.ml#1:1->1:13
+    CallDir min_caml_print_int
+     ID(ID(Ti1.2,build/example.ml#1:1->1:13))
