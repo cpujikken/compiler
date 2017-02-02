@@ -125,7 +125,7 @@ let rec generate env e = (* 型推論ルーチン (caml2html: typing_g) *)
             let ne_type, ne_exp = generate env not_e
             in
             unify (Type.Bool info) ne_type;
-            Type.Bool info, ne_exp
+            Type.Bool info, Syntax.Not (ne_exp, info)
     | Four (e, info) ->
             let four_type, four_exp = generate env e
             in
@@ -492,43 +492,43 @@ let rec seperate_params params args param_id_exps param_exps = function
   with Unify(t1, t2) -> raise (Error(deref_term e, deref_typ t1, deref_typ t2))
 
 let f out e =
-    print_all out e;
   extenv := M.empty;
-(*
-  (match deref_typ (generate M.empty e) with
-  | Type.Unit -> ()
-  | _ -> Format.eprintf "warning: final result does not have type unit@.");
-*)
-let rec rep e cnt =
-    if cnt = 0 then
-        (
-        partial_evaluating := false;
-        let _, ee = generate M.empty e
-        in
-            ee
-        )
-    else
-        (
-      partial_evaluating := true;
-      continue_partial_eval := false;
-      let _, ee = generate M.empty e
-      in
-        if !continue_partial_eval then
-          rep ee (cnt - 1)
+    (*
+      (match deref_typ (generate M.empty e) with
+      | Type.Unit -> ()
+      | _ -> Format.eprintf "warning: final result does not have type unit@.");
+    *)
+    let rec rep e cnt =
+        if cnt = 0 then
+            (
+            partial_evaluating := false;
+            let _, ee = generate M.empty e
+            in
+                ee
+            )
         else
-            ee
-        )
-in
-  try
-      let ee = rep e partial_evaluation_threshold
-      in
-      extenv := M.map deref_typ !extenv;
-          let ret = deref_term ee
+            (
+          partial_evaluating := true;
+          continue_partial_eval := false;
+          let _, ee = generate M.empty e
           in
-          (*Printf.printf "after function expasion: %s\n" (Syntax.to_string ret);*)
-          ret
+            if !continue_partial_eval then
+              rep ee (cnt - 1)
+            else
+                ee
+            )
+    in
+      try
+          let ee = rep e partial_evaluation_threshold
+          in
+          extenv := M.map deref_typ !extenv;
+              let ret = deref_term ee
+              in
+              (*Printf.printf "after function expasion: %s\n" (Syntax.to_string ret);*)
+                print_all out ret;
+              ret
 
-  with
-    | Error(e, t1, t2) ->
-            Format.eprintf "expect type\n%s\nbut type\n%s\nis passed while evaluating\n%s" (Type.to_string t2) (Type.to_string t1) (Syntax.to_string e);
-          exit 1
+      with
+        | Error(e, t1, t2) ->
+                Format.eprintf "expect type\n%s\nbut type\n%s\nis passed while evaluating\n%s" (Type.to_string t2) (Type.to_string t1) (Syntax.to_string e);
+              exit 1
