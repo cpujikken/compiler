@@ -5,13 +5,11 @@
 /test/*.cmo
 /test/*.s
 /*.cmi
-/float.o
 /parser.ml
 /parser.mli
 /lexer.ml
 /._d/
 /._bcdi/
-/example*
-/minrt*
 /test/ultrapc/*.s
-/linked-example.s
+/test/ultrapc/*.cmo
+/build
