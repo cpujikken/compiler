@@ -13,3 +13,4 @@
 /test/ultrapc/*.s
 /test/ultrapc/*.cmo
 /build
+/example.ml
