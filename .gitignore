@@ -12,5 +12,5 @@
 /._bcdi/
 /test/ultrapc/*.s
 /test/ultrapc/*.cmo
-/build
+/build/
 /example.ml

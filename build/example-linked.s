@@ -65,9 +65,9 @@ l.7785:	#1.000000 build/example.ml#2269:32->2269:35
 	.long	3f800000
 l.7784:	#128.000000 build/example.ml#2293:20->2293:25
 	.long	43000000
-l.11470:	#33554432 build/example.ml#2308:12->2308:15
+l.11468:	#33554432 build/example.ml#2308:12->2308:15
 	.long	02000000
-l.11469:	#1048576 build/example.ml#2308:12->2308:15
+l.11467:	#1048576 build/example.ml#2308:12->2308:15
 	.long	00100000
 .align	4
 .text
@@ -343,7 +343,7 @@ setup_reflections.3044:
 	FSDR	%fr8, %r31, $40	# build/example.ml#2266:16->2266:17
 	MVI	%r9, $0	# build/example.ml#2266:16->2266:17
 	CMP	%r1, %r9	# build/example.ml#2266:3->2279:10
-	JZ	$if_lt.11471	# build/example.ml#2266:3->2279:10
+	JZ	$if_lt.11469	# build/example.ml#2266:3->2279:10
 	MVI	%r9, $min_caml_objects	# build/example.ml#2267:15->2267:22
 	LDD	%r25, %r9, $4, %r1	# build/example.ml#637:7->637:25
 	LDR	%r9, %r25, $40	# build/example.ml#2267:5->2278:12
@@ -360,9 +360,9 @@ setup_reflections.3044:
 	MV	%r24, %r27	# build/example.ml#169:3->174:12
 	MVI	%r23, $2	# build/example.ml#2268:31->2268:32
 	CEQ	%r24, %r23	# build/example.ml#2268:5->2278:12
-	JZ	$if_eq.11473	# build/example.ml#2268:5->2278:12
-	J	$if_eq_cont.11474	# build/example.ml#2268:5->2278:12
-if_eq.11473:
+	JZ	$if_eq.11471	# build/example.ml#2268:5->2278:12
+	J	$if_eq_cont.11472	# build/example.ml#2268:5->2278:12
+if_eq.11471:
 	SDR	%r6, %r31, $44	# build/example.ml#2269:17->2269:30
 	SDR	%r5, %r31, $48	# build/example.ml#2269:17->2269:30
 	SDR	%r4, %r31, $52	# build/example.ml#2269:17->2269:30
@@ -411,16 +411,16 @@ if_eq.11473:
 	LDR	%r1, %r31, $80	# build/example.ml#2269:10->2269:35
 	MVI	%r24, $0	# build/example.ml#2269:7->2277:14
 	CEQ	%r23, %r24	# build/example.ml#2269:7->2277:14
-	JZ	$if_eq.11475	# build/example.ml#2269:7->2277:14
+	JZ	$if_eq.11473	# build/example.ml#2269:7->2277:14
 	MV	%r24, %r26	# build/example.ml#159:3->164:10
 	MVI	%r23, $1	# build/example.ml#2272:15->2272:16
 	CEQ	%r24, %r23	# build/example.ml#2272:2->2276:9
-	JZ	$if_eq.11477	# build/example.ml#2272:2->2276:9
+	JZ	$if_eq.11475	# build/example.ml#2272:2->2276:9
 	MVI	%r23, $2	# build/example.ml#2274:20->2274:21
 	CEQ	%r24, %r23	# build/example.ml#2274:7->2276:9
-	JZ	$if_eq.11479	# build/example.ml#2274:7->2276:9
-	J	$if_eq_cont.11480	# build/example.ml#2274:7->2276:9
-if_eq.11479:
+	JZ	$if_eq.11477	# build/example.ml#2274:7->2276:9
+	J	$if_eq_cont.11478	# build/example.ml#2274:7->2276:9
+if_eq.11477:
 	SDR	%r6, %r31, $84	# build/example.ml#2275:4->2275:39
 	SDR	%r5, %r31, $88	# build/example.ml#2275:4->2275:39
 	SDR	%r4, %r31, $92	# build/example.ml#2275:4->2275:39
@@ -447,9 +447,9 @@ if_eq.11479:
 	LDR	%r4, %r31, $92	# build/example.ml#2275:4->2275:39
 	LDR	%r3, %r31, $96	# build/example.ml#2275:4->2275:39
 	LDR	%r1, %r31, $100	# build/example.ml#2275:4->2275:39
-if_eq_cont.11480:
-	J	$if_eq_cont.11478	# build/example.ml#2272:2->2276:9
-if_eq.11477:
+if_eq_cont.11478:
+	J	$if_eq_cont.11476	# build/example.ml#2272:2->2276:9
+if_eq.11475:
 	SDR	%r6, %r31, $104	# build/example.ml#2273:4->2273:36
 	SDR	%r5, %r31, $108	# build/example.ml#2273:4->2273:36
 	SDR	%r4, %r31, $112	# build/example.ml#2273:4->2273:36
@@ -476,14 +476,14 @@ if_eq.11477:
 	LDR	%r4, %r31, $112	# build/example.ml#2273:4->2273:36
 	LDR	%r3, %r31, $116	# build/example.ml#2273:4->2273:36
 	LDR	%r1, %r31, $120	# build/example.ml#2273:4->2273:36
-if_eq_cont.11478:
-	J	$if_eq_cont.11476	# build/example.ml#2269:7->2277:14
-if_eq.11475:
 if_eq_cont.11476:
+	J	$if_eq_cont.11474	# build/example.ml#2269:7->2277:14
+if_eq.11473:
 if_eq_cont.11474:
-	J	$if_lt_cont.11472	# build/example.ml#2266:3->2279:10
-if_lt.11471:
-if_lt_cont.11472:
+if_eq_cont.11472:
+	J	$if_lt_cont.11470	# build/example.ml#2266:3->2279:10
+if_lt.11469:
+if_lt_cont.11470:
 	LDR	%r9, %r31, $0	# build/example.ml#2266:16->2266:17
 	LDR	%r8, %r31, $4	# build/example.ml#2266:16->2266:17
 	LDR	%r7, %r31, $8	# build/example.ml#2266:16->2266:17
@@ -1065,7 +1065,7 @@ init_vecset_constants.3027:
 	SDR	%r8, %r31, $4	# build/example.ml#2210:15->2210:16
 	MVI	%r9, $0	# build/example.ml#2210:15->2210:16
 	CMP	%r1, %r9	# build/example.ml#2210:3->2213:13
-	JZ	$if_lt.11481	# build/example.ml#2210:3->2213:13
+	JZ	$if_lt.11479	# build/example.ml#2210:3->2213:13
 	MVI	%r9, $min_caml_dirvecs	# build/example.ml#2211:27->2211:34
 	LDD	%r8, %r9, $4, %r1	# build/example.ml#1780:24->1780:35
 	MVI	%r9, $119	# build/example.ml#2211:43->2211:46
@@ -1088,9 +1088,9 @@ init_vecset_constants.3027:
 	J	$init_vecset_constants.3027	# build/example.ml#2212:5->2212:38
 	ADDI	%r31, %r31, $-16	# build/example.ml#2212:5->2212:38
 	LDR	%r1, %r31, $12	# build/example.ml#2212:5->2212:38
-	J	$if_lt_cont.11482	# build/example.ml#2210:3->2213:13
-if_lt.11481:
-if_lt_cont.11482:
+	J	$if_lt_cont.11480	# build/example.ml#2210:3->2213:13
+if_lt.11479:
+if_lt_cont.11480:
 	LDR	%r9, %r31, $0	# build/example.ml#2210:15->2210:16
 	LDR	%r8, %r31, $4	# build/example.ml#2210:15->2210:16
 	LINK	# build/example.ml#2210:15->2210:16
@@ -1099,7 +1099,7 @@ init_dirvec_constants.3024:
 	SDR	%r8, %r31, $4	# build/example.ml#2203:15->2203:16
 	MVI	%r9, $0	# build/example.ml#2203:15->2203:16
 	CMP	%r2, %r9	# build/example.ml#2203:3->2206:13
-	JZ	$if_lt.11483	# build/example.ml#2203:3->2206:13
+	JZ	$if_lt.11481	# build/example.ml#2203:3->2206:13
 	LDD	%r8, %r1, $4, %r2	# build/example.ml#2204:28->2204:42
 	LDR	%r9, %r8, $4	# build/example.ml#2204:5->2204:42
 	LDR	%r8, %r8, $0	# build/example.ml#2204:5->2204:42
@@ -1126,9 +1126,9 @@ init_dirvec_constants.3024:
 	ADDI	%r31, %r31, $-24	# build/example.ml#2205:5->2205:45
 	LDR	%r2, %r31, $16	# build/example.ml#2205:5->2205:45
 	LDR	%r1, %r31, $20	# build/example.ml#2205:5->2205:45
-	J	$if_lt_cont.11484	# build/example.ml#2203:3->2206:13
-if_lt.11483:
-if_lt_cont.11484:
+	J	$if_lt_cont.11482	# build/example.ml#2203:3->2206:13
+if_lt.11481:
+if_lt_cont.11482:
 	LDR	%r9, %r31, $0	# build/example.ml#2203:15->2203:16
 	LDR	%r8, %r31, $4	# build/example.ml#2203:15->2203:16
 	LINK	# build/example.ml#2203:15->2203:16
@@ -1138,7 +1138,7 @@ create_dirvecs.3022:
 	SDR	%r7, %r31, $8	# build/example.ml#2191:15->2191:16
 	MVI	%r9, $0	# build/example.ml#2191:15->2191:16
 	CMP	%r1, %r9	# build/example.ml#2191:3->2195:13
-	JZ	$if_lt.11485	# build/example.ml#2191:3->2195:13
+	JZ	$if_lt.11483	# build/example.ml#2191:3->2195:13
 	MVI	%r6, $min_caml_dirvecs	# build/example.ml#2192:5->2192:12
 	MVI	%r7, $120	# build/example.ml#2192:37->2192:40
 	SDR	%r6, %r31, $12	# build/example.ml#2192:42->2192:57
@@ -1192,9 +1192,9 @@ create_dirvecs.3022:
 	ADDI	%r31, %r31, $-44	# build/example.ml#2194:5->2194:29
 	LDR	%r6, %r31, $36	# build/example.ml#2194:5->2194:29
 	LDR	%r1, %r31, $40	# build/example.ml#2194:5->2194:29
-	J	$if_lt_cont.11486	# build/example.ml#2191:3->2195:13
-if_lt.11485:
-if_lt_cont.11486:
+	J	$if_lt_cont.11484	# build/example.ml#2191:3->2195:13
+if_lt.11483:
+if_lt_cont.11484:
 	LDR	%r9, %r31, $0	# build/example.ml#2191:15->2191:16
 	LDR	%r8, %r31, $4	# build/example.ml#2191:15->2191:16
 	LDR	%r7, %r31, $8	# build/example.ml#2191:15->2191:16
@@ -1203,7 +1203,7 @@ create_dirvec_elements.3019:
 	SDR	%r9, %r31, $0	# build/example.ml#2184:15->2184:16
 	MVI	%r9, $0	# build/example.ml#2184:15->2184:16
 	CMP	%r2, %r9	# build/example.ml#2184:3->2187:13
-	JZ	$if_lt.11487	# build/example.ml#2184:3->2187:13
+	JZ	$if_lt.11485	# build/example.ml#2184:3->2187:13
 	SDR	%r2, %r31, $4	# build/example.ml#2185:18->2185:33
 	SDR	%r1, %r31, $8	# build/example.ml#2185:18->2185:33
 	ADDI	%r31, %r31, $12	# build/example.ml#2185:18->2185:33
@@ -1227,9 +1227,9 @@ create_dirvec_elements.3019:
 	ADDI	%r31, %r31, $-20	# build/example.ml#2186:5->2186:41
 	LDR	%r2, %r31, $12	# build/example.ml#2186:5->2186:41
 	LDR	%r1, %r31, $16	# build/example.ml#2186:5->2186:41
-	J	$if_lt_cont.11488	# build/example.ml#2184:3->2187:13
-if_lt.11487:
-if_lt_cont.11488:
+	J	$if_lt_cont.11486	# build/example.ml#2184:3->2187:13
+if_lt.11485:
+if_lt_cont.11486:
 	LDR	%r9, %r31, $0	# build/example.ml#2184:15->2184:16
 	LINK	# build/example.ml#2184:15->2184:16
 create_dirvec.3017:
@@ -1276,7 +1276,7 @@ calc_dirvec_rows.3013:
 	FSDR	%fr8, %r31, $16	# build/example.ml#2165:13->2165:14
 	MVI	%r9, $0	# build/example.ml#2165:13->2165:14
 	CMP	%r1, %r9	# build/example.ml#2165:3->2169:13
-	JZ	$if_lt.11489	# build/example.ml#2165:3->2169:13
+	JZ	$if_lt.11487	# build/example.ml#2165:3->2169:13
 	SDR	%r3, %r31, $20	# build/example.ml#2166:15->2166:31
 	SDR	%r2, %r31, $24	# build/example.ml#2166:15->2166:31
 	SDR	%r1, %r31, $28	# build/example.ml#2166:15->2166:31
@@ -1338,9 +1338,9 @@ calc_dirvec_rows.3013:
 	LDR	%r3, %r31, $52	# build/example.ml#2168:5->2168:65
 	LDR	%r2, %r31, $56	# build/example.ml#2168:5->2168:65
 	LDR	%r1, %r31, $60	# build/example.ml#2168:5->2168:65
-	J	$if_lt_cont.11490	# build/example.ml#2165:3->2169:13
-if_lt.11489:
-if_lt_cont.11490:
+	J	$if_lt_cont.11488	# build/example.ml#2165:3->2169:13
+if_lt.11487:
+if_lt_cont.11488:
 	LDR	%r9, %r31, $0	# build/example.ml#2165:13->2165:14
 	LDR	%r8, %r31, $4	# build/example.ml#2165:13->2165:14
 	LDR	%r7, %r31, $8	# build/example.ml#2165:13->2165:14
@@ -1355,7 +1355,7 @@ calc_dirvecs.3008:
 	FSDR	%fr7, %r31, $16	# build/example.ml#2151:13->2151:14
 	MVI	%r9, $0	# build/example.ml#2151:13->2151:14
 	CMP	%r1, %r9	# build/example.ml#2151:3->2160:13
-	JZ	$if_lt.11491	# build/example.ml#2151:3->2160:13
+	JZ	$if_lt.11489	# build/example.ml#2151:3->2160:13
 	SDR	%r3, %r31, $20	# build/example.ml#2153:15->2153:31
 	SDR	%r2, %r31, $24	# build/example.ml#2153:15->2153:31
 	SDR	%r1, %r31, $28	# build/example.ml#2153:15->2153:31
@@ -1457,9 +1457,9 @@ calc_dirvecs.3008:
 	LDR	%r3, %r31, $76	# build/example.ml#2159:5->2159:58
 	LDR	%r2, %r31, $80	# build/example.ml#2159:5->2159:58
 	LDR	%r1, %r31, $84	# build/example.ml#2159:5->2159:58
-	J	$if_lt_cont.11492	# build/example.ml#2151:3->2160:13
-if_lt.11491:
-if_lt_cont.11492:
+	J	$if_lt_cont.11490	# build/example.ml#2151:3->2160:13
+if_lt.11489:
+if_lt_cont.11490:
 	LDR	%r9, %r31, $0	# build/example.ml#2151:13->2151:14
 	LDR	%r8, %r31, $4	# build/example.ml#2151:13->2151:14
 	FLDR	%fr9, %r31, $8	# build/example.ml#2151:13->2151:14
@@ -1474,7 +1474,7 @@ calc_dirvec.3000:
 	FSDR	%fr7, %r31, $16	# build/example.ml#2130:16->2130:17
 	MVI	%r9, $5	# build/example.ml#2130:16->2130:17
 	CMP	%r1, %r9	# build/example.ml#2130:3->2146:77
-	JZ	$if_lt.11493	# build/example.ml#2130:3->2146:77
+	JZ	$if_lt.11491	# build/example.ml#2130:3->2146:77
 	SDR	%r3, %r31, $20	# build/example.ml#2131:18->2131:24
 	SDR	%r2, %r31, $24	# build/example.ml#2131:18->2131:24
 	SDR	%r1, %r31, $28	# build/example.ml#2131:18->2131:24
@@ -1895,8 +1895,8 @@ calc_dirvec.3000:
 	LDR	%r1, %r31, $512	# build/example.ml#2143:5->2143:53
 	FLDR	%fr2, %r31, $516	# build/example.ml#2143:5->2143:53
 	FLDR	%fr1, %r31, $520	# build/example.ml#2143:5->2143:53
-	J	$if_lt_cont.11494	# build/example.ml#2130:3->2146:77
-if_lt.11493:
+	J	$if_lt_cont.11492	# build/example.ml#2130:3->2146:77
+if_lt.11491:
 	SDR	%r3, %r31, $524	# build/example.ml#2145:14->2145:34
 	SDR	%r2, %r31, $528	# build/example.ml#2145:14->2145:34
 	SDR	%r1, %r31, $532	# build/example.ml#2145:14->2145:34
@@ -1977,7 +1977,7 @@ if_lt.11493:
 	FLDR	%fr3, %r31, $620	# build/example.ml#2146:5->2146:77
 	FLDR	%fr2, %r31, $624	# build/example.ml#2146:5->2146:77
 	FLDR	%fr1, %r31, $628	# build/example.ml#2146:5->2146:77
-if_lt_cont.11494:
+if_lt_cont.11492:
 	LDR	%r9, %r31, $0	# build/example.ml#2130:16->2130:17
 	LDR	%r8, %r31, $4	# build/example.ml#2130:16->2130:17
 	FLDR	%fr9, %r31, $8	# build/example.ml#2130:16->2130:17
@@ -2121,7 +2121,7 @@ init_line_elements.2990:
 	SDR	%r9, %r31, $0	# build/example.ml#2093:11->2093:12
 	MVI	%r9, $0	# build/example.ml#2093:11->2093:12
 	CMP	%r2, %r9	# build/example.ml#2093:3->2097:9
-	JZ	$if_lt.11495	# build/example.ml#2093:3->2097:9
+	JZ	$if_lt.11493	# build/example.ml#2093:3->2097:9
 	SDR	%r2, %r31, $4	# build/example.ml#2094:17->2094:31
 	SDR	%r1, %r31, $8	# build/example.ml#2094:17->2094:31
 	ADDI	%r31, %r31, $12	# build/example.ml#2094:17->2094:31
@@ -2145,10 +2145,10 @@ init_line_elements.2990:
 	ADDI	%r31, %r31, $-20	# build/example.ml#2095:5->2095:34
 	LDR	%r2, %r31, $12	# build/example.ml#2095:5->2095:34
 	LDR	%r1, %r31, $16	# build/example.ml#2095:5->2095:34
-	J	$if_lt_cont.11496	# build/example.ml#2093:3->2097:9
-if_lt.11495:
+	J	$if_lt_cont.11494	# build/example.ml#2093:3->2097:9
+if_lt.11493:
 	MV	%r0, %r1	# build/example.ml#2097:5->2097:9
-if_lt_cont.11496:
+if_lt_cont.11494:
 	LDR	%r9, %r31, $0	# build/example.ml#2093:11->2093:12
 	LINK	# build/example.ml#2093:11->2093:12
 create_pixel.2988:
@@ -2389,17 +2389,17 @@ scan_line.2980:
 	MVI	%r9, $1	# build/example.ml#2051:22->2051:23
 	LDD	%r9, %r8, $4, %r9	# build/example.ml#1858:16->1858:30
 	CMP	%r1, %r9	# build/example.ml#2051:3->2058:13
-	JZ	$if_lt.11497	# build/example.ml#2051:3->2058:13
-	J	$if_lt_cont.11498	# build/example.ml#2051:3->2058:13
-if_lt.11497:
+	JZ	$if_lt.11495	# build/example.ml#2051:3->2058:13
+	J	$if_lt_cont.11496	# build/example.ml#2051:3->2058:13
+if_lt.11495:
 	MVI	%r9, $1	# build/example.ml#2053:24->2053:25
 	LDD	%r8, %r8, $4, %r9	# build/example.ml#1858:16->1858:30
 	MVI	%r9, $1	# build/example.ml#2053:29->2053:30
 	SUB	%r9, %r8, %r9	# build/example.ml#2053:12->2053:30
 	CMP	%r1, %r9	# build/example.ml#2053:5->2055:12
-	JZ	$if_lt.11499	# build/example.ml#2053:5->2055:12
-	J	$if_lt_cont.11500	# build/example.ml#2053:5->2055:12
-if_lt.11499:
+	JZ	$if_lt.11497	# build/example.ml#2053:5->2055:12
+	J	$if_lt_cont.11498	# build/example.ml#2053:5->2055:12
+if_lt.11497:
 	MVI	%r9, $1	# build/example.ml#2054:31->2054:32
 	ADD	%r9, %r1, %r9	# build/example.ml#2054:27->2054:32
 	SDR	%r5, %r31, $8	# build/example.ml#2054:7->2054:42
@@ -2420,7 +2420,7 @@ if_lt.11499:
 	LDR	%r3, %r31, $16	# build/example.ml#2054:7->2054:42
 	LDR	%r2, %r31, $20	# build/example.ml#2054:7->2054:42
 	LDR	%r1, %r31, $24	# build/example.ml#2054:7->2054:42
-if_lt_cont.11500:
+if_lt_cont.11498:
 	MVI	%r9, $0	# build/example.ml#2056:16->2056:17
 	SDR	%r5, %r31, $28	# build/example.ml#2056:5->2056:33
 	SDR	%r4, %r31, $32	# build/example.ml#2056:5->2056:33
@@ -2478,7 +2478,7 @@ if_lt_cont.11500:
 	LDR	%r3, %r31, $64	# build/example.ml#2057:5->2057:58
 	LDR	%r2, %r31, $68	# build/example.ml#2057:5->2057:58
 	LDR	%r1, %r31, $72	# build/example.ml#2057:5->2057:58
-if_lt_cont.11498:
+if_lt_cont.11496:
 	LDR	%r9, %r31, $0	# build/example.ml#2051:10->2051:20
 	LDR	%r8, %r31, $4	# build/example.ml#2051:10->2051:20
 	LINK	# build/example.ml#2051:10->2051:20
@@ -2496,9 +2496,9 @@ scan_pixel.2974:
 	MVI	%r9, $0	# build/example.ml#2030:22->2030:23
 	LDD	%r9, %r8, $4, %r9	# build/example.ml#1858:16->1858:30
 	CMP	%r1, %r9	# build/example.ml#2030:3->2045:13
-	JZ	$if_lt.11501	# build/example.ml#2030:3->2045:13
-	J	$if_lt_cont.11502	# build/example.ml#2030:3->2045:13
-if_lt.11501:
+	JZ	$if_lt.11499	# build/example.ml#2030:3->2045:13
+	J	$if_lt_cont.11500	# build/example.ml#2030:3->2045:13
+if_lt.11499:
 	MVI	%r23, $min_caml_rgb	# build/example.ml#2033:12->2033:15
 	LDD	%r25, %r4, $4, %r1	# build/example.ml#2033:23->2033:30
 	LDR	%r9, %r25, $28	# build/example.ml#2033:17->2033:30
@@ -2536,7 +2536,7 @@ if_lt.11501:
 	LDR	%r1, %r31, $52	# build/example.ml#2036:8->2036:32
 	MVI	%r24, $0	# build/example.ml#2036:5->2039:37
 	CEQ	%r23, %r24	# build/example.ml#2036:5->2039:37
-	JZ	$if_eq.11503	# build/example.ml#2036:5->2039:37
+	JZ	$if_eq.11501	# build/example.ml#2036:5->2039:37
 	MVI	%r9, $0	# build/example.ml#2037:47->2037:48
 	SDR	%r6, %r31, $56	# build/example.ml#2037:7->2037:48
 	SDR	%r5, %r31, $60	# build/example.ml#2037:7->2037:48
@@ -2556,8 +2556,8 @@ if_lt.11501:
 	LDR	%r3, %r31, $68	# build/example.ml#2037:7->2037:48
 	LDR	%r2, %r31, $72	# build/example.ml#2037:7->2037:48
 	LDR	%r1, %r31, $76	# build/example.ml#2037:7->2037:48
-	J	$if_eq_cont.11504	# build/example.ml#2036:5->2039:37
-if_eq.11503:
+	J	$if_eq_cont.11502	# build/example.ml#2036:5->2039:37
+if_eq.11501:
 	MVI	%r24, $0	# build/example.ml#2039:36->2039:37
 	SDR	%r6, %r31, $80	# build/example.ml#2039:7->2039:37
 	SDR	%r5, %r31, $84	# build/example.ml#2039:7->2039:37
@@ -2585,7 +2585,7 @@ if_eq.11503:
 	LDR	%r3, %r31, $92	# build/example.ml#2039:7->2039:37
 	LDR	%r2, %r31, $96	# build/example.ml#2039:7->2039:37
 	LDR	%r1, %r31, $100	# build/example.ml#2039:7->2039:37
-if_eq_cont.11504:
+if_eq_cont.11502:
 	SDR	%r6, %r31, $104	# build/example.ml#2042:5->2042:17
 	SDR	%r5, %r31, $108	# build/example.ml#2042:5->2042:17
 	SDR	%r4, %r31, $112	# build/example.ml#2042:5->2042:17
@@ -2623,7 +2623,7 @@ if_eq_cont.11504:
 	LDR	%r3, %r31, $140	# build/example.ml#2044:5->2044:39
 	LDR	%r2, %r31, $144	# build/example.ml#2044:5->2044:39
 	LDR	%r1, %r31, $148	# build/example.ml#2044:5->2044:39
-if_lt_cont.11502:
+if_lt_cont.11500:
 	LDR	%r9, %r31, $0	# build/example.ml#2030:10->2030:20
 	LDR	%r8, %r31, $4	# build/example.ml#2030:10->2030:20
 	LDR	%r7, %r31, $8	# build/example.ml#2030:10->2030:20
@@ -2726,7 +2726,7 @@ pretrace_pixels.2963:
 	FSDR	%fr8, %r31, $36	# build/example.ml#1989:11->1989:12
 	MVI	%r9, $0	# build/example.ml#1989:11->1989:12
 	CMP	%r2, %r9	# build/example.ml#1989:3->2009:13
-	JZ	$if_lt.11505	# build/example.ml#1989:3->2009:13
+	JZ	$if_lt.11503	# build/example.ml#1989:3->2009:13
 	MVI	%r8, $min_caml_scan_pitch	# build/example.ml#1991:17->1991:27
 	MVI	%r9, $0	# build/example.ml#1991:29->1991:30
 	FLDD	%fr8, %r8, $4, %r9	# build/example.ml#1991:17->1991:31
@@ -2983,9 +2983,9 @@ pretrace_pixels.2963:
 	LDR	%r1, %r31, $248	# build/example.ml#2007:5->2007:65
 	FLDR	%fr2, %r31, $252	# build/example.ml#2007:5->2007:65
 	FLDR	%fr1, %r31, $256	# build/example.ml#2007:5->2007:65
-	J	$if_lt_cont.11506	# build/example.ml#1989:3->2009:13
-if_lt.11505:
-if_lt_cont.11506:
+	J	$if_lt_cont.11504	# build/example.ml#1989:3->2009:13
+if_lt.11503:
+if_lt_cont.11504:
 	LDR	%r9, %r31, $0	# build/example.ml#1989:11->1989:12
 	LDR	%r8, %r31, $4	# build/example.ml#1989:11->1989:12
 	LDR	%r7, %r31, $8	# build/example.ml#1989:11->1989:12
@@ -3009,17 +3009,17 @@ pretrace_diffuse_rays.2960:
 	FSDR	%fr9, %r31, $32	# build/example.ml#1959:14->1959:15
 	MVI	%r28, $4	# build/example.ml#1959:14->1959:15
 	CMP	%r28, %r9	# build/example.ml#1959:3->1983:10
-	JZ	$if_lt.11507	# build/example.ml#1959:3->1983:10
+	JZ	$if_lt.11505	# build/example.ml#1959:3->1983:10
 	MV	%r28, %r3	# build/example.ml#383:3->385:9
 	LDD	%r28, %r28, $4, %r9	# build/example.ml#1654:7->1654:61
 	MVI	%r27, $0	# build/example.ml#1963:15->1963:16
 	CMP	%r28, %r27	# build/example.ml#1963:5->1982:15
-	JZ	$if_lt.11509	# build/example.ml#1963:5->1982:15
+	JZ	$if_lt.11507	# build/example.ml#1963:5->1982:15
 	MV	%r28, %r4	# build/example.ml#390:3->392:9
 	LDD	%r27, %r28, $4, %r9	# build/example.ml#1661:2->1661:30
 	MVI	%r28, $0	# build/example.ml#1966:7->1980:17
 	CEQ	%r27, %r28	# build/example.ml#1966:7->1980:17
-	JZ	$if_eq.11511	# build/example.ml#1966:7->1980:17
+	JZ	$if_eq.11509	# build/example.ml#1966:7->1980:17
 	SDR	%r6, %r31, $36	# build/example.ml#1967:17->1967:33
 	SDR	%r5, %r31, $40	# build/example.ml#1967:17->1967:33
 	SDR	%r4, %r31, $44	# build/example.ml#1967:17->1967:33
@@ -3088,9 +3088,9 @@ pretrace_diffuse_rays.2960:
 	ADDI	%r31, %r31, $-96	# build/example.ml#1979:2->1979:34
 	LDR	%r2, %r31, $88	# build/example.ml#1979:2->1979:34
 	LDR	%r1, %r31, $92	# build/example.ml#1979:2->1979:34
-	J	$if_eq_cont.11512	# build/example.ml#1966:7->1980:17
-if_eq.11511:
-if_eq_cont.11512:
+	J	$if_eq_cont.11510	# build/example.ml#1966:7->1980:17
+if_eq.11509:
+if_eq_cont.11510:
 	MVI	%r28, $1	# build/example.ml#1981:43->1981:44
 	ADD	%r9, %r9, %r28	# build/example.ml#1981:36->1981:44
 	SDR	%r6, %r31, $96	# build/example.ml#1981:7->1981:45
@@ -3110,12 +3110,12 @@ if_eq_cont.11512:
 	LDR	%r3, %r31, $108	# build/example.ml#1981:7->1981:45
 	LDR	%r2, %r31, $112	# build/example.ml#1981:7->1981:45
 	LDR	%r1, %r31, $116	# build/example.ml#1981:7->1981:45
-	J	$if_lt_cont.11510	# build/example.ml#1963:5->1982:15
-if_lt.11509:
-if_lt_cont.11510:
-	J	$if_lt_cont.11508	# build/example.ml#1959:3->1983:10
+	J	$if_lt_cont.11508	# build/example.ml#1963:5->1982:15
 if_lt.11507:
 if_lt_cont.11508:
+	J	$if_lt_cont.11506	# build/example.ml#1959:3->1983:10
+if_lt.11505:
+if_lt_cont.11506:
 	LDR	%r9, %r31, $0	# build/example.ml#1959:14->1959:15
 	LDR	%r8, %r31, $4	# build/example.ml#1959:14->1959:15
 	LDR	%r7, %r31, $8	# build/example.ml#1959:14->1959:15
@@ -3191,16 +3191,16 @@ write_rgb_element.2956:
 	MV	%r9, %r0	# build/example.ml#1936:12->1936:26
 	MVI	%r8, $255	# build/example.ml#1937:22->1937:25
 	CMP	%r8, %r9	# build/example.ml#1937:14->1937:64
-	JZ	$if_lt.11513	# build/example.ml#1937:14->1937:64
+	JZ	$if_lt.11511	# build/example.ml#1937:14->1937:64
 	MVI	%r8, $0	# build/example.ml#1937:48->1937:49
 	CMP	%r9, %r8	# build/example.ml#1937:40->1937:64
-	JZ	$if_lt.11515	# build/example.ml#1937:40->1937:64
-	J	$if_lt_cont.11516	# build/example.ml#1937:40->1937:64
-if_lt.11515:
-if_lt_cont.11516:
-	J	$if_lt_cont.11514	# build/example.ml#1937:14->1937:64
+	JZ	$if_lt.11513	# build/example.ml#1937:40->1937:64
+	J	$if_lt_cont.11514	# build/example.ml#1937:40->1937:64
 if_lt.11513:
 if_lt_cont.11514:
+	J	$if_lt_cont.11512	# build/example.ml#1937:14->1937:64
+if_lt.11511:
+if_lt_cont.11512:
 	MV	%r1, %r9	# build/example.ml#1938:3->1938:17
 	ADDI	%r31, %r31, $8	# build/example.ml#1938:3->1938:17
 	ADDI	%r31, %r31, $4	# build/example.ml#1938:3->1938:17
@@ -3304,12 +3304,12 @@ try_exploit_neighbors.2947:
 	LDR	%r24, %r24, $0	# build/example.ml#1895:3->1915:10
 	MVI	%r23, $4	# build/example.ml#1896:14->1896:15
 	CMP	%r23, %r6	# build/example.ml#1896:3->1915:10
-	JZ	$if_lt.11517	# build/example.ml#1896:3->1915:10
+	JZ	$if_lt.11515	# build/example.ml#1896:3->1915:10
 	MV	%r23, %r26	# build/example.ml#383:3->385:9
 	LDD	%r22, %r23, $4, %r6	# build/example.ml#1654:7->1654:61
 	MVI	%r23, $0	# build/example.ml#1899:37->1899:38
 	CMP	%r22, %r23	# build/example.ml#1899:5->1914:12
-	JZ	$if_lt.11519	# build/example.ml#1899:5->1914:12
+	JZ	$if_lt.11517	# build/example.ml#1899:5->1914:12
 	SDR	%r5, %r31, $40	# build/example.ml#1901:10->1901:54
 	SDR	%r4, %r31, $44	# build/example.ml#1901:10->1901:54
 	SDR	%r3, %r31, $48	# build/example.ml#1901:10->1901:54
@@ -3332,12 +3332,12 @@ try_exploit_neighbors.2947:
 	LDR	%r1, %r31, $56	# build/example.ml#1901:10->1901:54
 	MVI	%r23, $0	# build/example.ml#1901:7->1913:35
 	CEQ	%r22, %r23	# build/example.ml#1901:7->1913:35
-	JZ	$if_eq.11521	# build/example.ml#1901:7->1913:35
+	JZ	$if_eq.11519	# build/example.ml#1901:7->1913:35
 	MV	%r9, %r27	# build/example.ml#390:3->392:9
 	LDD	%r8, %r9, $4, %r6	# build/example.ml#1661:2->1661:30
 	MVI	%r9, $0	# build/example.ml#1905:9->1907:9
 	CEQ	%r8, %r9	# build/example.ml#1905:9->1907:9
-	JZ	$if_eq.11523	# build/example.ml#1905:9->1907:9
+	JZ	$if_eq.11521	# build/example.ml#1905:9->1907:9
 	SDR	%r6, %r31, $60	# build/example.ml#1906:4->1906:51
 	SDR	%r5, %r31, $64	# build/example.ml#1906:4->1906:51
 	SDR	%r4, %r31, $68	# build/example.ml#1906:4->1906:51
@@ -3359,9 +3359,9 @@ try_exploit_neighbors.2947:
 	LDR	%r3, %r31, $72	# build/example.ml#1906:4->1906:51
 	LDR	%r2, %r31, $76	# build/example.ml#1906:4->1906:51
 	LDR	%r1, %r31, $80	# build/example.ml#1906:4->1906:51
-	J	$if_eq_cont.11524	# build/example.ml#1905:9->1907:9
-if_eq.11523:
-if_eq_cont.11524:
+	J	$if_eq_cont.11522	# build/example.ml#1905:9->1907:9
+if_eq.11521:
+if_eq_cont.11522:
 	MVI	%r9, $1	# build/example.ml#1910:50->1910:51
 	ADD	%r9, %r6, %r9	# build/example.ml#1910:43->1910:51
 	SDR	%r6, %r31, $84	# build/example.ml#1910:2->1910:52
@@ -3382,8 +3382,8 @@ if_eq_cont.11524:
 	LDR	%r3, %r31, $96	# build/example.ml#1910:2->1910:52
 	LDR	%r2, %r31, $100	# build/example.ml#1910:2->1910:52
 	LDR	%r1, %r31, $104	# build/example.ml#1910:2->1910:52
-	J	$if_eq_cont.11522	# build/example.ml#1901:7->1913:35
-if_eq.11521:
+	J	$if_eq_cont.11520	# build/example.ml#1901:7->1913:35
+if_eq.11519:
 	SDR	%r6, %r31, $108	# build/example.ml#1913:2->1913:35
 	SDR	%r5, %r31, $112	# build/example.ml#1913:2->1913:35
 	SDR	%r4, %r31, $116	# build/example.ml#1913:2->1913:35
@@ -3411,13 +3411,13 @@ if_eq.11521:
 	LDR	%r3, %r31, $120	# build/example.ml#1913:2->1913:35
 	LDR	%r2, %r31, $124	# build/example.ml#1913:2->1913:35
 	LDR	%r1, %r31, $128	# build/example.ml#1913:2->1913:35
-if_eq_cont.11522:
-	J	$if_lt_cont.11520	# build/example.ml#1899:5->1914:12
-if_lt.11519:
-if_lt_cont.11520:
-	J	$if_lt_cont.11518	# build/example.ml#1896:3->1915:10
+if_eq_cont.11520:
+	J	$if_lt_cont.11518	# build/example.ml#1899:5->1914:12
 if_lt.11517:
 if_lt_cont.11518:
+	J	$if_lt_cont.11516	# build/example.ml#1896:3->1915:10
+if_lt.11515:
+if_lt_cont.11516:
 	LDR	%r9, %r31, $0	# build/example.ml#1895:15->1895:22
 	LDR	%r8, %r31, $4	# build/example.ml#1895:15->1895:22
 	LDR	%r7, %r31, $8	# build/example.ml#1895:15->1895:22
@@ -3439,43 +3439,43 @@ neighbors_are_available.2941:
 	LDR	%r11, %r11, $8	# build/example.ml#1879:6->1879:34
 	LDD	%r11, %r11, $4, %r5	# build/example.ml#1654:7->1654:61
 	CEQ	%r11, %r10	# build/example.ml#1879:3->1887:13
-	JZ	$if_eq.11525	# build/example.ml#1879:3->1887:13
+	JZ	$if_eq.11523	# build/example.ml#1879:3->1887:13
 	MVI	%r0, $0	# build/example.ml#1887:8->1887:13
-	J	$if_eq_cont.11526	# build/example.ml#1879:3->1887:13
-if_eq.11525:
+	J	$if_eq_cont.11524	# build/example.ml#1879:3->1887:13
+if_eq.11523:
 	LDD	%r11, %r4, $4, %r1	# build/example.ml#1880:23->1880:31
 	LDR	%r11, %r11, $8	# build/example.ml#1880:8->1880:36
 	LDD	%r11, %r11, $4, %r5	# build/example.ml#1654:7->1654:61
 	CEQ	%r11, %r10	# build/example.ml#1880:5->1886:15
-	JZ	$if_eq.11527	# build/example.ml#1880:5->1886:15
+	JZ	$if_eq.11525	# build/example.ml#1880:5->1886:15
 	MVI	%r0, $0	# build/example.ml#1886:10->1886:15
-	J	$if_eq_cont.11528	# build/example.ml#1880:5->1886:15
-if_eq.11527:
+	J	$if_eq_cont.11526	# build/example.ml#1880:5->1886:15
+if_eq.11525:
 	MVI	%r11, $1	# build/example.ml#1881:32->1881:33
 	SUB	%r11, %r1, %r11	# build/example.ml#1881:30->1881:33
 	LDD	%r11, %r3, $4, %r11	# build/example.ml#1877:35->1877:42
 	LDR	%r11, %r11, $8	# build/example.ml#1881:10->1881:39
 	LDD	%r11, %r11, $4, %r5	# build/example.ml#1654:7->1654:61
 	CEQ	%r11, %r10	# build/example.ml#1881:7->1885:17
-	JZ	$if_eq.11529	# build/example.ml#1881:7->1885:17
+	JZ	$if_eq.11527	# build/example.ml#1881:7->1885:17
 	MVI	%r0, $0	# build/example.ml#1885:12->1885:17
-	J	$if_eq_cont.11530	# build/example.ml#1881:7->1885:17
-if_eq.11529:
+	J	$if_eq_cont.11528	# build/example.ml#1881:7->1885:17
+if_eq.11527:
 	MVI	%r11, $1	# build/example.ml#1882:27->1882:28
 	ADD	%r1, %r1, %r11	# build/example.ml#1882:25->1882:28
 	LDD	%r1, %r3, $4, %r1	# build/example.ml#1877:35->1877:42
 	LDR	%r1, %r1, $8	# build/example.ml#1882:5->1882:34
 	LDD	%r1, %r1, $4, %r5	# build/example.ml#1654:7->1654:61
 	CEQ	%r1, %r10	# build/example.ml#1882:2->1884:12
-	JZ	$if_eq.11531	# build/example.ml#1882:2->1884:12
+	JZ	$if_eq.11529	# build/example.ml#1882:2->1884:12
 	MVI	%r0, $0	# build/example.ml#1884:7->1884:12
-	J	$if_eq_cont.11532	# build/example.ml#1882:2->1884:12
-if_eq.11531:
+	J	$if_eq_cont.11530	# build/example.ml#1882:2->1884:12
+if_eq.11529:
 	MVI	%r0, $1	# build/example.ml#1883:4->1883:8
-if_eq_cont.11532:
 if_eq_cont.11530:
 if_eq_cont.11528:
 if_eq_cont.11526:
+if_eq_cont.11524:
 	LDR	%r11, %r31, $0	# build/example.ml#1877:35->1877:42
 	LDR	%r10, %r31, $4	# build/example.ml#1877:35->1877:42
 	LINK	# build/example.ml#1877:35->1877:42
@@ -3489,36 +3489,36 @@ neighbors_exist.2934:
 	MVI	%r10, $1	# build/example.ml#1858:28->1858:29
 	LDD	%r10, %r12, $4, %r10	# build/example.ml#1858:16->1858:30
 	CMP	%r11, %r10	# build/example.ml#1858:3->1866:13
-	JZ	$if_lt.11533	# build/example.ml#1858:3->1866:13
+	JZ	$if_lt.11531	# build/example.ml#1858:3->1866:13
 	MVI	%r0, $0	# build/example.ml#1866:8->1866:13
-	J	$if_lt_cont.11534	# build/example.ml#1858:3->1866:13
-if_lt.11533:
+	J	$if_lt_cont.11532	# build/example.ml#1858:3->1866:13
+if_lt.11531:
 	MVI	%r10, $0	# build/example.ml#1859:12->1859:13
 	CMP	%r10, %r2	# build/example.ml#1859:5->1865:15
-	JZ	$if_lt.11535	# build/example.ml#1859:5->1865:15
+	JZ	$if_lt.11533	# build/example.ml#1859:5->1865:15
 	MVI	%r0, $0	# build/example.ml#1865:10->1865:15
-	J	$if_lt_cont.11536	# build/example.ml#1859:5->1865:15
-if_lt.11535:
+	J	$if_lt_cont.11534	# build/example.ml#1859:5->1865:15
+if_lt.11533:
 	MVI	%r10, $1	# build/example.ml#1860:15->1860:16
 	ADD	%r11, %r1, %r10	# build/example.ml#1860:11->1860:16
 	MVI	%r10, $0	# build/example.ml#1860:32->1860:33
 	LDD	%r10, %r12, $4, %r10	# build/example.ml#1858:16->1858:30
 	CMP	%r11, %r10	# build/example.ml#1860:7->1864:17
-	JZ	$if_lt.11537	# build/example.ml#1860:7->1864:17
+	JZ	$if_lt.11535	# build/example.ml#1860:7->1864:17
 	MVI	%r0, $0	# build/example.ml#1864:12->1864:17
-	J	$if_lt_cont.11538	# build/example.ml#1860:7->1864:17
-if_lt.11537:
+	J	$if_lt_cont.11536	# build/example.ml#1860:7->1864:17
+if_lt.11535:
 	MVI	%r10, $0	# build/example.ml#1861:9->1861:10
 	CMP	%r10, %r1	# build/example.ml#1861:2->1863:12
-	JZ	$if_lt.11539	# build/example.ml#1861:2->1863:12
+	JZ	$if_lt.11537	# build/example.ml#1861:2->1863:12
 	MVI	%r0, $0	# build/example.ml#1863:7->1863:12
-	J	$if_lt_cont.11540	# build/example.ml#1861:2->1863:12
-if_lt.11539:
+	J	$if_lt_cont.11538	# build/example.ml#1861:2->1863:12
+if_lt.11537:
 	MVI	%r0, $1	# build/example.ml#1862:4->1862:8
-if_lt_cont.11540:
 if_lt_cont.11538:
 if_lt_cont.11536:
 if_lt_cont.11534:
+if_lt_cont.11532:
 	LDR	%r12, %r31, $0	# build/example.ml#1858:11->1858:12
 	LDR	%r11, %r31, $4	# build/example.ml#1858:11->1858:12
 	LDR	%r10, %r31, $8	# build/example.ml#1858:11->1858:12
@@ -3531,17 +3531,17 @@ do_without_neighbors.2931:
 	SDR	%r27, %r31, $16	# build/example.ml#1843:14->1843:15
 	MVI	%r28, $4	# build/example.ml#1843:14->1843:15
 	CMP	%r28, %r9	# build/example.ml#1843:3->1853:10
-	JZ	$if_lt.11541	# build/example.ml#1843:3->1853:10
+	JZ	$if_lt.11539	# build/example.ml#1843:3->1853:10
 	MV	%r28, %r3	# build/example.ml#383:3->385:9
 	LDD	%r27, %r28, $4, %r9	# build/example.ml#1654:7->1654:61
 	MVI	%r28, $0	# build/example.ml#1846:30->1846:31
 	CMP	%r27, %r28	# build/example.ml#1846:5->1852:15
-	JZ	$if_lt.11543	# build/example.ml#1846:5->1852:15
+	JZ	$if_lt.11541	# build/example.ml#1846:5->1852:15
 	MV	%r28, %r4	# build/example.ml#390:3->392:9
 	LDD	%r27, %r28, $4, %r9	# build/example.ml#1661:2->1661:30
 	MVI	%r28, $0	# build/example.ml#1848:7->1850:14
 	CEQ	%r27, %r28	# build/example.ml#1848:7->1850:14
-	JZ	$if_eq.11545	# build/example.ml#1848:7->1850:14
+	JZ	$if_eq.11543	# build/example.ml#1848:7->1850:14
 	SDR	%r6, %r31, $20	# build/example.ml#1849:2->1849:38
 	SDR	%r5, %r31, $24	# build/example.ml#1849:2->1849:38
 	SDR	%r4, %r31, $28	# build/example.ml#1849:2->1849:38
@@ -3559,9 +3559,9 @@ do_without_neighbors.2931:
 	LDR	%r3, %r31, $32	# build/example.ml#1849:2->1849:38
 	LDR	%r2, %r31, $36	# build/example.ml#1849:2->1849:38
 	LDR	%r1, %r31, $40	# build/example.ml#1849:2->1849:38
-	J	$if_eq_cont.11546	# build/example.ml#1848:7->1850:14
-if_eq.11545:
-if_eq_cont.11546:
+	J	$if_eq_cont.11544	# build/example.ml#1848:7->1850:14
+if_eq.11543:
+if_eq_cont.11544:
 	MVI	%r28, $1	# build/example.ml#1851:42->1851:43
 	ADD	%r9, %r9, %r28	# build/example.ml#1851:35->1851:43
 	SDR	%r6, %r31, $44	# build/example.ml#1851:7->1851:44
@@ -3581,12 +3581,12 @@ if_eq_cont.11546:
 	LDR	%r3, %r31, $56	# build/example.ml#1851:7->1851:44
 	LDR	%r2, %r31, $60	# build/example.ml#1851:7->1851:44
 	LDR	%r1, %r31, $64	# build/example.ml#1851:7->1851:44
-	J	$if_lt_cont.11544	# build/example.ml#1846:5->1852:15
-if_lt.11543:
-if_lt_cont.11544:
-	J	$if_lt_cont.11542	# build/example.ml#1843:3->1853:10
+	J	$if_lt_cont.11542	# build/example.ml#1846:5->1852:15
 if_lt.11541:
 if_lt_cont.11542:
+	J	$if_lt_cont.11540	# build/example.ml#1843:3->1853:10
+if_lt.11539:
+if_lt_cont.11540:
 	LDR	%r9, %r31, $0	# build/example.ml#1843:14->1843:15
 	LDR	%r8, %r31, $4	# build/example.ml#1843:14->1843:15
 	LDR	%r7, %r31, $8	# build/example.ml#1843:14->1843:15
@@ -3792,7 +3792,7 @@ trace_diffuse_ray_80percent.2918:
 	SDR	%r8, %r31, $4	# build/example.ml#1779:18->1779:19
 	MVI	%r9, $0	# build/example.ml#1779:18->1779:19
 	CEQ	%r1, %r9	# build/example.ml#1779:3->1781:10
-	JZ	$if_eq.11547	# build/example.ml#1779:3->1781:10
+	JZ	$if_eq.11545	# build/example.ml#1779:3->1781:10
 	MVI	%r8, $min_caml_dirvecs	# build/example.ml#1780:24->1780:31
 	MVI	%r9, $0	# build/example.ml#1780:33->1780:34
 	LDD	%r9, %r8, $4, %r9	# build/example.ml#1780:24->1780:35
@@ -3808,12 +3808,12 @@ trace_diffuse_ray_80percent.2918:
 	LDR	%r3, %r31, $8	# build/example.ml#1780:5->1780:47
 	LDR	%r2, %r31, $12	# build/example.ml#1780:5->1780:47
 	LDR	%r1, %r31, $16	# build/example.ml#1780:5->1780:47
-	J	$if_eq_cont.11548	# build/example.ml#1779:3->1781:10
-if_eq.11547:
-if_eq_cont.11548:
+	J	$if_eq_cont.11546	# build/example.ml#1779:3->1781:10
+if_eq.11545:
+if_eq_cont.11546:
 	MVI	%r9, $1	# build/example.ml#1783:18->1783:19
 	CEQ	%r1, %r9	# build/example.ml#1783:3->1785:10
-	JZ	$if_eq.11549	# build/example.ml#1783:3->1785:10
+	JZ	$if_eq.11547	# build/example.ml#1783:3->1785:10
 	MVI	%r8, $min_caml_dirvecs	# build/example.ml#1784:24->1784:31
 	MVI	%r9, $1	# build/example.ml#1784:33->1784:34
 	LDD	%r9, %r8, $4, %r9	# build/example.ml#1780:24->1780:35
@@ -3829,12 +3829,12 @@ if_eq_cont.11548:
 	LDR	%r3, %r31, $20	# build/example.ml#1784:5->1784:47
 	LDR	%r2, %r31, $24	# build/example.ml#1784:5->1784:47
 	LDR	%r1, %r31, $28	# build/example.ml#1784:5->1784:47
-	J	$if_eq_cont.11550	# build/example.ml#1783:3->1785:10
-if_eq.11549:
-if_eq_cont.11550:
+	J	$if_eq_cont.11548	# build/example.ml#1783:3->1785:10
+if_eq.11547:
+if_eq_cont.11548:
 	MVI	%r9, $2	# build/example.ml#1787:18->1787:19
 	CEQ	%r1, %r9	# build/example.ml#1787:3->1789:10
-	JZ	$if_eq.11551	# build/example.ml#1787:3->1789:10
+	JZ	$if_eq.11549	# build/example.ml#1787:3->1789:10
 	MVI	%r8, $min_caml_dirvecs	# build/example.ml#1788:24->1788:31
 	MVI	%r9, $2	# build/example.ml#1788:33->1788:34
 	LDD	%r9, %r8, $4, %r9	# build/example.ml#1780:24->1780:35
@@ -3850,12 +3850,12 @@ if_eq_cont.11550:
 	LDR	%r3, %r31, $32	# build/example.ml#1788:5->1788:47
 	LDR	%r2, %r31, $36	# build/example.ml#1788:5->1788:47
 	LDR	%r1, %r31, $40	# build/example.ml#1788:5->1788:47
-	J	$if_eq_cont.11552	# build/example.ml#1787:3->1789:10
-if_eq.11551:
-if_eq_cont.11552:
+	J	$if_eq_cont.11550	# build/example.ml#1787:3->1789:10
+if_eq.11549:
+if_eq_cont.11550:
 	MVI	%r9, $3	# build/example.ml#1791:18->1791:19
 	CEQ	%r1, %r9	# build/example.ml#1791:3->1793:10
-	JZ	$if_eq.11553	# build/example.ml#1791:3->1793:10
+	JZ	$if_eq.11551	# build/example.ml#1791:3->1793:10
 	MVI	%r8, $min_caml_dirvecs	# build/example.ml#1792:24->1792:31
 	MVI	%r9, $3	# build/example.ml#1792:33->1792:34
 	LDD	%r9, %r8, $4, %r9	# build/example.ml#1780:24->1780:35
@@ -3871,12 +3871,12 @@ if_eq_cont.11552:
 	LDR	%r3, %r31, $44	# build/example.ml#1792:5->1792:47
 	LDR	%r2, %r31, $48	# build/example.ml#1792:5->1792:47
 	LDR	%r1, %r31, $52	# build/example.ml#1792:5->1792:47
-	J	$if_eq_cont.11554	# build/example.ml#1791:3->1793:10
-if_eq.11553:
-if_eq_cont.11554:
+	J	$if_eq_cont.11552	# build/example.ml#1791:3->1793:10
+if_eq.11551:
+if_eq_cont.11552:
 	MVI	%r9, $4	# build/example.ml#1795:18->1795:19
 	CEQ	%r1, %r9	# build/example.ml#1795:3->1797:10
-	JZ	$if_eq.11555	# build/example.ml#1795:3->1797:10
+	JZ	$if_eq.11553	# build/example.ml#1795:3->1797:10
 	MVI	%r8, $min_caml_dirvecs	# build/example.ml#1796:24->1796:31
 	MVI	%r9, $4	# build/example.ml#1796:33->1796:34
 	LDD	%r9, %r8, $4, %r9	# build/example.ml#1780:24->1780:35
@@ -3892,9 +3892,9 @@ if_eq_cont.11554:
 	LDR	%r3, %r31, $56	# build/example.ml#1796:5->1796:47
 	LDR	%r2, %r31, $60	# build/example.ml#1796:5->1796:47
 	LDR	%r1, %r31, $64	# build/example.ml#1796:5->1796:47
-	J	$if_eq_cont.11556	# build/example.ml#1795:3->1797:10
-if_eq.11555:
-if_eq_cont.11556:
+	J	$if_eq_cont.11554	# build/example.ml#1795:3->1797:10
+if_eq.11553:
+if_eq_cont.11554:
 	LDR	%r9, %r31, $0	# build/example.ml#1779:18->1779:19
 	LDR	%r8, %r31, $4	# build/example.ml#1779:18->1779:19
 	LINK	# build/example.ml#1779:18->1779:19
@@ -3935,7 +3935,7 @@ iter_trace_diffuse_rays.2909:
 	FSDR	%fr8, %r31, $16	# build/example.ml#1752:15->1752:16
 	MVI	%r9, $0	# build/example.ml#1752:15->1752:16
 	CMP	%r4, %r9	# build/example.ml#1752:3->1763:13
-	JZ	$if_lt.11557	# build/example.ml#1752:3->1763:13
+	JZ	$if_lt.11555	# build/example.ml#1752:3->1763:13
 	LDD	%r8, %r1, $4, %r4	# build/example.ml#1753:29->1753:49
 	LDR	%r9, %r8, $4	# build/example.ml#1753:23->1753:49
 	LDR	%r8, %r8, $0	# build/example.ml#1753:23->1753:49
@@ -3970,7 +3970,7 @@ iter_trace_diffuse_rays.2909:
 	LDR	%r1, %r31, $44	# build/example.ml#1757:8->1757:16
 	MVI	%r7, $0	# build/example.ml#1757:5->1760:58
 	CEQ	%r6, %r7	# build/example.ml#1757:5->1760:58
-	JZ	$if_eq.11559	# build/example.ml#1757:5->1760:58
+	JZ	$if_eq.11557	# build/example.ml#1757:5->1760:58
 	MVI	%r9, $1	# build/example.ml#1758:47->1758:48
 	ADD	%r9, %r4, %r9	# build/example.ml#1758:39->1758:48
 	LDD	%r8, %r1, $4, %r9	# build/example.ml#1753:29->1753:49
@@ -3996,8 +3996,8 @@ iter_trace_diffuse_rays.2909:
 	LDR	%r3, %r31, $56	# build/example.ml#1758:7->1758:63
 	LDR	%r2, %r31, $60	# build/example.ml#1758:7->1758:63
 	LDR	%r1, %r31, $64	# build/example.ml#1758:7->1758:63
-	J	$if_eq_cont.11560	# build/example.ml#1757:5->1760:58
-if_eq.11559:
+	J	$if_eq_cont.11558	# build/example.ml#1757:5->1760:58
+if_eq.11557:
 	FLDA	%fr8, $l.7791	# build/example.ml#1760:52->1760:57
 	FDIV	%fr9, %fr9, %fr8	# build/example.ml#1760:47->1760:57
 	SDR	%r6, %r31, $68	# build/example.ml#1760:7->1760:58
@@ -4018,7 +4018,7 @@ if_eq.11559:
 	LDR	%r3, %r31, $76	# build/example.ml#1760:7->1760:58
 	LDR	%r2, %r31, $80	# build/example.ml#1760:7->1760:58
 	LDR	%r1, %r31, $84	# build/example.ml#1760:7->1760:58
-if_eq_cont.11560:
+if_eq_cont.11558:
 	MVI	%r9, $2	# build/example.ml#1762:63->1762:64
 	SUB	%r9, %r4, %r9	# build/example.ml#1762:55->1762:64
 	SDR	%r6, %r31, $88	# build/example.ml#1762:5->1762:65
@@ -4037,9 +4037,9 @@ if_eq_cont.11560:
 	LDR	%r3, %r31, $96	# build/example.ml#1762:5->1762:65
 	LDR	%r2, %r31, $100	# build/example.ml#1762:5->1762:65
 	LDR	%r1, %r31, $104	# build/example.ml#1762:5->1762:65
-	J	$if_lt_cont.11558	# build/example.ml#1752:3->1763:13
-if_lt.11557:
-if_lt_cont.11558:
+	J	$if_lt_cont.11556	# build/example.ml#1752:3->1763:13
+if_lt.11555:
+if_lt_cont.11556:
 	LDR	%r9, %r31, $0	# build/example.ml#1752:15->1752:16
 	LDR	%r8, %r31, $4	# build/example.ml#1752:15->1752:16
 	LDR	%r7, %r31, $8	# build/example.ml#1752:15->1752:16
@@ -4079,7 +4079,7 @@ trace_diffuse_ray.2906:
 	LDR	%r1, %r31, $68	# build/example.ml#1735:6->1735:36
 	MVI	%r9, $0	# build/example.ml#1735:3->1746:10
 	CEQ	%r8, %r9	# build/example.ml#1735:3->1746:10
-	JZ	$if_eq.11561	# build/example.ml#1735:3->1746:10
+	JZ	$if_eq.11559	# build/example.ml#1735:3->1746:10
 	MVI	%r7, $min_caml_objects	# build/example.ml#1736:15->1736:22
 	MVI	%r8, $min_caml_intersected_object_id	# build/example.ml#1736:24->1736:45
 	MVI	%r9, $0	# build/example.ml#1736:47->1736:48
@@ -4182,9 +4182,9 @@ trace_diffuse_ray.2906:
 	LDR	%r1, %r31, $140	# build/example.ml#1741:13->1741:52
 	MVI	%r24, $0	# build/example.ml#1741:5->1745:12
 	CEQ	%r23, %r24	# build/example.ml#1741:5->1745:12
-	JZ	$if_eq.11563	# build/example.ml#1741:5->1745:12
-	J	$if_eq_cont.11564	# build/example.ml#1741:5->1745:12
-if_eq.11563:
+	JZ	$if_eq.11561	# build/example.ml#1741:5->1745:12
+	J	$if_eq_cont.11562	# build/example.ml#1741:5->1745:12
+if_eq.11561:
 	MVI	%r23, $min_caml_nvector	# build/example.ml#1742:32->1742:39
 	MVI	%r24, $min_caml_light	# build/example.ml#1742:40->1742:45
 	SDR	%r2, %r31, $144	# build/example.ml#1742:23->1742:45
@@ -4239,11 +4239,11 @@ if_eq.11563:
 	LDR	%r1, %r31, $196	# build/example.ml#1743:24->1743:33
 	MVI	%r24, $0	# build/example.ml#1743:21->1743:50
 	CEQ	%r23, %r24	# build/example.ml#1743:21->1743:50
-	JZ	$if_eq.11565	# build/example.ml#1743:21->1743:50
-	J	$if_eq_cont.11566	# build/example.ml#1743:21->1743:50
-if_eq.11565:
+	JZ	$if_eq.11563	# build/example.ml#1743:21->1743:50
+	J	$if_eq_cont.11564	# build/example.ml#1743:21->1743:50
+if_eq.11563:
 	FLDA	%rd, $l.7787	# build/example.ml#1743:47->1743:50
-if_eq_cont.11566:
+if_eq_cont.11564:
 	MVI	%r24, $min_caml_diffuse_ray	# build/example.ml#1744:16->1744:27
 	FMUL	%fr8, %fr0, %fr9	# build/example.ml#1744:29->1744:45
 	SDR	%r6, %r31, $200	# build/example.ml#1744:49->1744:62
@@ -4289,10 +4289,10 @@ if_eq_cont.11566:
 	ADDI	%r31, %r31, $-232	# build/example.ml#1744:7->1744:77
 	LDR	%r2, %r31, $224	# build/example.ml#1744:7->1744:77
 	LDR	%r1, %r31, $228	# build/example.ml#1744:7->1744:77
-if_eq_cont.11564:
-	J	$if_eq_cont.11562	# build/example.ml#1735:3->1746:10
-if_eq.11561:
 if_eq_cont.11562:
+	J	$if_eq_cont.11560	# build/example.ml#1735:3->1746:10
+if_eq.11559:
+if_eq_cont.11560:
 	LDR	%r9, %r31, $0	# build/example.ml#1735:6->1735:36
 	LDR	%r8, %r31, $4	# build/example.ml#1735:6->1735:36
 	LDR	%r7, %r31, $8	# build/example.ml#1735:6->1735:36
@@ -4334,7 +4334,7 @@ trace_ray.2900:
 	FSDR	%fr7, %r31, $96	# build/example.ml#1640:14->1640:15
 	MVI	%r28, $4	# build/example.ml#1640:14->1640:15
 	CMP	%r28, %r1	# build/example.ml#1640:3->1721:13
-	JZ	$if_lt.11567	# build/example.ml#1640:3->1721:13
+	JZ	$if_lt.11565	# build/example.ml#1640:3->1721:13
 	MV	%r16, %r5	# build/example.ml#383:3->385:9
 	SDR	%r6, %r31, $100	# build/example.ml#1642:8->1642:33
 	SDR	%r5, %r31, $104	# build/example.ml#1642:8->1642:33
@@ -4361,7 +4361,7 @@ trace_ray.2900:
 	FLDR	%fr1, %r31, $128	# build/example.ml#1642:8->1642:33
 	MVI	%r28, $0	# build/example.ml#1642:5->1720:7
 	CEQ	%r27, %r28	# build/example.ml#1642:5->1720:7
-	JZ	$if_eq.11569	# build/example.ml#1642:5->1720:7
+	JZ	$if_eq.11567	# build/example.ml#1642:5->1720:7
 	MVI	%r27, $min_caml_intersected_object_id	# build/example.ml#1644:20->1644:41
 	MVI	%r28, $0	# build/example.ml#1644:43->1644:44
 	LDD	%r15, %r27, $4, %r28	# build/example.ml#1294:3->1294:36
@@ -4569,11 +4569,11 @@ trace_ray.2900:
 	FLDR	%fr1, %r31, $296	# build/example.ml#1660:10->1660:35
 	MVI	%r14, $0	# build/example.ml#1660:7->1669:9
 	CEQ	%r13, %r14	# build/example.ml#1660:7->1669:9
-	JZ	$if_eq.11571	# build/example.ml#1660:7->1669:9
+	JZ	$if_eq.11569	# build/example.ml#1660:7->1669:9
 	MVI	%r14, $0	# build/example.ml#1661:25->1661:30
 	SDD	%r14, %r15, $4, %r1	# build/example.ml#1661:2->1661:30
-	J	$if_eq_cont.11572	# build/example.ml#1660:7->1669:9
-if_eq.11571:
+	J	$if_eq_cont.11570	# build/example.ml#1660:7->1669:9
+if_eq.11569:
 	MVI	%r14, $1	# build/example.ml#1663:25->1663:29
 	SDD	%r14, %r15, $4, %r1	# build/example.ml#1663:2->1663:29
 	MV	%r15, %r7	# build/example.ml#397:3->399:9
@@ -4621,7 +4621,7 @@ if_eq.11571:
 	LDR	%r2, %r31, $320	# build/example.ml#1668:2->1668:32
 	LDR	%r1, %r31, $324	# build/example.ml#1668:2->1668:32
 	FLDR	%fr1, %r31, $328	# build/example.ml#1668:2->1668:32
-if_eq_cont.11572:
+if_eq_cont.11570:
 	FLDA	%fr8, $l.7795	# build/example.ml#1671:16->1671:20
 	MVI	%r12, $min_caml_nvector	# build/example.ml#1671:41->1671:48
 	SDR	%r2, %r31, $332	# build/example.ml#1671:25->1671:48
@@ -4713,9 +4713,9 @@ if_eq_cont.11572:
 	FLDR	%fr1, %r31, $408	# build/example.ml#1678:15->1678:54
 	MVI	%r15, $0	# build/example.ml#1678:7->1682:14
 	CEQ	%r14, %r15	# build/example.ml#1678:7->1682:14
-	JZ	$if_eq.11573	# build/example.ml#1678:7->1682:14
-	J	$if_eq_cont.11574	# build/example.ml#1678:7->1682:14
-if_eq.11573:
+	JZ	$if_eq.11571	# build/example.ml#1678:7->1682:14
+	J	$if_eq_cont.11572	# build/example.ml#1678:7->1682:14
+if_eq.11571:
 	MVI	%r15, $min_caml_light	# build/example.ml#1679:45->1679:50
 	SDR	%r2, %r31, $412	# build/example.ml#1679:28->1679:50
 	SDR	%r1, %r31, $416	# build/example.ml#1679:28->1679:50
@@ -4816,7 +4816,7 @@ if_eq.11573:
 	LDR	%r1, %r31, $520	# build/example.ml#1681:9->1681:47
 	FLDR	%fr6, %r31, $524	# build/example.ml#1681:9->1681:47
 	FLDR	%fr1, %r31, $528	# build/example.ml#1681:9->1681:47
-if_eq_cont.11574:
+if_eq_cont.11572:
 	SDR	%r6, %r31, $532	# build/example.ml#1685:7->1685:38
 	SDR	%r5, %r31, $536	# build/example.ml#1685:7->1685:38
 	SDR	%r4, %r31, $540	# build/example.ml#1685:7->1685:38
@@ -4895,22 +4895,22 @@ if_eq_cont.11574:
 	FLDR	%fr1, %r31, $624	# build/example.ml#1689:10->1689:26
 	MVI	%r15, $0	# build/example.ml#1689:7->1700:17
 	CEQ	%r14, %r15	# build/example.ml#1689:7->1700:17
-	JZ	$if_eq.11575	# build/example.ml#1689:7->1700:17
+	JZ	$if_eq.11573	# build/example.ml#1689:7->1700:17
 	MVI	%r15, $4	# build/example.ml#1691:12->1691:13
 	CMP	%r1, %r15	# build/example.ml#1691:2->1693:9
-	JZ	$if_lt.11577	# build/example.ml#1691:2->1693:9
-	J	$if_lt_cont.11578	# build/example.ml#1691:2->1693:9
-if_lt.11577:
+	JZ	$if_lt.11575	# build/example.ml#1691:2->1693:9
+	J	$if_lt_cont.11576	# build/example.ml#1691:2->1693:9
+if_lt.11575:
 	MVI	%r15, $1	# build/example.ml#1692:22->1692:23
 	ADD	%r14, %r1, %r15	# build/example.ml#1692:17->1692:23
 	MVI	%r15, $-1	# build/example.ml#1692:28->1692:30
 	SDD	%r15, %r16, $4, %r14	# build/example.ml#1692:4->1692:30
-if_lt_cont.11578:
+if_lt_cont.11576:
 	MVI	%r16, $2	# build/example.ml#1695:17->1695:18
 	CEQ	%r17, %r16	# build/example.ml#1695:2->1698:12
-	JZ	$if_eq.11579	# build/example.ml#1695:2->1698:12
-	J	$if_eq_cont.11580	# build/example.ml#1695:2->1698:12
-if_eq.11579:
+	JZ	$if_eq.11577	# build/example.ml#1695:2->1698:12
+	J	$if_eq_cont.11578	# build/example.ml#1695:2->1698:12
+if_eq.11577:
 	FLDA	%fr8, $l.7785	# build/example.ml#1696:29->1696:32
 	SDR	%r6, %r31, $628	# build/example.ml#1696:36->1696:49
 	SDR	%r5, %r31, $632	# build/example.ml#1696:36->1696:49
@@ -4973,17 +4973,17 @@ if_eq.11579:
 	LDR	%r1, %r31, $672	# build/example.ml#1697:4->1697:62
 	FLDR	%fr6, %r31, $676	# build/example.ml#1697:4->1697:62
 	FLDR	%fr1, %r31, $680	# build/example.ml#1697:4->1697:62
-if_eq_cont.11580:
-	J	$if_eq_cont.11576	# build/example.ml#1689:7->1700:17
-if_eq.11575:
-if_eq_cont.11576:
-	J	$if_eq_cont.11570	# build/example.ml#1642:5->1720:7
-if_eq.11569:
+if_eq_cont.11578:
+	J	$if_eq_cont.11574	# build/example.ml#1689:7->1700:17
+if_eq.11573:
+if_eq_cont.11574:
+	J	$if_eq_cont.11568	# build/example.ml#1642:5->1720:7
+if_eq.11567:
 	MVI	%r9, $-1	# build/example.ml#1705:29->1705:31
 	SDD	%r9, %r16, $4, %r1	# build/example.ml#1705:7->1705:31
 	MVI	%r9, $0	# build/example.ml#1707:18->1707:19
 	CEQ	%r1, %r9	# build/example.ml#1707:7->1719:17
-	JZ	$if_eq.11581	# build/example.ml#1707:7->1719:17
+	JZ	$if_eq.11579	# build/example.ml#1707:7->1719:17
 	MVI	%r9, $min_caml_light	# build/example.ml#1708:33->1708:38
 	SDR	%r2, %r31, $684	# build/example.ml#1708:17->1708:38
 	SDR	%r1, %r31, $688	# build/example.ml#1708:17->1708:38
@@ -5047,7 +5047,7 @@ if_eq.11569:
 	FLDR	%fr1, %r31, $756	# build/example.ml#1710:5->1710:14
 	MVI	%r9, $0	# build/example.ml#1710:2->1718:9
 	CEQ	%r8, %r9	# build/example.ml#1710:2->1718:9
-	JZ	$if_eq.11583	# build/example.ml#1710:2->1718:9
+	JZ	$if_eq.11581	# build/example.ml#1710:2->1718:9
 	SDR	%r6, %r31, $760	# build/example.ml#1713:15->1713:22
 	SDR	%r5, %r31, $764	# build/example.ml#1713:15->1713:22
 	SDR	%r4, %r31, $768	# build/example.ml#1713:15->1713:22
@@ -5093,16 +5093,16 @@ if_eq.11569:
 	FLDD	%fr8, %r7, $4, %r9	# build/example.ml#110:15->110:23
 	FADD	%fr9, %fr8, %fr9	# build/example.ml#1716:16->1716:30
 	FSDD	%fr9, %r7, $4, %r8	# build/example.ml#1716:5->1716:30
-	J	$if_eq_cont.11584	# build/example.ml#1710:2->1718:9
-if_eq.11583:
-if_eq_cont.11584:
-	J	$if_eq_cont.11582	# build/example.ml#1707:7->1719:17
+	J	$if_eq_cont.11582	# build/example.ml#1710:2->1718:9
 if_eq.11581:
 if_eq_cont.11582:
-if_eq_cont.11570:
-	J	$if_lt_cont.11568	# build/example.ml#1640:3->1721:13
-if_lt.11567:
-if_lt_cont.11568:
+	J	$if_eq_cont.11580	# build/example.ml#1707:7->1719:17
+if_eq.11579:
+if_eq_cont.11580:
+if_eq_cont.11568:
+	J	$if_lt_cont.11566	# build/example.ml#1640:3->1721:13
+if_lt.11565:
+if_lt_cont.11566:
 	LDR	%r9, %r31, $0	# build/example.ml#1640:14->1640:15
 	LDR	%r8, %r31, $4	# build/example.ml#1640:14->1640:15
 	LDR	%r7, %r31, $8	# build/example.ml#1640:14->1640:15
@@ -5138,7 +5138,7 @@ trace_reflections.2895:
 	FSDR	%fr7, %r31, $20	# build/example.ml#1612:15->1612:16
 	MVI	%r9, $0	# build/example.ml#1612:15->1612:16
 	CMP	%r1, %r9	# build/example.ml#1612:3->1632:12
-	JZ	$if_lt.11585	# build/example.ml#1612:3->1632:12
+	JZ	$if_lt.11583	# build/example.ml#1612:3->1632:12
 	MVI	%r9, $min_caml_reflections	# build/example.ml#1613:17->1613:28
 	LDD	%r7, %r9, $4, %r1	# build/example.ml#1613:17->1613:36
 	FLDR	%fr9, %r7, $12	# build/example.ml#1613:5->1631:63
@@ -5171,7 +5171,7 @@ trace_reflections.2895:
 	FLDR	%fr1, %r31, $48	# build/example.ml#1617:8->1617:36
 	MVI	%r5, $0	# build/example.ml#1617:5->1630:12
 	CEQ	%r4, %r5	# build/example.ml#1617:5->1630:12
-	JZ	$if_eq.11587	# build/example.ml#1617:5->1630:12
+	JZ	$if_eq.11585	# build/example.ml#1617:5->1630:12
 	MVI	%r4, $min_caml_intersected_object_id	# build/example.ml#1618:24->1618:45
 	MVI	%r5, $0	# build/example.ml#1618:47->1618:48
 	LDD	%r4, %r4, $4, %r5	# build/example.ml#1294:3->1294:36
@@ -5183,9 +5183,9 @@ trace_reflections.2895:
 	ADD	%r5, %r4, %r5	# build/example.ml#1618:24->1618:75
 	MV	%r9, %r8	# build/example.ml#461:3->462:8
 	CEQ	%r5, %r7	# build/example.ml#1619:7->1629:14
-	JZ	$if_eq.11589	# build/example.ml#1619:7->1629:14
-	J	$if_eq_cont.11590	# build/example.ml#1619:7->1629:14
-if_eq.11589:
+	JZ	$if_eq.11587	# build/example.ml#1619:7->1629:14
+	J	$if_eq_cont.11588	# build/example.ml#1619:7->1629:14
+if_eq.11587:
 	MVI	%r5, $0	# build/example.ml#1621:44->1621:45
 	MVI	%r4, $min_caml_or_net	# build/example.ml#1621:46->1621:52
 	MVI	%r7, $0	# build/example.ml#1621:54->1621:55
@@ -5214,9 +5214,9 @@ if_eq.11589:
 	FLDR	%fr1, %r31, $76	# build/example.ml#1621:17->1621:56
 	MVI	%r7, $0	# build/example.ml#1621:9->1628:16
 	CEQ	%r5, %r7	# build/example.ml#1621:9->1628:16
-	JZ	$if_eq.11591	# build/example.ml#1621:9->1628:16
-	J	$if_eq_cont.11592	# build/example.ml#1621:9->1628:16
-if_eq.11591:
+	JZ	$if_eq.11589	# build/example.ml#1621:9->1628:16
+	J	$if_eq_cont.11590	# build/example.ml#1621:9->1628:16
+if_eq.11589:
 	MVI	%r5, $min_caml_nvector	# build/example.ml#1623:28->1623:35
 	MV	%r7, %r6	# build/example.ml#445:3->446:8
 	SDR	%r2, %r31, $80	# build/example.ml#1623:19->1623:48
@@ -5274,11 +5274,11 @@ if_eq.11591:
 	LDR	%r2, %r31, $120	# build/example.ml#1627:11->1627:49
 	LDR	%r1, %r31, $124	# build/example.ml#1627:11->1627:49
 	FLDR	%fr1, %r31, $128	# build/example.ml#1627:11->1627:49
-if_eq_cont.11592:
 if_eq_cont.11590:
-	J	$if_eq_cont.11588	# build/example.ml#1617:5->1630:12
-if_eq.11587:
 if_eq_cont.11588:
+	J	$if_eq_cont.11586	# build/example.ml#1617:5->1630:12
+if_eq.11585:
+if_eq_cont.11586:
 	MVI	%r9, $1	# build/example.ml#1631:32->1631:33
 	SUB	%r9, %r1, %r9	# build/example.ml#1631:24->1631:33
 	SDR	%r6, %r31, $132	# build/example.ml#1631:5->1631:63
@@ -5301,9 +5301,9 @@ if_eq_cont.11588:
 	LDR	%r2, %r31, $148	# build/example.ml#1631:5->1631:63
 	LDR	%r1, %r31, $152	# build/example.ml#1631:5->1631:63
 	FLDR	%fr1, %r31, $156	# build/example.ml#1631:5->1631:63
-	J	$if_lt_cont.11586	# build/example.ml#1612:3->1632:12
-if_lt.11585:
-if_lt_cont.11586:
+	J	$if_lt_cont.11584	# build/example.ml#1612:3->1632:12
+if_lt.11583:
+if_lt_cont.11584:
 	LDR	%r9, %r31, $0	# build/example.ml#1612:15->1612:16
 	LDR	%r8, %r31, $4	# build/example.ml#1612:15->1612:16
 	LDR	%r7, %r31, $8	# build/example.ml#1612:15->1612:16
@@ -5329,7 +5329,7 @@ add_light.2891:
 	FLDR	%fr1, %r31, $24	# build/example.ml#1596:6->1596:19
 	MVI	%r9, $0	# build/example.ml#1596:3->1598:10
 	CEQ	%r8, %r9	# build/example.ml#1596:3->1598:10
-	JZ	$if_eq.11593	# build/example.ml#1596:3->1598:10
+	JZ	$if_eq.11591	# build/example.ml#1596:3->1598:10
 	MVI	%r8, $min_caml_rgb	# build/example.ml#1597:14->1597:17
 	MVI	%r9, $min_caml_texture_color	# build/example.ml#1597:25->1597:38
 	FSDR	%fr1, %r31, $28	# build/example.ml#1597:5->1597:38
@@ -5341,9 +5341,9 @@ add_light.2891:
 	J	$vecaccum.2602	# build/example.ml#1597:5->1597:38
 	ADDI	%r31, %r31, $-32	# build/example.ml#1597:5->1597:38
 	FLDR	%fr1, %r31, $28	# build/example.ml#1597:5->1597:38
-	J	$if_eq_cont.11594	# build/example.ml#1596:3->1598:10
-if_eq.11593:
-if_eq_cont.11594:
+	J	$if_eq_cont.11592	# build/example.ml#1596:3->1598:10
+if_eq.11591:
+if_eq_cont.11592:
 	FSDR	%fr2, %r31, $32	# build/example.ml#1601:6->1601:20
 	FSDR	%fr1, %r31, $36	# build/example.ml#1601:6->1601:20
 	FMV	%fr0, %fr1	# build/example.ml#1601:6->1601:20
@@ -5357,7 +5357,7 @@ if_eq_cont.11594:
 	FLDR	%fr1, %r31, $36	# build/example.ml#1601:6->1601:20
 	MVI	%r9, $0	# build/example.ml#1601:3->1606:12
 	CEQ	%r8, %r9	# build/example.ml#1601:3->1606:12
-	JZ	$if_eq.11595	# build/example.ml#1601:3->1606:12
+	JZ	$if_eq.11593	# build/example.ml#1601:3->1606:12
 	FSDR	%fr2, %r31, $40	# build/example.ml#1602:21->1602:33
 	FSDR	%fr1, %r31, $44	# build/example.ml#1602:21->1602:33
 	FMV	%fr0, %fr1	# build/example.ml#1602:21->1602:33
@@ -5397,9 +5397,9 @@ if_eq_cont.11594:
 	FLDD	%fr8, %r7, $4, %r9	# build/example.ml#110:15->110:23
 	FADD	%fr9, %fr8, %fr9	# build/example.ml#1605:16->1605:30
 	FSDD	%fr9, %r7, $4, %r8	# build/example.ml#1605:5->1605:30
-	J	$if_eq_cont.11596	# build/example.ml#1601:3->1606:12
-if_eq.11595:
-if_eq_cont.11596:
+	J	$if_eq_cont.11594	# build/example.ml#1601:3->1606:12
+if_eq.11593:
+if_eq_cont.11594:
 	LDR	%r9, %r31, $0	# build/example.ml#1596:6->1596:19
 	LDR	%r8, %r31, $4	# build/example.ml#1596:6->1596:19
 	LDR	%r7, %r31, $8	# build/example.ml#1596:6->1596:19
@@ -5483,18 +5483,18 @@ utexture.2888:
 	FSDD	%fr9, %r26, $4, %r27	# build/example.ml#1520:3->1520:38
 	MVI	%r27, $1	# build/example.ml#1521:14->1521:15
 	CEQ	%r28, %r27	# build/example.ml#1521:3->1585:10
-	JZ	$if_eq.11597	# build/example.ml#1521:3->1585:10
+	JZ	$if_eq.11595	# build/example.ml#1521:3->1585:10
 	MVI	%r27, $2	# build/example.ml#1539:19->1539:20
 	CEQ	%r28, %r27	# build/example.ml#1539:8->1585:10
-	JZ	$if_eq.11599	# build/example.ml#1539:8->1585:10
+	JZ	$if_eq.11597	# build/example.ml#1539:8->1585:10
 	MVI	%r27, $3	# build/example.ml#1546:19->1546:20
 	CEQ	%r28, %r27	# build/example.ml#1546:8->1585:10
-	JZ	$if_eq.11601	# build/example.ml#1546:8->1585:10
+	JZ	$if_eq.11599	# build/example.ml#1546:8->1585:10
 	MVI	%r27, $4	# build/example.ml#1557:19->1557:20
 	CEQ	%r28, %r27	# build/example.ml#1557:8->1585:10
-	JZ	$if_eq.11603	# build/example.ml#1557:8->1585:10
-	J	$if_eq_cont.11604	# build/example.ml#1557:8->1585:10
-if_eq.11603:
+	JZ	$if_eq.11601	# build/example.ml#1557:8->1585:10
+	J	$if_eq_cont.11602	# build/example.ml#1557:8->1585:10
+if_eq.11601:
 	MVI	%r28, $0	# build/example.ml#1559:18->1559:19
 	FLDD	%fr8, %r12, $4, %r28	# build/example.ml#1524:15->1524:20
 	SDR	%r6, %r31, $120	# build/example.ml#1559:24->1559:35
@@ -5696,10 +5696,10 @@ if_eq.11603:
 	FLDR	%fr5, %r31, $372	# build/example.ml#1563:10->1563:32
 	MVI	%r28, $0	# build/example.ml#1563:7->1568:34
 	CEQ	%r27, %r28	# build/example.ml#1563:7->1568:34
-	JZ	$if_eq.11605	# build/example.ml#1563:7->1568:34
+	JZ	$if_eq.11603	# build/example.ml#1563:7->1568:34
 	FLDA	%rd, $l.7804	# build/example.ml#1564:2->1564:6
-	J	$if_eq_cont.11606	# build/example.ml#1563:7->1568:34
-if_eq.11605:
+	J	$if_eq_cont.11604	# build/example.ml#1563:7->1568:34
+if_eq.11603:
 	FDIV	%fr9, %fr9, %fr7	# build/example.ml#1566:17->1566:25
 	FABS	%fr9, %fr9	# build/example.ml#1566:11->1566:26
 	SDR	%r6, %r31, $376	# build/example.ml#1568:4->1568:11
@@ -5729,7 +5729,7 @@ if_eq.11605:
 	FMUL	%fr7, %fr7, %fr9	# build/example.ml#1568:3->1568:20
 	FLDA	%fr9, $l.7801	# build/example.ml#1568:25->1568:34
 	FDIV	%rd, %fr7, %fr9	# build/example.ml#1568:2->1568:34
-if_eq_cont.11606:
+if_eq_cont.11604:
 	SDR	%r6, %r31, $408	# build/example.ml#1570:21->1570:29
 	SDR	%r5, %r31, $412	# build/example.ml#1570:21->1570:29
 	SDR	%r4, %r31, $416	# build/example.ml#1570:21->1570:29
@@ -5845,10 +5845,10 @@ if_eq_cont.11606:
 	FLDR	%fr5, %r31, $548	# build/example.ml#1574:10->1574:32
 	MVI	%r9, $0	# build/example.ml#1574:7->1578:37
 	CEQ	%r8, %r9	# build/example.ml#1574:7->1578:37
-	JZ	$if_eq.11607	# build/example.ml#1574:7->1578:37
+	JZ	$if_eq.11605	# build/example.ml#1574:7->1578:37
 	FLDA	%rd, $l.7804	# build/example.ml#1575:2->1575:6
-	J	$if_eq_cont.11608	# build/example.ml#1574:7->1578:37
-if_eq.11607:
+	J	$if_eq_cont.11606	# build/example.ml#1574:7->1578:37
+if_eq.11605:
 	FDIV	%fr8, %fr7, %fr8	# build/example.ml#1577:17->1577:25
 	FABS	%fr8, %fr8	# build/example.ml#1577:11->1577:26
 	SDR	%r6, %r31, $552	# build/example.ml#1578:7->1578:14
@@ -5878,7 +5878,7 @@ if_eq.11607:
 	FMUL	%fr7, %fr7, %fr8	# build/example.ml#1578:6->1578:23
 	FLDA	%fr8, $l.7801	# build/example.ml#1578:28->1578:37
 	FDIV	%rd, %fr7, %fr8	# build/example.ml#1578:5->1578:37
-if_eq_cont.11608:
+if_eq_cont.11606:
 	SDR	%r6, %r31, $584	# build/example.ml#1580:22->1580:30
 	SDR	%r5, %r31, $588	# build/example.ml#1580:22->1580:30
 	SDR	%r4, %r31, $592	# build/example.ml#1580:22->1580:30
@@ -5981,20 +5981,20 @@ if_eq_cont.11608:
 	FLDR	%fr5, %r31, $708	# build/example.ml#1582:18->1582:28
 	MVI	%r9, $0	# build/example.ml#1582:15->1582:46
 	CEQ	%r8, %r9	# build/example.ml#1582:15->1582:46
-	JZ	$if_eq.11609	# build/example.ml#1582:15->1582:46
+	JZ	$if_eq.11607	# build/example.ml#1582:15->1582:46
 	FLDA	%rd, $l.7787	# build/example.ml#1582:34->1582:37
-	J	$if_eq_cont.11610	# build/example.ml#1582:15->1582:46
-if_eq.11609:
-if_eq_cont.11610:
+	J	$if_eq_cont.11608	# build/example.ml#1582:15->1582:46
+if_eq.11607:
+if_eq_cont.11608:
 	MVI	%r9, $2	# build/example.ml#1583:20->1583:21
 	FLDA	%fr8, $l.7799	# build/example.ml#1583:27->1583:32
 	FMUL	%fr8, %fr8, %fr9	# build/example.ml#1583:27->1583:39
 	FLDA	%fr9, $l.7806	# build/example.ml#1583:44->1583:47
 	FDIV	%fr9, %fr8, %fr9	# build/example.ml#1583:26->1583:47
 	FSDD	%fr9, %r26, $4, %r9	# build/example.ml#1583:5->1583:47
-if_eq_cont.11604:
-	J	$if_eq_cont.11602	# build/example.ml#1546:8->1585:10
-if_eq.11601:
+if_eq_cont.11602:
+	J	$if_eq_cont.11600	# build/example.ml#1546:8->1585:10
+if_eq.11599:
 	MVI	%r28, $0	# build/example.ml#1549:19->1549:20
 	FLDD	%fr8, %r12, $4, %r28	# build/example.ml#1524:15->1524:20
 	SDR	%r6, %r31, $712	# build/example.ml#1549:25->1549:36
@@ -6191,9 +6191,9 @@ if_eq.11601:
 	FLDA	%fr9, $l.7799	# build/example.ml#1555:44->1555:49
 	FMUL	%fr9, %fr8, %fr9	# build/example.ml#1555:28->1555:49
 	FSDD	%fr9, %r26, $4, %r9	# build/example.ml#1555:7->1555:49
-if_eq_cont.11602:
-	J	$if_eq_cont.11600	# build/example.ml#1539:8->1585:10
-if_eq.11599:
+if_eq_cont.11600:
+	J	$if_eq_cont.11598	# build/example.ml#1539:8->1585:10
+if_eq.11597:
 	MVI	%r9, $1	# build/example.ml#1542:30->1542:31
 	FLDD	%fr8, %r12, $4, %r9	# build/example.ml#1524:15->1524:20
 	FLDA	%fr9, $l.7800	# build/example.ml#1542:36->1542:40
@@ -6254,9 +6254,9 @@ if_eq.11599:
 	FSUB	%fr9, %fr8, %fr9	# build/example.ml#1544:38->1544:47
 	FMUL	%fr9, %fr7, %fr9	# build/example.ml#1544:28->1544:48
 	FSDD	%fr9, %r26, $4, %r9	# build/example.ml#1544:7->1544:48
-if_eq_cont.11600:
-	J	$if_eq_cont.11598	# build/example.ml#1521:3->1585:10
-if_eq.11597:
+if_eq_cont.11598:
+	J	$if_eq_cont.11596	# build/example.ml#1521:3->1585:10
+if_eq.11595:
 	MVI	%r28, $0	# build/example.ml#1524:18->1524:19
 	FLDD	%fr8, %r12, $4, %r28	# build/example.ml#1524:15->1524:20
 	SDR	%r6, %r31, $1016	# build/example.ml#1524:24->1524:35
@@ -6408,28 +6408,28 @@ if_eq.11597:
 	MVI	%r7, $1	# build/example.ml#1534:21->1534:22
 	MVI	%r8, $0	# build/example.ml#1535:8->1537:43
 	CEQ	%r28, %r8	# build/example.ml#1535:8->1537:43
-	JZ	$if_eq.11611	# build/example.ml#1535:8->1537:43
+	JZ	$if_eq.11609	# build/example.ml#1535:8->1537:43
 	MVI	%r8, $0	# build/example.ml#1536:14->1536:42
 	CEQ	%r9, %r8	# build/example.ml#1536:14->1536:42
-	JZ	$if_eq.11613	# build/example.ml#1536:14->1536:42
+	JZ	$if_eq.11611	# build/example.ml#1536:14->1536:42
 	FLDA	%rd, $l.7799	# build/example.ml#1536:28->1536:33
-	J	$if_eq_cont.11614	# build/example.ml#1536:14->1536:42
-if_eq.11613:
-	FLDA	%rd, $l.7787	# build/example.ml#1536:39->1536:42
-if_eq_cont.11614:
-	J	$if_eq_cont.11612	# build/example.ml#1535:8->1537:43
+	J	$if_eq_cont.11612	# build/example.ml#1536:14->1536:42
 if_eq.11611:
+	FLDA	%rd, $l.7787	# build/example.ml#1536:39->1536:42
+if_eq_cont.11612:
+	J	$if_eq_cont.11610	# build/example.ml#1535:8->1537:43
+if_eq.11609:
 	MVI	%r8, $0	# build/example.ml#1537:14->1537:42
 	CEQ	%r9, %r8	# build/example.ml#1537:14->1537:42
-	JZ	$if_eq.11615	# build/example.ml#1537:14->1537:42
+	JZ	$if_eq.11613	# build/example.ml#1537:14->1537:42
 	FLDA	%rd, $l.7787	# build/example.ml#1537:28->1537:31
-	J	$if_eq_cont.11616	# build/example.ml#1537:14->1537:42
-if_eq.11615:
+	J	$if_eq_cont.11614	# build/example.ml#1537:14->1537:42
+if_eq.11613:
 	FLDA	%rd, $l.7799	# build/example.ml#1537:37->1537:42
-if_eq_cont.11616:
-if_eq_cont.11612:
+if_eq_cont.11614:
+if_eq_cont.11610:
 	FSDD	%fr9, %r26, $4, %r7	# build/example.ml#1534:6->1537:43
-if_eq_cont.11598:
+if_eq_cont.11596:
 	LDR	%r9, %r31, $0	# build/example.ml#149:3->154:8
 	LDR	%r8, %r31, $4	# build/example.ml#149:3->154:8
 	LDR	%r7, %r31, $8	# build/example.ml#149:3->154:8
@@ -6455,10 +6455,10 @@ get_nvector.2885:
 	MV	%r28, %r2	# build/example.ml#159:3->164:10
 	MVI	%r27, $1	# build/example.ml#1501:16->1501:17
 	CEQ	%r28, %r27	# build/example.ml#1501:3->1506:25
-	JZ	$if_eq.11617	# build/example.ml#1501:3->1506:25
+	JZ	$if_eq.11615	# build/example.ml#1501:3->1506:25
 	MVI	%r27, $2	# build/example.ml#1503:21->1503:22
 	CEQ	%r28, %r27	# build/example.ml#1503:8->1506:25
-	JZ	$if_eq.11619	# build/example.ml#1503:8->1506:25
+	JZ	$if_eq.11617	# build/example.ml#1503:8->1506:25
 	SDR	%r6, %r31, $32	# build/example.ml#1506:5->1506:25
 	SDR	%r5, %r31, $36	# build/example.ml#1506:5->1506:25
 	SDR	%r4, %r31, $40	# build/example.ml#1506:5->1506:25
@@ -6476,8 +6476,8 @@ get_nvector.2885:
 	LDR	%r3, %r31, $44	# build/example.ml#1506:5->1506:25
 	LDR	%r2, %r31, $48	# build/example.ml#1506:5->1506:25
 	LDR	%r1, %r31, $52	# build/example.ml#1506:5->1506:25
-	J	$if_eq_cont.11620	# build/example.ml#1503:8->1506:25
-if_eq.11619:
+	J	$if_eq_cont.11618	# build/example.ml#1503:8->1506:25
+if_eq.11617:
 	SDR	%r6, %r31, $56	# build/example.ml#1504:5->1504:24
 	SDR	%r5, %r31, $60	# build/example.ml#1504:5->1504:24
 	SDR	%r4, %r31, $64	# build/example.ml#1504:5->1504:24
@@ -6495,9 +6495,9 @@ if_eq.11619:
 	LDR	%r3, %r31, $68	# build/example.ml#1504:5->1504:24
 	LDR	%r2, %r31, $72	# build/example.ml#1504:5->1504:24
 	LDR	%r1, %r31, $76	# build/example.ml#1504:5->1504:24
-if_eq_cont.11620:
-	J	$if_eq_cont.11618	# build/example.ml#1501:3->1506:25
-if_eq.11617:
+if_eq_cont.11618:
+	J	$if_eq_cont.11616	# build/example.ml#1501:3->1506:25
+if_eq.11615:
 	SDR	%r6, %r31, $80	# build/example.ml#1502:5->1502:28
 	SDR	%r5, %r31, $84	# build/example.ml#1502:5->1502:28
 	SDR	%r4, %r31, $88	# build/example.ml#1502:5->1502:28
@@ -6516,7 +6516,7 @@ if_eq.11617:
 	LDR	%r3, %r31, $92	# build/example.ml#1502:5->1502:28
 	LDR	%r2, %r31, $96	# build/example.ml#1502:5->1502:28
 	LDR	%r1, %r31, $100	# build/example.ml#1502:5->1502:28
-if_eq_cont.11618:
+if_eq_cont.11616:
 	LDR	%r9, %r31, $0	# build/example.ml#159:3->164:10
 	LDR	%r8, %r31, $4	# build/example.ml#159:3->164:10
 	LDR	%r7, %r31, $8	# build/example.ml#159:3->164:10
@@ -6663,7 +6663,7 @@ get_nvector_second.2883:
 	MV	%r28, %r4	# build/example.ml#188:3->192:10
 	MVI	%r27, $0	# build/example.ml#1486:18->1486:19
 	CEQ	%r28, %r27	# build/example.ml#1486:3->1494:5
-	JZ	$if_eq.11621	# build/example.ml#1486:3->1494:5
+	JZ	$if_eq.11619	# build/example.ml#1486:3->1494:5
 	MVI	%r27, $min_caml_nvector	# build/example.ml#1491:5->1491:12
 	MVI	%r28, $0	# build/example.ml#1491:14->1491:15
 	SDR	%r6, %r31, $192	# build/example.ml#1491:39->1491:51
@@ -6866,8 +6866,8 @@ get_nvector_second.2883:
 	FLDR	%fr4, %r31, $440	# build/example.ml#1493:26->1493:74
 	FADD	%fr9, %fr6, %fr9	# build/example.ml#1493:20->1493:74
 	FSDD	%fr9, %r27, $4, %r28	# build/example.ml#1493:5->1493:74
-	J	$if_eq_cont.11622	# build/example.ml#1486:3->1494:5
-if_eq.11621:
+	J	$if_eq_cont.11620	# build/example.ml#1486:3->1494:5
+if_eq.11619:
 	MVI	%r8, $min_caml_nvector	# build/example.ml#1487:5->1487:12
 	MVI	%r9, $0	# build/example.ml#1487:14->1487:15
 	FSDD	%fr4, %r8, $4, %r9	# build/example.ml#1487:5->1487:22
@@ -6875,7 +6875,7 @@ if_eq.11621:
 	FSDD	%fr5, %r8, $4, %r9	# build/example.ml#1488:5->1488:22
 	MVI	%r9, $2	# build/example.ml#1489:14->1489:15
 	FSDD	%fr6, %r8, $4, %r9	# build/example.ml#1489:5->1489:22
-if_eq_cont.11622:
+if_eq_cont.11620:
 	MVI	%r9, $min_caml_nvector	# build/example.ml#1495:15->1495:22
 	MV	%r8, %r7	# build/example.ml#179:3->183:11
 	SDR	%r6, %r31, $444	# build/example.ml#1495:3->1495:37
@@ -7152,7 +7152,7 @@ judge_intersection_fast.2877:
 	LDR	%r1, %r31, $40	# build/example.ml#1446:7->1446:21
 	MVI	%r9, $0	# build/example.ml#1446:3->1448:13
 	CEQ	%r8, %r9	# build/example.ml#1446:3->1448:13
-	JZ	$if_eq.11623	# build/example.ml#1446:3->1448:13
+	JZ	$if_eq.11621	# build/example.ml#1446:3->1448:13
 	FLDA	%fr8, $l.7809	# build/example.ml#1447:14->1447:25
 	SDR	%r6, %r31, $44	# build/example.ml#1447:6->1447:25
 	SDR	%r2, %r31, $48	# build/example.ml#1447:6->1447:25
@@ -7167,10 +7167,10 @@ judge_intersection_fast.2877:
 	LDR	%r6, %r31, $44	# build/example.ml#1447:6->1447:25
 	LDR	%r2, %r31, $48	# build/example.ml#1447:6->1447:25
 	LDR	%r1, %r31, $52	# build/example.ml#1447:6->1447:25
-	J	$if_eq_cont.11624	# build/example.ml#1446:3->1448:13
-if_eq.11623:
+	J	$if_eq_cont.11622	# build/example.ml#1446:3->1448:13
+if_eq.11621:
 	MVI	%r0, $0	# build/example.ml#1448:8->1448:13
-if_eq_cont.11624:
+if_eq_cont.11622:
 	LDR	%r9, %r31, $0	# build/example.ml#1442:3->1442:7
 	LDR	%r8, %r31, $4	# build/example.ml#1442:3->1442:7
 	LDR	%r7, %r31, $8	# build/example.ml#1442:3->1442:7
@@ -7188,10 +7188,10 @@ trace_or_matrix_fast.2873:
 	LDD	%r9, %r8, $4, %r9	# build/example.ml#1418:25->1418:33
 	MVI	%r7, $-1	# build/example.ml#1419:24->1419:26
 	CEQ	%r9, %r7	# build/example.ml#1419:3->1436:5
-	JZ	$if_eq.11625	# build/example.ml#1419:3->1436:5
+	JZ	$if_eq.11623	# build/example.ml#1419:3->1436:5
 	MVI	%r7, $99	# build/example.ml#1422:26->1422:28
 	CEQ	%r9, %r7	# build/example.ml#1422:5->1434:8
-	JZ	$if_eq.11627	# build/example.ml#1422:5->1434:8
+	JZ	$if_eq.11625	# build/example.ml#1422:5->1434:8
 	SDR	%r4, %r31, $20	# build/example.ml#1427:16->1427:51
 	SDR	%r3, %r31, $24	# build/example.ml#1427:16->1427:51
 	SDR	%r2, %r31, $28	# build/example.ml#1427:16->1427:51
@@ -7211,7 +7211,7 @@ trace_or_matrix_fast.2873:
 	LDR	%r1, %r31, $32	# build/example.ml#1427:16->1427:51
 	MVI	%r7, $0	# build/example.ml#1428:16->1428:17
 	CEQ	%r9, %r7	# build/example.ml#1428:8->1433:15
-	JZ	$if_eq.11629	# build/example.ml#1428:8->1433:15
+	JZ	$if_eq.11627	# build/example.ml#1428:8->1433:15
 	MVI	%r7, $min_caml_solver_dist	# build/example.ml#1429:12->1429:23
 	MVI	%r9, $0	# build/example.ml#1429:25->1429:26
 	FLDD	%fr9, %r7, $4, %r9	# build/example.ml#742:8->742:29
@@ -7236,7 +7236,7 @@ trace_or_matrix_fast.2873:
 	LDR	%r1, %r31, $48	# build/example.ml#1430:6->1430:23
 	MVI	%r9, $0	# build/example.ml#1430:3->1432:10
 	CEQ	%r7, %r9	# build/example.ml#1430:3->1432:10
-	JZ	$if_eq.11631	# build/example.ml#1430:3->1432:10
+	JZ	$if_eq.11629	# build/example.ml#1430:3->1432:10
 	MVI	%r9, $1	# build/example.ml#1431:35->1431:36
 	SDR	%r4, %r31, $52	# build/example.ml#1431:9->1431:48
 	SDR	%r3, %r31, $56	# build/example.ml#1431:9->1431:48
@@ -7253,14 +7253,14 @@ trace_or_matrix_fast.2873:
 	LDR	%r3, %r31, $56	# build/example.ml#1431:9->1431:48
 	LDR	%r2, %r31, $60	# build/example.ml#1431:9->1431:48
 	LDR	%r1, %r31, $64	# build/example.ml#1431:9->1431:48
-	J	$if_eq_cont.11632	# build/example.ml#1430:3->1432:10
-if_eq.11631:
-if_eq_cont.11632:
-	J	$if_eq_cont.11630	# build/example.ml#1428:8->1433:15
+	J	$if_eq_cont.11630	# build/example.ml#1430:3->1432:10
 if_eq.11629:
 if_eq_cont.11630:
-	J	$if_eq_cont.11628	# build/example.ml#1422:5->1434:8
+	J	$if_eq_cont.11628	# build/example.ml#1428:8->1433:15
 if_eq.11627:
+if_eq_cont.11628:
+	J	$if_eq_cont.11626	# build/example.ml#1422:5->1434:8
+if_eq.11625:
 	MVI	%r9, $1	# build/example.ml#1423:36->1423:37
 	SDR	%r4, %r31, $68	# build/example.ml#1423:10->1423:49
 	SDR	%r3, %r31, $72	# build/example.ml#1423:10->1423:49
@@ -7277,7 +7277,7 @@ if_eq.11627:
 	LDR	%r3, %r31, $72	# build/example.ml#1423:10->1423:49
 	LDR	%r2, %r31, $76	# build/example.ml#1423:10->1423:49
 	LDR	%r1, %r31, $80	# build/example.ml#1423:10->1423:49
-if_eq_cont.11628:
+if_eq_cont.11626:
 	MVI	%r9, $1	# build/example.ml#1435:33->1435:34
 	ADD	%r9, %r1, %r9	# build/example.ml#1435:27->1435:34
 	SDR	%r4, %r31, $84	# build/example.ml#1435:5->1435:53
@@ -7294,9 +7294,9 @@ if_eq_cont.11628:
 	LDR	%r3, %r31, $88	# build/example.ml#1435:5->1435:53
 	LDR	%r2, %r31, $92	# build/example.ml#1435:5->1435:53
 	LDR	%r1, %r31, $96	# build/example.ml#1435:5->1435:53
-	J	$if_eq_cont.11626	# build/example.ml#1419:3->1436:5
-if_eq.11625:
-if_eq_cont.11626:
+	J	$if_eq_cont.11624	# build/example.ml#1419:3->1436:5
+if_eq.11623:
+if_eq_cont.11624:
 	LDR	%r9, %r31, $0	# build/example.ml#1417:14->1417:30
 	LDR	%r8, %r31, $4	# build/example.ml#1417:14->1417:30
 	LDR	%r7, %r31, $8	# build/example.ml#1417:14->1417:30
@@ -7309,7 +7309,7 @@ solve_one_or_network_fast.2869:
 	LDD	%r9, %r2, $4, %r1	# build/example.ml#1407:14->1407:28
 	MVI	%r8, $-1	# build/example.ml#1408:14->1408:16
 	CEQ	%r9, %r8	# build/example.ml#1408:3->1412:13
-	JZ	$if_eq.11633	# build/example.ml#1408:3->1412:13
+	JZ	$if_eq.11631	# build/example.ml#1408:3->1412:13
 	MVI	%r8, $min_caml_and_net	# build/example.ml#1409:21->1409:28
 	LDD	%r9, %r8, $4, %r9	# build/example.ml#703:5->703:23
 	MVI	%r8, $0	# build/example.ml#1410:29->1410:30
@@ -7344,9 +7344,9 @@ solve_one_or_network_fast.2869:
 	LDR	%r3, %r31, $28	# build/example.ml#1411:5->1411:56
 	LDR	%r2, %r31, $32	# build/example.ml#1411:5->1411:56
 	LDR	%r1, %r31, $36	# build/example.ml#1411:5->1411:56
-	J	$if_eq_cont.11634	# build/example.ml#1408:3->1412:13
-if_eq.11633:
-if_eq_cont.11634:
+	J	$if_eq_cont.11632	# build/example.ml#1408:3->1412:13
+if_eq.11631:
+if_eq_cont.11632:
 	LDR	%r9, %r31, $0	# build/example.ml#1407:14->1407:28
 	LDR	%r8, %r31, $4	# build/example.ml#1407:14->1407:28
 	LINK	# build/example.ml#1407:14->1407:28
@@ -7362,7 +7362,7 @@ solve_each_element_fast.2865:
 	LDD	%r7, %r2, $4, %r1	# build/example.ml#1367:14->1367:34
 	MVI	%r9, $-1	# build/example.ml#1368:13->1368:15
 	CEQ	%r7, %r9	# build/example.ml#1368:3->1402:5
-	JZ	$if_eq.11635	# build/example.ml#1368:3->1402:5
+	JZ	$if_eq.11633	# build/example.ml#1368:3->1402:5
 	SDR	%r6, %r31, $28	# build/example.ml#1370:14->1370:38
 	SDR	%r5, %r31, $32	# build/example.ml#1370:14->1370:38
 	SDR	%r4, %r31, $36	# build/example.ml#1370:14->1370:38
@@ -7390,7 +7390,7 @@ solve_each_element_fast.2865:
 	FLDR	%fr5, %r31, $56	# build/example.ml#1370:14->1370:38
 	MVI	%r6, $0	# build/example.ml#1371:14->1371:15
 	CEQ	%r9, %r6	# build/example.ml#1371:5->1401:15
-	JZ	$if_eq.11637	# build/example.ml#1371:5->1401:15
+	JZ	$if_eq.11635	# build/example.ml#1371:5->1401:15
 	MVI	%r5, $min_caml_solver_dist	# build/example.ml#1375:18->1375:29
 	MVI	%r6, $0	# build/example.ml#1375:31->1375:32
 	FLDD	%fr9, %r5, $4, %r6	# build/example.ml#742:8->742:29
@@ -7421,7 +7421,7 @@ solve_each_element_fast.2865:
 	FLDR	%fr5, %r31, $88	# build/example.ml#1377:12->1377:25
 	MVI	%r6, $0	# build/example.ml#1377:8->1394:15
 	CEQ	%r5, %r6	# build/example.ml#1377:8->1394:15
-	JZ	$if_eq.11639	# build/example.ml#1377:8->1394:15
+	JZ	$if_eq.11637	# build/example.ml#1377:8->1394:15
 	MVI	%r28, $min_caml_tmin	# build/example.ml#1378:17->1378:21
 	MVI	%r6, $0	# build/example.ml#1378:23->1378:24
 	FLDD	%fr8, %r28, $4, %r6	# build/example.ml#1284:17->1284:25
@@ -7451,7 +7451,7 @@ solve_each_element_fast.2865:
 	FLDR	%fr5, %r31, $120	# build/example.ml#1378:7->1378:25
 	MVI	%r6, $0	# build/example.ml#1378:3->1393:10
 	CEQ	%r5, %r6	# build/example.ml#1378:3->1393:10
-	JZ	$if_eq.11641	# build/example.ml#1378:3->1393:10
+	JZ	$if_eq.11639	# build/example.ml#1378:3->1393:10
 	FLDA	%fr8, $l.7810	# build/example.ml#1380:21->1380:25
 	FADD	%fr9, %fr9, %fr8	# build/example.ml#1380:14->1380:25
 	MVI	%r6, $0	# build/example.ml#1381:20->1381:21
@@ -7502,7 +7502,7 @@ solve_each_element_fast.2865:
 	FLDR	%fr5, %r31, $152	# build/example.ml#1384:9->1384:46
 	MVI	%r8, $0	# build/example.ml#1384:6->1391:13
 	CEQ	%r6, %r8	# build/example.ml#1384:6->1391:13
-	JZ	$if_eq.11643	# build/example.ml#1384:6->1391:13
+	JZ	$if_eq.11641	# build/example.ml#1384:6->1391:13
 	MVI	%r8, $0	# build/example.ml#1386:9->1386:10
 	FSDD	%fr9, %r28, $4, %r8	# build/example.ml#1386:3->1386:16
 	MVI	%r8, $min_caml_intersection_point	# build/example.ml#1387:10->1387:28
@@ -7523,15 +7523,15 @@ solve_each_element_fast.2865:
 	MVI	%r7, $min_caml_intsec_rectside	# build/example.ml#1389:3->1389:18
 	MVI	%r8, $0	# build/example.ml#1389:20->1389:21
 	SDD	%r9, %r7, $4, %r8	# build/example.ml#1389:3->1389:28
-	J	$if_eq_cont.11644	# build/example.ml#1384:6->1391:13
-if_eq.11643:
-if_eq_cont.11644:
-	J	$if_eq_cont.11642	# build/example.ml#1378:3->1393:10
+	J	$if_eq_cont.11642	# build/example.ml#1384:6->1391:13
 if_eq.11641:
 if_eq_cont.11642:
-	J	$if_eq_cont.11640	# build/example.ml#1377:8->1394:15
+	J	$if_eq_cont.11640	# build/example.ml#1378:3->1393:10
 if_eq.11639:
 if_eq_cont.11640:
+	J	$if_eq_cont.11638	# build/example.ml#1377:8->1394:15
+if_eq.11637:
+if_eq_cont.11638:
 	MVI	%r9, $1	# build/example.ml#1395:44->1395:45
 	ADD	%r9, %r1, %r9	# build/example.ml#1395:33->1395:45
 	SDR	%r6, %r31, $160	# build/example.ml#1395:8->1395:63
@@ -7556,14 +7556,14 @@ if_eq_cont.11640:
 	LDR	%r1, %r31, $180	# build/example.ml#1395:8->1395:63
 	FLDR	%fr6, %r31, $184	# build/example.ml#1395:8->1395:63
 	FLDR	%fr5, %r31, $188	# build/example.ml#1395:8->1395:63
-	J	$if_eq_cont.11638	# build/example.ml#1371:5->1401:15
-if_eq.11637:
+	J	$if_eq_cont.11636	# build/example.ml#1371:5->1401:15
+if_eq.11635:
 	MVI	%r9, $min_caml_objects	# build/example.ml#1399:23->1399:30
 	LDD	%r9, %r9, $4, %r7	# build/example.ml#637:7->637:25
 	LDR	%r9, %r9, $24	# build/example.ml#1399:11->1399:38
 	MVI	%r8, $0	# build/example.ml#1399:8->1401:15
 	CEQ	%r9, %r8	# build/example.ml#1399:8->1401:15
-	JZ	$if_eq.11645	# build/example.ml#1399:8->1401:15
+	JZ	$if_eq.11643	# build/example.ml#1399:8->1401:15
 	MVI	%r9, $1	# build/example.ml#1400:39->1400:40
 	ADD	%r9, %r1, %r9	# build/example.ml#1400:28->1400:40
 	SDR	%r6, %r31, $192	# build/example.ml#1400:3->1400:58
@@ -7588,13 +7588,13 @@ if_eq.11637:
 	LDR	%r1, %r31, $212	# build/example.ml#1400:3->1400:58
 	FLDR	%fr6, %r31, $216	# build/example.ml#1400:3->1400:58
 	FLDR	%fr5, %r31, $220	# build/example.ml#1400:3->1400:58
-	J	$if_eq_cont.11646	# build/example.ml#1399:8->1401:15
-if_eq.11645:
-if_eq_cont.11646:
-if_eq_cont.11638:
-	J	$if_eq_cont.11636	# build/example.ml#1368:3->1402:5
-if_eq.11635:
+	J	$if_eq_cont.11644	# build/example.ml#1399:8->1401:15
+if_eq.11643:
+if_eq_cont.11644:
 if_eq_cont.11636:
+	J	$if_eq_cont.11634	# build/example.ml#1368:3->1402:5
+if_eq.11633:
+if_eq_cont.11634:
 	LDR	%r9, %r31, $0	# build/example.ml#445:3->446:8
 	LDR	%r8, %r31, $4	# build/example.ml#445:3->446:8
 	LDR	%r7, %r31, $8	# build/example.ml#445:3->446:8
@@ -7646,7 +7646,7 @@ judge_intersection.2863:
 	LDR	%r1, %r31, $32	# build/example.ml#1355:7->1355:21
 	MVI	%r9, $0	# build/example.ml#1355:3->1357:13
 	CEQ	%r8, %r9	# build/example.ml#1355:3->1357:13
-	JZ	$if_eq.11647	# build/example.ml#1355:3->1357:13
+	JZ	$if_eq.11645	# build/example.ml#1355:3->1357:13
 	FLDA	%fr8, $l.7809	# build/example.ml#1356:14->1356:25
 	SDR	%r6, %r31, $36	# build/example.ml#1356:6->1356:25
 	SDR	%r1, %r31, $40	# build/example.ml#1356:6->1356:25
@@ -7659,10 +7659,10 @@ judge_intersection.2863:
 	ADDI	%r31, %r31, $-44	# build/example.ml#1356:6->1356:25
 	LDR	%r6, %r31, $36	# build/example.ml#1356:6->1356:25
 	LDR	%r1, %r31, $40	# build/example.ml#1356:6->1356:25
-	J	$if_eq_cont.11648	# build/example.ml#1355:3->1357:13
-if_eq.11647:
+	J	$if_eq_cont.11646	# build/example.ml#1355:3->1357:13
+if_eq.11645:
 	MVI	%r0, $0	# build/example.ml#1357:8->1357:13
-if_eq_cont.11648:
+if_eq_cont.11646:
 	LDR	%r9, %r31, $0	# build/example.ml#1351:3->1351:7
 	LDR	%r8, %r31, $4	# build/example.ml#1351:3->1351:7
 	LDR	%r7, %r31, $8	# build/example.ml#1351:3->1351:7
@@ -7680,10 +7680,10 @@ trace_or_matrix.2859:
 	LDD	%r9, %r8, $4, %r9	# build/example.ml#1325:25->1325:33
 	MVI	%r7, $-1	# build/example.ml#1326:24->1326:26
 	CEQ	%r9, %r7	# build/example.ml#1326:3->1343:4
-	JZ	$if_eq.11649	# build/example.ml#1326:3->1343:4
+	JZ	$if_eq.11647	# build/example.ml#1326:3->1343:4
 	MVI	%r7, $99	# build/example.ml#1329:26->1329:28
 	CEQ	%r9, %r7	# build/example.ml#1329:5->1341:8
-	JZ	$if_eq.11651	# build/example.ml#1329:5->1341:8
+	JZ	$if_eq.11649	# build/example.ml#1329:5->1341:8
 	MVI	%r7, $min_caml_startp	# build/example.ml#1334:46->1334:52
 	SDR	%r3, %r31, $20	# build/example.ml#1334:16->1334:52
 	SDR	%r2, %r31, $24	# build/example.ml#1334:16->1334:52
@@ -7702,7 +7702,7 @@ trace_or_matrix.2859:
 	LDR	%r1, %r31, $28	# build/example.ml#1334:16->1334:52
 	MVI	%r7, $0	# build/example.ml#1335:16->1335:17
 	CEQ	%r9, %r7	# build/example.ml#1335:8->1340:15
-	JZ	$if_eq.11653	# build/example.ml#1335:8->1340:15
+	JZ	$if_eq.11651	# build/example.ml#1335:8->1340:15
 	MVI	%r7, $min_caml_solver_dist	# build/example.ml#1336:12->1336:23
 	MVI	%r9, $0	# build/example.ml#1336:25->1336:26
 	FLDD	%fr9, %r7, $4, %r9	# build/example.ml#742:8->742:29
@@ -7725,7 +7725,7 @@ trace_or_matrix.2859:
 	LDR	%r1, %r31, $40	# build/example.ml#1337:6->1337:23
 	MVI	%r9, $0	# build/example.ml#1337:3->1339:10
 	CEQ	%r7, %r9	# build/example.ml#1337:3->1339:10
-	JZ	$if_eq.11655	# build/example.ml#1337:3->1339:10
+	JZ	$if_eq.11653	# build/example.ml#1337:3->1339:10
 	MVI	%r9, $1	# build/example.ml#1338:30->1338:31
 	SDR	%r3, %r31, $44	# build/example.ml#1338:9->1338:43
 	SDR	%r2, %r31, $48	# build/example.ml#1338:9->1338:43
@@ -7740,14 +7740,14 @@ trace_or_matrix.2859:
 	LDR	%r3, %r31, $44	# build/example.ml#1338:9->1338:43
 	LDR	%r2, %r31, $48	# build/example.ml#1338:9->1338:43
 	LDR	%r1, %r31, $52	# build/example.ml#1338:9->1338:43
-	J	$if_eq_cont.11656	# build/example.ml#1337:3->1339:10
-if_eq.11655:
-if_eq_cont.11656:
-	J	$if_eq_cont.11654	# build/example.ml#1335:8->1340:15
+	J	$if_eq_cont.11654	# build/example.ml#1337:3->1339:10
 if_eq.11653:
 if_eq_cont.11654:
-	J	$if_eq_cont.11652	# build/example.ml#1329:5->1341:8
+	J	$if_eq_cont.11652	# build/example.ml#1335:8->1340:15
 if_eq.11651:
+if_eq_cont.11652:
+	J	$if_eq_cont.11650	# build/example.ml#1329:5->1341:8
+if_eq.11649:
 	MVI	%r9, $1	# build/example.ml#1330:32->1330:33
 	SDR	%r3, %r31, $56	# build/example.ml#1330:11->1330:45
 	SDR	%r2, %r31, $60	# build/example.ml#1330:11->1330:45
@@ -7762,7 +7762,7 @@ if_eq.11651:
 	LDR	%r3, %r31, $56	# build/example.ml#1330:11->1330:45
 	LDR	%r2, %r31, $60	# build/example.ml#1330:11->1330:45
 	LDR	%r1, %r31, $64	# build/example.ml#1330:11->1330:45
-if_eq_cont.11652:
+if_eq_cont.11650:
 	MVI	%r9, $1	# build/example.ml#1342:28->1342:29
 	ADD	%r9, %r1, %r9	# build/example.ml#1342:22->1342:29
 	SDR	%r3, %r31, $68	# build/example.ml#1342:5->1342:48
@@ -7777,9 +7777,9 @@ if_eq_cont.11652:
 	LDR	%r3, %r31, $68	# build/example.ml#1342:5->1342:48
 	LDR	%r2, %r31, $72	# build/example.ml#1342:5->1342:48
 	LDR	%r1, %r31, $76	# build/example.ml#1342:5->1342:48
-	J	$if_eq_cont.11650	# build/example.ml#1326:3->1343:4
-if_eq.11649:
-if_eq_cont.11650:
+	J	$if_eq_cont.11648	# build/example.ml#1326:3->1343:4
+if_eq.11647:
+if_eq_cont.11648:
 	LDR	%r9, %r31, $0	# build/example.ml#1324:14->1324:30
 	LDR	%r8, %r31, $4	# build/example.ml#1324:14->1324:30
 	LDR	%r7, %r31, $8	# build/example.ml#1324:14->1324:30
@@ -7792,7 +7792,7 @@ solve_one_or_network.2855:
 	LDD	%r9, %r2, $4, %r1	# build/example.ml#1314:14->1314:28
 	MVI	%r8, $-1	# build/example.ml#1315:14->1315:16
 	CEQ	%r9, %r8	# build/example.ml#1315:3->1319:13
-	JZ	$if_eq.11657	# build/example.ml#1315:3->1319:13
+	JZ	$if_eq.11655	# build/example.ml#1315:3->1319:13
 	MVI	%r8, $min_caml_and_net	# build/example.ml#1316:21->1316:28
 	LDD	%r9, %r8, $4, %r9	# build/example.ml#703:5->703:23
 	MVI	%r8, $0	# build/example.ml#1317:24->1317:25
@@ -7823,9 +7823,9 @@ solve_one_or_network.2855:
 	LDR	%r3, %r31, $20	# build/example.ml#1318:5->1318:51
 	LDR	%r2, %r31, $24	# build/example.ml#1318:5->1318:51
 	LDR	%r1, %r31, $28	# build/example.ml#1318:5->1318:51
-	J	$if_eq_cont.11658	# build/example.ml#1315:3->1319:13
-if_eq.11657:
-if_eq_cont.11658:
+	J	$if_eq_cont.11656	# build/example.ml#1315:3->1319:13
+if_eq.11655:
+if_eq_cont.11656:
 	LDR	%r9, %r31, $0	# build/example.ml#1314:14->1314:28
 	LDR	%r8, %r31, $4	# build/example.ml#1314:14->1314:28
 	LINK	# build/example.ml#1314:14->1314:28
@@ -7839,7 +7839,7 @@ solve_each_element.2851:
 	LDD	%r8, %r2, $4, %r1	# build/example.ml#1273:14->1273:34
 	MVI	%r9, $-1	# build/example.ml#1274:13->1274:15
 	CEQ	%r8, %r9	# build/example.ml#1274:3->1309:5
-	JZ	$if_eq.11659	# build/example.ml#1274:3->1309:5
+	JZ	$if_eq.11657	# build/example.ml#1274:3->1309:5
 	MVI	%r4, $min_caml_startp	# build/example.ml#1276:33->1276:39
 	SDR	%r6, %r31, $24	# build/example.ml#1276:14->1276:39
 	SDR	%r5, %r31, $28	# build/example.ml#1276:14->1276:39
@@ -7868,7 +7868,7 @@ solve_each_element.2851:
 	FLDR	%fr5, %r31, $52	# build/example.ml#1276:14->1276:39
 	MVI	%r7, $0	# build/example.ml#1277:14->1277:15
 	CEQ	%r9, %r7	# build/example.ml#1277:5->1307:14
-	JZ	$if_eq.11661	# build/example.ml#1277:5->1307:14
+	JZ	$if_eq.11659	# build/example.ml#1277:5->1307:14
 	MVI	%r6, $min_caml_solver_dist	# build/example.ml#1281:18->1281:29
 	MVI	%r7, $0	# build/example.ml#1281:31->1281:32
 	FLDD	%fr9, %r6, $4, %r7	# build/example.ml#742:8->742:29
@@ -7899,7 +7899,7 @@ solve_each_element.2851:
 	FLDR	%fr5, %r31, $84	# build/example.ml#1283:12->1283:25
 	MVI	%r7, $0	# build/example.ml#1283:8->1300:15
 	CEQ	%r6, %r7	# build/example.ml#1283:8->1300:15
-	JZ	$if_eq.11663	# build/example.ml#1283:8->1300:15
+	JZ	$if_eq.11661	# build/example.ml#1283:8->1300:15
 	MVI	%r5, $min_caml_tmin	# build/example.ml#1284:17->1284:21
 	MVI	%r7, $0	# build/example.ml#1284:23->1284:24
 	FLDD	%fr8, %r5, $4, %r7	# build/example.ml#1284:17->1284:25
@@ -7929,7 +7929,7 @@ solve_each_element.2851:
 	FLDR	%fr5, %r31, $116	# build/example.ml#1284:7->1284:25
 	MVI	%r7, $0	# build/example.ml#1284:3->1299:10
 	CEQ	%r6, %r7	# build/example.ml#1284:3->1299:10
-	JZ	$if_eq.11665	# build/example.ml#1284:3->1299:10
+	JZ	$if_eq.11663	# build/example.ml#1284:3->1299:10
 	FLDA	%fr8, $l.7810	# build/example.ml#1286:21->1286:25
 	FADD	%fr9, %fr9, %fr8	# build/example.ml#1286:14->1286:25
 	MVI	%r7, $0	# build/example.ml#1287:23->1287:24
@@ -7979,7 +7979,7 @@ solve_each_element.2851:
 	FLDR	%fr5, %r31, $148	# build/example.ml#1290:9->1290:46
 	MVI	%r7, $0	# build/example.ml#1290:6->1297:13
 	CEQ	%r6, %r7	# build/example.ml#1290:6->1297:13
-	JZ	$if_eq.11667	# build/example.ml#1290:6->1297:13
+	JZ	$if_eq.11665	# build/example.ml#1290:6->1297:13
 	MVI	%r7, $0	# build/example.ml#1292:9->1292:10
 	FSDD	%fr9, %r5, $4, %r7	# build/example.ml#1292:3->1292:16
 	MVI	%r7, $min_caml_intersection_point	# build/example.ml#1293:10->1293:28
@@ -8000,15 +8000,15 @@ solve_each_element.2851:
 	MVI	%r7, $min_caml_intsec_rectside	# build/example.ml#1295:3->1295:18
 	MVI	%r8, $0	# build/example.ml#1295:20->1295:21
 	SDD	%r9, %r7, $4, %r8	# build/example.ml#1295:3->1295:28
-	J	$if_eq_cont.11668	# build/example.ml#1290:6->1297:13
-if_eq.11667:
-if_eq_cont.11668:
-	J	$if_eq_cont.11666	# build/example.ml#1284:3->1299:10
+	J	$if_eq_cont.11666	# build/example.ml#1290:6->1297:13
 if_eq.11665:
 if_eq_cont.11666:
-	J	$if_eq_cont.11664	# build/example.ml#1283:8->1300:15
+	J	$if_eq_cont.11664	# build/example.ml#1284:3->1299:10
 if_eq.11663:
 if_eq_cont.11664:
+	J	$if_eq_cont.11662	# build/example.ml#1283:8->1300:15
+if_eq.11661:
+if_eq_cont.11662:
 	MVI	%r9, $1	# build/example.ml#1301:39->1301:40
 	ADD	%r9, %r1, %r9	# build/example.ml#1301:28->1301:40
 	SDR	%r6, %r31, $156	# build/example.ml#1301:8->1301:58
@@ -8033,14 +8033,14 @@ if_eq_cont.11664:
 	LDR	%r1, %r31, $176	# build/example.ml#1301:8->1301:58
 	FLDR	%fr6, %r31, $180	# build/example.ml#1301:8->1301:58
 	FLDR	%fr5, %r31, $184	# build/example.ml#1301:8->1301:58
-	J	$if_eq_cont.11662	# build/example.ml#1277:5->1307:14
-if_eq.11661:
+	J	$if_eq_cont.11660	# build/example.ml#1277:5->1307:14
+if_eq.11659:
 	MVI	%r9, $min_caml_objects	# build/example.ml#1305:22->1305:29
 	LDD	%r9, %r9, $4, %r8	# build/example.ml#637:7->637:25
 	LDR	%r9, %r9, $24	# build/example.ml#1305:10->1305:37
 	MVI	%r8, $0	# build/example.ml#1305:7->1307:14
 	CEQ	%r9, %r8	# build/example.ml#1305:7->1307:14
-	JZ	$if_eq.11669	# build/example.ml#1305:7->1307:14
+	JZ	$if_eq.11667	# build/example.ml#1305:7->1307:14
 	MVI	%r9, $1	# build/example.ml#1306:33->1306:34
 	ADD	%r9, %r1, %r9	# build/example.ml#1306:22->1306:34
 	SDR	%r6, %r31, $188	# build/example.ml#1306:2->1306:52
@@ -8065,13 +8065,13 @@ if_eq.11661:
 	LDR	%r1, %r31, $208	# build/example.ml#1306:2->1306:52
 	FLDR	%fr6, %r31, $212	# build/example.ml#1306:2->1306:52
 	FLDR	%fr5, %r31, $216	# build/example.ml#1306:2->1306:52
-	J	$if_eq_cont.11670	# build/example.ml#1305:7->1307:14
-if_eq.11669:
-if_eq_cont.11670:
-if_eq_cont.11662:
-	J	$if_eq_cont.11660	# build/example.ml#1274:3->1309:5
-if_eq.11659:
+	J	$if_eq_cont.11668	# build/example.ml#1305:7->1307:14
+if_eq.11667:
+if_eq_cont.11668:
 if_eq_cont.11660:
+	J	$if_eq_cont.11658	# build/example.ml#1274:3->1309:5
+if_eq.11657:
+if_eq_cont.11658:
 	LDR	%r9, %r31, $0	# build/example.ml#1273:14->1273:34
 	LDR	%r8, %r31, $4	# build/example.ml#1273:14->1273:34
 	LDR	%r7, %r31, $8	# build/example.ml#1273:14->1273:34
@@ -8090,10 +8090,10 @@ shadow_check_one_or_matrix.2848:
 	LDD	%r9, %r8, $4, %r9	# build/example.ml#1238:25->1238:33
 	MVI	%r7, $-1	# build/example.ml#1239:24->1239:26
 	CEQ	%r9, %r7	# build/example.ml#1239:3->1262:53
-	JZ	$if_eq.11671	# build/example.ml#1239:3->1262:53
+	JZ	$if_eq.11669	# build/example.ml#1239:3->1262:53
 	MVI	%r7, $99	# build/example.ml#1243:28->1243:30
 	CEQ	%r9, %r7	# build/example.ml#1243:7->1255:12
-	JZ	$if_eq.11673	# build/example.ml#1243:7->1255:12
+	JZ	$if_eq.11671	# build/example.ml#1243:7->1255:12
 	MVI	%r6, $min_caml_light_dirvec	# build/example.ml#1246:38->1246:50
 	LDR	%r7, %r6, $4	# build/example.ml#1246:10->1246:69
 	LDR	%r6, %r6, $0	# build/example.ml#1246:10->1246:69
@@ -8118,7 +8118,7 @@ shadow_check_one_or_matrix.2848:
 	LDR	%r1, %r31, $32	# build/example.ml#1246:10->1246:69
 	MVI	%r7, $0	# build/example.ml#1249:10->1249:11
 	CEQ	%r9, %r7	# build/example.ml#1249:2->1255:12
-	JZ	$if_eq.11675	# build/example.ml#1249:2->1255:12
+	JZ	$if_eq.11673	# build/example.ml#1249:2->1255:12
 	MVI	%r7, $min_caml_solver_dist	# build/example.ml#1250:20->1250:31
 	MVI	%r9, $0	# build/example.ml#1250:33->1250:34
 	FLDD	%fr8, %r7, $4, %r9	# build/example.ml#742:8->742:29
@@ -8141,7 +8141,7 @@ shadow_check_one_or_matrix.2848:
 	LDR	%r1, %r31, $48	# build/example.ml#1250:14->1250:42
 	MVI	%r9, $0	# build/example.ml#1250:11->1254:14
 	CEQ	%r7, %r9	# build/example.ml#1250:11->1254:14
-	JZ	$if_eq.11677	# build/example.ml#1250:11->1254:14
+	JZ	$if_eq.11675	# build/example.ml#1250:11->1254:14
 	MVI	%r9, $1	# build/example.ml#1251:42->1251:43
 	SDR	%r6, %r31, $52	# build/example.ml#1251:16->1251:48
 	SDR	%r5, %r31, $56	# build/example.ml#1251:16->1251:48
@@ -8161,29 +8161,29 @@ shadow_check_one_or_matrix.2848:
 	LDR	%r1, %r31, $64	# build/example.ml#1251:16->1251:48
 	MVI	%r9, $0	# build/example.ml#1251:13->1253:16
 	CEQ	%r7, %r9	# build/example.ml#1251:13->1253:16
-	JZ	$if_eq.11679	# build/example.ml#1251:13->1253:16
+	JZ	$if_eq.11677	# build/example.ml#1251:13->1253:16
 	MVI	%r0, $1	# build/example.ml#1252:15->1252:19
-	J	$if_eq_cont.11680	# build/example.ml#1251:13->1253:16
-if_eq.11679:
-	MVI	%r0, $0	# build/example.ml#1253:11->1253:16
-if_eq_cont.11680:
-	J	$if_eq_cont.11678	# build/example.ml#1250:11->1254:14
+	J	$if_eq_cont.11678	# build/example.ml#1251:13->1253:16
 if_eq.11677:
-	MVI	%r0, $0	# build/example.ml#1254:9->1254:14
+	MVI	%r0, $0	# build/example.ml#1253:11->1253:16
 if_eq_cont.11678:
-	J	$if_eq_cont.11676	# build/example.ml#1249:2->1255:12
+	J	$if_eq_cont.11676	# build/example.ml#1250:11->1254:14
 if_eq.11675:
-	MVI	%r0, $0	# build/example.ml#1255:7->1255:12
+	MVI	%r0, $0	# build/example.ml#1254:9->1254:14
 if_eq_cont.11676:
-	MV	%r7, %r0	# build/example.ml#1249:2->1255:12
-	J	$if_eq_cont.11674	# build/example.ml#1243:7->1255:12
+	J	$if_eq_cont.11674	# build/example.ml#1249:2->1255:12
 if_eq.11673:
+	MVI	%r0, $0	# build/example.ml#1255:7->1255:12
+if_eq_cont.11674:
+	MV	%r7, %r0	# build/example.ml#1249:2->1255:12
+	J	$if_eq_cont.11672	# build/example.ml#1243:7->1255:12
+if_eq.11671:
 	MVI	%r0, $1	# build/example.ml#1244:2->1244:6
 	MV	%r7, %r0	# build/example.ml#1244:2->1244:6
-if_eq_cont.11674:
+if_eq_cont.11672:
 	MVI	%r9, $0	# build/example.ml#1242:5->1262:53
 	CEQ	%r7, %r9	# build/example.ml#1242:5->1262:53
-	JZ	$if_eq.11681	# build/example.ml#1242:5->1262:53
+	JZ	$if_eq.11679	# build/example.ml#1242:5->1262:53
 	MVI	%r9, $1	# build/example.ml#1257:37->1257:38
 	SDR	%r6, %r31, $68	# build/example.ml#1257:11->1257:43
 	SDR	%r5, %r31, $72	# build/example.ml#1257:11->1257:43
@@ -8203,10 +8203,10 @@ if_eq_cont.11674:
 	LDR	%r1, %r31, $80	# build/example.ml#1257:11->1257:43
 	MVI	%r9, $0	# build/example.ml#1257:7->1260:48
 	CEQ	%r8, %r9	# build/example.ml#1257:7->1260:48
-	JZ	$if_eq.11683	# build/example.ml#1257:7->1260:48
+	JZ	$if_eq.11681	# build/example.ml#1257:7->1260:48
 	MVI	%r0, $1	# build/example.ml#1258:2->1258:6
-	J	$if_eq_cont.11684	# build/example.ml#1257:7->1260:48
-if_eq.11683:
+	J	$if_eq_cont.11682	# build/example.ml#1257:7->1260:48
+if_eq.11681:
 	MVI	%r9, $1	# build/example.ml#1260:36->1260:37
 	ADD	%r9, %r1, %r9	# build/example.ml#1260:30->1260:37
 	SDR	%r6, %r31, $84	# build/example.ml#1260:2->1260:48
@@ -8223,9 +8223,9 @@ if_eq.11683:
 	LDR	%r5, %r31, $88	# build/example.ml#1260:2->1260:48
 	LDR	%r2, %r31, $92	# build/example.ml#1260:2->1260:48
 	LDR	%r1, %r31, $96	# build/example.ml#1260:2->1260:48
-if_eq_cont.11684:
-	J	$if_eq_cont.11682	# build/example.ml#1242:5->1262:53
-if_eq.11681:
+if_eq_cont.11682:
+	J	$if_eq_cont.11680	# build/example.ml#1242:5->1262:53
+if_eq.11679:
 	MVI	%r9, $1	# build/example.ml#1262:41->1262:42
 	ADD	%r9, %r1, %r9	# build/example.ml#1262:35->1262:42
 	SDR	%r6, %r31, $100	# build/example.ml#1262:7->1262:53
@@ -8242,11 +8242,11 @@ if_eq.11681:
 	LDR	%r5, %r31, $104	# build/example.ml#1262:7->1262:53
 	LDR	%r2, %r31, $108	# build/example.ml#1262:7->1262:53
 	LDR	%r1, %r31, $112	# build/example.ml#1262:7->1262:53
-if_eq_cont.11682:
-	J	$if_eq_cont.11672	# build/example.ml#1239:3->1262:53
-if_eq.11671:
+if_eq_cont.11680:
+	J	$if_eq_cont.11670	# build/example.ml#1239:3->1262:53
+if_eq.11669:
 	MVI	%r0, $0	# build/example.ml#1240:5->1240:10
-if_eq_cont.11672:
+if_eq_cont.11670:
 	LDR	%r9, %r31, $0	# build/example.ml#1237:14->1237:29
 	LDR	%r8, %r31, $4	# build/example.ml#1237:14->1237:29
 	LDR	%r7, %r31, $8	# build/example.ml#1237:14->1237:29
@@ -8259,7 +8259,7 @@ shadow_check_one_or_group.2845:
 	LDD	%r9, %r2, $4, %r1	# build/example.ml#1222:14->1222:28
 	MVI	%r8, $-1	# build/example.ml#1223:13->1223:15
 	CEQ	%r9, %r8	# build/example.ml#1223:3->1232:5
-	JZ	$if_eq.11685	# build/example.ml#1223:3->1232:5
+	JZ	$if_eq.11683	# build/example.ml#1223:3->1232:5
 	MVI	%r8, $min_caml_and_net	# build/example.ml#1226:21->1226:28
 	LDD	%r9, %r8, $4, %r9	# build/example.ml#703:5->703:23
 	MVI	%r8, $0	# build/example.ml#1227:43->1227:44
@@ -8277,10 +8277,10 @@ shadow_check_one_or_group.2845:
 	LDR	%r1, %r31, $12	# build/example.ml#1227:20->1227:54
 	MVI	%r8, $0	# build/example.ml#1228:5->1231:51
 	CEQ	%r9, %r8	# build/example.ml#1228:5->1231:51
-	JZ	$if_eq.11687	# build/example.ml#1228:5->1231:51
+	JZ	$if_eq.11685	# build/example.ml#1228:5->1231:51
 	MVI	%r0, $1	# build/example.ml#1229:7->1229:11
-	J	$if_eq_cont.11688	# build/example.ml#1228:5->1231:51
-if_eq.11687:
+	J	$if_eq_cont.11686	# build/example.ml#1228:5->1231:51
+if_eq.11685:
 	MVI	%r9, $1	# build/example.ml#1231:40->1231:41
 	ADD	%r9, %r1, %r9	# build/example.ml#1231:34->1231:41
 	SDR	%r2, %r31, $16	# build/example.ml#1231:7->1231:51
@@ -8293,11 +8293,11 @@ if_eq.11687:
 	ADDI	%r31, %r31, $-24	# build/example.ml#1231:7->1231:51
 	LDR	%r2, %r31, $16	# build/example.ml#1231:7->1231:51
 	LDR	%r1, %r31, $20	# build/example.ml#1231:7->1231:51
-if_eq_cont.11688:
-	J	$if_eq_cont.11686	# build/example.ml#1223:3->1232:5
-if_eq.11685:
-	MVI	%r0, $0	# build/example.ml#1224:5->1224:10
 if_eq_cont.11686:
+	J	$if_eq_cont.11684	# build/example.ml#1223:3->1232:5
+if_eq.11683:
+	MVI	%r0, $0	# build/example.ml#1224:5->1224:10
+if_eq_cont.11684:
 	LDR	%r9, %r31, $0	# build/example.ml#1222:14->1222:28
 	LDR	%r8, %r31, $4	# build/example.ml#1222:14->1222:28
 	LINK	# build/example.ml#1222:14->1222:28
@@ -8311,7 +8311,7 @@ shadow_check_and_group.2842:
 	LDD	%r7, %r2, $4, %r1	# build/example.ml#1192:6->1192:26
 	MVI	%r9, $-1	# build/example.ml#1192:29->1192:31
 	CEQ	%r7, %r9	# build/example.ml#1192:3->1217:7
-	JZ	$if_eq.11689	# build/example.ml#1192:3->1217:7
+	JZ	$if_eq.11687	# build/example.ml#1192:3->1217:7
 	MVI	%r8, $min_caml_light_dirvec	# build/example.ml#1196:30->1196:42
 	LDR	%r9, %r8, $4	# build/example.ml#1196:14->1196:61
 	LDR	%r8, %r8, $0	# build/example.ml#1196:14->1196:61
@@ -8341,7 +8341,7 @@ shadow_check_and_group.2842:
 	FLDD	%fr9, %r6, $4, %r8	# build/example.ml#742:8->742:29
 	MVI	%r8, $0	# build/example.ml#1198:18->1198:19
 	CEQ	%r9, %r8	# build/example.ml#1198:9->1198:52
-	JZ	$if_eq.11691	# build/example.ml#1198:9->1198:52
+	JZ	$if_eq.11689	# build/example.ml#1198:9->1198:52
 	FLDA	%fr8, $l.7811	# build/example.ml#1198:36->1198:40
 	SDR	%r6, %r31, $44	# build/example.ml#1198:25->1198:41
 	SDR	%r5, %r31, $48	# build/example.ml#1198:25->1198:41
@@ -8361,14 +8361,14 @@ shadow_check_and_group.2842:
 	LDR	%r1, %r31, $56	# build/example.ml#1198:25->1198:41
 	FLDR	%fr6, %r31, $60	# build/example.ml#1198:25->1198:41
 	MV	%r8, %r0	# build/example.ml#1198:25->1198:41
-	J	$if_eq_cont.11692	# build/example.ml#1198:9->1198:52
-if_eq.11691:
+	J	$if_eq_cont.11690	# build/example.ml#1198:9->1198:52
+if_eq.11689:
 	MVI	%r0, $0	# build/example.ml#1198:47->1198:52
 	MV	%r8, %r0	# build/example.ml#1198:47->1198:52
-if_eq_cont.11692:
+if_eq_cont.11690:
 	MVI	%r9, $0	# build/example.ml#1198:5->1217:7
 	CEQ	%r8, %r9	# build/example.ml#1198:5->1217:7
-	JZ	$if_eq.11693	# build/example.ml#1198:5->1217:7
+	JZ	$if_eq.11691	# build/example.ml#1198:5->1217:7
 	FLDA	%fr8, $l.7810	# build/example.ml#1201:22->1201:26
 	FADD	%fr7, %fr9, %fr8	# build/example.ml#1201:15->1201:26
 	MVI	%r8, $min_caml_light	# build/example.ml#1202:16->1202:21
@@ -8413,10 +8413,10 @@ if_eq_cont.11692:
 	FLDR	%fr6, %r31, $80	# build/example.ml#1205:10->1205:47
 	MVI	%r9, $0	# build/example.ml#1205:7->1208:49
 	CEQ	%r8, %r9	# build/example.ml#1205:7->1208:49
-	JZ	$if_eq.11695	# build/example.ml#1205:7->1208:49
+	JZ	$if_eq.11693	# build/example.ml#1205:7->1208:49
 	MVI	%r0, $1	# build/example.ml#1206:2->1206:6
-	J	$if_eq_cont.11696	# build/example.ml#1205:7->1208:49
-if_eq.11695:
+	J	$if_eq_cont.11694	# build/example.ml#1205:7->1208:49
+if_eq.11693:
 	MVI	%r9, $1	# build/example.ml#1208:37->1208:38
 	ADD	%r9, %r1, %r9	# build/example.ml#1208:26->1208:38
 	SDR	%r6, %r31, $84	# build/example.ml#1208:2->1208:49
@@ -8435,15 +8435,15 @@ if_eq.11695:
 	LDR	%r2, %r31, $92	# build/example.ml#1208:2->1208:49
 	LDR	%r1, %r31, $96	# build/example.ml#1208:2->1208:49
 	FLDR	%fr6, %r31, $100	# build/example.ml#1208:2->1208:49
-if_eq_cont.11696:
-	J	$if_eq_cont.11694	# build/example.ml#1198:5->1217:7
-if_eq.11693:
+if_eq_cont.11694:
+	J	$if_eq_cont.11692	# build/example.ml#1198:5->1217:7
+if_eq.11691:
 	MVI	%r9, $min_caml_objects	# build/example.ml#1214:22->1214:29
 	LDD	%r9, %r9, $4, %r7	# build/example.ml#637:7->637:25
 	LDR	%r9, %r9, $24	# build/example.ml#1214:10->1214:36
 	MVI	%r8, $0	# build/example.ml#1214:7->1217:7
 	CEQ	%r9, %r8	# build/example.ml#1214:7->1217:7
-	JZ	$if_eq.11697	# build/example.ml#1214:7->1217:7
+	JZ	$if_eq.11695	# build/example.ml#1214:7->1217:7
 	MVI	%r9, $1	# build/example.ml#1215:37->1215:38
 	ADD	%r9, %r1, %r9	# build/example.ml#1215:26->1215:38
 	SDR	%r6, %r31, $104	# build/example.ml#1215:2->1215:49
@@ -8462,15 +8462,15 @@ if_eq.11693:
 	LDR	%r2, %r31, $112	# build/example.ml#1215:2->1215:49
 	LDR	%r1, %r31, $116	# build/example.ml#1215:2->1215:49
 	FLDR	%fr6, %r31, $120	# build/example.ml#1215:2->1215:49
-	J	$if_eq_cont.11698	# build/example.ml#1214:7->1217:7
-if_eq.11697:
+	J	$if_eq_cont.11696	# build/example.ml#1214:7->1217:7
+if_eq.11695:
 	MVI	%r0, $0	# build/example.ml#1217:2->1217:7
-if_eq_cont.11698:
-if_eq_cont.11694:
-	J	$if_eq_cont.11690	# build/example.ml#1192:3->1217:7
-if_eq.11689:
+if_eq_cont.11696:
+if_eq_cont.11692:
+	J	$if_eq_cont.11688	# build/example.ml#1192:3->1217:7
+if_eq.11687:
 	MVI	%r0, $0	# build/example.ml#1193:5->1193:10
-if_eq_cont.11690:
+if_eq_cont.11688:
 	LDR	%r9, %r31, $0	# build/example.ml#1192:6->1192:26
 	LDR	%r8, %r31, $4	# build/example.ml#1192:6->1192:26
 	LDR	%r7, %r31, $8	# build/example.ml#1192:6->1192:26
@@ -8489,7 +8489,7 @@ check_all_inside.2836:
 	LDD	%r9, %r2, $4, %r1	# build/example.ml#1172:14->1172:24
 	MVI	%r8, $-1	# build/example.ml#1173:13->1173:15
 	CEQ	%r9, %r8	# build/example.ml#1173:3->1180:5
-	JZ	$if_eq.11699	# build/example.ml#1173:3->1180:5
+	JZ	$if_eq.11697	# build/example.ml#1173:3->1180:5
 	MVI	%r8, $min_caml_objects	# build/example.ml#1176:19->1176:26
 	LDD	%r25, %r8, $4, %r9	# build/example.ml#637:7->637:25
 	LDR	%r9, %r25, $40	# build/example.ml#1176:8->1176:42
@@ -8538,10 +8538,10 @@ check_all_inside.2836:
 	FLDR	%fr1, %r31, $56	# build/example.ml#1176:8->1176:42
 	MVI	%r9, $0	# build/example.ml#1176:5->1179:47
 	CEQ	%r8, %r9	# build/example.ml#1176:5->1179:47
-	JZ	$if_eq.11701	# build/example.ml#1176:5->1179:47
+	JZ	$if_eq.11699	# build/example.ml#1176:5->1179:47
 	MVI	%r0, $0	# build/example.ml#1177:7->1177:12
-	J	$if_eq_cont.11702	# build/example.ml#1176:5->1179:47
-if_eq.11701:
+	J	$if_eq_cont.11700	# build/example.ml#1176:5->1179:47
+if_eq.11699:
 	MVI	%r9, $1	# build/example.ml#1179:31->1179:32
 	ADD	%r9, %r1, %r9	# build/example.ml#1179:25->1179:32
 	SDR	%r6, %r31, $60	# build/example.ml#1179:7->1179:47
@@ -8566,11 +8566,11 @@ if_eq.11701:
 	LDR	%r1, %r31, $80	# build/example.ml#1179:7->1179:47
 	FLDR	%fr2, %r31, $84	# build/example.ml#1179:7->1179:47
 	FLDR	%fr1, %r31, $88	# build/example.ml#1179:7->1179:47
-if_eq_cont.11702:
-	J	$if_eq_cont.11700	# build/example.ml#1173:3->1180:5
-if_eq.11699:
-	MVI	%r0, $1	# build/example.ml#1174:5->1174:9
 if_eq_cont.11700:
+	J	$if_eq_cont.11698	# build/example.ml#1173:3->1180:5
+if_eq.11697:
+	MVI	%r0, $1	# build/example.ml#1174:5->1174:9
+if_eq_cont.11698:
 	LDR	%r9, %r31, $0	# build/example.ml#1172:14->1172:24
 	LDR	%r8, %r31, $4	# build/example.ml#1172:14->1172:24
 	LDR	%r7, %r31, $8	# build/example.ml#1172:14->1172:24
@@ -8650,10 +8650,10 @@ is_outside.2831:
 	MV	%r28, %r2	# build/example.ml#159:3->164:10
 	MVI	%r27, $1	# build/example.ml#1162:16->1162:17
 	CEQ	%r28, %r27	# build/example.ml#1162:3->1167:33
-	JZ	$if_eq.11703	# build/example.ml#1162:3->1167:33
+	JZ	$if_eq.11701	# build/example.ml#1162:3->1167:33
 	MVI	%r27, $2	# build/example.ml#1164:21->1164:22
 	CEQ	%r28, %r27	# build/example.ml#1164:8->1167:33
-	JZ	$if_eq.11705	# build/example.ml#1164:8->1167:33
+	JZ	$if_eq.11703	# build/example.ml#1164:8->1167:33
 	SDR	%r6, %r31, $112	# build/example.ml#1167:5->1167:33
 	SDR	%r5, %r31, $116	# build/example.ml#1167:5->1167:33
 	SDR	%r4, %r31, $120	# build/example.ml#1167:5->1167:33
@@ -8678,8 +8678,8 @@ is_outside.2831:
 	LDR	%r1, %r31, $132	# build/example.ml#1167:5->1167:33
 	FLDR	%fr2, %r31, $136	# build/example.ml#1167:5->1167:33
 	FLDR	%fr1, %r31, $140	# build/example.ml#1167:5->1167:33
-	J	$if_eq_cont.11706	# build/example.ml#1164:8->1167:33
-if_eq.11705:
+	J	$if_eq_cont.11704	# build/example.ml#1164:8->1167:33
+if_eq.11703:
 	SDR	%r6, %r31, $144	# build/example.ml#1165:5->1165:32
 	SDR	%r5, %r31, $148	# build/example.ml#1165:5->1165:32
 	SDR	%r4, %r31, $152	# build/example.ml#1165:5->1165:32
@@ -8704,9 +8704,9 @@ if_eq.11705:
 	LDR	%r1, %r31, $164	# build/example.ml#1165:5->1165:32
 	FLDR	%fr2, %r31, $168	# build/example.ml#1165:5->1165:32
 	FLDR	%fr1, %r31, $172	# build/example.ml#1165:5->1165:32
-if_eq_cont.11706:
-	J	$if_eq_cont.11704	# build/example.ml#1162:3->1167:33
-if_eq.11703:
+if_eq_cont.11704:
+	J	$if_eq_cont.11702	# build/example.ml#1162:3->1167:33
+if_eq.11701:
 	SDR	%r6, %r31, $176	# build/example.ml#1163:5->1163:31
 	SDR	%r5, %r31, $180	# build/example.ml#1163:5->1163:31
 	SDR	%r4, %r31, $184	# build/example.ml#1163:5->1163:31
@@ -8731,7 +8731,7 @@ if_eq.11703:
 	LDR	%r1, %r31, $196	# build/example.ml#1163:5->1163:31
 	FLDR	%fr2, %r31, $200	# build/example.ml#1163:5->1163:31
 	FLDR	%fr1, %r31, $204	# build/example.ml#1163:5->1163:31
-if_eq_cont.11704:
+if_eq_cont.11702:
 	LDR	%r9, %r31, $0	# build/example.ml#1158:18->1158:29
 	LDR	%r8, %r31, $4	# build/example.ml#1158:18->1158:29
 	LDR	%r7, %r31, $8	# build/example.ml#1158:18->1158:29
@@ -8776,15 +8776,15 @@ is_second_outside.2826:
 	MV	%r9, %r2	# build/example.ml#159:3->164:10
 	MVI	%r8, $3	# build/example.ml#1152:26->1152:27
 	CEQ	%r9, %r8	# build/example.ml#1152:12->1152:48
-	JZ	$if_eq.11707	# build/example.ml#1152:12->1152:48
+	JZ	$if_eq.11705	# build/example.ml#1152:12->1152:48
 	FMV	%r0, %fr9	# build/example.ml#1152:47->1152:48
 	MV	%fr9, %r0	# build/example.ml#1152:47->1152:48
-	J	$if_eq_cont.11708	# build/example.ml#1152:12->1152:48
-if_eq.11707:
+	J	$if_eq_cont.11706	# build/example.ml#1152:12->1152:48
+if_eq.11705:
 	FLDA	%fr8, $l.7785	# build/example.ml#1152:38->1152:41
 	FSUB	%r0, %fr9, %fr8	# build/example.ml#1152:33->1152:41
 	MV	%fr9, %r0	# build/example.ml#1152:33->1152:41
-if_eq_cont.11708:
+if_eq_cont.11706:
 	MV	%r9, %r7	# build/example.ml#179:3->183:11
 	SDR	%r6, %r31, $60	# build/example.ml#1153:28->1153:37
 	SDR	%r5, %r31, $64	# build/example.ml#1153:28->1153:37
@@ -8823,12 +8823,12 @@ if_eq_cont.11708:
 	LDR	%r1, %r31, $96	# build/example.ml#1153:8->1153:38
 	MVI	%r9, $0	# build/example.ml#1153:3->1153:39
 	CEQ	%r8, %r9	# build/example.ml#1153:3->1153:39
-	JZ	$if_eq.11709	# build/example.ml#1153:3->1153:39
+	JZ	$if_eq.11707	# build/example.ml#1153:3->1153:39
 	MVI	%r0, $0	# build/example.ml#1153:3->1153:39
-	J	$if_eq_cont.11710	# build/example.ml#1153:3->1153:39
-if_eq.11709:
+	J	$if_eq_cont.11708	# build/example.ml#1153:3->1153:39
+if_eq.11707:
 	MVI	%r0, $1	# build/example.ml#1153:3->1153:39
-if_eq_cont.11710:
+if_eq_cont.11708:
 	LDR	%r9, %r31, $0	# build/example.ml#1151:11->1151:31
 	LDR	%r8, %r31, $4	# build/example.ml#1151:11->1151:31
 	LDR	%r7, %r31, $8	# build/example.ml#1151:11->1151:31
@@ -8896,12 +8896,12 @@ is_plane_outside.2821:
 	LDR	%r1, %r31, $72	# build/example.ml#1146:8->1146:37
 	MVI	%r9, $0	# build/example.ml#1146:3->1146:38
 	CEQ	%r8, %r9	# build/example.ml#1146:3->1146:38
-	JZ	$if_eq.11711	# build/example.ml#1146:3->1146:38
+	JZ	$if_eq.11709	# build/example.ml#1146:3->1146:38
 	MVI	%r0, $0	# build/example.ml#1146:3->1146:38
-	J	$if_eq_cont.11712	# build/example.ml#1146:3->1146:38
-if_eq.11711:
+	J	$if_eq_cont.11710	# build/example.ml#1146:3->1146:38
+if_eq.11709:
 	MVI	%r0, $1	# build/example.ml#1146:3->1146:38
-if_eq_cont.11712:
+if_eq_cont.11710:
 	LDR	%r9, %r31, $0	# build/example.ml#227:3->232:8
 	LDR	%r8, %r31, $4	# build/example.ml#227:3->232:8
 	LDR	%r7, %r31, $8	# build/example.ml#227:3->232:8
@@ -8964,7 +8964,7 @@ is_rect_outside.2816:
 	FLDR	%fr1, %r31, $88	# build/example.ml#1135:9->1135:38
 	MVI	%r28, $0	# build/example.ml#1135:5->1139:15
 	CEQ	%r27, %r28	# build/example.ml#1135:5->1139:15
-	JZ	$if_eq.11713	# build/example.ml#1135:5->1139:15
+	JZ	$if_eq.11711	# build/example.ml#1135:5->1139:15
 	FABS	%fr8, %fr1	# build/example.ml#1136:18->1136:25
 	SDR	%r6, %r31, $92	# build/example.ml#1136:28->1136:39
 	SDR	%r5, %r31, $96	# build/example.ml#1136:28->1136:39
@@ -9010,7 +9010,7 @@ is_rect_outside.2816:
 	FLDR	%fr1, %r31, $144	# build/example.ml#1136:11->1136:40
 	MVI	%r28, $0	# build/example.ml#1136:7->1138:17
 	CEQ	%r27, %r28	# build/example.ml#1136:7->1138:17
-	JZ	$if_eq.11715	# build/example.ml#1136:7->1138:17
+	JZ	$if_eq.11713	# build/example.ml#1136:7->1138:17
 	FABS	%fr8, %fr2	# build/example.ml#1137:9->1137:16
 	SDR	%r6, %r31, $148	# build/example.ml#1137:19->1137:30
 	SDR	%r5, %r31, $152	# build/example.ml#1137:19->1137:30
@@ -9053,33 +9053,33 @@ is_rect_outside.2816:
 	LDR	%r1, %r31, $192	# build/example.ml#1137:2->1137:31
 	FLDR	%fr2, %r31, $196	# build/example.ml#1137:2->1137:31
 	FLDR	%fr1, %r31, $200	# build/example.ml#1137:2->1137:31
-	J	$if_eq_cont.11716	# build/example.ml#1136:7->1138:17
-if_eq.11715:
-	MVI	%r0, $0	# build/example.ml#1138:12->1138:17
-if_eq_cont.11716:
-	MV	%r8, %r0	# build/example.ml#1136:7->1138:17
-	J	$if_eq_cont.11714	# build/example.ml#1135:5->1139:15
+	J	$if_eq_cont.11714	# build/example.ml#1136:7->1138:17
 if_eq.11713:
+	MVI	%r0, $0	# build/example.ml#1138:12->1138:17
+if_eq_cont.11714:
+	MV	%r8, %r0	# build/example.ml#1136:7->1138:17
+	J	$if_eq_cont.11712	# build/example.ml#1135:5->1139:15
+if_eq.11711:
 	MVI	%r0, $0	# build/example.ml#1139:10->1139:15
 	MV	%r8, %r0	# build/example.ml#1139:10->1139:15
-if_eq_cont.11714:
+if_eq_cont.11712:
 	MVI	%r9, $0	# build/example.ml#1134:3->1140:44
 	CEQ	%r8, %r9	# build/example.ml#1134:3->1140:44
-	JZ	$if_eq.11717	# build/example.ml#1134:3->1140:44
+	JZ	$if_eq.11715	# build/example.ml#1134:3->1140:44
 	MV	%r9, %r7	# build/example.ml#179:3->183:11
 	MV	%r0, %r9	# build/example.ml#183:3->183:11
-	J	$if_eq_cont.11718	# build/example.ml#1134:3->1140:44
-if_eq.11717:
+	J	$if_eq_cont.11716	# build/example.ml#1134:3->1140:44
+if_eq.11715:
 	MV	%r9, %r7	# build/example.ml#179:3->183:11
 	MVI	%r8, $0	# build/example.ml#1140:26->1140:44
 	CEQ	%r9, %r8	# build/example.ml#1140:26->1140:44
-	JZ	$if_eq.11719	# build/example.ml#1140:26->1140:44
+	JZ	$if_eq.11717	# build/example.ml#1140:26->1140:44
 	MVI	%r0, $0	# build/example.ml#1140:26->1140:44
-	J	$if_eq_cont.11720	# build/example.ml#1140:26->1140:44
-if_eq.11719:
+	J	$if_eq_cont.11718	# build/example.ml#1140:26->1140:44
+if_eq.11717:
 	MVI	%r0, $1	# build/example.ml#1140:26->1140:44
-if_eq_cont.11720:
 if_eq_cont.11718:
+if_eq_cont.11716:
 	LDR	%r9, %r31, $0	# build/example.ml#1135:16->1135:23
 	LDR	%r8, %r31, $4	# build/example.ml#1135:16->1135:23
 	LDR	%r7, %r31, $8	# build/example.ml#1135:16->1135:23
@@ -9136,7 +9136,7 @@ setup_startp_constants.2811:
 	FSDR	%fr7, %r31, $52	# build/example.ml#1103:15->1103:16
 	MVI	%r9, $0	# build/example.ml#1103:15->1103:16
 	CMP	%r2, %r9	# build/example.ml#1103:3->1118:13
-	JZ	$if_lt.11721	# build/example.ml#1103:3->1118:13
+	JZ	$if_lt.11719	# build/example.ml#1103:3->1118:13
 	MVI	%r9, $min_caml_objects	# build/example.ml#1104:15->1104:22
 	LDD	%r25, %r9, $4, %r2	# build/example.ml#637:7->637:25
 	LDR	%r9, %r25, $40	# build/example.ml#1104:5->1117:41
@@ -9256,12 +9256,12 @@ setup_startp_constants.2811:
 	FSDD	%fr9, %r23, $4, %r21	# build/example.ml#1109:5->1109:41
 	MVI	%r22, $2	# build/example.ml#1110:18->1110:19
 	CEQ	%r24, %r22	# build/example.ml#1110:5->1116:12
-	JZ	$if_eq.11723	# build/example.ml#1110:5->1116:12
+	JZ	$if_eq.11721	# build/example.ml#1110:5->1116:12
 	MVI	%r22, $2	# build/example.ml#1113:23->1113:24
 	CMP	%r22, %r24	# build/example.ml#1113:10->1116:12
-	JZ	$if_lt.11725	# build/example.ml#1113:10->1116:12
-	J	$if_lt_cont.11726	# build/example.ml#1113:10->1116:12
-if_lt.11725:
+	JZ	$if_lt.11723	# build/example.ml#1113:10->1116:12
+	J	$if_lt_cont.11724	# build/example.ml#1113:10->1116:12
+if_lt.11723:
 	MVI	%r22, $0	# build/example.ml#1114:39->1114:40
 	FLDD	%fr7, %r23, $4, %r22	# build/example.ml#626:18->626:36
 	MVI	%r22, $1	# build/example.ml#1114:50->1114:51
@@ -9303,16 +9303,16 @@ if_lt.11725:
 	MVI	%r8, $3	# build/example.ml#1115:15->1115:16
 	MVI	%r9, $3	# build/example.ml#1115:34->1115:35
 	CEQ	%r24, %r9	# build/example.ml#1115:21->1115:60
-	JZ	$if_eq.11727	# build/example.ml#1115:21->1115:60
-	J	$if_eq_cont.11728	# build/example.ml#1115:21->1115:60
-if_eq.11727:
+	JZ	$if_eq.11725	# build/example.ml#1115:21->1115:60
+	J	$if_eq_cont.11726	# build/example.ml#1115:21->1115:60
+if_eq.11725:
 	FLDA	%fr8, $l.7785	# build/example.ml#1115:48->1115:51
 	FSUB	%rd, %fr9, %fr8	# build/example.ml#1115:41->1115:51
-if_eq_cont.11728:
+if_eq_cont.11726:
 	FSDD	%fr9, %r23, $4, %r8	# build/example.ml#1115:7->1115:60
-if_lt_cont.11726:
-	J	$if_eq_cont.11724	# build/example.ml#1110:5->1116:12
-if_eq.11723:
+if_lt_cont.11724:
+	J	$if_eq_cont.11722	# build/example.ml#1110:5->1116:12
+if_eq.11721:
 	MVI	%r9, $3	# build/example.ml#1111:15->1111:16
 	MV	%r8, %r3	# build/example.ml#227:3->232:8
 	MVI	%r7, $0	# build/example.ml#1112:38->1112:39
@@ -9334,7 +9334,7 @@ if_eq.11723:
 	FMV	%fr9, %fr0	# build/example.ml#1112:2->1112:62
 	LDR	%r1, %r31, $152	# build/example.ml#1112:2->1112:62
 	FSDD	%fr9, %r23, $4, %r9	# build/example.ml#1111:7->1112:62
-if_eq_cont.11724:
+if_eq_cont.11722:
 	MVI	%r9, $1	# build/example.ml#1117:39->1117:40
 	SUB	%r9, %r2, %r9	# build/example.ml#1117:31->1117:40
 	SDR	%r6, %r31, $156	# build/example.ml#1117:5->1117:41
@@ -9355,9 +9355,9 @@ if_eq_cont.11724:
 	LDR	%r3, %r31, $168	# build/example.ml#1117:5->1117:41
 	LDR	%r2, %r31, $172	# build/example.ml#1117:5->1117:41
 	LDR	%r1, %r31, $176	# build/example.ml#1117:5->1117:41
-	J	$if_lt_cont.11722	# build/example.ml#1103:3->1118:13
-if_lt.11721:
-if_lt_cont.11722:
+	J	$if_lt_cont.11720	# build/example.ml#1103:3->1118:13
+if_lt.11719:
+if_lt_cont.11720:
 	LDR	%r9, %r31, $0	# build/example.ml#1103:15->1103:16
 	LDR	%r8, %r31, $4	# build/example.ml#1103:15->1103:16
 	LDR	%r7, %r31, $8	# build/example.ml#1103:15->1103:16
@@ -9409,7 +9409,7 @@ iter_setup_dirvec_constants.2806:
 	SDR	%r20, %r31, $44	# build/example.ml#1078:15->1078:16
 	MVI	%r9, $0	# build/example.ml#1078:15->1078:16
 	CMP	%r3, %r9	# build/example.ml#1078:3->1091:12
-	JZ	$if_lt.11729	# build/example.ml#1078:3->1091:12
+	JZ	$if_lt.11727	# build/example.ml#1078:3->1091:12
 	MVI	%r9, $min_caml_objects	# build/example.ml#1079:13->1079:20
 	LDD	%r9, %r9, $4, %r3	# build/example.ml#637:7->637:25
 	LDR	%r6, %r9, $40	# build/example.ml#1079:5->1090:51
@@ -9428,10 +9428,10 @@ iter_setup_dirvec_constants.2806:
 	MV	%r8, %r22	# build/example.ml#159:3->164:10
 	MVI	%r20, $1	# build/example.ml#1083:18->1083:19
 	CEQ	%r8, %r20	# build/example.ml#1083:5->1088:47
-	JZ	$if_eq.11731	# build/example.ml#1083:5->1088:47
+	JZ	$if_eq.11729	# build/example.ml#1083:5->1088:47
 	MVI	%r20, $2	# build/example.ml#1085:23->1085:24
 	CEQ	%r8, %r20	# build/example.ml#1085:10->1088:47
-	JZ	$if_eq.11733	# build/example.ml#1085:10->1088:47
+	JZ	$if_eq.11731	# build/example.ml#1085:10->1088:47
 	SDR	%r6, %r31, $48	# build/example.ml#1088:25->1088:47
 	SDR	%r5, %r31, $52	# build/example.ml#1088:25->1088:47
 	SDR	%r4, %r31, $56	# build/example.ml#1088:25->1088:47
@@ -9463,8 +9463,8 @@ iter_setup_dirvec_constants.2806:
 	LDR	%r2, %r31, $64	# build/example.ml#1088:25->1088:47
 	LDR	%r1, %r31, $68	# build/example.ml#1088:25->1088:47
 	SDD	%r9, %r7, $4, %r3	# build/example.ml#1088:7->1088:47
-	J	$if_eq_cont.11734	# build/example.ml#1085:10->1088:47
-if_eq.11733:
+	J	$if_eq_cont.11732	# build/example.ml#1085:10->1088:47
+if_eq.11731:
 	SDR	%r6, %r31, $72	# build/example.ml#1086:25->1086:48
 	SDR	%r5, %r31, $76	# build/example.ml#1086:25->1086:48
 	SDR	%r4, %r31, $80	# build/example.ml#1086:25->1086:48
@@ -9496,9 +9496,9 @@ if_eq.11733:
 	LDR	%r2, %r31, $88	# build/example.ml#1086:25->1086:48
 	LDR	%r1, %r31, $92	# build/example.ml#1086:25->1086:48
 	SDD	%r9, %r7, $4, %r3	# build/example.ml#1086:7->1086:48
-if_eq_cont.11734:
-	J	$if_eq_cont.11732	# build/example.ml#1083:5->1088:47
-if_eq.11731:
+if_eq_cont.11732:
+	J	$if_eq_cont.11730	# build/example.ml#1083:5->1088:47
+if_eq.11729:
 	SDR	%r6, %r31, $96	# build/example.ml#1084:25->1084:45
 	SDR	%r5, %r31, $100	# build/example.ml#1084:25->1084:45
 	SDR	%r4, %r31, $104	# build/example.ml#1084:25->1084:45
@@ -9530,7 +9530,7 @@ if_eq.11731:
 	LDR	%r2, %r31, $112	# build/example.ml#1084:25->1084:45
 	LDR	%r1, %r31, $116	# build/example.ml#1084:25->1084:45
 	SDD	%r9, %r7, $4, %r3	# build/example.ml#1084:7->1084:45
-if_eq_cont.11732:
+if_eq_cont.11730:
 	MVI	%r9, $1	# build/example.ml#1090:49->1090:50
 	SUB	%r9, %r3, %r9	# build/example.ml#1090:41->1090:50
 	SDR	%r6, %r31, $120	# build/example.ml#1090:5->1090:51
@@ -9551,9 +9551,9 @@ if_eq_cont.11732:
 	LDR	%r3, %r31, $132	# build/example.ml#1090:5->1090:51
 	LDR	%r2, %r31, $136	# build/example.ml#1090:5->1090:51
 	LDR	%r1, %r31, $140	# build/example.ml#1090:5->1090:51
-	J	$if_lt_cont.11730	# build/example.ml#1078:3->1091:12
-if_lt.11729:
-if_lt_cont.11730:
+	J	$if_lt_cont.11728	# build/example.ml#1078:3->1091:12
+if_lt.11727:
+if_lt_cont.11728:
 	LDR	%r9, %r31, $0	# build/example.ml#1078:15->1078:16
 	LDR	%r8, %r31, $4	# build/example.ml#1078:15->1078:16
 	LDR	%r7, %r31, $8	# build/example.ml#1078:15->1078:16
@@ -9829,7 +9829,7 @@ setup_second_table.2803:
 	MV	%r27, %r5	# build/example.ml#188:3->192:10
 	MVI	%r26, $0	# build/example.ml#1060:19->1060:20
 	CEQ	%r27, %r26	# build/example.ml#1060:3->1068:5
-	JZ	$if_eq.11735	# build/example.ml#1060:3->1068:5
+	JZ	$if_eq.11733	# build/example.ml#1060:3->1068:5
 	MVI	%r26, $1	# build/example.ml#1061:12->1061:13
 	MVI	%r27, $2	# build/example.ml#1061:34->1061:35
 	FLDD	%fr4, %r1, $4, %r27	# build/example.ml#1051:24->1051:29
@@ -10109,15 +10109,15 @@ setup_second_table.2803:
 	FLDR	%fr4, %r31, $552	# build/example.ml#1063:24->1063:78
 	FSUB	%fr9, %fr9, %fr8	# build/example.ml#1063:18->1063:78
 	FSDD	%fr9, %r28, $4, %r26	# build/example.ml#1063:5->1063:78
-	J	$if_eq_cont.11736	# build/example.ml#1060:3->1068:5
-if_eq.11735:
+	J	$if_eq_cont.11734	# build/example.ml#1060:3->1068:5
+if_eq.11733:
 	MVI	%r9, $1	# build/example.ml#1065:12->1065:13
 	FSDD	%fr7, %r28, $4, %r9	# build/example.ml#1065:5->1065:20
 	MVI	%r9, $2	# build/example.ml#1066:12->1066:13
 	FSDD	%fr8, %r28, $4, %r9	# build/example.ml#1066:5->1066:20
 	MVI	%r9, $3	# build/example.ml#1067:12->1067:13
 	FSDD	%fr9, %r28, $4, %r9	# build/example.ml#1067:5->1067:20
-if_eq_cont.11736:
+if_eq_cont.11734:
 	SDR	%r6, %r31, $556	# build/example.ml#1069:11->1069:21
 	SDR	%r5, %r31, $560	# build/example.ml#1069:11->1069:21
 	SDR	%r4, %r31, $564	# build/example.ml#1069:11->1069:21
@@ -10145,14 +10145,14 @@ if_eq_cont.11736:
 	FLDR	%fr4, %r31, $588	# build/example.ml#1069:11->1069:21
 	MVI	%r9, $0	# build/example.ml#1069:3->1071:10
 	CEQ	%r8, %r9	# build/example.ml#1069:3->1071:10
-	JZ	$if_eq.11737	# build/example.ml#1069:3->1071:10
-	J	$if_eq_cont.11738	# build/example.ml#1069:3->1071:10
-if_eq.11737:
+	JZ	$if_eq.11735	# build/example.ml#1069:3->1071:10
+	J	$if_eq_cont.11736	# build/example.ml#1069:3->1071:10
+if_eq.11735:
 	MVI	%r9, $4	# build/example.ml#1070:12->1070:13
 	FLDA	%fr9, $l.7785	# build/example.ml#1070:18->1070:21
 	FDIV	%fr9, %fr9, %fr6	# build/example.ml#1070:18->1070:27
 	FSDD	%fr9, %r28, $4, %r9	# build/example.ml#1070:5->1070:27
-if_eq_cont.11738:
+if_eq_cont.11736:
 	MV	%r0, %r28	# build/example.ml#1072:3->1072:8
 	LDR	%r9, %r31, $0	# build/example.ml#1049:28->1049:29
 	LDR	%r8, %r31, $4	# build/example.ml#1049:28->1049:29
@@ -10322,7 +10322,7 @@ setup_surface_table.2800:
 	LDR	%r1, %r31, $164	# build/example.ml#1034:6->1034:14
 	MVI	%r27, $0	# build/example.ml#1034:3->1042:21
 	CEQ	%r26, %r27	# build/example.ml#1034:3->1042:21
-	JZ	$if_eq.11739	# build/example.ml#1034:3->1042:21
+	JZ	$if_eq.11737	# build/example.ml#1034:3->1042:21
 	MVI	%r27, $0	# build/example.ml#1036:12->1036:13
 	FLDA	%fr8, $l.7812	# build/example.ml#1036:18->1036:22
 	FDIV	%fr8, %fr8, %fr9	# build/example.ml#1036:18->1036:27
@@ -10480,12 +10480,12 @@ setup_surface_table.2800:
 	LDR	%r2, %r31, $304	# build/example.ml#1040:18->1040:41
 	LDR	%r1, %r31, $308	# build/example.ml#1040:18->1040:41
 	FSDD	%fr9, %r28, $4, %r27	# build/example.ml#1040:5->1040:41
-	J	$if_eq_cont.11740	# build/example.ml#1034:3->1042:21
-if_eq.11739:
+	J	$if_eq_cont.11738	# build/example.ml#1034:3->1042:21
+if_eq.11737:
 	MVI	%r9, $0	# build/example.ml#1042:12->1042:13
 	FLDA	%fr9, $l.7787	# build/example.ml#1042:18->1042:21
 	FSDD	%fr9, %r28, $4, %r9	# build/example.ml#1042:5->1042:21
-if_eq_cont.11740:
+if_eq_cont.11738:
 	MV	%r0, %r28	# build/example.ml#1043:3->1043:8
 	LDR	%r9, %r31, $0	# build/example.ml#1030:28->1030:29
 	LDR	%r8, %r31, $4	# build/example.ml#1030:28->1030:29
@@ -10558,12 +10558,12 @@ setup_rect_table.2797:
 	LDR	%r1, %r31, $92	# build/example.ml#1005:6->1005:21
 	MVI	%r28, $0	# build/example.ml#1005:3->1012:4
 	CEQ	%r26, %r28	# build/example.ml#1005:3->1012:4
-	JZ	$if_eq.11741	# build/example.ml#1005:3->1012:4
+	JZ	$if_eq.11739	# build/example.ml#1005:3->1012:4
 	MVI	%r28, $1	# build/example.ml#1006:12->1006:13
 	FLDA	%fr9, $l.7787	# build/example.ml#1006:18->1006:21
 	FSDD	%fr9, %r27, $4, %r28	# build/example.ml#1006:5->1006:21
-	J	$if_eq_cont.11742	# build/example.ml#1005:3->1012:4
-if_eq.11741:
+	J	$if_eq_cont.11740	# build/example.ml#1005:3->1012:4
+if_eq.11739:
 	MVI	%r25, $0	# build/example.ml#1009:12->1009:13
 	MV	%r28, %r8	# build/example.ml#179:3->183:11
 	MVI	%r26, $0	# build/example.ml#1009:61->1009:62
@@ -10655,7 +10655,7 @@ if_eq.11741:
 	FLDD	%fr9, %r1, $4, %r28	# build/example.ml#1005:14->1005:21
 	FDIV	%fr9, %fr8, %fr9	# build/example.ml#1011:18->1011:32
 	FSDD	%fr9, %r27, $4, %r26	# build/example.ml#1011:5->1011:32
-if_eq_cont.11742:
+if_eq_cont.11740:
 	MVI	%r28, $1	# build/example.ml#1013:19->1013:20
 	FLDD	%fr9, %r1, $4, %r28	# build/example.ml#1005:14->1005:21
 	SDR	%r6, %r31, $176	# build/example.ml#1013:6->1013:21
@@ -10679,12 +10679,12 @@ if_eq_cont.11742:
 	LDR	%r1, %r31, $196	# build/example.ml#1013:6->1013:21
 	MVI	%r28, $0	# build/example.ml#1013:3->1018:4
 	CEQ	%r26, %r28	# build/example.ml#1013:3->1018:4
-	JZ	$if_eq.11743	# build/example.ml#1013:3->1018:4
+	JZ	$if_eq.11741	# build/example.ml#1013:3->1018:4
 	MVI	%r28, $3	# build/example.ml#1014:12->1014:13
 	FLDA	%fr9, $l.7787	# build/example.ml#1014:18->1014:21
 	FSDD	%fr9, %r27, $4, %r28	# build/example.ml#1014:5->1014:21
-	J	$if_eq_cont.11744	# build/example.ml#1013:3->1018:4
-if_eq.11743:
+	J	$if_eq_cont.11742	# build/example.ml#1013:3->1018:4
+if_eq.11741:
 	MVI	%r25, $2	# build/example.ml#1016:12->1016:13
 	MV	%r28, %r8	# build/example.ml#179:3->183:11
 	MVI	%r26, $1	# build/example.ml#1016:61->1016:62
@@ -10776,7 +10776,7 @@ if_eq.11743:
 	FLDD	%fr9, %r1, $4, %r28	# build/example.ml#1005:14->1005:21
 	FDIV	%fr9, %fr8, %fr9	# build/example.ml#1017:18->1017:32
 	FSDD	%fr9, %r27, $4, %r26	# build/example.ml#1017:5->1017:32
-if_eq_cont.11744:
+if_eq_cont.11742:
 	MVI	%r28, $2	# build/example.ml#1019:19->1019:20
 	FLDD	%fr9, %r1, $4, %r28	# build/example.ml#1005:14->1005:21
 	SDR	%r6, %r31, $280	# build/example.ml#1019:6->1019:21
@@ -10800,12 +10800,12 @@ if_eq_cont.11744:
 	LDR	%r1, %r31, $300	# build/example.ml#1019:6->1019:21
 	MVI	%r28, $0	# build/example.ml#1019:3->1024:4
 	CEQ	%r26, %r28	# build/example.ml#1019:3->1024:4
-	JZ	$if_eq.11745	# build/example.ml#1019:3->1024:4
+	JZ	$if_eq.11743	# build/example.ml#1019:3->1024:4
 	MVI	%r9, $5	# build/example.ml#1020:12->1020:13
 	FLDA	%fr9, $l.7787	# build/example.ml#1020:18->1020:21
 	FSDD	%fr9, %r27, $4, %r9	# build/example.ml#1020:5->1020:21
-	J	$if_eq_cont.11746	# build/example.ml#1019:3->1024:4
-if_eq.11745:
+	J	$if_eq_cont.11744	# build/example.ml#1019:3->1024:4
+if_eq.11743:
 	MVI	%r25, $4	# build/example.ml#1022:12->1022:13
 	MV	%r28, %r8	# build/example.ml#179:3->183:11
 	MVI	%r26, $2	# build/example.ml#1022:61->1022:62
@@ -10897,7 +10897,7 @@ if_eq.11745:
 	FLDD	%fr9, %r1, $4, %r9	# build/example.ml#1005:14->1005:21
 	FDIV	%fr9, %fr8, %fr9	# build/example.ml#1023:18->1023:32
 	FSDD	%fr9, %r27, $4, %r8	# build/example.ml#1023:5->1023:32
-if_eq_cont.11746:
+if_eq_cont.11744:
 	MV	%r0, %r27	# build/example.ml#1025:3->1025:8
 	LDR	%r9, %r31, $0	# build/example.ml#1003:28->1003:29
 	LDR	%r8, %r31, $4	# build/example.ml#1003:28->1003:29
@@ -10952,10 +10952,10 @@ solver_fast2.2794:
 	MV	%r9, %r23	# build/example.ml#159:3->164:10
 	MVI	%r21, $1	# build/example.ml#989:16->989:17
 	CEQ	%r9, %r21	# build/example.ml#989:3->994:49
-	JZ	$if_eq.11747	# build/example.ml#989:3->994:49
+	JZ	$if_eq.11745	# build/example.ml#989:3->994:49
 	MVI	%r21, $2	# build/example.ml#991:21->991:22
 	CEQ	%r9, %r21	# build/example.ml#991:8->994:49
-	JZ	$if_eq.11749	# build/example.ml#991:8->994:49
+	JZ	$if_eq.11747	# build/example.ml#991:8->994:49
 	SDR	%r6, %r31, $56	# build/example.ml#994:5->994:49
 	SDR	%r5, %r31, $60	# build/example.ml#994:5->994:49
 	SDR	%r4, %r31, $64	# build/example.ml#994:5->994:49
@@ -10989,8 +10989,8 @@ solver_fast2.2794:
 	LDR	%r3, %r31, $68	# build/example.ml#994:5->994:49
 	LDR	%r2, %r31, $72	# build/example.ml#994:5->994:49
 	LDR	%r1, %r31, $76	# build/example.ml#994:5->994:49
-	J	$if_eq_cont.11750	# build/example.ml#991:8->994:49
-if_eq.11749:
+	J	$if_eq_cont.11748	# build/example.ml#991:8->994:49
+if_eq.11747:
 	SDR	%r6, %r31, $80	# build/example.ml#992:5->992:50
 	SDR	%r5, %r31, $84	# build/example.ml#992:5->992:50
 	SDR	%r4, %r31, $88	# build/example.ml#992:5->992:50
@@ -11024,9 +11024,9 @@ if_eq.11749:
 	LDR	%r3, %r31, $92	# build/example.ml#992:5->992:50
 	LDR	%r2, %r31, $96	# build/example.ml#992:5->992:50
 	LDR	%r1, %r31, $100	# build/example.ml#992:5->992:50
-if_eq_cont.11750:
-	J	$if_eq_cont.11748	# build/example.ml#989:3->994:49
-if_eq.11747:
+if_eq_cont.11748:
+	J	$if_eq_cont.11746	# build/example.ml#989:3->994:49
+if_eq.11745:
 	MV	%r9, %r2	# build/example.ml#445:3->446:8
 	SDR	%r6, %r31, $104	# build/example.ml#990:5->990:54
 	SDR	%r5, %r31, $108	# build/example.ml#990:5->990:54
@@ -11061,7 +11061,7 @@ if_eq.11747:
 	LDR	%r3, %r31, $116	# build/example.ml#990:5->990:54
 	LDR	%r2, %r31, $120	# build/example.ml#990:5->990:54
 	LDR	%r1, %r31, $124	# build/example.ml#990:5->990:54
-if_eq_cont.11748:
+if_eq_cont.11746:
 	LDR	%r9, %r31, $0	# build/example.ml#981:11->981:18
 	LDR	%r8, %r31, $4	# build/example.ml#981:11->981:18
 	LDR	%r7, %r31, $8	# build/example.ml#981:11->981:18
@@ -11117,10 +11117,10 @@ solver_second_fast2.2787:
 	FLDR	%fr1, %r31, $72	# build/example.ml#964:6->964:16
 	MVI	%r9, $0	# build/example.ml#964:3->976:11
 	CEQ	%r8, %r9	# build/example.ml#964:3->976:11
-	JZ	$if_eq.11751	# build/example.ml#964:3->976:11
+	JZ	$if_eq.11749	# build/example.ml#964:3->976:11
 	MVI	%r0, $0	# build/example.ml#965:5->965:6
-	J	$if_eq_cont.11752	# build/example.ml#964:3->976:11
-if_eq.11751:
+	J	$if_eq_cont.11750	# build/example.ml#964:3->976:11
+if_eq.11749:
 	MVI	%r9, $1	# build/example.ml#967:26->967:27
 	FLDD	%fr8, %r12, $4, %r9	# build/example.ml#963:12->963:22
 	FMUL	%fr7, %fr8, %fr0	# build/example.ml#967:18->967:34
@@ -11188,11 +11188,11 @@ if_eq.11751:
 	FLDR	%fr1, %r31, $144	# build/example.ml#970:8->970:16
 	MVI	%r9, $0	# build/example.ml#970:5->976:11
 	CEQ	%r8, %r9	# build/example.ml#970:5->976:11
-	JZ	$if_eq.11753	# build/example.ml#970:5->976:11
+	JZ	$if_eq.11751	# build/example.ml#970:5->976:11
 	MV	%r9, %r7	# build/example.ml#179:3->183:11
 	MVI	%r8, $0	# build/example.ml#971:7->974:53
 	CEQ	%r9, %r8	# build/example.ml#971:7->974:53
-	JZ	$if_eq.11755	# build/example.ml#971:7->974:53
+	JZ	$if_eq.11753	# build/example.ml#971:7->974:53
 	MVI	%r7, $min_caml_solver_dist	# build/example.ml#972:2->972:13
 	MVI	%r8, $0	# build/example.ml#972:15->972:16
 	SDR	%r6, %r31, $148	# build/example.ml#972:32->972:38
@@ -11225,8 +11225,8 @@ if_eq.11751:
 	FLDD	%fr9, %r12, $4, %r9	# build/example.ml#963:12->963:22
 	FMUL	%fr9, %fr8, %fr9	# build/example.ml#972:21->972:53
 	FSDD	%fr9, %r7, $4, %r8	# build/example.ml#972:2->972:53
-	J	$if_eq_cont.11756	# build/example.ml#971:7->974:53
-if_eq.11755:
+	J	$if_eq_cont.11754	# build/example.ml#971:7->974:53
+if_eq.11753:
 	MVI	%r7, $min_caml_solver_dist	# build/example.ml#974:2->974:13
 	MVI	%r8, $0	# build/example.ml#974:15->974:16
 	SDR	%r6, %r31, $184	# build/example.ml#974:32->974:38
@@ -11259,13 +11259,13 @@ if_eq.11755:
 	FLDD	%fr9, %r12, $4, %r9	# build/example.ml#963:12->963:22
 	FMUL	%fr9, %fr8, %fr9	# build/example.ml#974:21->974:53
 	FSDD	%fr9, %r7, $4, %r8	# build/example.ml#974:2->974:53
-if_eq_cont.11756:
-	MVI	%r0, $1	# build/example.ml#975:7->975:8
-	J	$if_eq_cont.11754	# build/example.ml#970:5->976:11
-if_eq.11753:
-	MVI	%r0, $0	# build/example.ml#976:10->976:11
 if_eq_cont.11754:
+	MVI	%r0, $1	# build/example.ml#975:7->975:8
+	J	$if_eq_cont.11752	# build/example.ml#970:5->976:11
+if_eq.11751:
+	MVI	%r0, $0	# build/example.ml#976:10->976:11
 if_eq_cont.11752:
+if_eq_cont.11750:
 	LDR	%r9, %r31, $0	# build/example.ml#963:20->963:21
 	LDR	%r8, %r31, $4	# build/example.ml#963:20->963:21
 	LDR	%r7, %r31, $8	# build/example.ml#963:20->963:21
@@ -11314,7 +11314,7 @@ solver_surface_fast2.2780:
 	FLDR	%fr1, %r31, $64	# build/example.ml#954:6->954:23
 	MVI	%r9, $0	# build/example.ml#954:3->957:12
 	CEQ	%r8, %r9	# build/example.ml#954:3->957:12
-	JZ	$if_eq.11757	# build/example.ml#954:3->957:12
+	JZ	$if_eq.11755	# build/example.ml#954:3->957:12
 	MVI	%r7, $min_caml_solver_dist	# build/example.ml#955:5->955:16
 	MVI	%r8, $0	# build/example.ml#955:18->955:19
 	MVI	%r9, $0	# build/example.ml#955:32->955:33
@@ -11324,10 +11324,10 @@ solver_surface_fast2.2780:
 	FMUL	%fr9, %fr8, %fr9	# build/example.ml#955:24->955:48
 	FSDD	%fr9, %r7, $4, %r8	# build/example.ml#955:5->955:48
 	MVI	%r0, $1	# build/example.ml#956:5->956:6
-	J	$if_eq_cont.11758	# build/example.ml#954:3->957:12
-if_eq.11757:
+	J	$if_eq_cont.11756	# build/example.ml#954:3->957:12
+if_eq.11755:
 	MVI	%r0, $0	# build/example.ml#957:11->957:12
-if_eq_cont.11758:
+if_eq_cont.11756:
 	LDR	%r9, %r31, $0	# build/example.ml#954:21->954:22
 	LDR	%r8, %r31, $4	# build/example.ml#954:21->954:22
 	LDR	%r7, %r31, $8	# build/example.ml#954:21->954:22
@@ -11466,10 +11466,10 @@ solver_fast.2776:
 	MV	%r4, %r24	# build/example.ml#159:3->164:10
 	MVI	%r22, $1	# build/example.ml#941:16->941:17
 	CEQ	%r4, %r22	# build/example.ml#941:3->946:41
-	JZ	$if_eq.11759	# build/example.ml#941:3->946:41
+	JZ	$if_eq.11757	# build/example.ml#941:3->946:41
 	MVI	%r22, $2	# build/example.ml#943:21->943:22
 	CEQ	%r4, %r22	# build/example.ml#943:8->946:41
-	JZ	$if_eq.11761	# build/example.ml#943:8->946:41
+	JZ	$if_eq.11759	# build/example.ml#943:8->946:41
 	SDR	%r6, %r31, $124	# build/example.ml#946:5->946:41
 	SDR	%r5, %r31, $128	# build/example.ml#946:5->946:41
 	SDR	%r4, %r31, $132	# build/example.ml#946:5->946:41
@@ -11504,8 +11504,8 @@ solver_fast.2776:
 	LDR	%r2, %r31, $140	# build/example.ml#946:5->946:41
 	LDR	%r1, %r31, $144	# build/example.ml#946:5->946:41
 	FLDR	%fr6, %r31, $148	# build/example.ml#946:5->946:41
-	J	$if_eq_cont.11762	# build/example.ml#943:8->946:41
-if_eq.11761:
+	J	$if_eq_cont.11760	# build/example.ml#943:8->946:41
+if_eq.11759:
 	SDR	%r6, %r31, $152	# build/example.ml#944:5->944:42
 	SDR	%r5, %r31, $156	# build/example.ml#944:5->944:42
 	SDR	%r4, %r31, $160	# build/example.ml#944:5->944:42
@@ -11540,9 +11540,9 @@ if_eq.11761:
 	LDR	%r2, %r31, $168	# build/example.ml#944:5->944:42
 	LDR	%r1, %r31, $172	# build/example.ml#944:5->944:42
 	FLDR	%fr6, %r31, $176	# build/example.ml#944:5->944:42
-if_eq_cont.11762:
-	J	$if_eq_cont.11760	# build/example.ml#941:3->946:41
-if_eq.11759:
+if_eq_cont.11760:
+	J	$if_eq_cont.11758	# build/example.ml#941:3->946:41
+if_eq.11757:
 	MV	%r4, %r2	# build/example.ml#445:3->446:8
 	SDR	%r6, %r31, $180	# build/example.ml#942:5->942:54
 	SDR	%r5, %r31, $184	# build/example.ml#942:5->942:54
@@ -11579,7 +11579,7 @@ if_eq.11759:
 	LDR	%r2, %r31, $196	# build/example.ml#942:5->942:54
 	LDR	%r1, %r31, $200	# build/example.ml#942:5->942:54
 	FLDR	%fr6, %r31, $204	# build/example.ml#942:5->942:54
-if_eq_cont.11760:
+if_eq_cont.11758:
 	LDR	%r9, %r31, $0	# build/example.ml#934:11->934:18
 	LDR	%r8, %r31, $4	# build/example.ml#934:11->934:18
 	LDR	%r7, %r31, $8	# build/example.ml#934:11->934:18
@@ -11635,10 +11635,10 @@ solver_second_fast.2770:
 	FLDR	%fr1, %r31, $76	# build/example.ml#916:6->916:16
 	MVI	%r28, $0	# build/example.ml#916:3->929:11
 	CEQ	%r27, %r28	# build/example.ml#916:3->929:11
-	JZ	$if_eq.11763	# build/example.ml#916:3->929:11
+	JZ	$if_eq.11761	# build/example.ml#916:3->929:11
 	MVI	%r0, $0	# build/example.ml#917:5->917:6
-	J	$if_eq_cont.11764	# build/example.ml#916:3->929:11
-if_eq.11763:
+	J	$if_eq_cont.11762	# build/example.ml#916:3->929:11
+if_eq.11761:
 	MVI	%r28, $1	# build/example.ml#919:26->919:27
 	FLDD	%fr8, %r12, $4, %r28	# build/example.ml#915:12->915:22
 	FMUL	%fr7, %fr8, %fr0	# build/example.ml#919:18->919:34
@@ -11677,15 +11677,15 @@ if_eq.11763:
 	MV	%r9, %r2	# build/example.ml#159:3->164:10
 	MVI	%r8, $3	# build/example.ml#921:28->921:29
 	CEQ	%r9, %r8	# build/example.ml#921:14->921:54
-	JZ	$if_eq.11765	# build/example.ml#921:14->921:54
+	JZ	$if_eq.11763	# build/example.ml#921:14->921:54
 	FMV	%r0, %fr7	# build/example.ml#921:51->921:54
 	MV	%fr7, %r0	# build/example.ml#921:51->921:54
-	J	$if_eq_cont.11766	# build/example.ml#921:14->921:54
-if_eq.11765:
+	J	$if_eq_cont.11764	# build/example.ml#921:14->921:54
+if_eq.11763:
 	FLDA	%fr6, $l.7785	# build/example.ml#921:42->921:45
 	FSUB	%r0, %fr7, %fr6	# build/example.ml#921:35->921:45
 	MV	%fr7, %r0	# build/example.ml#921:35->921:45
-if_eq_cont.11766:
+if_eq_cont.11764:
 	SDR	%r6, %r31, $116	# build/example.ml#922:14->922:25
 	SDR	%r5, %r31, $120	# build/example.ml#922:14->922:25
 	SDR	%r4, %r31, $124	# build/example.ml#922:14->922:25
@@ -11740,11 +11740,11 @@ if_eq_cont.11766:
 	FLDR	%fr1, %r31, $184	# build/example.ml#923:8->923:16
 	MVI	%r9, $0	# build/example.ml#923:5->929:11
 	CEQ	%r8, %r9	# build/example.ml#923:5->929:11
-	JZ	$if_eq.11767	# build/example.ml#923:5->929:11
+	JZ	$if_eq.11765	# build/example.ml#923:5->929:11
 	MV	%r9, %r7	# build/example.ml#179:3->183:11
 	MVI	%r8, $0	# build/example.ml#924:7->927:53
 	CEQ	%r9, %r8	# build/example.ml#924:7->927:53
-	JZ	$if_eq.11769	# build/example.ml#924:7->927:53
+	JZ	$if_eq.11767	# build/example.ml#924:7->927:53
 	MVI	%r7, $min_caml_solver_dist	# build/example.ml#925:2->925:13
 	MVI	%r8, $0	# build/example.ml#925:15->925:16
 	SDR	%r6, %r31, $188	# build/example.ml#925:32->925:38
@@ -11777,8 +11777,8 @@ if_eq_cont.11766:
 	FLDD	%fr9, %r12, $4, %r9	# build/example.ml#915:12->915:22
 	FMUL	%fr9, %fr8, %fr9	# build/example.ml#925:21->925:53
 	FSDD	%fr9, %r7, $4, %r8	# build/example.ml#925:2->925:53
-	J	$if_eq_cont.11770	# build/example.ml#924:7->927:53
-if_eq.11769:
+	J	$if_eq_cont.11768	# build/example.ml#924:7->927:53
+if_eq.11767:
 	MVI	%r7, $min_caml_solver_dist	# build/example.ml#927:2->927:13
 	MVI	%r8, $0	# build/example.ml#927:15->927:16
 	SDR	%r6, %r31, $224	# build/example.ml#927:32->927:38
@@ -11811,13 +11811,13 @@ if_eq.11769:
 	FLDD	%fr9, %r12, $4, %r9	# build/example.ml#915:12->915:22
 	FMUL	%fr9, %fr8, %fr9	# build/example.ml#927:21->927:53
 	FSDD	%fr9, %r7, $4, %r8	# build/example.ml#927:2->927:53
-if_eq_cont.11770:
-	MVI	%r0, $1	# build/example.ml#928:7->928:8
-	J	$if_eq_cont.11768	# build/example.ml#923:5->929:11
-if_eq.11767:
-	MVI	%r0, $0	# build/example.ml#929:10->929:11
 if_eq_cont.11768:
-if_eq_cont.11764:
+	MVI	%r0, $1	# build/example.ml#928:7->928:8
+	J	$if_eq_cont.11766	# build/example.ml#923:5->929:11
+if_eq.11765:
+	MVI	%r0, $0	# build/example.ml#929:10->929:11
+if_eq_cont.11766:
+if_eq_cont.11762:
 	LDR	%r9, %r31, $0	# build/example.ml#915:20->915:21
 	LDR	%r8, %r31, $4	# build/example.ml#915:20->915:21
 	LDR	%r7, %r31, $8	# build/example.ml#915:20->915:21
@@ -11866,7 +11866,7 @@ solver_surface_fast.2764:
 	FLDR	%fr1, %r31, $60	# build/example.ml#905:6->905:23
 	MVI	%r9, $0	# build/example.ml#905:3->909:12
 	CEQ	%r8, %r9	# build/example.ml#905:3->909:12
-	JZ	$if_eq.11771	# build/example.ml#905:3->909:12
+	JZ	$if_eq.11769	# build/example.ml#905:3->909:12
 	MVI	%r7, $min_caml_solver_dist	# build/example.ml#906:5->906:16
 	MVI	%r8, $0	# build/example.ml#906:18->906:19
 	MVI	%r9, $1	# build/example.ml#907:15->907:16
@@ -11882,10 +11882,10 @@ solver_surface_fast.2764:
 	FADD	%fr9, %fr8, %fr9	# build/example.ml#907:7->907:63
 	FSDD	%fr9, %r7, $4, %r8	# build/example.ml#906:5->907:63
 	MVI	%r0, $1	# build/example.ml#908:5->908:6
-	J	$if_eq_cont.11772	# build/example.ml#905:3->909:12
-if_eq.11771:
+	J	$if_eq_cont.11770	# build/example.ml#905:3->909:12
+if_eq.11769:
 	MVI	%r0, $0	# build/example.ml#909:11->909:12
-if_eq_cont.11772:
+if_eq_cont.11770:
 	LDR	%r9, %r31, $0	# build/example.ml#905:21->905:22
 	LDR	%r8, %r31, $4	# build/example.ml#905:21->905:22
 	LDR	%r7, %r31, $8	# build/example.ml#905:21->905:22
@@ -11963,7 +11963,7 @@ solver_rect_fast.2757:
 	FLDR	%fr1, %r31, $100	# build/example.ml#874:8->874:54
 	MVI	%r28, $0	# build/example.ml#874:5->878:15
 	CEQ	%r27, %r28	# build/example.ml#874:5->878:15
-	JZ	$if_eq.11773	# build/example.ml#874:5->878:15
+	JZ	$if_eq.11771	# build/example.ml#874:5->878:15
 	MVI	%r28, $2	# build/example.ml#875:32->875:33
 	FLDD	%fr8, %r12, $4, %r28	# build/example.ml#874:27->874:32
 	FMUL	%fr8, %fr9, %fr8	# build/example.ml#875:23->875:34
@@ -12013,7 +12013,7 @@ solver_rect_fast.2757:
 	FLDR	%fr1, %r31, $156	# build/example.ml#875:10->875:56
 	MVI	%r28, $0	# build/example.ml#875:7->877:17
 	CEQ	%r27, %r28	# build/example.ml#875:7->877:17
-	JZ	$if_eq.11775	# build/example.ml#875:7->877:17
+	JZ	$if_eq.11773	# build/example.ml#875:7->877:17
 	MVI	%r28, $1	# build/example.ml#876:23->876:24
 	FLDD	%fr8, %r13, $4, %r28	# build/example.ml#872:13->872:23
 	SDR	%r6, %r31, $160	# build/example.ml#876:7->876:25
@@ -12041,31 +12041,31 @@ solver_rect_fast.2757:
 	FLDR	%fr1, %r31, $188	# build/example.ml#876:7->876:25
 	MVI	%r28, $0	# build/example.ml#876:2->876:26
 	CEQ	%r27, %r28	# build/example.ml#876:2->876:26
-	JZ	$if_eq.11777	# build/example.ml#876:2->876:26
+	JZ	$if_eq.11775	# build/example.ml#876:2->876:26
 	MVI	%r0, $0	# build/example.ml#876:2->876:26
-	J	$if_eq_cont.11778	# build/example.ml#876:2->876:26
-if_eq.11777:
-	MVI	%r0, $1	# build/example.ml#876:2->876:26
-if_eq_cont.11778:
-	J	$if_eq_cont.11776	# build/example.ml#875:7->877:17
+	J	$if_eq_cont.11776	# build/example.ml#876:2->876:26
 if_eq.11775:
-	MVI	%r0, $0	# build/example.ml#877:12->877:17
+	MVI	%r0, $1	# build/example.ml#876:2->876:26
 if_eq_cont.11776:
-	MV	%r27, %r0	# build/example.ml#875:7->877:17
-	J	$if_eq_cont.11774	# build/example.ml#874:5->878:15
+	J	$if_eq_cont.11774	# build/example.ml#875:7->877:17
 if_eq.11773:
+	MVI	%r0, $0	# build/example.ml#877:12->877:17
+if_eq_cont.11774:
+	MV	%r27, %r0	# build/example.ml#875:7->877:17
+	J	$if_eq_cont.11772	# build/example.ml#874:5->878:15
+if_eq.11771:
 	MVI	%r0, $0	# build/example.ml#878:10->878:15
 	MV	%r27, %r0	# build/example.ml#878:10->878:15
-if_eq_cont.11774:
+if_eq_cont.11772:
 	MVI	%r28, $0	# build/example.ml#873:3->900:6
 	CEQ	%r27, %r28	# build/example.ml#873:3->900:6
-	JZ	$if_eq.11779	# build/example.ml#873:3->900:6
+	JZ	$if_eq.11777	# build/example.ml#873:3->900:6
 	MVI	%r8, $min_caml_solver_dist	# build/example.ml#880:6->880:17
 	MVI	%r9, $0	# build/example.ml#880:19->880:20
 	FSDD	%fr9, %r8, $4, %r9	# build/example.ml#880:6->880:27
 	MVI	%r0, $1	# build/example.ml#880:29->880:30
-	J	$if_eq_cont.11780	# build/example.ml#873:3->900:6
-if_eq.11779:
+	J	$if_eq_cont.11778	# build/example.ml#873:3->900:6
+if_eq.11777:
 	MVI	%r28, $2	# build/example.ml#881:26->881:27
 	FLDD	%fr9, %r13, $4, %r28	# build/example.ml#872:13->872:23
 	FSUB	%fr8, %fr9, %fr1	# build/example.ml#881:18->881:34
@@ -12121,7 +12121,7 @@ if_eq.11779:
 	FLDR	%fr1, %r31, $244	# build/example.ml#883:8->883:54
 	MVI	%r28, $0	# build/example.ml#883:5->887:15
 	CEQ	%r27, %r28	# build/example.ml#883:5->887:15
-	JZ	$if_eq.11781	# build/example.ml#883:5->887:15
+	JZ	$if_eq.11779	# build/example.ml#883:5->887:15
 	MVI	%r28, $2	# build/example.ml#884:32->884:33
 	FLDD	%fr8, %r12, $4, %r28	# build/example.ml#874:27->874:32
 	FMUL	%fr8, %fr9, %fr8	# build/example.ml#884:23->884:34
@@ -12171,7 +12171,7 @@ if_eq.11779:
 	FLDR	%fr1, %r31, $300	# build/example.ml#884:10->884:56
 	MVI	%r28, $0	# build/example.ml#884:7->886:17
 	CEQ	%r27, %r28	# build/example.ml#884:7->886:17
-	JZ	$if_eq.11783	# build/example.ml#884:7->886:17
+	JZ	$if_eq.11781	# build/example.ml#884:7->886:17
 	MVI	%r28, $3	# build/example.ml#885:23->885:24
 	FLDD	%fr8, %r13, $4, %r28	# build/example.ml#872:13->872:23
 	SDR	%r6, %r31, $304	# build/example.ml#885:7->885:25
@@ -12199,31 +12199,31 @@ if_eq.11779:
 	FLDR	%fr1, %r31, $332	# build/example.ml#885:7->885:25
 	MVI	%r28, $0	# build/example.ml#885:2->885:26
 	CEQ	%r27, %r28	# build/example.ml#885:2->885:26
-	JZ	$if_eq.11785	# build/example.ml#885:2->885:26
+	JZ	$if_eq.11783	# build/example.ml#885:2->885:26
 	MVI	%r0, $0	# build/example.ml#885:2->885:26
-	J	$if_eq_cont.11786	# build/example.ml#885:2->885:26
-if_eq.11785:
-	MVI	%r0, $1	# build/example.ml#885:2->885:26
-if_eq_cont.11786:
-	J	$if_eq_cont.11784	# build/example.ml#884:7->886:17
+	J	$if_eq_cont.11784	# build/example.ml#885:2->885:26
 if_eq.11783:
-	MVI	%r0, $0	# build/example.ml#886:12->886:17
+	MVI	%r0, $1	# build/example.ml#885:2->885:26
 if_eq_cont.11784:
-	MV	%r27, %r0	# build/example.ml#884:7->886:17
-	J	$if_eq_cont.11782	# build/example.ml#883:5->887:15
+	J	$if_eq_cont.11782	# build/example.ml#884:7->886:17
 if_eq.11781:
+	MVI	%r0, $0	# build/example.ml#886:12->886:17
+if_eq_cont.11782:
+	MV	%r27, %r0	# build/example.ml#884:7->886:17
+	J	$if_eq_cont.11780	# build/example.ml#883:5->887:15
+if_eq.11779:
 	MVI	%r0, $0	# build/example.ml#887:10->887:15
 	MV	%r27, %r0	# build/example.ml#887:10->887:15
-if_eq_cont.11782:
+if_eq_cont.11780:
 	MVI	%r28, $0	# build/example.ml#882:3->900:6
 	CEQ	%r27, %r28	# build/example.ml#882:3->900:6
-	JZ	$if_eq.11787	# build/example.ml#882:3->900:6
+	JZ	$if_eq.11785	# build/example.ml#882:3->900:6
 	MVI	%r8, $min_caml_solver_dist	# build/example.ml#889:6->889:17
 	MVI	%r9, $0	# build/example.ml#889:19->889:20
 	FSDD	%fr9, %r8, $4, %r9	# build/example.ml#889:6->889:27
 	MVI	%r0, $2	# build/example.ml#889:29->889:30
-	J	$if_eq_cont.11788	# build/example.ml#882:3->900:6
-if_eq.11787:
+	J	$if_eq_cont.11786	# build/example.ml#882:3->900:6
+if_eq.11785:
 	MVI	%r28, $4	# build/example.ml#890:26->890:27
 	FLDD	%fr9, %r13, $4, %r28	# build/example.ml#872:13->872:23
 	FSUB	%fr8, %fr9, %fr2	# build/example.ml#890:18->890:34
@@ -12279,7 +12279,7 @@ if_eq.11787:
 	FLDR	%fr1, %r31, $388	# build/example.ml#892:8->892:54
 	MVI	%r28, $0	# build/example.ml#892:5->896:15
 	CEQ	%r27, %r28	# build/example.ml#892:5->896:15
-	JZ	$if_eq.11789	# build/example.ml#892:5->896:15
+	JZ	$if_eq.11787	# build/example.ml#892:5->896:15
 	MVI	%r28, $1	# build/example.ml#893:32->893:33
 	FLDD	%fr8, %r12, $4, %r28	# build/example.ml#874:27->874:32
 	FMUL	%fr8, %fr9, %fr8	# build/example.ml#893:23->893:34
@@ -12329,7 +12329,7 @@ if_eq.11787:
 	FLDR	%fr1, %r31, $444	# build/example.ml#893:10->893:56
 	MVI	%r9, $0	# build/example.ml#893:7->895:17
 	CEQ	%r8, %r9	# build/example.ml#893:7->895:17
-	JZ	$if_eq.11791	# build/example.ml#893:7->895:17
+	JZ	$if_eq.11789	# build/example.ml#893:7->895:17
 	MVI	%r9, $5	# build/example.ml#894:23->894:24
 	FLDD	%fr8, %r13, $4, %r9	# build/example.ml#872:13->872:23
 	SDR	%r6, %r31, $448	# build/example.ml#894:7->894:25
@@ -12357,35 +12357,35 @@ if_eq.11787:
 	FLDR	%fr1, %r31, $476	# build/example.ml#894:7->894:25
 	MVI	%r9, $0	# build/example.ml#894:2->894:26
 	CEQ	%r8, %r9	# build/example.ml#894:2->894:26
-	JZ	$if_eq.11793	# build/example.ml#894:2->894:26
+	JZ	$if_eq.11791	# build/example.ml#894:2->894:26
 	MVI	%r0, $0	# build/example.ml#894:2->894:26
-	J	$if_eq_cont.11794	# build/example.ml#894:2->894:26
-if_eq.11793:
-	MVI	%r0, $1	# build/example.ml#894:2->894:26
-if_eq_cont.11794:
-	J	$if_eq_cont.11792	# build/example.ml#893:7->895:17
+	J	$if_eq_cont.11792	# build/example.ml#894:2->894:26
 if_eq.11791:
-	MVI	%r0, $0	# build/example.ml#895:12->895:17
+	MVI	%r0, $1	# build/example.ml#894:2->894:26
 if_eq_cont.11792:
-	MV	%r8, %r0	# build/example.ml#893:7->895:17
-	J	$if_eq_cont.11790	# build/example.ml#892:5->896:15
+	J	$if_eq_cont.11790	# build/example.ml#893:7->895:17
 if_eq.11789:
+	MVI	%r0, $0	# build/example.ml#895:12->895:17
+if_eq_cont.11790:
+	MV	%r8, %r0	# build/example.ml#893:7->895:17
+	J	$if_eq_cont.11788	# build/example.ml#892:5->896:15
+if_eq.11787:
 	MVI	%r0, $0	# build/example.ml#896:10->896:15
 	MV	%r8, %r0	# build/example.ml#896:10->896:15
-if_eq_cont.11790:
+if_eq_cont.11788:
 	MVI	%r9, $0	# build/example.ml#891:3->900:6
 	CEQ	%r8, %r9	# build/example.ml#891:3->900:6
-	JZ	$if_eq.11795	# build/example.ml#891:3->900:6
+	JZ	$if_eq.11793	# build/example.ml#891:3->900:6
 	MVI	%r8, $min_caml_solver_dist	# build/example.ml#898:6->898:17
 	MVI	%r9, $0	# build/example.ml#898:19->898:20
 	FSDD	%fr9, %r8, $4, %r9	# build/example.ml#898:6->898:27
 	MVI	%r0, $3	# build/example.ml#898:29->898:30
-	J	$if_eq_cont.11796	# build/example.ml#891:3->900:6
-if_eq.11795:
+	J	$if_eq_cont.11794	# build/example.ml#891:3->900:6
+if_eq.11793:
 	MVI	%r0, $0	# build/example.ml#900:5->900:6
-if_eq_cont.11796:
-if_eq_cont.11788:
-if_eq_cont.11780:
+if_eq_cont.11794:
+if_eq_cont.11786:
+if_eq_cont.11778:
 	LDR	%r9, %r31, $0	# build/example.ml#872:21->872:22
 	LDR	%r8, %r31, $4	# build/example.ml#872:21->872:22
 	LDR	%r7, %r31, $8	# build/example.ml#872:21->872:22
@@ -12524,10 +12524,10 @@ solver.2753:
 	MV	%r9, %r24	# build/example.ml#159:3->164:10
 	MVI	%r3, $1	# build/example.ml#847:16->847:17
 	CEQ	%r9, %r3	# build/example.ml#847:3->849:60
-	JZ	$if_eq.11797	# build/example.ml#847:3->849:60
+	JZ	$if_eq.11795	# build/example.ml#847:3->849:60
 	MVI	%r3, $2	# build/example.ml#848:21->848:22
 	CEQ	%r9, %r3	# build/example.ml#848:8->849:60
-	JZ	$if_eq.11799	# build/example.ml#848:8->849:60
+	JZ	$if_eq.11797	# build/example.ml#848:8->849:60
 	SDR	%r6, %r31, $120	# build/example.ml#849:29->849:60
 	SDR	%r5, %r31, $124	# build/example.ml#849:29->849:60
 	SDR	%r4, %r31, $128	# build/example.ml#849:29->849:60
@@ -12562,8 +12562,8 @@ solver.2753:
 	LDR	%r2, %r31, $136	# build/example.ml#849:29->849:60
 	LDR	%r1, %r31, $140	# build/example.ml#849:29->849:60
 	FLDR	%fr6, %r31, $144	# build/example.ml#849:29->849:60
-	J	$if_eq_cont.11800	# build/example.ml#848:8->849:60
-if_eq.11799:
+	J	$if_eq_cont.11798	# build/example.ml#848:8->849:60
+if_eq.11797:
 	SDR	%r6, %r31, $148	# build/example.ml#848:29->848:61
 	SDR	%r5, %r31, $152	# build/example.ml#848:29->848:61
 	SDR	%r4, %r31, $156	# build/example.ml#848:29->848:61
@@ -12598,9 +12598,9 @@ if_eq.11799:
 	LDR	%r2, %r31, $164	# build/example.ml#848:29->848:61
 	LDR	%r1, %r31, $168	# build/example.ml#848:29->848:61
 	FLDR	%fr6, %r31, $172	# build/example.ml#848:29->848:61
-if_eq_cont.11800:
-	J	$if_eq_cont.11798	# build/example.ml#847:3->849:60
-if_eq.11797:
+if_eq_cont.11798:
+	J	$if_eq_cont.11796	# build/example.ml#847:3->849:60
+if_eq.11795:
 	SDR	%r6, %r31, $176	# build/example.ml#847:29->847:58
 	SDR	%r5, %r31, $180	# build/example.ml#847:29->847:58
 	SDR	%r4, %r31, $184	# build/example.ml#847:29->847:58
@@ -12635,7 +12635,7 @@ if_eq.11797:
 	LDR	%r2, %r31, $192	# build/example.ml#847:29->847:58
 	LDR	%r1, %r31, $196	# build/example.ml#847:29->847:58
 	FLDR	%fr6, %r31, $200	# build/example.ml#847:29->847:58
-if_eq_cont.11798:
+if_eq_cont.11796:
 	LDR	%r9, %r31, $0	# build/example.ml#840:11->840:18
 	LDR	%r8, %r31, $4	# build/example.ml#840:11->840:18
 	LDR	%r7, %r31, $8	# build/example.ml#840:11->840:18
@@ -12721,10 +12721,10 @@ solver_second.2747:
 	FLDR	%fr1, %r31, $112	# build/example.ml#816:6->816:16
 	MVI	%r28, $0	# build/example.ml#816:3->835:5
 	CEQ	%r27, %r28	# build/example.ml#816:3->835:5
-	JZ	$if_eq.11801	# build/example.ml#816:3->835:5
+	JZ	$if_eq.11799	# build/example.ml#816:3->835:5
 	MVI	%r0, $0	# build/example.ml#817:5->817:6
-	J	$if_eq_cont.11802	# build/example.ml#816:3->835:5
-if_eq.11801:
+	J	$if_eq_cont.11800	# build/example.ml#816:3->835:5
+if_eq.11799:
 	MVI	%r28, $0	# build/example.ml#821:33->821:34
 	FLDD	%fr6, %r12, $4, %r28	# build/example.ml#814:24->814:34
 	MVI	%r28, $1	# build/example.ml#821:44->821:45
@@ -12788,15 +12788,15 @@ if_eq.11801:
 	MV	%r9, %r2	# build/example.ml#159:3->164:10
 	MVI	%r8, $3	# build/example.ml#824:28->824:29
 	CEQ	%r9, %r8	# build/example.ml#824:14->824:54
-	JZ	$if_eq.11803	# build/example.ml#824:14->824:54
+	JZ	$if_eq.11801	# build/example.ml#824:14->824:54
 	FMV	%r0, %fr7	# build/example.ml#824:51->824:54
 	MV	%fr7, %r0	# build/example.ml#824:51->824:54
-	J	$if_eq_cont.11804	# build/example.ml#824:14->824:54
-if_eq.11803:
+	J	$if_eq_cont.11802	# build/example.ml#824:14->824:54
+if_eq.11801:
 	FLDA	%fr6, $l.7785	# build/example.ml#824:42->824:45
 	FSUB	%r0, %fr7, %fr6	# build/example.ml#824:35->824:45
 	MV	%fr7, %r0	# build/example.ml#824:35->824:45
-if_eq_cont.11804:
+if_eq_cont.11802:
 	SDR	%r6, %r31, $188	# build/example.ml#826:13->826:20
 	SDR	%r5, %r31, $192	# build/example.ml#826:13->826:20
 	SDR	%r4, %r31, $196	# build/example.ml#826:13->826:20
@@ -12851,7 +12851,7 @@ if_eq_cont.11804:
 	FLDR	%fr1, %r31, $256	# build/example.ml#828:8->828:16
 	MVI	%r9, $0	# build/example.ml#828:5->834:8
 	CEQ	%r8, %r9	# build/example.ml#828:5->834:8
-	JZ	$if_eq.11805	# build/example.ml#828:5->834:8
+	JZ	$if_eq.11803	# build/example.ml#828:5->834:8
 	SDR	%r6, %r31, $260	# build/example.ml#829:16->829:22
 	SDR	%r5, %r31, $264	# build/example.ml#829:16->829:22
 	SDR	%r4, %r31, $268	# build/example.ml#829:16->829:22
@@ -12880,11 +12880,11 @@ if_eq_cont.11804:
 	MV	%r9, %r7	# build/example.ml#179:3->183:11
 	MVI	%r8, $0	# build/example.ml#830:16->830:52
 	CEQ	%r9, %r8	# build/example.ml#830:16->830:52
-	JZ	$if_eq.11807	# build/example.ml#830:16->830:52
+	JZ	$if_eq.11805	# build/example.ml#830:16->830:52
 	FMV	%r0, %fr7	# build/example.ml#830:37->830:39
 	MV	%fr7, %r0	# build/example.ml#830:37->830:39
-	J	$if_eq_cont.11808	# build/example.ml#830:16->830:52
-if_eq.11807:
+	J	$if_eq_cont.11806	# build/example.ml#830:16->830:52
+if_eq.11805:
 	SDR	%r6, %r31, $296	# build/example.ml#830:45->830:52
 	SDR	%r5, %r31, $300	# build/example.ml#830:45->830:52
 	SDR	%r4, %r31, $304	# build/example.ml#830:45->830:52
@@ -12910,18 +12910,18 @@ if_eq.11807:
 	FLDR	%fr2, %r31, $324	# build/example.ml#830:45->830:52
 	FLDR	%fr1, %r31, $328	# build/example.ml#830:45->830:52
 	MV	%fr7, %r0	# build/example.ml#830:45->830:52
-if_eq_cont.11808:
+if_eq_cont.11806:
 	MVI	%r8, $min_caml_solver_dist	# build/example.ml#831:8->831:19
 	MVI	%r9, $0	# build/example.ml#831:21->831:22
 	FSUB	%fr8, %fr7, %fr8	# build/example.ml#831:28->831:36
 	FDIV	%fr9, %fr8, %fr9	# build/example.ml#831:27->831:44
 	FSDD	%fr9, %r8, $4, %r9	# build/example.ml#831:8->831:44
 	MVI	%r0, $1	# build/example.ml#831:46->831:47
-	J	$if_eq_cont.11806	# build/example.ml#828:5->834:8
-if_eq.11805:
+	J	$if_eq_cont.11804	# build/example.ml#828:5->834:8
+if_eq.11803:
 	MVI	%r0, $0	# build/example.ml#834:7->834:8
-if_eq_cont.11806:
-if_eq_cont.11802:
+if_eq_cont.11804:
+if_eq_cont.11800:
 	LDR	%r9, %r31, $0	# build/example.ml#814:32->814:33
 	LDR	%r8, %r31, $4	# build/example.ml#814:32->814:33
 	LDR	%r7, %r31, $8	# build/example.ml#814:32->814:33
@@ -13010,7 +13010,7 @@ bilinear.2739:
 	MV	%r28, %r4	# build/example.ml#188:3->192:10
 	MVI	%r27, $0	# build/example.ml#793:18->793:19
 	CEQ	%r28, %r27	# build/example.ml#793:3->799:45
-	JZ	$if_eq.11809	# build/example.ml#793:3->799:45
+	JZ	$if_eq.11807	# build/example.ml#793:3->799:45
 	FMUL	%fr7, %fr2, %fr4	# build/example.ml#797:9->797:17
 	FMUL	%fr8, %fr1, %fr5	# build/example.ml#797:21->797:29
 	FADD	%fr7, %fr7, %fr8	# build/example.ml#797:9->797:29
@@ -13111,10 +13111,10 @@ bilinear.2739:
 	FLDR	%fr2, %r31, $224	# build/example.ml#796:18->799:45
 	FLDR	%fr1, %r31, $228	# build/example.ml#796:18->799:45
 	FADD	%fr0, %fr9, %fr8	# build/example.ml#796:5->799:45
-	J	$if_eq_cont.11810	# build/example.ml#793:3->799:45
-if_eq.11809:
+	J	$if_eq_cont.11808	# build/example.ml#793:3->799:45
+if_eq.11807:
 	FMV	%fr0, %fr9	# build/example.ml#794:5->794:14
-if_eq_cont.11810:
+if_eq_cont.11808:
 	LDR	%r9, %r31, $0	# build/example.ml#789:5->789:13
 	LDR	%r8, %r31, $4	# build/example.ml#789:5->789:13
 	LDR	%r7, %r31, $8	# build/example.ml#789:5->789:13
@@ -13267,7 +13267,7 @@ quadratic.2734:
 	MV	%r28, %r4	# build/example.ml#188:3->192:10
 	MVI	%r27, $0	# build/example.ml#776:18->776:19
 	CEQ	%r28, %r27	# build/example.ml#776:3->782:34
-	JZ	$if_eq.11811	# build/example.ml#776:3->782:34
+	JZ	$if_eq.11809	# build/example.ml#776:3->782:34
 	FMUL	%fr7, %fr1, %fr2	# build/example.ml#780:10->780:18
 	SDR	%r6, %r31, $208	# build/example.ml#780:22->780:34
 	SDR	%r5, %r31, $212	# build/example.ml#780:22->780:34
@@ -13331,10 +13331,10 @@ quadratic.2734:
 	LDR	%r1, %r31, $276	# build/example.ml#782:22->782:34
 	FMUL	%fr8, %fr7, %fr8	# build/example.ml#782:10->782:34
 	FADD	%fr0, %fr9, %fr8	# build/example.ml#779:5->782:34
-	J	$if_eq_cont.11812	# build/example.ml#776:3->782:34
-if_eq.11811:
+	J	$if_eq_cont.11810	# build/example.ml#776:3->782:34
+if_eq.11809:
 	FMV	%fr0, %fr9	# build/example.ml#777:5->777:14
-if_eq_cont.11812:
+if_eq_cont.11810:
 	LDR	%r9, %r31, $0	# build/example.ml#774:5->774:12
 	LDR	%r8, %r31, $4	# build/example.ml#774:5->774:12
 	LDR	%r7, %r31, $8	# build/example.ml#774:5->774:12
@@ -13395,7 +13395,7 @@ solver_surface.2728:
 	FLDR	%fr1, %r31, $72	# build/example.ml#763:6->763:14
 	MVI	%r8, $0	# build/example.ml#763:3->766:12
 	CEQ	%r7, %r8	# build/example.ml#763:3->766:12
-	JZ	$if_eq.11813	# build/example.ml#763:3->766:12
+	JZ	$if_eq.11811	# build/example.ml#763:3->766:12
 	MVI	%r7, $min_caml_solver_dist	# build/example.ml#764:5->764:16
 	MVI	%r8, $0	# build/example.ml#764:18->764:19
 	SDR	%r1, %r31, $76	# build/example.ml#764:30->764:52
@@ -13437,10 +13437,10 @@ solver_surface.2728:
 	FDIV	%fr9, %fr8, %fr9	# build/example.ml#764:24->764:58
 	FSDD	%fr9, %r7, $4, %r8	# build/example.ml#764:5->764:58
 	MVI	%r0, $1	# build/example.ml#765:5->765:6
-	J	$if_eq_cont.11814	# build/example.ml#763:3->766:12
-if_eq.11813:
+	J	$if_eq_cont.11812	# build/example.ml#763:3->766:12
+if_eq.11811:
 	MVI	%r0, $0	# build/example.ml#766:11->766:12
-if_eq_cont.11814:
+if_eq_cont.11812:
 	LDR	%r9, %r31, $0	# build/example.ml#227:3->232:8
 	LDR	%r8, %r31, $4	# build/example.ml#227:3->232:8
 	LDR	%r7, %r31, $8	# build/example.ml#227:3->232:8
@@ -13490,10 +13490,10 @@ solver_rect.2722:
 	FLDR	%fr1, %r31, $64	# build/example.ml#750:11->750:54
 	MVI	%r28, $0	# build/example.ml#750:3->753:61
 	CEQ	%r27, %r28	# build/example.ml#750:3->753:61
-	JZ	$if_eq.11815	# build/example.ml#750:3->753:61
+	JZ	$if_eq.11813	# build/example.ml#750:3->753:61
 	MVI	%r0, $1	# build/example.ml#750:60->750:61
-	J	$if_eq_cont.11816	# build/example.ml#750:3->753:61
-if_eq.11815:
+	J	$if_eq_cont.11814	# build/example.ml#750:3->753:61
+if_eq.11813:
 	MVI	%r26, $1	# build/example.ml#751:49->751:50
 	MVI	%r27, $2	# build/example.ml#751:51->751:52
 	MVI	%r28, $0	# build/example.ml#751:53->751:54
@@ -13529,10 +13529,10 @@ if_eq.11815:
 	FLDR	%fr1, %r31, $96	# build/example.ml#751:11->751:54
 	MVI	%r28, $0	# build/example.ml#751:8->753:61
 	CEQ	%r27, %r28	# build/example.ml#751:8->753:61
-	JZ	$if_eq.11817	# build/example.ml#751:8->753:61
+	JZ	$if_eq.11815	# build/example.ml#751:8->753:61
 	MVI	%r0, $2	# build/example.ml#751:60->751:61
-	J	$if_eq_cont.11818	# build/example.ml#751:8->753:61
-if_eq.11817:
+	J	$if_eq_cont.11816	# build/example.ml#751:8->753:61
+if_eq.11815:
 	MVI	%r26, $2	# build/example.ml#752:49->752:50
 	MVI	%r27, $0	# build/example.ml#752:51->752:52
 	MVI	%r28, $1	# build/example.ml#752:53->752:54
@@ -13568,14 +13568,14 @@ if_eq.11817:
 	FLDR	%fr1, %r31, $128	# build/example.ml#752:11->752:54
 	MVI	%r9, $0	# build/example.ml#752:8->753:61
 	CEQ	%r8, %r9	# build/example.ml#752:8->753:61
-	JZ	$if_eq.11819	# build/example.ml#752:8->753:61
+	JZ	$if_eq.11817	# build/example.ml#752:8->753:61
 	MVI	%r0, $3	# build/example.ml#752:60->752:61
-	J	$if_eq_cont.11820	# build/example.ml#752:8->753:61
-if_eq.11819:
+	J	$if_eq_cont.11818	# build/example.ml#752:8->753:61
+if_eq.11817:
 	MVI	%r0, $0	# build/example.ml#753:60->753:61
-if_eq_cont.11820:
 if_eq_cont.11818:
 if_eq_cont.11816:
+if_eq_cont.11814:
 	LDR	%r9, %r31, $0	# build/example.ml#750:49->750:50
 	LDR	%r8, %r31, $4	# build/example.ml#750:49->750:50
 	LDR	%r7, %r31, $8	# build/example.ml#750:49->750:50
@@ -13625,10 +13625,10 @@ solver_rect_surface.2713:
 	FLDR	%fr1, %r31, $76	# build/example.ml#735:6->735:25
 	MVI	%r9, $0	# build/example.ml#735:3->744:13
 	CEQ	%r8, %r9	# build/example.ml#735:3->744:13
-	JZ	$if_eq.11821	# build/example.ml#735:3->744:13
+	JZ	$if_eq.11819	# build/example.ml#735:3->744:13
 	MVI	%r0, $0	# build/example.ml#735:31->735:36
-	J	$if_eq_cont.11822	# build/example.ml#735:3->744:13
-if_eq.11821:
+	J	$if_eq_cont.11820	# build/example.ml#735:3->744:13
+if_eq.11819:
 	MV	%r9, %r5	# build/example.ml#227:3->232:8
 	MV	%r8, %r7	# build/example.ml#179:3->183:11
 	SDR	%r6, %r31, $80	# build/example.ml#737:42->737:60
@@ -13724,7 +13724,7 @@ if_eq.11821:
 	FLDR	%fr1, %r31, $180	# build/example.ml#740:6->740:53
 	MVI	%r8, $0	# build/example.ml#740:3->744:13
 	CEQ	%r7, %r8	# build/example.ml#740:3->744:13
-	JZ	$if_eq.11823	# build/example.ml#740:3->744:13
+	JZ	$if_eq.11821	# build/example.ml#740:3->744:13
 	FLDD	%fr8, %r12, $4, %r15	# build/example.ml#735:14->735:25
 	FMUL	%fr8, %fr9, %fr8	# build/example.ml#741:21->741:38
 	FADD	%fr8, %fr8, %fr2	# build/example.ml#741:21->741:44
@@ -13756,20 +13756,20 @@ if_eq.11821:
 	FLDR	%fr1, %r31, $212	# build/example.ml#741:8->741:55
 	MVI	%r9, $0	# build/example.ml#741:5->743:15
 	CEQ	%r8, %r9	# build/example.ml#741:5->743:15
-	JZ	$if_eq.11825	# build/example.ml#741:5->743:15
+	JZ	$if_eq.11823	# build/example.ml#741:5->743:15
 	MVI	%r8, $min_caml_solver_dist	# build/example.ml#742:8->742:19
 	MVI	%r9, $0	# build/example.ml#742:21->742:22
 	FSDD	%fr9, %r8, $4, %r9	# build/example.ml#742:8->742:29
 	MVI	%r0, $1	# build/example.ml#742:31->742:35
-	J	$if_eq_cont.11826	# build/example.ml#741:5->743:15
-if_eq.11825:
-	MVI	%r0, $0	# build/example.ml#743:10->743:15
-if_eq_cont.11826:
-	J	$if_eq_cont.11824	# build/example.ml#740:3->744:13
+	J	$if_eq_cont.11824	# build/example.ml#741:5->743:15
 if_eq.11823:
-	MVI	%r0, $0	# build/example.ml#744:8->744:13
+	MVI	%r0, $0	# build/example.ml#743:10->743:15
 if_eq_cont.11824:
+	J	$if_eq_cont.11822	# build/example.ml#740:3->744:13
+if_eq.11821:
+	MVI	%r0, $0	# build/example.ml#744:8->744:13
 if_eq_cont.11822:
+if_eq_cont.11820:
 	LDR	%r9, %r31, $0	# build/example.ml#735:14->735:25
 	LDR	%r8, %r31, $4	# build/example.ml#735:14->735:25
 	LDR	%r7, %r31, $8	# build/example.ml#735:14->735:25
@@ -13844,7 +13844,7 @@ read_and_network.2709:
 	LDD	%r7, %r9, $4, %r8	# build/example.ml#687:6->687:24
 	MVI	%r8, $-1	# build/example.ml#701:16->701:18
 	CEQ	%r7, %r8	# build/example.ml#701:3->705:4
-	JZ	$if_eq.11827	# build/example.ml#701:3->705:4
+	JZ	$if_eq.11825	# build/example.ml#701:3->705:4
 	MVI	%r8, $min_caml_and_net	# build/example.ml#703:5->703:12
 	SDD	%r9, %r8, $4, %r1	# build/example.ml#703:5->703:23
 	MVI	%r9, $1	# build/example.ml#704:27->704:28
@@ -13857,9 +13857,9 @@ read_and_network.2709:
 	J	$read_and_network.2709	# build/example.ml#704:5->704:29
 	ADDI	%r31, %r31, $-20	# build/example.ml#704:5->704:29
 	LDR	%r1, %r31, $16	# build/example.ml#704:5->704:29
-	J	$if_eq_cont.11828	# build/example.ml#701:3->705:4
-if_eq.11827:
-if_eq_cont.11828:
+	J	$if_eq_cont.11826	# build/example.ml#701:3->705:4
+if_eq.11825:
+if_eq_cont.11826:
 	LDR	%r9, %r31, $0	# build/example.ml#700:27->700:28
 	LDR	%r8, %r31, $4	# build/example.ml#700:27->700:28
 	LDR	%r7, %r31, $8	# build/example.ml#700:27->700:28
@@ -13882,7 +13882,7 @@ read_or_network.2707:
 	LDD	%r7, %r9, $4, %r8	# build/example.ml#687:6->687:24
 	MVI	%r8, $-1	# build/example.ml#692:16->692:18
 	CEQ	%r7, %r8	# build/example.ml#692:3->696:27
-	JZ	$if_eq.11829	# build/example.ml#692:3->696:27
+	JZ	$if_eq.11827	# build/example.ml#692:3->696:27
 	MVI	%r8, $1	# build/example.ml#695:39->695:40
 	ADD	%r8, %r1, %r8	# build/example.ml#695:30->695:40
 	SDR	%r1, %r31, $16	# build/example.ml#695:13->695:41
@@ -13896,8 +13896,8 @@ read_or_network.2707:
 	LDR	%r1, %r31, $16	# build/example.ml#695:13->695:41
 	SDD	%r9, %r8, $4, %r1	# build/example.ml#696:6->696:23
 	MV	%r0, %r8	# build/example.ml#696:25->696:26
-	J	$if_eq_cont.11830	# build/example.ml#692:3->696:27
-if_eq.11829:
+	J	$if_eq_cont.11828	# build/example.ml#692:3->696:27
+if_eq.11827:
 	MVI	%r8, $1	# build/example.ml#693:28->693:29
 	ADD	%r8, %r1, %r8	# build/example.ml#693:19->693:29
 	SDR	%r1, %r31, $20	# build/example.ml#693:5->693:34
@@ -13909,7 +13909,7 @@ if_eq.11829:
 	J	$min_caml_create_int_array	# build/example.ml#693:5->693:34
 	ADDI	%r31, %r31, $-24	# build/example.ml#693:5->693:34
 	LDR	%r1, %r31, $20	# build/example.ml#693:5->693:34
-if_eq_cont.11830:
+if_eq_cont.11828:
 	LDR	%r9, %r31, $0	# build/example.ml#691:27->691:28
 	LDR	%r8, %r31, $4	# build/example.ml#691:27->691:28
 	LDR	%r7, %r31, $8	# build/example.ml#691:27->691:28
@@ -13920,7 +13920,7 @@ read_net_item.2705:
 	RI	%r8	# build/example.ml#683:14->683:25
 	MVI	%r9, $-1	# build/example.ml#684:13->684:15
 	CEQ	%r8, %r9	# build/example.ml#684:3->687:28
-	JZ	$if_eq.11831	# build/example.ml#684:3->687:28
+	JZ	$if_eq.11829	# build/example.ml#684:3->687:28
 	MVI	%r9, $1	# build/example.ml#686:37->686:38
 	ADD	%r9, %r1, %r9	# build/example.ml#686:28->686:38
 	SDR	%r1, %r31, $8	# build/example.ml#686:13->686:39
@@ -13934,8 +13934,8 @@ read_net_item.2705:
 	LDR	%r1, %r31, $8	# build/example.ml#686:13->686:39
 	SDD	%r8, %r9, $4, %r1	# build/example.ml#687:6->687:24
 	MV	%r0, %r9	# build/example.ml#687:26->687:27
-	J	$if_eq_cont.11832	# build/example.ml#684:3->687:28
-if_eq.11831:
+	J	$if_eq_cont.11830	# build/example.ml#684:3->687:28
+if_eq.11829:
 	MVI	%r9, $1	# build/example.ml#684:44->684:45
 	ADD	%r8, %r1, %r9	# build/example.ml#684:35->684:45
 	MVI	%r9, $-1	# build/example.ml#684:48->684:50
@@ -13948,7 +13948,7 @@ if_eq.11831:
 	J	$min_caml_create_int_array	# build/example.ml#684:21->684:51
 	ADDI	%r31, %r31, $-16	# build/example.ml#684:21->684:51
 	LDR	%r1, %r31, $12	# build/example.ml#684:21->684:51
-if_eq_cont.11832:
+if_eq_cont.11830:
 	LDR	%r9, %r31, $0	# build/example.ml#683:14->683:25
 	LDR	%r8, %r31, $4	# build/example.ml#683:14->683:25
 	LINK	# build/example.ml#683:14->683:25
@@ -13957,9 +13957,9 @@ read_object.2701:
 	SDR	%r8, %r31, $4	# build/example.ml#667:10->667:12
 	MVI	%r9, $60	# build/example.ml#667:10->667:12
 	CMP	%r1, %r9	# build/example.ml#667:3->672:10
-	JZ	$if_lt.11833	# build/example.ml#667:3->672:10
-	J	$if_lt_cont.11834	# build/example.ml#667:3->672:10
-if_lt.11833:
+	JZ	$if_lt.11831	# build/example.ml#667:3->672:10
+	J	$if_lt_cont.11832	# build/example.ml#667:3->672:10
+if_lt.11831:
 	SDR	%r1, %r31, $8	# build/example.ml#668:8->668:25
 	ADDI	%r31, %r31, $12	# build/example.ml#668:8->668:25
 	ADDI	%r31, %r31, $4	# build/example.ml#668:8->668:25
@@ -13970,7 +13970,7 @@ if_lt.11833:
 	LDR	%r1, %r31, $8	# build/example.ml#668:8->668:25
 	MVI	%r9, $0	# build/example.ml#668:5->671:25
 	CEQ	%r8, %r9	# build/example.ml#668:5->671:25
-	JZ	$if_eq.11835	# build/example.ml#668:5->671:25
+	JZ	$if_eq.11833	# build/example.ml#668:5->671:25
 	MVI	%r9, $1	# build/example.ml#669:24->669:25
 	ADD	%r9, %r1, %r9	# build/example.ml#669:20->669:25
 	SDR	%r1, %r31, $12	# build/example.ml#669:7->669:26
@@ -13981,13 +13981,13 @@ if_lt.11833:
 	J	$read_object.2701	# build/example.ml#669:7->669:26
 	ADDI	%r31, %r31, $-16	# build/example.ml#669:7->669:26
 	LDR	%r1, %r31, $12	# build/example.ml#669:7->669:26
-	J	$if_eq_cont.11836	# build/example.ml#668:5->671:25
-if_eq.11835:
+	J	$if_eq_cont.11834	# build/example.ml#668:5->671:25
+if_eq.11833:
 	MVI	%r8, $min_caml_n_objects	# build/example.ml#671:7->671:16
 	MVI	%r9, $0	# build/example.ml#671:18->671:19
 	SDD	%r1, %r8, $4, %r9	# build/example.ml#671:7->671:25
-if_eq_cont.11836:
-if_lt_cont.11834:
+if_eq_cont.11834:
+if_lt_cont.11832:
 	LDR	%r9, %r31, $0	# build/example.ml#667:10->667:12
 	LDR	%r8, %r31, $4	# build/example.ml#667:10->667:12
 	LINK	# build/example.ml#667:10->667:12
@@ -13998,486 +13998,509 @@ read_nth_object.2699:
 	SDR	%r28, %r31, $12	# build/example.ml#585:17->585:28
 	SDR	%r27, %r31, $16	# build/example.ml#585:17->585:28
 	SDR	%r26, %r31, $20	# build/example.ml#585:17->585:28
-	FSDR	%fr9, %r31, $24	# build/example.ml#585:17->585:28
-	FSDR	%fr8, %r31, $28	# build/example.ml#585:17->585:28
+	SDR	%r25, %r31, $24	# build/example.ml#585:17->585:28
+	SDR	%r24, %r31, $28	# build/example.ml#585:17->585:28
+	SDR	%r23, %r31, $32	# build/example.ml#585:17->585:28
+	FSDR	%fr9, %r31, $36	# build/example.ml#585:17->585:28
+	FSDR	%fr8, %r31, $40	# build/example.ml#585:17->585:28
 	RI	%r8	# build/example.ml#585:17->585:28
 	MVI	%r9, $-1	# build/example.ml#586:17->586:19
 	CEQ	%r8, %r9	# build/example.ml#586:3->662:10
-	JZ	$if_eq.11837	# build/example.ml#586:3->662:10
+	JZ	$if_eq.11835	# build/example.ml#586:3->662:10
+	RI	%r26	# build/example.ml#588:18->588:29
+	RI	%r5	# build/example.ml#589:22->589:33
+	RI	%r27	# build/example.ml#590:21->590:32
 	MVI	%r9, $3	# build/example.ml#592:30->592:31
 	FLDA	%fr9, $l.7787	# build/example.ml#592:32->592:35
-	SDR	%r6, %r31, $32	# build/example.ml#592:17->592:35
-	SDR	%r5, %r31, $36	# build/example.ml#592:17->592:35
-	SDR	%r4, %r31, $40	# build/example.ml#592:17->592:35
-	SDR	%r3, %r31, $44	# build/example.ml#592:17->592:35
-	SDR	%r1, %r31, $48	# build/example.ml#592:17->592:35
+	SDR	%r6, %r31, $44	# build/example.ml#592:17->592:35
+	SDR	%r5, %r31, $48	# build/example.ml#592:17->592:35
+	SDR	%r4, %r31, $52	# build/example.ml#592:17->592:35
+	SDR	%r3, %r31, $56	# build/example.ml#592:17->592:35
+	SDR	%r1, %r31, $60	# build/example.ml#592:17->592:35
 	MV	%r1, %r9	# build/example.ml#592:17->592:35
 	FMV	%fr0, %fr9	# build/example.ml#592:17->592:35
-	ADDI	%r31, %r31, $52	# build/example.ml#592:17->592:35
+	ADDI	%r31, %r31, $64	# build/example.ml#592:17->592:35
 	ADDI	%r31, %r31, $4	# build/example.ml#592:17->592:35
 	SIP	# build/example.ml#592:17->592:35
 	J	$min_caml_create_float_array	# build/example.ml#592:17->592:35
-	ADDI	%r31, %r31, $-52	# build/example.ml#592:17->592:35
-	MV	%r26, %r0	# build/example.ml#592:17->592:35
-	LDR	%r6, %r31, $32	# build/example.ml#592:17->592:35
-	LDR	%r5, %r31, $36	# build/example.ml#592:17->592:35
-	LDR	%r4, %r31, $40	# build/example.ml#592:17->592:35
-	LDR	%r3, %r31, $44	# build/example.ml#592:17->592:35
-	LDR	%r1, %r31, $48	# build/example.ml#592:17->592:35
+	ADDI	%r31, %r31, $-64	# build/example.ml#592:17->592:35
+	MV	%r23, %r0	# build/example.ml#592:17->592:35
+	LDR	%r6, %r31, $44	# build/example.ml#592:17->592:35
+	LDR	%r5, %r31, $48	# build/example.ml#592:17->592:35
+	LDR	%r4, %r31, $52	# build/example.ml#592:17->592:35
+	LDR	%r3, %r31, $56	# build/example.ml#592:17->592:35
+	LDR	%r1, %r31, $60	# build/example.ml#592:17->592:35
 	MVI	%r9, $0	# build/example.ml#593:12->593:13
-	RF	%fr8	# build/example.ml#593:18->593:31
-	FSDD	%fr8, %r26, $4, %r9	# build/example.ml#593:7->593:31
+	RF	%fr9	# build/example.ml#593:18->593:31
+	FSDD	%fr9, %r23, $4, %r9	# build/example.ml#593:7->593:31
 	MVI	%r9, $1	# build/example.ml#594:12->594:13
-	FSDD	%fr8, %r26, $4, %r9	# build/example.ml#594:7->594:31
+	RF	%fr9	# build/example.ml#594:18->594:31
+	FSDD	%fr9, %r23, $4, %r9	# build/example.ml#594:7->594:31
 	MVI	%r9, $2	# build/example.ml#595:12->595:13
-	FSDD	%fr8, %r26, $4, %r9	# build/example.ml#595:7->595:31
+	RF	%fr9	# build/example.ml#595:18->595:31
+	FSDD	%fr9, %r23, $4, %r9	# build/example.ml#595:7->595:31
 	MVI	%r9, $3	# build/example.ml#597:30->597:31
 	FLDA	%fr9, $l.7787	# build/example.ml#597:32->597:35
-	SDR	%r6, %r31, $52	# build/example.ml#597:17->597:35
-	SDR	%r5, %r31, $56	# build/example.ml#597:17->597:35
-	SDR	%r4, %r31, $60	# build/example.ml#597:17->597:35
-	SDR	%r3, %r31, $64	# build/example.ml#597:17->597:35
-	SDR	%r1, %r31, $68	# build/example.ml#597:17->597:35
+	SDR	%r6, %r31, $64	# build/example.ml#597:17->597:35
+	SDR	%r5, %r31, $68	# build/example.ml#597:17->597:35
+	SDR	%r4, %r31, $72	# build/example.ml#597:17->597:35
+	SDR	%r3, %r31, $76	# build/example.ml#597:17->597:35
+	SDR	%r1, %r31, $80	# build/example.ml#597:17->597:35
 	MV	%r1, %r9	# build/example.ml#597:17->597:35
 	FMV	%fr0, %fr9	# build/example.ml#597:17->597:35
-	ADDI	%r31, %r31, $72	# build/example.ml#597:17->597:35
+	ADDI	%r31, %r31, $84	# build/example.ml#597:17->597:35
 	ADDI	%r31, %r31, $4	# build/example.ml#597:17->597:35
 	SIP	# build/example.ml#597:17->597:35
 	J	$min_caml_create_float_array	# build/example.ml#597:17->597:35
-	ADDI	%r31, %r31, $-72	# build/example.ml#597:17->597:35
+	ADDI	%r31, %r31, $-84	# build/example.ml#597:17->597:35
 	MV	%r9, %r0	# build/example.ml#597:17->597:35
-	LDR	%r6, %r31, $52	# build/example.ml#597:17->597:35
-	LDR	%r5, %r31, $56	# build/example.ml#597:17->597:35
-	LDR	%r4, %r31, $60	# build/example.ml#597:17->597:35
-	LDR	%r3, %r31, $64	# build/example.ml#597:17->597:35
-	LDR	%r1, %r31, $68	# build/example.ml#597:17->597:35
+	LDR	%r6, %r31, $64	# build/example.ml#597:17->597:35
+	LDR	%r5, %r31, $68	# build/example.ml#597:17->597:35
+	LDR	%r4, %r31, $72	# build/example.ml#597:17->597:35
+	LDR	%r3, %r31, $76	# build/example.ml#597:17->597:35
+	LDR	%r1, %r31, $80	# build/example.ml#597:17->597:35
 	MVI	%r7, $0	# build/example.ml#598:12->598:13
-	FSDD	%fr8, %r9, $4, %r7	# build/example.ml#598:7->598:31
+	RF	%fr9	# build/example.ml#598:18->598:31
+	FSDD	%fr9, %r9, $4, %r7	# build/example.ml#598:7->598:31
 	MVI	%r7, $1	# build/example.ml#599:12->599:13
-	FSDD	%fr8, %r9, $4, %r7	# build/example.ml#599:7->599:31
+	RF	%fr9	# build/example.ml#599:18->599:31
+	FSDD	%fr9, %r9, $4, %r7	# build/example.ml#599:7->599:31
 	MVI	%r7, $2	# build/example.ml#600:12->600:13
-	FSDD	%fr8, %r9, $4, %r7	# build/example.ml#600:7->600:31
-	SDR	%r6, %r31, $72	# build/example.ml#602:22->602:44
-	SDR	%r5, %r31, $76	# build/example.ml#602:22->602:44
-	SDR	%r4, %r31, $80	# build/example.ml#602:22->602:44
-	SDR	%r3, %r31, $84	# build/example.ml#602:22->602:44
-	SDR	%r1, %r31, $88	# build/example.ml#602:22->602:44
-	FMV	%fr0, %fr8	# build/example.ml#602:22->602:44
-	ADDI	%r31, %r31, $92	# build/example.ml#602:22->602:44
+	RF	%fr9	# build/example.ml#600:18->600:31
+	FSDD	%fr9, %r9, $4, %r7	# build/example.ml#600:7->600:31
+	RF	%fr9	# build/example.ml#602:30->602:43
+	SDR	%r6, %r31, $84	# build/example.ml#602:22->602:44
+	SDR	%r5, %r31, $88	# build/example.ml#602:22->602:44
+	SDR	%r4, %r31, $92	# build/example.ml#602:22->602:44
+	SDR	%r3, %r31, $96	# build/example.ml#602:22->602:44
+	SDR	%r1, %r31, $100	# build/example.ml#602:22->602:44
+	FMV	%fr0, %fr9	# build/example.ml#602:22->602:44
+	ADDI	%r31, %r31, $104	# build/example.ml#602:22->602:44
 	ADDI	%r31, %r31, $4	# build/example.ml#602:22->602:44
 	SIP	# build/example.ml#602:22->602:44
 	J	$min_caml_fisneg	# build/example.ml#602:22->602:44
-	ADDI	%r31, %r31, $-92	# build/example.ml#602:22->602:44
-	MV	%r3, %r0	# build/example.ml#602:22->602:44
-	LDR	%r6, %r31, $72	# build/example.ml#602:22->602:44
-	LDR	%r5, %r31, $76	# build/example.ml#602:22->602:44
-	LDR	%r4, %r31, $80	# build/example.ml#602:22->602:44
-	LDR	%r3, %r31, $84	# build/example.ml#602:22->602:44
-	LDR	%r1, %r31, $88	# build/example.ml#602:22->602:44
+	ADDI	%r31, %r31, $-104	# build/example.ml#602:22->602:44
+	MV	%r28, %r0	# build/example.ml#602:22->602:44
+	LDR	%r6, %r31, $84	# build/example.ml#602:22->602:44
+	LDR	%r5, %r31, $88	# build/example.ml#602:22->602:44
+	LDR	%r4, %r31, $92	# build/example.ml#602:22->602:44
+	LDR	%r3, %r31, $96	# build/example.ml#602:22->602:44
+	LDR	%r1, %r31, $100	# build/example.ml#602:22->602:44
 	MVI	%r7, $2	# build/example.ml#604:36->604:37
 	FLDA	%fr9, $l.7787	# build/example.ml#604:38->604:41
-	SDR	%r6, %r31, $92	# build/example.ml#604:23->604:41
-	SDR	%r5, %r31, $96	# build/example.ml#604:23->604:41
-	SDR	%r4, %r31, $100	# build/example.ml#604:23->604:41
-	SDR	%r3, %r31, $104	# build/example.ml#604:23->604:41
-	SDR	%r1, %r31, $108	# build/example.ml#604:23->604:41
+	SDR	%r6, %r31, $104	# build/example.ml#604:23->604:41
+	SDR	%r5, %r31, $108	# build/example.ml#604:23->604:41
+	SDR	%r4, %r31, $112	# build/example.ml#604:23->604:41
+	SDR	%r3, %r31, $116	# build/example.ml#604:23->604:41
+	SDR	%r1, %r31, $120	# build/example.ml#604:23->604:41
 	MV	%r1, %r7	# build/example.ml#604:23->604:41
 	FMV	%fr0, %fr9	# build/example.ml#604:23->604:41
-	ADDI	%r31, %r31, $112	# build/example.ml#604:23->604:41
+	ADDI	%r31, %r31, $124	# build/example.ml#604:23->604:41
 	ADDI	%r31, %r31, $4	# build/example.ml#604:23->604:41
 	SIP	# build/example.ml#604:23->604:41
 	J	$min_caml_create_float_array	# build/example.ml#604:23->604:41
-	ADDI	%r31, %r31, $-112	# build/example.ml#604:23->604:41
-	MV	%r5, %r0	# build/example.ml#604:23->604:41
-	LDR	%r6, %r31, $92	# build/example.ml#604:23->604:41
-	LDR	%r5, %r31, $96	# build/example.ml#604:23->604:41
-	LDR	%r4, %r31, $100	# build/example.ml#604:23->604:41
-	LDR	%r3, %r31, $104	# build/example.ml#604:23->604:41
-	LDR	%r1, %r31, $108	# build/example.ml#604:23->604:41
+	ADDI	%r31, %r31, $-124	# build/example.ml#604:23->604:41
+	MV	%r4, %r0	# build/example.ml#604:23->604:41
+	LDR	%r6, %r31, $104	# build/example.ml#604:23->604:41
+	LDR	%r5, %r31, $108	# build/example.ml#604:23->604:41
+	LDR	%r4, %r31, $112	# build/example.ml#604:23->604:41
+	LDR	%r3, %r31, $116	# build/example.ml#604:23->604:41
+	LDR	%r1, %r31, $120	# build/example.ml#604:23->604:41
 	MVI	%r7, $0	# build/example.ml#605:18->605:19
-	FSDD	%fr8, %r5, $4, %r7	# build/example.ml#605:7->605:37
+	RF	%fr9	# build/example.ml#605:24->605:37
+	FSDD	%fr9, %r4, $4, %r7	# build/example.ml#605:7->605:37
 	MVI	%r7, $1	# build/example.ml#606:18->606:19
-	FSDD	%fr8, %r5, $4, %r7	# build/example.ml#606:7->606:37
+	RF	%fr9	# build/example.ml#606:24->606:37
+	FSDD	%fr9, %r4, $4, %r7	# build/example.ml#606:7->606:37
 	MVI	%r7, $3	# build/example.ml#608:32->608:33
 	FLDA	%fr9, $l.7787	# build/example.ml#608:34->608:37
-	SDR	%r6, %r31, $112	# build/example.ml#608:19->608:37
-	SDR	%r5, %r31, $116	# build/example.ml#608:19->608:37
-	SDR	%r4, %r31, $120	# build/example.ml#608:19->608:37
-	SDR	%r3, %r31, $124	# build/example.ml#608:19->608:37
-	SDR	%r1, %r31, $128	# build/example.ml#608:19->608:37
+	SDR	%r6, %r31, $124	# build/example.ml#608:19->608:37
+	SDR	%r5, %r31, $128	# build/example.ml#608:19->608:37
+	SDR	%r4, %r31, $132	# build/example.ml#608:19->608:37
+	SDR	%r3, %r31, $136	# build/example.ml#608:19->608:37
+	SDR	%r1, %r31, $140	# build/example.ml#608:19->608:37
 	MV	%r1, %r7	# build/example.ml#608:19->608:37
 	FMV	%fr0, %fr9	# build/example.ml#608:19->608:37
-	ADDI	%r31, %r31, $132	# build/example.ml#608:19->608:37
+	ADDI	%r31, %r31, $144	# build/example.ml#608:19->608:37
 	ADDI	%r31, %r31, $4	# build/example.ml#608:19->608:37
 	SIP	# build/example.ml#608:19->608:37
 	J	$min_caml_create_float_array	# build/example.ml#608:19->608:37
-	ADDI	%r31, %r31, $-132	# build/example.ml#608:19->608:37
-	MV	%r27, %r0	# build/example.ml#608:19->608:37
-	LDR	%r6, %r31, $112	# build/example.ml#608:19->608:37
-	LDR	%r5, %r31, $116	# build/example.ml#608:19->608:37
-	LDR	%r4, %r31, $120	# build/example.ml#608:19->608:37
-	LDR	%r3, %r31, $124	# build/example.ml#608:19->608:37
-	LDR	%r1, %r31, $128	# build/example.ml#608:19->608:37
+	ADDI	%r31, %r31, $-144	# build/example.ml#608:19->608:37
+	MV	%r24, %r0	# build/example.ml#608:19->608:37
+	LDR	%r6, %r31, $124	# build/example.ml#608:19->608:37
+	LDR	%r5, %r31, $128	# build/example.ml#608:19->608:37
+	LDR	%r4, %r31, $132	# build/example.ml#608:19->608:37
+	LDR	%r3, %r31, $136	# build/example.ml#608:19->608:37
+	LDR	%r1, %r31, $140	# build/example.ml#608:19->608:37
 	MVI	%r7, $0	# build/example.ml#609:14->609:15
-	FSDD	%fr8, %r27, $4, %r7	# build/example.ml#609:7->609:33
+	RF	%fr9	# build/example.ml#609:20->609:33
+	FSDD	%fr9, %r24, $4, %r7	# build/example.ml#609:7->609:33
 	MVI	%r7, $1	# build/example.ml#610:14->610:15
-	FSDD	%fr8, %r27, $4, %r7	# build/example.ml#610:7->610:33
+	RF	%fr9	# build/example.ml#610:20->610:33
+	FSDD	%fr9, %r24, $4, %r7	# build/example.ml#610:7->610:33
 	MVI	%r7, $2	# build/example.ml#611:14->611:15
-	FSDD	%fr8, %r27, $4, %r7	# build/example.ml#611:7->611:33
+	RF	%fr9	# build/example.ml#611:20->611:33
+	FSDD	%fr9, %r24, $4, %r7	# build/example.ml#611:7->611:33
 	MVI	%r7, $3	# build/example.ml#613:35->613:36
 	FLDA	%fr9, $l.7787	# build/example.ml#613:37->613:40
-	SDR	%r6, %r31, $132	# build/example.ml#613:22->613:40
-	SDR	%r5, %r31, $136	# build/example.ml#613:22->613:40
-	SDR	%r4, %r31, $140	# build/example.ml#613:22->613:40
-	SDR	%r3, %r31, $144	# build/example.ml#613:22->613:40
-	SDR	%r1, %r31, $148	# build/example.ml#613:22->613:40
+	SDR	%r6, %r31, $144	# build/example.ml#613:22->613:40
+	SDR	%r5, %r31, $148	# build/example.ml#613:22->613:40
+	SDR	%r4, %r31, $152	# build/example.ml#613:22->613:40
+	SDR	%r3, %r31, $156	# build/example.ml#613:22->613:40
+	SDR	%r1, %r31, $160	# build/example.ml#613:22->613:40
 	MV	%r1, %r7	# build/example.ml#613:22->613:40
 	FMV	%fr0, %fr9	# build/example.ml#613:22->613:40
-	ADDI	%r31, %r31, $152	# build/example.ml#613:22->613:40
+	ADDI	%r31, %r31, $164	# build/example.ml#613:22->613:40
 	ADDI	%r31, %r31, $4	# build/example.ml#613:22->613:40
 	SIP	# build/example.ml#613:22->613:40
 	J	$min_caml_create_float_array	# build/example.ml#613:22->613:40
-	ADDI	%r31, %r31, $-152	# build/example.ml#613:22->613:40
+	ADDI	%r31, %r31, $-164	# build/example.ml#613:22->613:40
 	MV	%r6, %r0	# build/example.ml#613:22->613:40
-	LDR	%r6, %r31, $132	# build/example.ml#613:22->613:40
-	LDR	%r5, %r31, $136	# build/example.ml#613:22->613:40
-	LDR	%r4, %r31, $140	# build/example.ml#613:22->613:40
-	LDR	%r3, %r31, $144	# build/example.ml#613:22->613:40
-	LDR	%r1, %r31, $148	# build/example.ml#613:22->613:40
+	LDR	%r6, %r31, $144	# build/example.ml#613:22->613:40
+	LDR	%r5, %r31, $148	# build/example.ml#613:22->613:40
+	LDR	%r4, %r31, $152	# build/example.ml#613:22->613:40
+	LDR	%r3, %r31, $156	# build/example.ml#613:22->613:40
+	LDR	%r1, %r31, $160	# build/example.ml#613:22->613:40
 	MVI	%r7, $0	# build/example.ml#614:21->614:22
-	CEQ	%r8, %r7	# build/example.ml#614:7->620:14
-	JZ	$if_eq.11839	# build/example.ml#614:7->620:14
+	CEQ	%r27, %r7	# build/example.ml#614:7->620:14
+	JZ	$if_eq.11837	# build/example.ml#614:7->620:14
 	MVI	%r7, $0	# build/example.ml#616:13->616:14
+	RF	%fr8	# build/example.ml#616:24->616:37
 	FLDA	%fr9, $l.7813	# build/example.ml#483:8->483:19
 	FMUL	%fr9, %fr8, %fr9	# build/example.ml#483:3->483:19
 	FSDD	%fr9, %r6, $4, %r7	# build/example.ml#616:3->616:38
 	MVI	%r7, $1	# build/example.ml#617:13->617:14
+	RF	%fr8	# build/example.ml#617:24->617:37
 	FLDA	%fr9, $l.7813	# build/example.ml#483:8->483:19
 	FMUL	%fr9, %fr8, %fr9	# build/example.ml#483:3->483:19
 	FSDD	%fr9, %r6, $4, %r7	# build/example.ml#617:3->617:38
 	MVI	%r7, $2	# build/example.ml#618:13->618:14
+	RF	%fr8	# build/example.ml#618:24->618:37
 	FLDA	%fr9, $l.7813	# build/example.ml#483:8->483:19
 	FMUL	%fr9, %fr8, %fr9	# build/example.ml#483:3->483:19
 	FSDD	%fr9, %r6, $4, %r7	# build/example.ml#618:3->618:38
-	J	$if_eq_cont.11840	# build/example.ml#614:7->620:14
-if_eq.11839:
-if_eq_cont.11840:
+	J	$if_eq_cont.11838	# build/example.ml#614:7->620:14
+if_eq.11837:
+if_eq_cont.11838:
 	MVI	%r7, $2	# build/example.ml#625:33->625:34
-	CEQ	%r8, %r7	# build/example.ml#625:23->625:58
-	JZ	$if_eq.11841	# build/example.ml#625:23->625:58
-	MV	%r0, %r3	# build/example.ml#625:50->625:58
-	MV	%r4, %r0	# build/example.ml#625:50->625:58
-	J	$if_eq_cont.11842	# build/example.ml#625:23->625:58
-if_eq.11841:
+	CEQ	%r26, %r7	# build/example.ml#625:23->625:58
+	JZ	$if_eq.11839	# build/example.ml#625:23->625:58
+	MV	%r0, %r28	# build/example.ml#625:50->625:58
+	MV	%r3, %r0	# build/example.ml#625:50->625:58
+	J	$if_eq_cont.11840	# build/example.ml#625:23->625:58
+if_eq.11839:
 	MVI	%r0, $1	# build/example.ml#625:40->625:44
-	MV	%r4, %r0	# build/example.ml#625:40->625:44
-if_eq_cont.11842:
+	MV	%r3, %r0	# build/example.ml#625:40->625:44
+if_eq_cont.11840:
 	MVI	%r7, $4	# build/example.ml#626:31->626:32
 	FLDA	%fr9, $l.7787	# build/example.ml#626:33->626:36
-	SDR	%r6, %r31, $152	# build/example.ml#626:18->626:36
-	SDR	%r5, %r31, $156	# build/example.ml#626:18->626:36
-	SDR	%r4, %r31, $160	# build/example.ml#626:18->626:36
-	SDR	%r3, %r31, $164	# build/example.ml#626:18->626:36
-	SDR	%r1, %r31, $168	# build/example.ml#626:18->626:36
+	SDR	%r6, %r31, $164	# build/example.ml#626:18->626:36
+	SDR	%r5, %r31, $168	# build/example.ml#626:18->626:36
+	SDR	%r4, %r31, $172	# build/example.ml#626:18->626:36
+	SDR	%r3, %r31, $176	# build/example.ml#626:18->626:36
+	SDR	%r1, %r31, $180	# build/example.ml#626:18->626:36
 	MV	%r1, %r7	# build/example.ml#626:18->626:36
 	FMV	%fr0, %fr9	# build/example.ml#626:18->626:36
-	ADDI	%r31, %r31, $172	# build/example.ml#626:18->626:36
+	ADDI	%r31, %r31, $184	# build/example.ml#626:18->626:36
 	ADDI	%r31, %r31, $4	# build/example.ml#626:18->626:36
 	SIP	# build/example.ml#626:18->626:36
 	J	$min_caml_create_float_array	# build/example.ml#626:18->626:36
-	ADDI	%r31, %r31, $-172	# build/example.ml#626:18->626:36
-	MV	%r28, %r0	# build/example.ml#626:18->626:36
-	LDR	%r6, %r31, $152	# build/example.ml#626:18->626:36
-	LDR	%r5, %r31, $156	# build/example.ml#626:18->626:36
-	LDR	%r4, %r31, $160	# build/example.ml#626:18->626:36
-	LDR	%r3, %r31, $164	# build/example.ml#626:18->626:36
-	LDR	%r1, %r31, $168	# build/example.ml#626:18->626:36
+	ADDI	%r31, %r31, $-184	# build/example.ml#626:18->626:36
+	MV	%r25, %r0	# build/example.ml#626:18->626:36
+	LDR	%r6, %r31, $164	# build/example.ml#626:18->626:36
+	LDR	%r5, %r31, $168	# build/example.ml#626:18->626:36
+	LDR	%r4, %r31, $172	# build/example.ml#626:18->626:36
+	LDR	%r3, %r31, $176	# build/example.ml#626:18->626:36
+	LDR	%r1, %r31, $180	# build/example.ml#626:18->626:36
 	MV	%r7, %r30	# build/example.ml#629:3->635:14
 	ADDI	%r30, %r30, $44	# build/example.ml#629:3->635:14
-	SDR	%r28, %r7, $40	# build/example.ml#629:3->635:14
+	SDR	%r25, %r7, $40	# build/example.ml#629:3->635:14
 	SDR	%r6, %r7, $36	# build/example.ml#629:3->635:14
-	SDR	%r27, %r7, $32	# build/example.ml#629:3->635:14
-	SDR	%r5, %r7, $28	# build/example.ml#629:3->635:14
-	SDR	%r4, %r7, $24	# build/example.ml#629:3->635:14
+	SDR	%r24, %r7, $32	# build/example.ml#629:3->635:14
+	SDR	%r4, %r7, $28	# build/example.ml#629:3->635:14
+	SDR	%r3, %r7, $24	# build/example.ml#629:3->635:14
 	SDR	%r9, %r7, $20	# build/example.ml#629:3->635:14
-	SDR	%r26, %r7, $16	# build/example.ml#629:3->635:14
-	SDR	%r8, %r7, $12	# build/example.ml#629:3->635:14
-	SDR	%r8, %r7, $8	# build/example.ml#629:3->635:14
-	SDR	%r8, %r7, $4	# build/example.ml#629:3->635:14
+	SDR	%r23, %r7, $16	# build/example.ml#629:3->635:14
+	SDR	%r27, %r7, $12	# build/example.ml#629:3->635:14
+	SDR	%r5, %r7, $8	# build/example.ml#629:3->635:14
+	SDR	%r26, %r7, $4	# build/example.ml#629:3->635:14
 	SDR	%r8, %r7, $0	# build/example.ml#629:3->635:14
 	MV	%r9, %r7	# build/example.ml#629:3->635:14
-	MVI	%r7, $min_caml_objects	# build/example.ml#637:7->637:14
-	SDD	%r9, %r7, $4, %r1	# build/example.ml#637:7->637:25
+	MVI	%r8, $min_caml_objects	# build/example.ml#637:7->637:14
+	SDD	%r9, %r8, $4, %r1	# build/example.ml#637:7->637:25
 	MVI	%r9, $3	# build/example.ml#639:17->639:18
-	CEQ	%r8, %r9	# build/example.ml#639:7->652:14
-	JZ	$if_eq.11843	# build/example.ml#639:7->652:14
+	CEQ	%r26, %r9	# build/example.ml#639:7->652:14
+	JZ	$if_eq.11841	# build/example.ml#639:7->652:14
 	MVI	%r9, $2	# build/example.ml#649:22->649:23
-	CEQ	%r8, %r9	# build/example.ml#649:12->652:14
-	JZ	$if_eq.11845	# build/example.ml#649:12->652:14
-	J	$if_eq_cont.11846	# build/example.ml#649:12->652:14
-if_eq.11845:
+	CEQ	%r26, %r9	# build/example.ml#649:12->652:14
+	JZ	$if_eq.11843	# build/example.ml#649:12->652:14
+	J	$if_eq_cont.11844	# build/example.ml#649:12->652:14
+if_eq.11843:
 	MVI	%r9, $0	# build/example.ml#651:19->651:31
-	CEQ	%r3, %r9	# build/example.ml#651:19->651:31
-	JZ	$if_eq.11847	# build/example.ml#651:19->651:31
+	CEQ	%r28, %r9	# build/example.ml#651:19->651:31
+	JZ	$if_eq.11845	# build/example.ml#651:19->651:31
 	MVI	%r0, $0	# build/example.ml#651:19->651:31
 	MV	%r9, %r0	# build/example.ml#651:19->651:31
-	J	$if_eq_cont.11848	# build/example.ml#651:19->651:31
-if_eq.11847:
+	J	$if_eq_cont.11846	# build/example.ml#651:19->651:31
+if_eq.11845:
 	MVI	%r0, $1	# build/example.ml#651:19->651:31
 	MV	%r9, %r0	# build/example.ml#651:19->651:31
-if_eq_cont.11848:
-	SDR	%r6, %r31, $172	# build/example.ml#651:2->651:32
-	SDR	%r5, %r31, $176	# build/example.ml#651:2->651:32
-	SDR	%r4, %r31, $180	# build/example.ml#651:2->651:32
-	SDR	%r3, %r31, $184	# build/example.ml#651:2->651:32
-	SDR	%r1, %r31, $188	# build/example.ml#651:2->651:32
+if_eq_cont.11846:
+	SDR	%r6, %r31, $184	# build/example.ml#651:2->651:32
+	SDR	%r5, %r31, $188	# build/example.ml#651:2->651:32
+	SDR	%r4, %r31, $192	# build/example.ml#651:2->651:32
+	SDR	%r3, %r31, $196	# build/example.ml#651:2->651:32
+	SDR	%r1, %r31, $200	# build/example.ml#651:2->651:32
 	MV	%r2, %r9	# build/example.ml#651:2->651:32
-	MV	%r1, %r26	# build/example.ml#651:2->651:32
-	ADDI	%r31, %r31, $192	# build/example.ml#651:2->651:32
+	MV	%r1, %r23	# build/example.ml#651:2->651:32
+	ADDI	%r31, %r31, $204	# build/example.ml#651:2->651:32
 	ADDI	%r31, %r31, $4	# build/example.ml#651:2->651:32
 	SIP	# build/example.ml#651:2->651:32
 	J	$vecunit_sgn.2591	# build/example.ml#651:2->651:32
-	ADDI	%r31, %r31, $-192	# build/example.ml#651:2->651:32
-	LDR	%r6, %r31, $172	# build/example.ml#651:2->651:32
-	LDR	%r5, %r31, $176	# build/example.ml#651:2->651:32
-	LDR	%r4, %r31, $180	# build/example.ml#651:2->651:32
-	LDR	%r3, %r31, $184	# build/example.ml#651:2->651:32
-	LDR	%r1, %r31, $188	# build/example.ml#651:2->651:32
-if_eq_cont.11846:
-	J	$if_eq_cont.11844	# build/example.ml#639:7->652:14
-if_eq.11843:
+	ADDI	%r31, %r31, $-204	# build/example.ml#651:2->651:32
+	LDR	%r6, %r31, $184	# build/example.ml#651:2->651:32
+	LDR	%r5, %r31, $188	# build/example.ml#651:2->651:32
+	LDR	%r4, %r31, $192	# build/example.ml#651:2->651:32
+	LDR	%r3, %r31, $196	# build/example.ml#651:2->651:32
+	LDR	%r1, %r31, $200	# build/example.ml#651:2->651:32
+if_eq_cont.11844:
+	J	$if_eq_cont.11842	# build/example.ml#639:7->652:14
+if_eq.11841:
 	MVI	%r9, $0	# build/example.ml#642:16->642:17
-	FLDD	%fr9, %r26, $4, %r9	# build/example.ml#592:17->592:35
-	MVI	%r7, $0	# build/example.ml#643:8->643:9
-	SDR	%r6, %r31, $192	# build/example.ml#643:17->643:26
-	SDR	%r5, %r31, $196	# build/example.ml#643:17->643:26
-	SDR	%r4, %r31, $200	# build/example.ml#643:17->643:26
-	SDR	%r3, %r31, $204	# build/example.ml#643:17->643:26
-	SDR	%r1, %r31, $208	# build/example.ml#643:17->643:26
+	FLDD	%fr9, %r23, $4, %r9	# build/example.ml#592:17->592:35
+	MVI	%r8, $0	# build/example.ml#643:8->643:9
+	SDR	%r6, %r31, $204	# build/example.ml#643:17->643:26
+	SDR	%r5, %r31, $208	# build/example.ml#643:17->643:26
+	SDR	%r4, %r31, $212	# build/example.ml#643:17->643:26
+	SDR	%r3, %r31, $216	# build/example.ml#643:17->643:26
+	SDR	%r1, %r31, $220	# build/example.ml#643:17->643:26
 	FMV	%fr0, %fr9	# build/example.ml#643:17->643:26
-	ADDI	%r31, %r31, $212	# build/example.ml#643:17->643:26
+	ADDI	%r31, %r31, $224	# build/example.ml#643:17->643:26
 	ADDI	%r31, %r31, $4	# build/example.ml#643:17->643:26
 	SIP	# build/example.ml#643:17->643:26
 	J	$min_caml_fiszero	# build/example.ml#643:17->643:26
-	ADDI	%r31, %r31, $-212	# build/example.ml#643:17->643:26
-	MV	%r5, %r0	# build/example.ml#643:17->643:26
-	LDR	%r6, %r31, $192	# build/example.ml#643:17->643:26
-	LDR	%r5, %r31, $196	# build/example.ml#643:17->643:26
-	LDR	%r4, %r31, $200	# build/example.ml#643:17->643:26
-	LDR	%r3, %r31, $204	# build/example.ml#643:17->643:26
-	LDR	%r1, %r31, $208	# build/example.ml#643:17->643:26
+	ADDI	%r31, %r31, $-224	# build/example.ml#643:17->643:26
+	MV	%r7, %r0	# build/example.ml#643:17->643:26
+	LDR	%r6, %r31, $204	# build/example.ml#643:17->643:26
+	LDR	%r5, %r31, $208	# build/example.ml#643:17->643:26
+	LDR	%r4, %r31, $212	# build/example.ml#643:17->643:26
+	LDR	%r3, %r31, $216	# build/example.ml#643:17->643:26
+	LDR	%r1, %r31, $220	# build/example.ml#643:17->643:26
 	MVI	%r9, $0	# build/example.ml#643:14->643:56
-	CEQ	%r5, %r9	# build/example.ml#643:14->643:56
-	JZ	$if_eq.11849	# build/example.ml#643:14->643:56
+	CEQ	%r7, %r9	# build/example.ml#643:14->643:56
+	JZ	$if_eq.11847	# build/example.ml#643:14->643:56
 	FLDA	%r0, $l.7787	# build/example.ml#643:32->643:35
 	MV	%fr9, %r0	# build/example.ml#643:32->643:35
-	J	$if_eq_cont.11850	# build/example.ml#643:14->643:56
-if_eq.11849:
-	SDR	%r6, %r31, $212	# build/example.ml#643:41->643:46
-	SDR	%r5, %r31, $216	# build/example.ml#643:41->643:46
-	SDR	%r4, %r31, $220	# build/example.ml#643:41->643:46
-	SDR	%r3, %r31, $224	# build/example.ml#643:41->643:46
-	SDR	%r1, %r31, $228	# build/example.ml#643:41->643:46
+	J	$if_eq_cont.11848	# build/example.ml#643:14->643:56
+if_eq.11847:
+	SDR	%r6, %r31, $224	# build/example.ml#643:41->643:46
+	SDR	%r5, %r31, $228	# build/example.ml#643:41->643:46
+	SDR	%r4, %r31, $232	# build/example.ml#643:41->643:46
+	SDR	%r3, %r31, $236	# build/example.ml#643:41->643:46
+	SDR	%r1, %r31, $240	# build/example.ml#643:41->643:46
 	FMV	%fr0, %fr9	# build/example.ml#643:41->643:46
-	ADDI	%r31, %r31, $232	# build/example.ml#643:41->643:46
+	ADDI	%r31, %r31, $244	# build/example.ml#643:41->643:46
 	ADDI	%r31, %r31, $4	# build/example.ml#643:41->643:46
 	SIP	# build/example.ml#643:41->643:46
 	J	$sgn.2565	# build/example.ml#643:41->643:46
-	ADDI	%r31, %r31, $-232	# build/example.ml#643:41->643:46
+	ADDI	%r31, %r31, $-244	# build/example.ml#643:41->643:46
 	FMV	%fr8, %fr0	# build/example.ml#643:41->643:46
-	LDR	%r6, %r31, $212	# build/example.ml#643:41->643:46
-	LDR	%r5, %r31, $216	# build/example.ml#643:41->643:46
-	LDR	%r4, %r31, $220	# build/example.ml#643:41->643:46
-	LDR	%r3, %r31, $224	# build/example.ml#643:41->643:46
-	LDR	%r1, %r31, $228	# build/example.ml#643:41->643:46
-	SDR	%r6, %r31, $232	# build/example.ml#643:50->643:56
-	SDR	%r5, %r31, $236	# build/example.ml#643:50->643:56
-	SDR	%r4, %r31, $240	# build/example.ml#643:50->643:56
-	SDR	%r3, %r31, $244	# build/example.ml#643:50->643:56
-	SDR	%r1, %r31, $248	# build/example.ml#643:50->643:56
+	LDR	%r6, %r31, $224	# build/example.ml#643:41->643:46
+	LDR	%r5, %r31, $228	# build/example.ml#643:41->643:46
+	LDR	%r4, %r31, $232	# build/example.ml#643:41->643:46
+	LDR	%r3, %r31, $236	# build/example.ml#643:41->643:46
+	LDR	%r1, %r31, $240	# build/example.ml#643:41->643:46
+	SDR	%r6, %r31, $244	# build/example.ml#643:50->643:56
+	SDR	%r5, %r31, $248	# build/example.ml#643:50->643:56
+	SDR	%r4, %r31, $252	# build/example.ml#643:50->643:56
+	SDR	%r3, %r31, $256	# build/example.ml#643:50->643:56
+	SDR	%r1, %r31, $260	# build/example.ml#643:50->643:56
 	FMV	%fr0, %fr9	# build/example.ml#643:50->643:56
-	ADDI	%r31, %r31, $252	# build/example.ml#643:50->643:56
+	ADDI	%r31, %r31, $264	# build/example.ml#643:50->643:56
 	ADDI	%r31, %r31, $4	# build/example.ml#643:50->643:56
 	SIP	# build/example.ml#643:50->643:56
 	J	$min_caml_fsqr	# build/example.ml#643:50->643:56
-	ADDI	%r31, %r31, $-252	# build/example.ml#643:50->643:56
+	ADDI	%r31, %r31, $-264	# build/example.ml#643:50->643:56
 	FMV	%fr9, %fr0	# build/example.ml#643:50->643:56
-	LDR	%r6, %r31, $232	# build/example.ml#643:50->643:56
-	LDR	%r5, %r31, $236	# build/example.ml#643:50->643:56
-	LDR	%r4, %r31, $240	# build/example.ml#643:50->643:56
-	LDR	%r3, %r31, $244	# build/example.ml#643:50->643:56
-	LDR	%r1, %r31, $248	# build/example.ml#643:50->643:56
+	LDR	%r6, %r31, $244	# build/example.ml#643:50->643:56
+	LDR	%r5, %r31, $248	# build/example.ml#643:50->643:56
+	LDR	%r4, %r31, $252	# build/example.ml#643:50->643:56
+	LDR	%r3, %r31, $256	# build/example.ml#643:50->643:56
+	LDR	%r1, %r31, $260	# build/example.ml#643:50->643:56
 	FDIV	%r0, %fr8, %fr9	# build/example.ml#643:41->643:56
 	MV	%fr9, %r0	# build/example.ml#643:41->643:56
-if_eq_cont.11850:
-	FSDD	%fr9, %r26, $4, %r7	# build/example.ml#643:3->643:56
+if_eq_cont.11848:
+	FSDD	%fr9, %r23, $4, %r8	# build/example.ml#643:3->643:56
 	MVI	%r9, $1	# build/example.ml#644:16->644:17
-	FLDD	%fr9, %r26, $4, %r9	# build/example.ml#592:17->592:35
-	MVI	%r7, $1	# build/example.ml#645:8->645:9
-	SDR	%r6, %r31, $252	# build/example.ml#645:17->645:26
-	SDR	%r5, %r31, $256	# build/example.ml#645:17->645:26
-	SDR	%r4, %r31, $260	# build/example.ml#645:17->645:26
-	SDR	%r3, %r31, $264	# build/example.ml#645:17->645:26
-	SDR	%r1, %r31, $268	# build/example.ml#645:17->645:26
+	FLDD	%fr9, %r23, $4, %r9	# build/example.ml#592:17->592:35
+	MVI	%r8, $1	# build/example.ml#645:8->645:9
+	SDR	%r6, %r31, $264	# build/example.ml#645:17->645:26
+	SDR	%r5, %r31, $268	# build/example.ml#645:17->645:26
+	SDR	%r4, %r31, $272	# build/example.ml#645:17->645:26
+	SDR	%r3, %r31, $276	# build/example.ml#645:17->645:26
+	SDR	%r1, %r31, $280	# build/example.ml#645:17->645:26
 	FMV	%fr0, %fr9	# build/example.ml#645:17->645:26
-	ADDI	%r31, %r31, $272	# build/example.ml#645:17->645:26
+	ADDI	%r31, %r31, $284	# build/example.ml#645:17->645:26
 	ADDI	%r31, %r31, $4	# build/example.ml#645:17->645:26
 	SIP	# build/example.ml#645:17->645:26
 	J	$min_caml_fiszero	# build/example.ml#645:17->645:26
-	ADDI	%r31, %r31, $-272	# build/example.ml#645:17->645:26
-	MV	%r5, %r0	# build/example.ml#645:17->645:26
-	LDR	%r6, %r31, $252	# build/example.ml#645:17->645:26
-	LDR	%r5, %r31, $256	# build/example.ml#645:17->645:26
-	LDR	%r4, %r31, $260	# build/example.ml#645:17->645:26
-	LDR	%r3, %r31, $264	# build/example.ml#645:17->645:26
-	LDR	%r1, %r31, $268	# build/example.ml#645:17->645:26
+	ADDI	%r31, %r31, $-284	# build/example.ml#645:17->645:26
+	MV	%r7, %r0	# build/example.ml#645:17->645:26
+	LDR	%r6, %r31, $264	# build/example.ml#645:17->645:26
+	LDR	%r5, %r31, $268	# build/example.ml#645:17->645:26
+	LDR	%r4, %r31, $272	# build/example.ml#645:17->645:26
+	LDR	%r3, %r31, $276	# build/example.ml#645:17->645:26
+	LDR	%r1, %r31, $280	# build/example.ml#645:17->645:26
 	MVI	%r9, $0	# build/example.ml#645:14->645:56
-	CEQ	%r5, %r9	# build/example.ml#645:14->645:56
-	JZ	$if_eq.11851	# build/example.ml#645:14->645:56
+	CEQ	%r7, %r9	# build/example.ml#645:14->645:56
+	JZ	$if_eq.11849	# build/example.ml#645:14->645:56
 	FLDA	%r0, $l.7787	# build/example.ml#645:32->645:35
 	MV	%fr9, %r0	# build/example.ml#645:32->645:35
-	J	$if_eq_cont.11852	# build/example.ml#645:14->645:56
-if_eq.11851:
-	SDR	%r6, %r31, $272	# build/example.ml#645:41->645:46
-	SDR	%r5, %r31, $276	# build/example.ml#645:41->645:46
-	SDR	%r4, %r31, $280	# build/example.ml#645:41->645:46
-	SDR	%r3, %r31, $284	# build/example.ml#645:41->645:46
-	SDR	%r1, %r31, $288	# build/example.ml#645:41->645:46
+	J	$if_eq_cont.11850	# build/example.ml#645:14->645:56
+if_eq.11849:
+	SDR	%r6, %r31, $284	# build/example.ml#645:41->645:46
+	SDR	%r5, %r31, $288	# build/example.ml#645:41->645:46
+	SDR	%r4, %r31, $292	# build/example.ml#645:41->645:46
+	SDR	%r3, %r31, $296	# build/example.ml#645:41->645:46
+	SDR	%r1, %r31, $300	# build/example.ml#645:41->645:46
 	FMV	%fr0, %fr9	# build/example.ml#645:41->645:46
-	ADDI	%r31, %r31, $292	# build/example.ml#645:41->645:46
+	ADDI	%r31, %r31, $304	# build/example.ml#645:41->645:46
 	ADDI	%r31, %r31, $4	# build/example.ml#645:41->645:46
 	SIP	# build/example.ml#645:41->645:46
 	J	$sgn.2565	# build/example.ml#645:41->645:46
-	ADDI	%r31, %r31, $-292	# build/example.ml#645:41->645:46
+	ADDI	%r31, %r31, $-304	# build/example.ml#645:41->645:46
 	FMV	%fr8, %fr0	# build/example.ml#645:41->645:46
-	LDR	%r6, %r31, $272	# build/example.ml#645:41->645:46
-	LDR	%r5, %r31, $276	# build/example.ml#645:41->645:46
-	LDR	%r4, %r31, $280	# build/example.ml#645:41->645:46
-	LDR	%r3, %r31, $284	# build/example.ml#645:41->645:46
-	LDR	%r1, %r31, $288	# build/example.ml#645:41->645:46
-	SDR	%r6, %r31, $292	# build/example.ml#645:50->645:56
-	SDR	%r5, %r31, $296	# build/example.ml#645:50->645:56
-	SDR	%r4, %r31, $300	# build/example.ml#645:50->645:56
-	SDR	%r3, %r31, $304	# build/example.ml#645:50->645:56
-	SDR	%r1, %r31, $308	# build/example.ml#645:50->645:56
+	LDR	%r6, %r31, $284	# build/example.ml#645:41->645:46
+	LDR	%r5, %r31, $288	# build/example.ml#645:41->645:46
+	LDR	%r4, %r31, $292	# build/example.ml#645:41->645:46
+	LDR	%r3, %r31, $296	# build/example.ml#645:41->645:46
+	LDR	%r1, %r31, $300	# build/example.ml#645:41->645:46
+	SDR	%r6, %r31, $304	# build/example.ml#645:50->645:56
+	SDR	%r5, %r31, $308	# build/example.ml#645:50->645:56
+	SDR	%r4, %r31, $312	# build/example.ml#645:50->645:56
+	SDR	%r3, %r31, $316	# build/example.ml#645:50->645:56
+	SDR	%r1, %r31, $320	# build/example.ml#645:50->645:56
 	FMV	%fr0, %fr9	# build/example.ml#645:50->645:56
-	ADDI	%r31, %r31, $312	# build/example.ml#645:50->645:56
+	ADDI	%r31, %r31, $324	# build/example.ml#645:50->645:56
 	ADDI	%r31, %r31, $4	# build/example.ml#645:50->645:56
 	SIP	# build/example.ml#645:50->645:56
 	J	$min_caml_fsqr	# build/example.ml#645:50->645:56
-	ADDI	%r31, %r31, $-312	# build/example.ml#645:50->645:56
+	ADDI	%r31, %r31, $-324	# build/example.ml#645:50->645:56
 	FMV	%fr9, %fr0	# build/example.ml#645:50->645:56
-	LDR	%r6, %r31, $292	# build/example.ml#645:50->645:56
-	LDR	%r5, %r31, $296	# build/example.ml#645:50->645:56
-	LDR	%r4, %r31, $300	# build/example.ml#645:50->645:56
-	LDR	%r3, %r31, $304	# build/example.ml#645:50->645:56
-	LDR	%r1, %r31, $308	# build/example.ml#645:50->645:56
+	LDR	%r6, %r31, $304	# build/example.ml#645:50->645:56
+	LDR	%r5, %r31, $308	# build/example.ml#645:50->645:56
+	LDR	%r4, %r31, $312	# build/example.ml#645:50->645:56
+	LDR	%r3, %r31, $316	# build/example.ml#645:50->645:56
+	LDR	%r1, %r31, $320	# build/example.ml#645:50->645:56
 	FDIV	%r0, %fr8, %fr9	# build/example.ml#645:41->645:56
 	MV	%fr9, %r0	# build/example.ml#645:41->645:56
-if_eq_cont.11852:
-	FSDD	%fr9, %r26, $4, %r7	# build/example.ml#645:3->645:56
+if_eq_cont.11850:
+	FSDD	%fr9, %r23, $4, %r8	# build/example.ml#645:3->645:56
 	MVI	%r9, $2	# build/example.ml#646:16->646:17
-	FLDD	%fr9, %r26, $4, %r9	# build/example.ml#592:17->592:35
-	MVI	%r7, $2	# build/example.ml#647:8->647:9
-	SDR	%r6, %r31, $312	# build/example.ml#647:17->647:26
-	SDR	%r5, %r31, $316	# build/example.ml#647:17->647:26
-	SDR	%r4, %r31, $320	# build/example.ml#647:17->647:26
-	SDR	%r3, %r31, $324	# build/example.ml#647:17->647:26
-	SDR	%r1, %r31, $328	# build/example.ml#647:17->647:26
+	FLDD	%fr9, %r23, $4, %r9	# build/example.ml#592:17->592:35
+	MVI	%r8, $2	# build/example.ml#647:8->647:9
+	SDR	%r6, %r31, $324	# build/example.ml#647:17->647:26
+	SDR	%r5, %r31, $328	# build/example.ml#647:17->647:26
+	SDR	%r4, %r31, $332	# build/example.ml#647:17->647:26
+	SDR	%r3, %r31, $336	# build/example.ml#647:17->647:26
+	SDR	%r1, %r31, $340	# build/example.ml#647:17->647:26
 	FMV	%fr0, %fr9	# build/example.ml#647:17->647:26
-	ADDI	%r31, %r31, $332	# build/example.ml#647:17->647:26
+	ADDI	%r31, %r31, $344	# build/example.ml#647:17->647:26
 	ADDI	%r31, %r31, $4	# build/example.ml#647:17->647:26
 	SIP	# build/example.ml#647:17->647:26
 	J	$min_caml_fiszero	# build/example.ml#647:17->647:26
-	ADDI	%r31, %r31, $-332	# build/example.ml#647:17->647:26
-	MV	%r5, %r0	# build/example.ml#647:17->647:26
-	LDR	%r6, %r31, $312	# build/example.ml#647:17->647:26
-	LDR	%r5, %r31, $316	# build/example.ml#647:17->647:26
-	LDR	%r4, %r31, $320	# build/example.ml#647:17->647:26
-	LDR	%r3, %r31, $324	# build/example.ml#647:17->647:26
-	LDR	%r1, %r31, $328	# build/example.ml#647:17->647:26
+	ADDI	%r31, %r31, $-344	# build/example.ml#647:17->647:26
+	MV	%r7, %r0	# build/example.ml#647:17->647:26
+	LDR	%r6, %r31, $324	# build/example.ml#647:17->647:26
+	LDR	%r5, %r31, $328	# build/example.ml#647:17->647:26
+	LDR	%r4, %r31, $332	# build/example.ml#647:17->647:26
+	LDR	%r3, %r31, $336	# build/example.ml#647:17->647:26
+	LDR	%r1, %r31, $340	# build/example.ml#647:17->647:26
 	MVI	%r9, $0	# build/example.ml#647:14->647:56
-	CEQ	%r5, %r9	# build/example.ml#647:14->647:56
-	JZ	$if_eq.11853	# build/example.ml#647:14->647:56
+	CEQ	%r7, %r9	# build/example.ml#647:14->647:56
+	JZ	$if_eq.11851	# build/example.ml#647:14->647:56
 	FLDA	%r0, $l.7787	# build/example.ml#647:32->647:35
 	MV	%fr9, %r0	# build/example.ml#647:32->647:35
-	J	$if_eq_cont.11854	# build/example.ml#647:14->647:56
-if_eq.11853:
-	SDR	%r6, %r31, $332	# build/example.ml#647:41->647:46
-	SDR	%r5, %r31, $336	# build/example.ml#647:41->647:46
-	SDR	%r4, %r31, $340	# build/example.ml#647:41->647:46
-	SDR	%r3, %r31, $344	# build/example.ml#647:41->647:46
-	SDR	%r1, %r31, $348	# build/example.ml#647:41->647:46
+	J	$if_eq_cont.11852	# build/example.ml#647:14->647:56
+if_eq.11851:
+	SDR	%r6, %r31, $344	# build/example.ml#647:41->647:46
+	SDR	%r5, %r31, $348	# build/example.ml#647:41->647:46
+	SDR	%r4, %r31, $352	# build/example.ml#647:41->647:46
+	SDR	%r3, %r31, $356	# build/example.ml#647:41->647:46
+	SDR	%r1, %r31, $360	# build/example.ml#647:41->647:46
 	FMV	%fr0, %fr9	# build/example.ml#647:41->647:46
-	ADDI	%r31, %r31, $352	# build/example.ml#647:41->647:46
+	ADDI	%r31, %r31, $364	# build/example.ml#647:41->647:46
 	ADDI	%r31, %r31, $4	# build/example.ml#647:41->647:46
 	SIP	# build/example.ml#647:41->647:46
 	J	$sgn.2565	# build/example.ml#647:41->647:46
-	ADDI	%r31, %r31, $-352	# build/example.ml#647:41->647:46
+	ADDI	%r31, %r31, $-364	# build/example.ml#647:41->647:46
 	FMV	%fr8, %fr0	# build/example.ml#647:41->647:46
-	LDR	%r6, %r31, $332	# build/example.ml#647:41->647:46
-	LDR	%r5, %r31, $336	# build/example.ml#647:41->647:46
-	LDR	%r4, %r31, $340	# build/example.ml#647:41->647:46
-	LDR	%r3, %r31, $344	# build/example.ml#647:41->647:46
-	LDR	%r1, %r31, $348	# build/example.ml#647:41->647:46
-	SDR	%r6, %r31, $352	# build/example.ml#647:50->647:56
-	SDR	%r5, %r31, $356	# build/example.ml#647:50->647:56
-	SDR	%r4, %r31, $360	# build/example.ml#647:50->647:56
-	SDR	%r3, %r31, $364	# build/example.ml#647:50->647:56
-	SDR	%r1, %r31, $368	# build/example.ml#647:50->647:56
+	LDR	%r6, %r31, $344	# build/example.ml#647:41->647:46
+	LDR	%r5, %r31, $348	# build/example.ml#647:41->647:46
+	LDR	%r4, %r31, $352	# build/example.ml#647:41->647:46
+	LDR	%r3, %r31, $356	# build/example.ml#647:41->647:46
+	LDR	%r1, %r31, $360	# build/example.ml#647:41->647:46
+	SDR	%r6, %r31, $364	# build/example.ml#647:50->647:56
+	SDR	%r5, %r31, $368	# build/example.ml#647:50->647:56
+	SDR	%r4, %r31, $372	# build/example.ml#647:50->647:56
+	SDR	%r3, %r31, $376	# build/example.ml#647:50->647:56
+	SDR	%r1, %r31, $380	# build/example.ml#647:50->647:56
 	FMV	%fr0, %fr9	# build/example.ml#647:50->647:56
-	ADDI	%r31, %r31, $372	# build/example.ml#647:50->647:56
+	ADDI	%r31, %r31, $384	# build/example.ml#647:50->647:56
 	ADDI	%r31, %r31, $4	# build/example.ml#647:50->647:56
 	SIP	# build/example.ml#647:50->647:56
 	J	$min_caml_fsqr	# build/example.ml#647:50->647:56
-	ADDI	%r31, %r31, $-372	# build/example.ml#647:50->647:56
+	ADDI	%r31, %r31, $-384	# build/example.ml#647:50->647:56
 	FMV	%fr9, %fr0	# build/example.ml#647:50->647:56
-	LDR	%r6, %r31, $352	# build/example.ml#647:50->647:56
-	LDR	%r5, %r31, $356	# build/example.ml#647:50->647:56
-	LDR	%r4, %r31, $360	# build/example.ml#647:50->647:56
-	LDR	%r3, %r31, $364	# build/example.ml#647:50->647:56
-	LDR	%r1, %r31, $368	# build/example.ml#647:50->647:56
+	LDR	%r6, %r31, $364	# build/example.ml#647:50->647:56
+	LDR	%r5, %r31, $368	# build/example.ml#647:50->647:56
+	LDR	%r4, %r31, $372	# build/example.ml#647:50->647:56
+	LDR	%r3, %r31, $376	# build/example.ml#647:50->647:56
+	LDR	%r1, %r31, $380	# build/example.ml#647:50->647:56
 	FDIV	%r0, %fr8, %fr9	# build/example.ml#647:41->647:56
 	MV	%fr9, %r0	# build/example.ml#647:41->647:56
-if_eq_cont.11854:
-	FSDD	%fr9, %r26, $4, %r7	# build/example.ml#647:3->647:56
-if_eq_cont.11844:
+if_eq_cont.11852:
+	FSDD	%fr9, %r23, $4, %r8	# build/example.ml#647:3->647:56
+if_eq_cont.11842:
 	MVI	%r9, $0	# build/example.ml#655:21->655:22
-	CEQ	%r8, %r9	# build/example.ml#655:7->657:14
-	JZ	$if_eq.11855	# build/example.ml#655:7->657:14
-	SDR	%r6, %r31, $372	# build/example.ml#656:2->656:38
-	SDR	%r5, %r31, $376	# build/example.ml#656:2->656:38
-	SDR	%r4, %r31, $380	# build/example.ml#656:2->656:38
-	SDR	%r3, %r31, $384	# build/example.ml#656:2->656:38
-	SDR	%r1, %r31, $388	# build/example.ml#656:2->656:38
+	CEQ	%r27, %r9	# build/example.ml#655:7->657:14
+	JZ	$if_eq.11853	# build/example.ml#655:7->657:14
+	SDR	%r6, %r31, $384	# build/example.ml#656:2->656:38
+	SDR	%r5, %r31, $388	# build/example.ml#656:2->656:38
+	SDR	%r4, %r31, $392	# build/example.ml#656:2->656:38
+	SDR	%r3, %r31, $396	# build/example.ml#656:2->656:38
+	SDR	%r1, %r31, $400	# build/example.ml#656:2->656:38
 	MV	%r2, %r6	# build/example.ml#656:2->656:38
-	MV	%r1, %r26	# build/example.ml#656:2->656:38
-	ADDI	%r31, %r31, $392	# build/example.ml#656:2->656:38
+	MV	%r1, %r23	# build/example.ml#656:2->656:38
+	ADDI	%r31, %r31, $404	# build/example.ml#656:2->656:38
 	ADDI	%r31, %r31, $4	# build/example.ml#656:2->656:38
 	SIP	# build/example.ml#656:2->656:38
 	J	$rotate_quadratic_matrix.2696	# build/example.ml#656:2->656:38
-	ADDI	%r31, %r31, $-392	# build/example.ml#656:2->656:38
-	LDR	%r6, %r31, $372	# build/example.ml#656:2->656:38
-	LDR	%r5, %r31, $376	# build/example.ml#656:2->656:38
-	LDR	%r4, %r31, $380	# build/example.ml#656:2->656:38
-	LDR	%r3, %r31, $384	# build/example.ml#656:2->656:38
-	LDR	%r1, %r31, $388	# build/example.ml#656:2->656:38
-	J	$if_eq_cont.11856	# build/example.ml#655:7->657:14
-if_eq.11855:
-if_eq_cont.11856:
+	ADDI	%r31, %r31, $-404	# build/example.ml#656:2->656:38
+	LDR	%r6, %r31, $384	# build/example.ml#656:2->656:38
+	LDR	%r5, %r31, $388	# build/example.ml#656:2->656:38
+	LDR	%r4, %r31, $392	# build/example.ml#656:2->656:38
+	LDR	%r3, %r31, $396	# build/example.ml#656:2->656:38
+	LDR	%r1, %r31, $400	# build/example.ml#656:2->656:38
+	J	$if_eq_cont.11854	# build/example.ml#655:7->657:14
+if_eq.11853:
+if_eq_cont.11854:
 	MVI	%r0, $1	# build/example.ml#659:7->659:11
-	J	$if_eq_cont.11838	# build/example.ml#586:3->662:10
-if_eq.11837:
+	J	$if_eq_cont.11836	# build/example.ml#586:3->662:10
+if_eq.11835:
 	MVI	%r0, $0	# build/example.ml#662:5->662:10
-if_eq_cont.11838:
+if_eq_cont.11836:
 	LDR	%r9, %r31, $0	# build/example.ml#585:17->585:28
 	LDR	%r8, %r31, $4	# build/example.ml#585:17->585:28
 	LDR	%r7, %r31, $8	# build/example.ml#585:17->585:28
 	LDR	%r28, %r31, $12	# build/example.ml#585:17->585:28
 	LDR	%r27, %r31, $16	# build/example.ml#585:17->585:28
 	LDR	%r26, %r31, $20	# build/example.ml#585:17->585:28
-	FLDR	%fr9, %r31, $24	# build/example.ml#585:17->585:28
-	FLDR	%fr8, %r31, $28	# build/example.ml#585:17->585:28
+	LDR	%r25, %r31, $24	# build/example.ml#585:17->585:28
+	LDR	%r24, %r31, $28	# build/example.ml#585:17->585:28
+	LDR	%r23, %r31, $32	# build/example.ml#585:17->585:28
+	FLDR	%fr9, %r31, $36	# build/example.ml#585:17->585:28
+	FLDR	%fr8, %r31, $40	# build/example.ml#585:17->585:28
 	LINK	# build/example.ml#585:17->585:28
 rotate_quadratic_matrix.2696:
 	SDR	%r9, %r31, $0	# build/example.ml#544:24->544:25
@@ -14905,68 +14928,60 @@ read_light.2694:
 	FSDR	%fr9, %r31, $8	# build/example.ml#525:17->525:30
 	FSDR	%fr8, %r31, $12	# build/example.ml#525:17->525:30
 	FSDR	%fr7, %r31, $16	# build/example.ml#525:17->525:30
-	RF	%fr6	# build/example.ml#525:17->525:30
+	RF	%fr8	# build/example.ml#525:17->525:30
 	FLDA	%fr9, $l.7813	# build/example.ml#483:8->483:19
-	FMUL	%fr9, %fr6, %fr9	# build/example.ml#483:3->483:19
-	FSDR	%fr6, %r31, $20	# build/example.ml#526:13->526:19
+	FMUL	%fr9, %fr8, %fr9	# build/example.ml#483:3->483:19
 	FMV	%fr0, %fr9	# build/example.ml#526:13->526:19
-	ADDI	%r31, %r31, $24	# build/example.ml#526:13->526:19
+	ADDI	%r31, %r31, $20	# build/example.ml#526:13->526:19
 	ADDI	%r31, %r31, $4	# build/example.ml#526:13->526:19
 	SIP	# build/example.ml#526:13->526:19
 	J	$min_caml_sin	# build/example.ml#526:13->526:19
-	ADDI	%r31, %r31, $-24	# build/example.ml#526:13->526:19
+	ADDI	%r31, %r31, $-20	# build/example.ml#526:13->526:19
 	FMV	%fr8, %fr0	# build/example.ml#526:13->526:19
-	FLDR	%fr6, %r31, $20	# build/example.ml#526:13->526:19
 	MVI	%r8, $min_caml_light	# build/example.ml#527:3->527:8
 	MVI	%r9, $1	# build/example.ml#527:10->527:11
-	FSDR	%fr6, %r31, $24	# build/example.ml#527:16->527:24
 	FMV	%fr0, %fr8	# build/example.ml#527:16->527:24
-	ADDI	%r31, %r31, $28	# build/example.ml#527:16->527:24
+	ADDI	%r31, %r31, $20	# build/example.ml#527:16->527:24
 	ADDI	%r31, %r31, $4	# build/example.ml#527:16->527:24
 	SIP	# build/example.ml#527:16->527:24
 	J	$min_caml_fneg	# build/example.ml#527:16->527:24
-	ADDI	%r31, %r31, $-28	# build/example.ml#527:16->527:24
+	ADDI	%r31, %r31, $-20	# build/example.ml#527:16->527:24
 	FMV	%fr8, %fr0	# build/example.ml#527:16->527:24
-	FLDR	%fr6, %r31, $24	# build/example.ml#527:16->527:24
 	FSDD	%fr8, %r8, $4, %r9	# build/example.ml#527:3->527:24
+	RF	%fr7	# build/example.ml#528:17->528:30
 	FLDA	%fr8, $l.7813	# build/example.ml#483:8->483:19
-	FMUL	%fr8, %fr6, %fr8	# build/example.ml#483:3->483:19
-	FSDR	%fr6, %r31, $28	# build/example.ml#529:13->529:19
+	FMUL	%fr8, %fr7, %fr8	# build/example.ml#483:3->483:19
 	FMV	%fr0, %fr9	# build/example.ml#529:13->529:19
-	ADDI	%r31, %r31, $32	# build/example.ml#529:13->529:19
+	ADDI	%r31, %r31, $20	# build/example.ml#529:13->529:19
 	ADDI	%r31, %r31, $4	# build/example.ml#529:13->529:19
 	SIP	# build/example.ml#529:13->529:19
 	J	$min_caml_cos	# build/example.ml#529:13->529:19
-	ADDI	%r31, %r31, $-32	# build/example.ml#529:13->529:19
+	ADDI	%r31, %r31, $-20	# build/example.ml#529:13->529:19
 	FMV	%fr7, %fr0	# build/example.ml#529:13->529:19
-	FLDR	%fr6, %r31, $28	# build/example.ml#529:13->529:19
-	FSDR	%fr6, %r31, $32	# build/example.ml#530:13->530:19
 	FMV	%fr0, %fr8	# build/example.ml#530:13->530:19
-	ADDI	%r31, %r31, $36	# build/example.ml#530:13->530:19
+	ADDI	%r31, %r31, $20	# build/example.ml#530:13->530:19
 	ADDI	%r31, %r31, $4	# build/example.ml#530:13->530:19
 	SIP	# build/example.ml#530:13->530:19
 	J	$min_caml_sin	# build/example.ml#530:13->530:19
-	ADDI	%r31, %r31, $-36	# build/example.ml#530:13->530:19
+	ADDI	%r31, %r31, $-20	# build/example.ml#530:13->530:19
 	FMV	%fr9, %fr0	# build/example.ml#530:13->530:19
-	FLDR	%fr6, %r31, $32	# build/example.ml#530:13->530:19
 	MVI	%r9, $0	# build/example.ml#531:10->531:11
 	FMUL	%fr9, %fr7, %fr9	# build/example.ml#531:16->531:26
 	FSDD	%fr9, %r8, $4, %r9	# build/example.ml#531:3->531:26
-	FSDR	%fr6, %r31, $36	# build/example.ml#532:13->532:19
 	FMV	%fr0, %fr8	# build/example.ml#532:13->532:19
-	ADDI	%r31, %r31, $40	# build/example.ml#532:13->532:19
+	ADDI	%r31, %r31, $20	# build/example.ml#532:13->532:19
 	ADDI	%r31, %r31, $4	# build/example.ml#532:13->532:19
 	SIP	# build/example.ml#532:13->532:19
 	J	$min_caml_cos	# build/example.ml#532:13->532:19
-	ADDI	%r31, %r31, $-40	# build/example.ml#532:13->532:19
+	ADDI	%r31, %r31, $-20	# build/example.ml#532:13->532:19
 	FMV	%fr9, %fr0	# build/example.ml#532:13->532:19
-	FLDR	%fr6, %r31, $36	# build/example.ml#532:13->532:19
 	MVI	%r9, $2	# build/example.ml#533:10->533:11
 	FMUL	%fr9, %fr7, %fr9	# build/example.ml#533:16->533:26
 	FSDD	%fr9, %r8, $4, %r9	# build/example.ml#533:3->533:26
 	MVI	%r8, $min_caml_beam	# build/example.ml#534:3->534:7
 	MVI	%r9, $0	# build/example.ml#534:9->534:10
-	FSDD	%fr6, %r8, $4, %r9	# build/example.ml#534:3->534:28
+	RF	%fr9	# build/example.ml#534:15->534:28
+	FSDD	%fr9, %r8, $4, %r9	# build/example.ml#534:3->534:28
 	LDR	%r9, %r31, $0	# build/example.ml#525:17->525:30
 	LDR	%r8, %r31, $4	# build/example.ml#525:17->525:30
 	FLDR	%fr9, %r31, $8	# build/example.ml#525:17->525:30
@@ -14982,14 +14997,17 @@ read_screen_settings.2692:
 	FSDR	%fr7, %r31, $20	# build/example.ml#490:3->490:9
 	MVI	%r5, $min_caml_screen	# build/example.ml#490:3->490:9
 	MVI	%r9, $0	# build/example.ml#490:11->490:12
-	RF	%fr7	# build/example.ml#490:17->490:30
-	FSDD	%fr7, %r5, $4, %r9	# build/example.ml#490:3->490:30
+	RF	%fr9	# build/example.ml#490:17->490:30
+	FSDD	%fr9, %r5, $4, %r9	# build/example.ml#490:3->490:30
 	MVI	%r9, $1	# build/example.ml#491:11->491:12
-	FSDD	%fr7, %r5, $4, %r9	# build/example.ml#491:3->491:30
+	RF	%fr9	# build/example.ml#491:17->491:30
+	FSDD	%fr9, %r5, $4, %r9	# build/example.ml#491:3->491:30
 	MVI	%r9, $2	# build/example.ml#492:11->492:12
-	FSDD	%fr7, %r5, $4, %r9	# build/example.ml#492:3->492:30
+	RF	%fr9	# build/example.ml#492:17->492:30
+	FSDD	%fr9, %r5, $4, %r9	# build/example.ml#492:3->492:30
+	RF	%fr8	# build/example.ml#494:17->494:30
 	FLDA	%fr9, $l.7813	# build/example.ml#483:8->483:19
-	FMUL	%fr9, %fr7, %fr9	# build/example.ml#483:3->483:19
+	FMUL	%fr9, %fr8, %fr9	# build/example.ml#483:3->483:19
 	SDR	%r6, %r31, $24	# build/example.ml#495:16->495:22
 	SDR	%r5, %r31, $28	# build/example.ml#495:16->495:22
 	FSDR	%fr6, %r31, $32	# build/example.ml#495:16->495:22
@@ -15024,6 +15042,7 @@ read_screen_settings.2692:
 	FLDR	%fr6, %r31, $52	# build/example.ml#496:16->496:22
 	FLDR	%fr5, %r31, $56	# build/example.ml#496:16->496:22
 	FLDR	%fr4, %r31, $60	# build/example.ml#496:16->496:22
+	RF	%fr7	# build/example.ml#497:17->497:30
 	FLDA	%fr9, $l.7813	# build/example.ml#483:8->483:19
 	FMUL	%fr9, %fr7, %fr9	# build/example.ml#483:3->483:19
 	SDR	%r6, %r31, $64	# build/example.ml#498:16->498:22
@@ -15659,21 +15678,21 @@ vecunit_sgn.2591:
 	LDR	%r1, %r31, $52	# build/example.ml#92:15->92:24
 	MVI	%r9, $0	# build/example.ml#92:12->92:74
 	CEQ	%r8, %r9	# build/example.ml#92:12->92:74
-	JZ	$if_eq.11857	# build/example.ml#92:12->92:74
+	JZ	$if_eq.11855	# build/example.ml#92:12->92:74
 	FLDA	%rd, $l.7785	# build/example.ml#92:30->92:33
-	J	$if_eq_cont.11858	# build/example.ml#92:12->92:74
-if_eq.11857:
+	J	$if_eq_cont.11856	# build/example.ml#92:12->92:74
+if_eq.11855:
 	MVI	%r9, $0	# build/example.ml#92:39->92:74
 	CEQ	%r2, %r9	# build/example.ml#92:39->92:74
-	JZ	$if_eq.11859	# build/example.ml#92:39->92:74
+	JZ	$if_eq.11857	# build/example.ml#92:39->92:74
 	FLDA	%fr8, $l.7812	# build/example.ml#92:51->92:55
 	FDIV	%rd, %fr8, %fr9	# build/example.ml#92:51->92:60
-	J	$if_eq_cont.11860	# build/example.ml#92:39->92:74
-if_eq.11859:
+	J	$if_eq_cont.11858	# build/example.ml#92:39->92:74
+if_eq.11857:
 	FLDA	%fr8, $l.7785	# build/example.ml#92:66->92:69
 	FDIV	%rd, %fr8, %fr9	# build/example.ml#92:66->92:74
-if_eq_cont.11860:
 if_eq_cont.11858:
+if_eq_cont.11856:
 	MVI	%r8, $0	# build/example.ml#93:6->93:7
 	MVI	%r9, $0	# build/example.ml#93:15->93:16
 	FLDD	%fr8, %r1, $4, %r9	# build/example.ml#91:22->91:27
@@ -15737,22 +15756,22 @@ add_mod5.2570:
 	ADD	%r1, %r1, %r2	# build/example.ml#36:13->36:18
 	MVI	%r10, $5	# build/example.ml#37:13->37:14
 	CMP	%r1, %r10	# build/example.ml#37:3->37:36
-	JZ	$if_lt.11861	# build/example.ml#37:3->37:36
+	JZ	$if_lt.11859	# build/example.ml#37:3->37:36
 	MVI	%r10, $5	# build/example.ml#37:26->37:27
 	SUB	%r0, %r1, %r10	# build/example.ml#37:20->37:27
-	J	$if_lt_cont.11862	# build/example.ml#37:3->37:36
-if_lt.11861:
+	J	$if_lt_cont.11860	# build/example.ml#37:3->37:36
+if_lt.11859:
 	MV	%r0, %r1	# build/example.ml#37:33->37:36
-if_lt_cont.11862:
+if_lt_cont.11860:
 	LDR	%r10, %r31, $0	# build/example.ml#36:13->36:18
 	LINK	# build/example.ml#36:13->36:18
 fneg_cond.2567:
 	SDR	%r9, %r31, $0	# build/example.ml#31:3->31:29
 	MVI	%r9, $0	# build/example.ml#31:3->31:29
 	CEQ	%r1, %r9	# build/example.ml#31:3->31:29
-	JZ	$if_eq.11863	# build/example.ml#31:3->31:29
-	J	$if_eq_cont.11864	# build/example.ml#31:3->31:29
-if_eq.11863:
+	JZ	$if_eq.11861	# build/example.ml#31:3->31:29
+	J	$if_eq_cont.11862	# build/example.ml#31:3->31:29
+if_eq.11861:
 	SDR	%r1, %r31, $4	# build/example.ml#31:23->31:29
 	ADDI	%r31, %r31, $8	# build/example.ml#31:23->31:29
 	ADDI	%r31, %r31, $4	# build/example.ml#31:23->31:29
@@ -15760,7 +15779,7 @@ if_eq.11863:
 	J	$min_caml_fneg	# build/example.ml#31:23->31:29
 	ADDI	%r31, %r31, $-8	# build/example.ml#31:23->31:29
 	LDR	%r1, %r31, $4	# build/example.ml#31:23->31:29
-if_eq_cont.11864:
+if_eq_cont.11862:
 	LDR	%r9, %r31, $0	# build/example.ml#31:3->31:29
 	LINK	# build/example.ml#31:3->31:29
 sgn.2565:
@@ -15774,10 +15793,10 @@ sgn.2565:
 	MV	%r8, %r0	# build/example.ml#24:6->24:15
 	MVI	%r9, $0	# build/example.ml#24:3->26:12
 	CEQ	%r8, %r9	# build/example.ml#24:3->26:12
-	JZ	$if_eq.11865	# build/example.ml#24:3->26:12
+	JZ	$if_eq.11863	# build/example.ml#24:3->26:12
 	FLDA	%fr0, $l.7787	# build/example.ml#24:21->24:24
-	J	$if_eq_cont.11866	# build/example.ml#24:3->26:12
-if_eq.11865:
+	J	$if_eq_cont.11864	# build/example.ml#24:3->26:12
+if_eq.11863:
 	ADDI	%r31, %r31, $8	# build/example.ml#25:11->25:19
 	ADDI	%r31, %r31, $4	# build/example.ml#25:11->25:19
 	SIP	# build/example.ml#25:11->25:19
@@ -15786,13 +15805,13 @@ if_eq.11865:
 	MV	%r8, %r0	# build/example.ml#25:11->25:19
 	MVI	%r9, $0	# build/example.ml#25:8->26:12
 	CEQ	%r8, %r9	# build/example.ml#25:8->26:12
-	JZ	$if_eq.11867	# build/example.ml#25:8->26:12
+	JZ	$if_eq.11865	# build/example.ml#25:8->26:12
 	FLDA	%fr0, $l.7785	# build/example.ml#25:25->25:28
-	J	$if_eq_cont.11868	# build/example.ml#25:8->26:12
-if_eq.11867:
+	J	$if_eq_cont.11866	# build/example.ml#25:8->26:12
+if_eq.11865:
 	FLDA	%fr0, $l.7812	# build/example.ml#26:8->26:12
-if_eq_cont.11868:
 if_eq_cont.11866:
+if_eq_cont.11864:
 	LDR	%r9, %r31, $0	# build/example.ml#24:6->24:15
 	LDR	%r8, %r31, $4	# build/example.ml#24:6->24:15
 	LINK	# build/example.ml#24:6->24:15
@@ -15800,24 +15819,24 @@ xor.2562:
 	SDR	%r10, %r31, $0	# build/example.ml#16:31->16:53
 	MVI	%r10, $0	# build/example.ml#16:31->16:53
 	CEQ	%r1, %r10	# build/example.ml#16:31->16:53
-	JZ	$if_eq.11869	# build/example.ml#16:31->16:53
+	JZ	$if_eq.11867	# build/example.ml#16:31->16:53
 	MVI	%r1, $0	# build/example.ml#16:41->16:46
 	CEQ	%r2, %r1	# build/example.ml#16:41->16:46
-	JZ	$if_eq.11871	# build/example.ml#16:41->16:46
+	JZ	$if_eq.11869	# build/example.ml#16:41->16:46
 	MVI	%r0, $0	# build/example.ml#16:41->16:46
-	J	$if_eq_cont.11872	# build/example.ml#16:41->16:46
-if_eq.11871:
-	MVI	%r0, $1	# build/example.ml#16:41->16:46
-if_eq_cont.11872:
-	J	$if_eq_cont.11870	# build/example.ml#16:31->16:53
+	J	$if_eq_cont.11870	# build/example.ml#16:41->16:46
 if_eq.11869:
-	MV	%r0, %r2	# build/example.ml#16:52->16:53
+	MVI	%r0, $1	# build/example.ml#16:41->16:46
 if_eq_cont.11870:
+	J	$if_eq_cont.11868	# build/example.ml#16:31->16:53
+if_eq.11867:
+	MV	%r0, %r2	# build/example.ml#16:52->16:53
+if_eq_cont.11868:
 	LDR	%r10, %r31, $0	# build/example.ml#16:31->16:53
 	LINK	# build/example.ml#16:31->16:53
 min_caml_start:
-	LDA	%r30, $l.11469	# build/example.ml#2308:12->2308:15
-	LDA	%r31, $l.11470	# build/example.ml#2308:12->2308:15
+	LDA	%r30, $l.11467	# build/example.ml#2308:12->2308:15
+	LDA	%r31, $l.11468	# build/example.ml#2308:12->2308:15
 	SDR	%r9, %r31, $0	# build/example.ml#2308:12->2308:15
 	SDR	%r8, %r31, $4	# build/example.ml#2308:12->2308:15
 	MVI	%r8, $512	# build/example.ml#2308:12->2308:15
