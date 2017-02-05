@@ -1,11 +1,18 @@
 let rec float_of_int n = if n < 0 then -.(float_of_int (-n)) else
 	let rec loopa i j k =
-		if k*4/2 > i then j else loopa i (j+.j) (k*4/2) in
+		if k*2 > i then j else loopa i (j+.j) (k*2) in
 	let rec loopb i k =
-		if k*4/2 > i then k else loopb i (k*4/2) in
+		if k*2 > i then k else loopb i (k*2) in
 	let rec float_of_intsub i j k =
-		if i >= k then j +. (if k = 1 then 0.0 else (float_of_intsub (i-k) (j/.2.) (k/2)))
-		else (if k = 1 then 0.0 else (float_of_intsub i (j/.2.) (k/2))) in
+        (
+            if i >= k then j
+            else 0.
+        )
+        +.
+        (if k = 1 then 0. else
+            (float_of_intsub (if i >= k then i - k else i) (j /. 2.) (k / 2))
+        )
+    in
 	float_of_intsub n (loopa n 1. 1) (loopb n 1) in float_of_int 2;
 let rec int_of_float x = if x < 0. then -(int_of_float (-.x)) else
 	let rec searchsub y =
