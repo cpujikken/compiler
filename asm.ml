@@ -28,8 +28,7 @@ type t = (* 命令の列 (caml2html: sparcasm_t) *)
   | Let of (Operand.t * Type.t) * exp * t * Info.t
 and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *)
     | Nop
-    | IntRead
-    | FloatRead
+    | CharRead
     | Add of Operand.t * Operand.t
     | ShiftLeft of Operand.t * Operand.t
     | ShiftRight of Operand.t * Operand.t
@@ -107,8 +106,7 @@ exp_to_string_pre pre exp =
     in
     match exp with
     | Nop -> "Nop"
-    | IntRead -> "IntRead"
-    | FloatRead -> "FloatRead"
+    | CharRead -> "CharRead"
     | Add (op1, op2) -> Printf.sprintf "%sAdd %s, %s" pre (Operand.to_string op1) (Operand.to_string op2)
     | ShiftLeft (op1, op2) -> Printf.sprintf "%sShiftLeft %s, %s" pre (Operand.to_string op1) (Operand.to_string op2)
     | ShiftRight (op1, op2) -> Printf.sprintf "%sShiftRight %s, %s" pre (Operand.to_string op1) (Operand.to_string op2)
@@ -160,8 +158,7 @@ let rec has_sub_call = function
 and
 has_sub_call_exp = function
     | Nop
-    | IntRead
-    | FloatRead
+    | CharRead
     | Add _
     | ShiftLeft _
     | ShiftRight _

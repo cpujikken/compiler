@@ -24,8 +24,7 @@ let get_live_vars_addr = function
 
 let get_use_vars_exp_easy = function
     | Nop
-    | IntRead
-    | FloatRead
+    | CharRead
      -> S1.empty, S1.empty
 
     | Add (t1, t2)

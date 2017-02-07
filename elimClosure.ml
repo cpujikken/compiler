@@ -2,8 +2,7 @@ open Closure
 
 let rec effect = function
         | Unit _
-        | IntRead _
-        | FloatRead _
+        | CharRead _
         | Int _
         | Float _
         | Neg _
@@ -45,8 +44,7 @@ let rec effect = function
         | Put (x, y, z, info) -> true
 let rec elim = function
         | Unit _
-        | IntRead _
-        | FloatRead _
+        | CharRead _
         | Int _
         | Float _
         | Neg _

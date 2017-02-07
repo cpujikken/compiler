@@ -1,8 +1,7 @@
 type closure = { entry : Id.l; actual_fv : Id.t list }
 type t = (* クロージャ変換後の式 (caml2html: closure_t) *)
   | Unit of Info.t
-  | IntRead of Info.t
-  | FloatRead of Info.t
+  | CharRead of Info.t
   | Int of int * Info.t
   | Float of float * Info.t
   | Neg of Id.t * Info.t
@@ -43,8 +42,7 @@ type prog = Prog of fundef list * t
 
 let rec fv = function
   | Unit _
-  | IntRead _
-  | FloatRead _
+  | CharRead _
   | Int(_) | Float(_) | ExtArray(_) -> S.empty
 
   | Neg(x, info)
@@ -77,8 +75,7 @@ let toplevel : fundef list ref = ref []
  *)
 let rec generate env known = function (* クロージャ変換ルーチン本体 (caml2html: closure_g) *)
   | KNormal.Unit info -> Unit info
-  | KNormal.IntRead info -> IntRead info
-  | KNormal.FloatRead info -> FloatRead info
+  | KNormal.CharRead info -> CharRead info
   | KNormal.Int(i, info) -> Int(i, info)
   | KNormal.Float(d, info) -> Float(d, info)
   | KNormal.Neg(x, info) -> Neg(x, info)
@@ -212,8 +209,7 @@ let rec generate env known = function (* クロージャ変換ルーチン本体
 
 let get_info = function
   | Unit info
-  | IntRead info
-  | FloatRead info
+  | CharRead info
   | Int (_, info)
   | Float(_, info)
   | Neg(_, info)
@@ -253,8 +249,7 @@ let to_string x =
         in
         match k with
         | Unit info -> Printf.sprintf "%sUnit\t#%s" pre (Info.to_string info)
-        | IntRead info -> Printf.sprintf "%sIntRead\t#%s" pre (Info.to_string info)
-        | FloatRead info -> Printf.sprintf "%sFloatRead\t#%s" pre (Info.to_string info)
+        | CharRead info -> Printf.sprintf "%sCharRead\t#%s" pre (Info.to_string info)
         | Int(i, info) -> Printf.sprintf "%sINT %d\t#%s" pre i (Info.to_string info)
         | Float( f , info)-> Printf.sprintf "%sFLOAT %f\t#%s" pre f (Info.to_string info)
         | Neg(t, info) -> Printf.sprintf "%sNEG\t#%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre t)

@@ -65,8 +65,7 @@ let rec deref_term = function
   | Int _
   | Float _
   | Var _
-  | FloatRead _
-  | IntRead _ as e
+  | CharRead _ as e
   -> e
 
 let rec occur r1 = function (* occur check (caml2html: typing_occur) *)
@@ -487,8 +486,7 @@ let rec seperate_params params args param_id_exps param_exps = function
             unify (Type.Int info) typ2;
             Type.Unit info, Put(exp1, exp2, exp3, info)
 
-  | IntRead info -> Type.Int info, e
-  | FloatRead info -> Type.Float info, e
+  | CharRead info -> Type.Int info, e
   with Unify(t1, t2) -> raise (Error(deref_term e, deref_typ t1, deref_typ t2))
 
 let f out e =

@@ -61,10 +61,8 @@ rule token = parse
     {LTLT}
 | ">>"
     {GTGT}
-| "read_float"
-    {READ_FLOAT}
-| "read_int"
-    {READ_INT}
+| "read_char"
+    {READ_CHAR}
 | "print_byte"
     {PRINT_BYTE}
 | "fabs"

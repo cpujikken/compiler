@@ -25,8 +25,7 @@ let addtyp x info = (x, Type.gentyp info)
 %token SLASH
 %token LTLT
 %token GTGT
-%token READ_FLOAT
-%token READ_INT
+%token READ_CHAR
 %token PRINT_BYTE
 %token ABS_FLOAT
 %token EQUAL
@@ -119,10 +118,8 @@ exp: /* (* 一般の式 (caml2html: parser_exp) *) */
     { ShiftLeft($1, $3, Info.parsing_get())}
 | exp GTGT exp
     {ShiftRight ($1, $3, Info.parsing_get())}
-| READ_FLOAT LPAREN RPAREN
-    { FloatRead(Info.parsing_get())}
-| READ_INT LPAREN RPAREN
-    {IntRead(Info.parsing_get())}
+| READ_CHAR LPAREN RPAREN
+    {CharRead(Info.parsing_get())}
 | PRINT_BYTE exp
     %prec prec_app
     {Print ($2, Info.parsing_get())}

@@ -7,8 +7,7 @@ open Asm
   (*| _ -> false*)
 
 let rec effect_exp = function
-    | IntRead
-    | FloatRead
+    | CharRead
     | Load _
     | Store _
     | FLoad _
@@ -56,8 +55,7 @@ let rec free_vars = function
 and
 free_vars_exp = function
     | Nop
-    | IntRead
-    | FloatRead
+    | CharRead
     | MoveImm _
     -> S.empty
 
@@ -139,8 +137,7 @@ let rec elim = function
 and
 elim_exp = function
     | Nop
-    | IntRead
-    | FloatRead
+    | CharRead
     | Add _
     | ShiftLeft _
     | ShiftRight _
@@ -206,8 +203,7 @@ get_labels_exp = function
     | Addi _
     | MoveImm _
     | Nop
-    | IntRead
-    | FloatRead
+    | CharRead
     | Add _
     | ShiftLeft _
     | ShiftRight _

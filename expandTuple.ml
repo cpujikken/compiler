@@ -71,8 +71,7 @@ let rec expand_tuple idMap = function
             in
             AppDir(x, new_xlist, info)
     | Unit _
-    | IntRead _
-    | FloatRead _
+    | CharRead _
     | Int _
     | Float _
     | Neg _

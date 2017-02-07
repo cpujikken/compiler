@@ -29,8 +29,7 @@ type t = (* MinCamlの構文を表現するデータ型 (caml2html: syntax_t) *)
   | Put of t * t * t * Info.t
   | ShiftLeft of t * t * Info.t
   | ShiftRight of t * t * Info.t
-  | FloatRead of Info.t
-  | IntRead of Info.t
+  | CharRead of Info.t
   | Print of t * Info.t
   | Mul of t * t * Info.t
   | Div of t * t * Info.t
@@ -73,8 +72,7 @@ let to_string (x: t) =
         | Put (x, y, z, info) -> Printf.sprintf "%sPUT\t#%s\n%s\n%s\n%s" pre (Info.to_string info) (to_string_pre npre x) (to_string_pre npre y ) (to_string_pre npre z)
   | ShiftLeft (x, y, info) -> Printf.sprintf "%sSHIFT_LEFT\t#%s\n%s\n%s" pre (Info.to_string info) (to_string_pre npre x) (to_string_pre npre y)
   | ShiftRight (x, y, info) -> Printf.sprintf "%sSHIFT_RIGHT\t#%s\n%s\n%s" pre (Info.to_string info) (to_string_pre npre x) (to_string_pre npre y)
-    | FloatRead info -> Printf.sprintf "%sFLOAT_READ\t#%s" pre (Info.to_string info)
-    | IntRead info -> Printf.sprintf "%sINT_READ\t#%s" pre (Info.to_string info)
+    | CharRead info -> Printf.sprintf "%sCHAR_READ\t#%s" pre (Info.to_string info)
     | Print (t, info) -> Printf.sprintf "%sPRINT\t#%s\n%s" pre (Info.to_string info) (to_string_pre npre t)
     | FAbs (t, info) -> Printf.sprintf "%sFABS\t#%s\n%s" pre (Info.to_string info) (to_string_pre npre t)
   | Mul (x, y, info) -> Printf.sprintf "%sMUL\t#%s\n%s\n%s" pre (Info.to_string info) (to_string_pre npre x) (to_string_pre npre y)
@@ -147,8 +145,7 @@ let get_info = function
   | Put (_, _, _, info)
   | ShiftLeft(_, _, info)
   | ShiftRight(_, _, info)
-  | FloatRead info
-  | IntRead info
+  | CharRead info
   | Print (_, info)
   | FAbs (_, info)
   | Div(_, _, info)
