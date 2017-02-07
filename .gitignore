@@ -14,3 +14,4 @@
 /test/ultrapc/*.cmo
 /build/
 /example.ml
+.DS_Store
