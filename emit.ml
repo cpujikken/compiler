@@ -120,7 +120,7 @@ and generate' info = function (* 各命令のアセンブリ生成 (caml2html: e
     | NonTail rd, FNeg(rs) ->
                 append_cmd cmd_fNeg2 [rd; rs] info
     | NonTail rd, CharRead ->
-            append_cmd cmd_readInt [rd] info
+            append_cmd cmd_readChar [rd] info
     | NonTail rd, FAbs(rs) when rd = reg_dump || rs = reg_dump -> ()
     | NonTail rd, FAbs(rs) ->
                 append_cmd cmd_fAbs [rd; rs] info
