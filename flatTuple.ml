@@ -99,8 +99,7 @@ let rec flat env = function
           (Tuple(new_id_types, info))
 
     | Unit _
-    | IntRead _
-    | FloatRead _
+    | CharRead _
     | Int _
     | Float _
     | Neg _

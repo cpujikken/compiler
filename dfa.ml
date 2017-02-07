@@ -24,8 +24,7 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *
     | Int of int
     | Float of float
     | Nop
-    | IntRead
-    | FloatRead
+    | CharRead
     | Add of Operand.t * Operand.t
     | ShiftLeft of Operand.t * Operand.t
     | ShiftRight of Operand.t * Operand.t
@@ -130,8 +129,7 @@ has_side_effect_exp no_side_effect_defs = function
     | FMove _
     -> false
 
-    | IntRead
-    | FloatRead
+    | CharRead
     | Print _
     | Store _
     | FStore _
@@ -172,8 +170,7 @@ let rec remove_dup xs = function
 (* free variables in the order of use (for spilling) (caml2html: sparcasm_fv) *)
 let rec fv_exp = function
     | Nop
-    | IntRead
-    | FloatRead
+    | CharRead
     | Load (Absolute _ )
     | FLoad (Absolute _)
     | MoveImm _
@@ -241,8 +238,7 @@ let command_dest = function
 
 let command_source_exp = function
     | Nop
-    | IntRead
-    | FloatRead
+    | CharRead
     | Load (Absolute _ )
     | FLoad (Absolute _)
     | MoveImm _
@@ -298,8 +294,7 @@ let command_source_exp = function
 
 let command_source_branch = function
     | Nop
-    | IntRead
-    | FloatRead
+    | CharRead
     | Add _
     | ShiftLeft _
     | ShiftRight _
@@ -520,8 +515,7 @@ gen_graph_exp env = function
     | FStore _
     | Print _
     | Store _
-    | IntRead
-    | FloatRead
+    | CharRead
     as exp
     (*has side effect*)
     -> exp, env.id, env_append_assignment exp {env with calculable = false}
@@ -828,8 +822,7 @@ exp_to_string_pre pre exp =
     in
     match exp with
     | Nop -> "Nop"
-    | IntRead -> "IntRead"
-    | FloatRead -> "FloatRead"
+    | CharRead -> "CharRead"
     | Int i -> Printf.sprintf "%sInt %d" pre i
     | Float i -> Printf.sprintf "%sInt %.5f" pre i
     | Add (op1, op2) -> Printf.sprintf "%sAdd %s, %s" pre (Operand.to_string op1) (Operand.to_string op2)
@@ -1126,8 +1119,7 @@ let rec get_const_exp const_env env = function
     | FLoad _
 
     | MoveImm _
-    | IntRead
-    | FloatRead
+    | CharRead
     | IfEQ _
     | FIfEQ _
     | IfLT _
@@ -1443,8 +1435,7 @@ and
 convert_def_loop_exp const_env data = function
     | Nop -> data, Asm.Nop
     | Int _ | Float _ -> failwith "wrong compiler flow. Int and float must be const folded before"
-    | IntRead -> data, Asm.IntRead
-    | FloatRead -> data, Asm.FloatRead
+    | CharRead -> data, Asm.CharRead
     | Add (op1, op2) -> data, Asm.Add (op1, op2)
     | ShiftLeft (op1, op2) -> data, Asm.ShiftLeft (op1, op2)
     | ShiftRight (op1, op2) -> data, Asm.ShiftRight (op1, op2)

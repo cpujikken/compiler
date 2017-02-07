@@ -29,8 +29,7 @@ type t = (* K正規化後の式 (caml2html: knormal_t) *)
   | FAbs of Id.t * Info.t
   | ShiftLeft of Id.t * Id.t * Info.t
   | ShiftRight of Id.t * Id.t * Info.t
-  | IntRead of Info.t
-  | FloatRead of Info.t
+  | CharRead of Info.t
   | Print of Id.t * Info.t
   | Mul of Id.t * Id.t * Info.t
   | Div of Id.t * Id.t * Info.t
@@ -43,8 +42,7 @@ let to_string x =
         in
         match k with
         | Unit info -> Printf.sprintf "%sUnit\t#%s" pre (Info.to_string info)
-        | IntRead info -> Printf.sprintf "%sIntRead\t#%s" pre (Info.to_string info)
-        | FloatRead info -> Printf.sprintf "%sFloatRead\t#%s" pre (Info.to_string info)
+        | CharRead info -> Printf.sprintf "%sCharRead\t#%s" pre (Info.to_string info)
         | FAbs(t, info) -> Printf.sprintf "%sFAbs\t#%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre t)
         | Print(t, info) -> Printf.sprintf "%sPrint\t#%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre t)
         | Int(i, info) -> Printf.sprintf "%sINT %d\t#%s" pre i (Info.to_string info)
@@ -95,8 +93,7 @@ let print_all out exp = Printf.fprintf out "%s\n\n" @@ to_string exp
 
 let rec fv = function (* 式に出現する（自由な）変数 (caml2html: knormal_fv) *)
   | Unit (_) | Int(_, _) | Float(_, _) | ExtArray(_, _)
-  | IntRead _
-  | FloatRead _
+  | CharRead _
   -> S.empty
   | Neg(x, _) | FNeg(x, _)
   | Four(x, _) | Half(x, _)
@@ -133,8 +130,7 @@ let insert_let (e, t) k info = (* letを挿入する補助関数 (caml2html: kno
 
 let rec generate env = function (* K正規化ルーチン本体 (caml2html: knormal_g) *)
   | Syntax.Unit info -> Unit info, Type.Unit info
-  | Syntax.IntRead info -> IntRead info, Type.Int info
-  | Syntax.FloatRead info -> FloatRead info, Type.Float info
+  | Syntax.CharRead info -> CharRead info, Type.Int info
   | Syntax.Array(e, typ, info) ->
           insert_let (generate env e) (fun x -> Array(x, typ, info), Type.Array(typ, info)) info
   | Syntax.CreateArray(e1, e2, info) ->
@@ -326,9 +322,8 @@ let get_constructor_code = function
   | ShiftRight _ -> 28
   | Mul _ -> 29
   | Div _ -> 30
-  | IntRead _ -> 31
-  | FloatRead _ -> 32
-  | Array _ -> 33
+  | CharRead _ -> 31
+  | Array _ -> 32
 
 
 let id_type_compare (id1, type1) (id2, type2) =
@@ -339,8 +334,8 @@ let id_type_compare (id1, type1) (id2, type2) =
 (*expression compare*)
 let rec compare x y = match x, y with
     | Unit _, Unit _
-    | IntRead _, IntRead _
-    | FloatRead _, FloatRead _ -> 0
+    | CharRead _, CharRead _
+        -> 0
     | Int(a, _), Int(b, _) -> Pervasives.compare a b
     | Float(a, _), Float(b, _) -> Pervasives.compare a b
 

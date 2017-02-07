@@ -4,8 +4,7 @@ let find x env = try M.find x env with Not_found -> x (* 置換のための関�
 
 let rec generate env = function (* β簡約ルーチン本体 (caml2html: beta_g) *)
   | Unit info -> Unit info
-  | FloatRead info -> FloatRead info
-  | IntRead info -> IntRead info
+  | CharRead info -> CharRead info
   | Int(i, info) -> Int(i, info)
   | Float(d, info) -> Float(d, info)
   | Neg(x, info) -> Neg(find x env, info)

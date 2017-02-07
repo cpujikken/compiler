@@ -27,6 +27,14 @@ let external_func_type =
     in
     let float_float_bool = fun info -> Fun([Float info; Float info], Bool info, info)
     in
+    let unit_int = fun info -> Fun([Unit info], Int info, info)
+    in
+    let unit_float = fun info -> Fun([Unit info], Float info, info)
+    in
+    StringMap.add "read_int" unit_int
+    @@
+    StringMap.add "read_float" unit_float
+    @@
     StringMap.add "cos" float_float
     @@
     StringMap.add "sin" float_float

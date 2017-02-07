@@ -1,12 +1,31 @@
 #!/bin/sh
 
 recompile_compiler=false
-
-name=${1:-example}
+program=example
 build="build"
 log="${build}/log"
-input=${2:-sld/input.sld}
 output="${build}/output.ppm"
+input="contest.sld"
+
+program_path=${1}
+input_path=${2}
+
+if [ -z $program_path ]; then
+	echo "Usage: ./run <program path without .ml> [input file (optional)]"
+	exit 1
+fi;
+
+if [ ! -f "${program_path}.ml" ]; then
+	echo "File ${program_path}.ml does not exist. Exit"
+	exit 1
+fi
+
+if [ ! -z $input_path ]; then
+	if [ ! -f $input_path ]; then
+		echo "File ${input_path} does not exist. Exit"
+		exit 1
+	fi
+fi
 
 if [ "$recompile_compiler" = true ]; then
 	echo "Clean compiler..."
@@ -19,16 +38,12 @@ if [ "$recompile_compiler" = true ]; then
 	fi
 fi
 
-if [ ! -f "${name}.ml" ]; then
-	echo "File ${name}.ml not found. Exit"
-	exit 1;
-fi
-cp "${name}.ml" "${build}/${name}.ml"
+cp "${program_path}.ml" "${build}/${program}.ml"
 
-echo "Compile ${name}.ml..."
-./min-caml "${build}/${name}" 2>"${log}"
+echo "Compile ${program_path}.ml..."
+./min-caml "${build}/${program}" 2>"${log}"
 if [ $? -ne 0 ]; then
-	echo "Compile ${name}.ml failed. Exit"
+	echo "Compile ${program}.ml failed. Exit"
 	exit 1
 fi
 
@@ -44,7 +59,7 @@ fi
 
 echo "Compile library..."
 cp ../assembler/lib.ml "${build}/lib.ml"
-./min-caml "${build}/lib" -lib true 2>"${log}"
+./min-caml "${build}/lib" -lib true 2>>"${log}"
 
 if [ $? -ne 0 ]; then
 	echo "Compile library failed. Exit"
@@ -53,22 +68,22 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "Link library..."
-cat "${build}/${name}.s" globals.s "${build}/lib.s" > "${build}/${name}-linked.s"
+cat "${build}/${program}.s" globals.s "${build}/lib.s" > "${build}/${program}-linked.s"
 if [ $? -ne 0 ]; then
-	echo "Link library failed. Check if ${name}.s, globals.s, lib.s exist. Exit"
+	echo "Link library failed. Check if ${program}.s, globals.s, lib.s exist. Exit"
 	exit 1
 fi
 
 echo "Compile assembler..."
-make -C ../assembler >"${log}" 2>&1
+make -C ../assembler >>"${log}" 2>>"${log}"
 if [ $? -ne 0 ]; then
 	echo "Compile assembler failed. Exit"
 	exit 1
 fi
 
 echo "Assemble..."
-cp "${build}/${name}-linked.s" ../assembler/example.s
-make test -C ../assembler >"${log}" 2>&1
+cp "${build}/${program}-linked.s" ../assembler/example.s
+make test -C ../assembler >>"${log}" 2>>"${log}"
 if [ $? -ne 0 ]; then
 	echo "Assemble program failed. Exit"
 	exit 1
@@ -79,31 +94,35 @@ if [ ! -d "../Simulator" ]; then
 	exit 1
 fi
 
-cp ../assembler/example_label "${build}/${name}_label"
-cp ../assembler/example "${build}/${name}"
+cp ../assembler/example_label "${build}/${program}_label"
+cp ../assembler/example "${build}/${program}"
 if [ $? -ne 0 ]; then
-	echo "Cannot move file. Exit"
+	echo "Cannot copy file. Exit"
 	exit 1
 fi
 
 echo "Clean simulator..."
-make clean -C ../Simulator >"${log}" 2>&1
+make clean -C ../Simulator >>"${log}" 2>>"${log}"
 
 echo "Compile simulator..."
-make -C ../Simulator >"${log}" 2>&1
+make -C ../Simulator >>"${log}" 2>>"${log}"
 if [ $? -ne 0 ]; then
 	echo "Compile simulator failed. Exit"
 	exit 1
 fi
 
-cp "${input}" ../Simulator/contest.sld
+if [ -f "${input_path}" ]; then
+	cp "${input_path}" "${input}"
+else
+	rm -f "${input}"
+fi
 echo "Run program..."
-../Simulator/bsim "${build}/${name}"
+../Simulator/bsim "${build}/${program}"
 if [ $? -ne 0 ]; then
 	echo "Simulate program failed. Exit"
 	exit 1
 fi
 
-cp "${build}/${name}_out" "${output}"
+cp "${build}/${program}_out" "${output}"
 echo "Show running result..."
 cat "${output}"

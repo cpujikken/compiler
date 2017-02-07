@@ -32,5 +32,7 @@ let lib_funs = [
     "fhalf";
     "fless";
     "fisneg";
+    "read_int";
+    "read_float";
 ]
 let indent = " "

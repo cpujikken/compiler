@@ -146,8 +146,7 @@ map_exp color_map spilled_vars spilled_vars_type restored_vars call_guarded e re
     in
     match e with
     | Nop -> AsmReg.Nop, restored_vars
-    | IntRead -> AsmReg.IntRead, restored_vars
-    | FloatRead -> AsmReg.FloatRead, restored_vars
+    | CharRead -> AsmReg.CharRead, restored_vars
     | Add (op1, op2) -> AsmReg.Add(find_color op1, find_color op2), restored_vars
     | ShiftLeft (op1, op2) -> AsmReg.ShiftLeft(find_color op1, find_color op2), restored_vars
     | ShiftRight (op1, op2) -> AsmReg.ShiftRight(find_color op1, find_color op2), restored_vars
@@ -238,8 +237,7 @@ replace_id_exp id new_id e =
     in
     match e with
     | Nop
-    | IntRead
-    | FloatRead
+    | CharRead
     | MoveImm _
     as e -> e
     | Add (op1, op2) -> Add (replace op1, replace op2)

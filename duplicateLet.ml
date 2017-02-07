@@ -55,8 +55,7 @@ let rec generate env = function
   | KNormal.ShiftLeft _
   | KNormal.ShiftRight _
   | KNormal.FAbs _
-  | KNormal.IntRead _
-  | KNormal.FloatRead _
+  | KNormal.CharRead _
   | KNormal.Print _
   | KNormal.Array _
   as exp
