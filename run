@@ -2,9 +2,11 @@
 
 recompile_compiler=false
 
-name=$1
+name=${1:-example}
 build="build"
 log="${build}/log"
+input=${2:-sld/input.sld}
+output="${build}/output.ppm"
 
 if [ "$recompile_compiler" = true ]; then
 	echo "Clean compiler..."
@@ -94,6 +96,7 @@ if [ $? -ne 0 ]; then
 	exit 1
 fi
 
+cp "${input}" ../Simulator/contest.sld
 echo "Run program..."
 ../Simulator/bsim "${build}/${name}"
 if [ $? -ne 0 ]; then
@@ -101,5 +104,6 @@ if [ $? -ne 0 ]; then
 	exit 1
 fi
 
+cp "${build}/${name}_out" "${output}"
 echo "Show running result..."
-cat "${build}/${name}_out"
+cat "${output}"
