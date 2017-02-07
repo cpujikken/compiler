@@ -1,4 +1,0 @@
-APP	#build/example.ml#1:1->1:13
- VAR	#build/example.ml#1:1->1:10
-  ID print_int	#build/example.ml#1:1->1:10
- INT 10	#build/example.ml#1:11->1:13

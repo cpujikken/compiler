@@ -86,13 +86,21 @@ let rec concat e1 reg_and_type e2 =
   | Let(yt, exp, e1', info) -> Let(yt, exp, concat e1' reg_and_type e2, info)
 
 let rec to_string_pre pre e =
-    let npre = pre ^ "\t"
+    let npre = pre ^ Common.indent
     in
     match e with
   | Ans (exp, info) -> Printf.sprintf "%sAns of\t#%s\n%s" pre (Info.to_string info) (exp_to_string_pre npre exp)
   | Let ((operand, operand_type), exp, t, info) ->
-          Printf.sprintf "%sLET %s:%s\t#%s\n%s=\n%s\n%sIN\n%s" pre (Reg.to_string operand) (Type.to_string operand_type) (Info.to_string info)
-            pre (exp_to_string_pre npre exp) pre (to_string_pre npre t)
+          Printf.sprintf
+              "%sLET %s:%s\t#%s\n%s=\n%s\n%sIN\n%s"
+              pre
+              (Reg.to_string operand)
+              (Type.to_string operand_type)
+              (Info.to_string info)
+              pre
+              (exp_to_string_pre npre exp)
+              pre
+              (to_string_pre npre t)
 and
 to_string exp =
     to_string_pre "" exp
@@ -101,9 +109,9 @@ exp_to_string_pre pre exp =
     let npre = pre ^ Common.indent
     in
     match exp with
-    | Nop -> "Nop"
-    | IntRead -> "IntRead"
-    | FloatRead -> "FloatRead"
+    | Nop -> pre ^ "Nop"
+    | IntRead -> pre ^ "IntRead"
+    | FloatRead -> pre ^ "FloatRead"
     | Add (op1, op2) -> Printf.sprintf "%sAdd %s, %s" pre (Reg.to_string op1) (Reg.to_string op2)
     | ShiftLeft (op1, op2) -> Printf.sprintf "%sShiftLeft %s, %s" pre (Reg.to_string op1) (Reg.to_string op2)
     | ShiftRight (op1, op2) -> Printf.sprintf "%sShiftRight %s, %s" pre (Reg.to_string op1) (Reg.to_string op2)
@@ -125,7 +133,6 @@ exp_to_string_pre pre exp =
     | FDiv (op1, op2) -> Printf.sprintf "%sFDiv %s, %s" pre (Reg.to_string op1) (Reg.to_string op2)
     | FLoad addr -> Printf.sprintf "%sFLoat %s" pre (addr_to_string addr)
     | FStore (op, add) -> Printf.sprintf "%sFStore %s, %s" pre (Reg.to_string op) (addr_to_string add)
-
 
     | MoveImm loc -> Printf.sprintf "%sMoveImm %s" pre (Loc.to_string loc)
     | Move op -> Printf.sprintf "%sMove %s" pre (Reg.to_string op)

@@ -1,8 +1,0 @@
-body:
-LET	#build/example.ml#1:1->1:13
- ID Ti1.2	#build/example.ml#1:1->1:13
- Int_t	#build/example.ml#1:11->1:13
- INT 10	#build/example.ml#1:11->1:13
- APPDIR	#build/example.ml#1:1->1:13
-  ID min_caml_print_int	#build/example.ml#1:1->1:10
-  ID Ti1.2	#build/example.ml#1:1->1:13

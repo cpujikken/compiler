@@ -45,7 +45,7 @@ let rec map_all ret_type color_map spilled_vars spilled_vars_type restored_vars 
                         (*Printf.printf "Call guard for label %s\n" label;*)
                         StringSet.inter local_regs (StringMap.find label !used_local_regs_map_global)
             in
-            (*manually remove reg_ret and freg_ret from auto restore/save reg set*)
+            (*dont care reg_ret and freg_ret in auto restore/save reg set*)
             (*reg_cl also need to be save/restored. There is no need to manually add it here because it belongs to global reg set, thus, callee has to retain its value*)
             let to_save_regs = StringSet.remove reg_ret @@ StringSet.remove freg_ret @@ StringSet.inter all_regs overwritten_local_regs
             in
