@@ -16,3 +16,4 @@
 /example.ml
 .DS_Store
 /contest.sld
+!/build/.gitkeep
