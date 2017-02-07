@@ -10,6 +10,8 @@ input="contest.sld"
 program_path=${1}
 input_path=${2}
 
+mkdir -p "${build}"
+
 if [ -z $program_path ]; then
 	echo "Usage: ./run <program path without .ml> [input file (optional)]"
 	exit 1
