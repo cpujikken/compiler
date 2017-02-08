@@ -41,28 +41,6 @@ and
 (*map_exp has to restore variables before using*)
 (*but no need to save after assigning*)
 map_exp color_map spilled_vars spilled_vars_type restored_vars e ret_op ret_type info cont =
-    let find_color_opt forced x = match forced, x with
-        | _, Operand.Reg reg -> reg
-        | false, Operand.ID id when S.mem id spilled_vars && not (S.mem id restored_vars) ->
-                (*Printf.printf "id: %s\n" (Id.to_string id);*)
-                (*S.iter (fun x -> (Printf.printf "%s\n") @@ Id.to_string @@ x) restored_vars;*)
-                raise (Spill (id))
-        | _, Operand.ID id -> try
-                M.find id color_map
-            with
-            Not_found ->
-                failwith (Printf.sprintf "Wrong compiler flow. ID(%s) is not bound (colored) yet while mapping" (Id.to_string id))
-    in
-    let find_color = find_color_opt false
-    in
-    let find_addr = function
-        Relative (op, loc) -> AsmReg.Relative (find_color op, loc)
-        (*(r1, s4, r2): relative address
-         * of offset r2 * s4 from r1*)
-        | Dynamic (op1, s, op2) -> AsmReg.Dynamic(find_color op1, s, find_color op2)
-        | Absolute (t1, t2op) -> AsmReg.Absolute(t1, t2op)
-
-    in
     let restored_vars_new = match ret_op with
         | Operand.ID id when S.mem id spilled_vars ->
             let id_color = M.find id color_map
@@ -72,10 +50,32 @@ map_exp color_map spilled_vars spilled_vars_type restored_vars e ret_op ret_type
     in
     let cont_body, restored_vars = cont restored_vars_new
     in
-    let dest_reg = find_color_opt true ret_op
-    in
     let rec try_assign restored_vars =
         try
+            let find_color_opt forced x = match forced, x with
+                | _, Operand.Reg reg -> reg
+                | false, Operand.ID id when S.mem id spilled_vars && not (S.mem id restored_vars) ->
+                        (*Printf.printf "id: %s\n" (Id.to_string id);*)
+                        (*S.iter (fun x -> (Printf.printf "%s\n") @@ Id.to_string @@ x) restored_vars;*)
+                        raise (Spill (id))
+                | _, Operand.ID id -> try
+                        M.find id color_map
+                    with
+                    Not_found ->
+                        failwith (Printf.sprintf "Wrong compiler flow. ID(%s) is not bound (colored) yet while mapping" (Id.to_string id))
+            in
+            let find_color = find_color_opt false
+            in
+            let find_addr = function
+                Relative (op, loc) -> AsmReg.Relative (find_color op, loc)
+                (*(r1, s4, r2): relative address
+                 * of offset r2 * s4 from r1*)
+                | Dynamic (op1, s, op2) -> AsmReg.Dynamic(find_color op1, s, find_color op2)
+                | Absolute (t1, t2op) -> AsmReg.Absolute(t1, t2op)
+
+            in
+            let dest_reg = find_color_opt true ret_op
+            in
             match e with
             | Nop -> cont restored_vars_new
             | CharRead ->
