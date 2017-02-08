@@ -34,7 +34,7 @@ let gentmp typ info=
   incr counter;
   Printf.sprintf "T%s%d" (id_of_typ typ) !counter, info
 
-let to_string_pre pre ((id, info): t) = Printf.sprintf "%sID %s\t#%s" pre id (Info.to_string info)
+let to_string_pre pre ((id, info): t) = Printf.sprintf "%sID %s\t %s" pre id (Info.to_string info)
 let to_string_core x = fst x
 let get_info (_, info) = info
 let compare (x, _) (y, _) = Pervasives.compare x y

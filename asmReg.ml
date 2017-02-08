@@ -79,19 +79,19 @@ let seq(e1, e2, info) =
         info
         )
 
-let rec concat e1 reg_and_type e2 =
+let rec concat e1 e2 =
   match e1 with
-  | Ans(exp, info) -> Let(reg_and_type, exp, e2, info)
-  | Let(yt, exp, e1', info) -> Let(yt, exp, concat e1' reg_and_type e2, info)
+  | Ans(exp, info) -> Let((reg_dump, Type.Unit info) , exp, e2, info)
+  | Let(yt, exp, e1', info) -> Let(yt, exp, concat e1' e2, info)
 
 let rec to_string_pre pre e =
     let npre = pre ^ Common.indent
     in
     match e with
-  | Ans (exp, info) -> Printf.sprintf "%sAns of\t#%s\n%s" pre (Info.to_string info) (exp_to_string_pre npre exp)
+  | Ans (exp, info) -> Printf.sprintf "%sAns of\t %s\n%s" pre (Info.to_string info) (exp_to_string_pre npre exp)
   | Let ((operand, operand_type), exp, t, info) ->
           Printf.sprintf
-              "%sLET %s:%s\t#%s\n%s=\n%s\n%sIN\n%s"
+              "%sLET %s:%s\t %s\n%s=\n%s\n%sIN\n%s"
               pre
               (Reg.to_string operand)
               (Type.to_string operand_type)
@@ -180,7 +180,7 @@ let save_and_restore to_save_global_regs cmd =
         to_save_global_regs
         (Ans (Nop, info))
     in
-    concat cmd (reg_dump, Type.Unit info) restore
+    concat cmd restore
 
 let print_all out (Prog(idata, fdata, fundefs, body ) )=
       Printf.fprintf out "int data:\n";
@@ -198,4 +198,8 @@ let print_all out (Prog(idata, fdata, fundefs, body ) )=
           Printf.fprintf out "\n";
           Printf.fprintf out "closure body\n";
           Printf.fprintf out "%s\n" @@ to_string fundef.body
-      ) fundefs;
+      ) fundefs
+let ret_move_st = function
+    |Type.Float _ -> FMove freg_ret
+    | Type.Unit _ -> Move reg_dump
+    | _ -> Move reg_ret

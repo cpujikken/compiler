@@ -93,6 +93,10 @@ let rec get_live_vars_exp ((dest_op, dest_type) as dest) cont spilled_vars = fun
     | exp ->
             let int_in_cont, float_in_cont = get_live_vars_no_dest spilled_vars cont
             in
+            (*Printf.printf "int vars\n";*)
+            (*List.iter (S1.iter (fun x -> Printf.printf "%s\n" @@ Operand.to_string x)) int_in_cont;*)
+            (*Printf.printf "float vars\n";*)
+            (*List.iter (S1.iter (fun x -> Printf.printf "%s\n" @@ Operand.to_string x)) float_in_cont;*)
             let int_out =
                 try
                 S1.diff (List.hd int_in_cont) spilled_vars
@@ -181,13 +185,13 @@ get_live_vars_no_dest_if op1 op2 t1 t2 is_float spilled_vars =
     in
     let int_out =
         try
-        S1.diff (S1.union (List.hd int_in_vars1) (List.hd int_in_vars2)) spilled_vars
-                with _ -> failwith "common5"
+            S1.diff (S1.union (List.hd int_in_vars1) (List.hd int_in_vars2)) spilled_vars
+        with _ -> failwith "common5"
     in
     let float_out =
         try
-        S1.diff (S1.union (List.hd float_in_vars1) (List.hd float_in_vars2)) spilled_vars
-                with _ -> failwith "common6"
+            S1.diff (S1.union (List.hd float_in_vars1) (List.hd float_in_vars2)) spilled_vars
+        with _ -> failwith "common6"
     in
     let int_in, float_in =
         if is_float then
