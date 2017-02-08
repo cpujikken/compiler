@@ -32,7 +32,7 @@ while getopts ":a" opt; do
 	esac
 done
 
-if [ nocompile = false ]; then
+if [ $nocompile = false ]; then
 	if [ ! -f "${program_path}.ml" ]; then
 		echo "File ${program_path}.ml does not exist. Exit"
 		exit 1
