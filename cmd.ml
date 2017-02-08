@@ -35,7 +35,7 @@ let to_string opcode operand_list info_o =
     in
     match info_o with
     | Some info ->
-        Printf.sprintf "\t%s%s\t# %s" opcode (operand_list_to_string operand_list)  (Info.to_string info)
+        Printf.sprintf "\t%s%s\t %s" opcode (operand_list_to_string operand_list)  (Info.to_string info)
     | None ->
         Printf.sprintf "\t%s%s" opcode (operand_list_to_string operand_list)
 
@@ -49,7 +49,7 @@ let rec f output =
                      | None -> ()
                 );
                 (match comment_o with Some comment ->
-                    Printf.fprintf output "\t#%s" comment
+                    Printf.fprintf output "\t %s" comment
                      | None -> ()
                 );
                 Printf.fprintf output "\n"
@@ -60,7 +60,7 @@ let rec f output =
                 else
                     Printf.fprintf output "%s:" label;
                 (match comment_o with
-                    Some comment -> Printf.fprintf output "\t#%s" comment
+                    Some comment -> Printf.fprintf output "\t %s" comment
                     | None -> ()
                 );
                 Printf.fprintf output "\n"

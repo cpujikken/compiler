@@ -93,7 +93,7 @@ let rec to_string_pre pre e =
     let npre = pre ^ "  "
     in
     match e with
-  | Ans (exp, info) -> Printf.sprintf "%sAns of\t#%s\n%s" pre (Info.to_string info) (exp_to_string_pre npre exp)
+  | Ans (exp, info) -> Printf.sprintf "%sAns of\t %s\n%s" pre (Info.to_string info) (exp_to_string_pre npre exp)
   | Let ((operand, operand_type), exp, t, info) ->
           Printf.sprintf "%sLET %s\t%s\n%s\n%s=\n%s\n%sIN\n%s" pre (Operand.to_string operand) (Info.to_string info) (Type.to_string_pre npre operand_type)
             pre (exp_to_string_pre npre exp) pre (to_string_pre npre t)

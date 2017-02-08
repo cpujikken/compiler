@@ -368,7 +368,7 @@ let rec generate env e = (* 型推論ルーチン (caml2html: typing_g) *)
           | Type.Fun(t1s, _, _) as fun_type when List.length t1s > len ->
                   continue_partial_eval := true;
                           (*generate lambda*)
-                  (*test example: # let m = ref 10 in let n = ref 5 in let _ = (let t = fun x y z -> Printf.printf "%d\n" x in m := 1; t) (n := 3; 10) in Printf.printf "m = %d\n n = %d\n" !m !n;;
+                  (*test example:   let m = ref 10 in let n = ref 5 in let _ = (let t = fun x y z -> Printf.printf "%d\n" x in m := 1; t) (n := 3; 10) in Printf.printf "m = %d\n n = %d\n" !m !n;;
 * should print 1, 3 (not 10, 5)*)
 let rec seperate_params params args param_id_exps param_exps = function
     | [] -> params, args, param_id_exps

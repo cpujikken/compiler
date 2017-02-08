@@ -84,16 +84,16 @@ let rec to_string_pre pre typ =
     let npre = pre ^ Common.indent
     in
     match typ with
-    | Unit info -> Printf.sprintf "%sUnit_t\t#%s" pre (Info.to_string info)
-    | Bool info-> Printf.sprintf "%sBool_t\t#%s" pre (Info.to_string info)
-    | Int info-> Printf.sprintf "%sInt_t\t#%s" pre (Info.to_string info)
-    | Float info-> Printf.sprintf "%sFloat_t\t#%s" pre (Info.to_string info)
-    | Fun (xlist, y, info) -> Printf.sprintf "%sFun_t\t#%s%s\n%s" pre  (Info.to_string info) (to_string_list npre xlist) (to_string_pre npre y)
-    | Tuple(tlist, info) -> Printf.sprintf "%sTuple_t\t#%s%s" pre (Info.to_string info) (to_string_tuple npre tlist)
-    | Array(t, info) -> Printf.sprintf "%sArray_t\t#%s\n%s" pre (Info.to_string info) (to_string_pre npre t)
+    | Unit info -> Printf.sprintf "%sUnit_t\t %s" pre (Info.to_string info)
+    | Bool info-> Printf.sprintf "%sBool_t\t %s" pre (Info.to_string info)
+    | Int info-> Printf.sprintf "%sInt_t\t %s" pre (Info.to_string info)
+    | Float info-> Printf.sprintf "%sFloat_t\t %s" pre (Info.to_string info)
+    | Fun (xlist, y, info) -> Printf.sprintf "%sFun_t\t %s%s\n%s" pre  (Info.to_string info) (to_string_list npre xlist) (to_string_pre npre y)
+    | Tuple(tlist, info) -> Printf.sprintf "%sTuple_t\t %s%s" pre (Info.to_string info) (to_string_tuple npre tlist)
+    | Array(t, info) -> Printf.sprintf "%sArray_t\t %s\n%s" pre (Info.to_string info) (to_string_pre npre t)
     | Var(ref_opt_t, info) -> match !ref_opt_t with
-        | None -> Printf.sprintf "%sNone_t\t#%s" pre (Info.to_string info)
-        | Some t -> Printf.sprintf "%sVar_t\t#%s\n%s" pre (Info.to_string info) (to_string_pre npre t)
+        | None -> Printf.sprintf "%sNone_t\t %s" pre (Info.to_string info)
+        | Some t -> Printf.sprintf "%sVar_t\t %s\n%s" pre (Info.to_string info) (to_string_pre npre t)
     and to_string_tuple pre = function
         | [] -> ""
         | x :: xlist -> Printf.sprintf "\n%s%s" (to_string_pre pre x) (to_string_tuple pre xlist)

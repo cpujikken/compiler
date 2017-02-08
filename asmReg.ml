@@ -88,10 +88,10 @@ let rec to_string_pre pre e =
     let npre = pre ^ Common.indent
     in
     match e with
-  | Ans (exp, info) -> Printf.sprintf "%sAns of\t#%s\n%s" pre (Info.to_string info) (exp_to_string_pre npre exp)
+  | Ans (exp, info) -> Printf.sprintf "%sAns of\t %s\n%s" pre (Info.to_string info) (exp_to_string_pre npre exp)
   | Let ((operand, operand_type), exp, t, info) ->
           Printf.sprintf
-              "%sLET %s:%s\t#%s\n%s=\n%s\n%sIN\n%s"
+              "%sLET %s:%s\t %s\n%s=\n%s\n%sIN\n%s"
               pre
               (Reg.to_string operand)
               (Type.to_string operand_type)
