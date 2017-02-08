@@ -438,7 +438,7 @@ and generate_args params fparams info closure_name_opt =
   let (d, param_fregs) =
     List.fold_left
       (fun (d, param_fregs) z -> (d + 1, (z, freg_no d) :: param_fregs))
-      (0, [])
+      (1, [])
       fparams in
   List.iter
     (fun (y, fr) ->
