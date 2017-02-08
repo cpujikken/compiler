@@ -52,7 +52,7 @@ if [ $nocompile = false ]; then
 	cp "${program_path}.ml" "${build}/${program}.ml"
 
 	echo "Compile ${program_path}.ml..."
-	./min-caml "${build}/${program}" 2>"${log}"
+	./min-caml "${build}/${program}" >"${log}" 2>>"${log}"
 	if [ $? -ne 0 ]; then
 		echo "Compile ${program}.ml failed. Exit"
 		exit 1
