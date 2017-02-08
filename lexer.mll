@@ -97,6 +97,8 @@ rule token = parse
     { IDENT(Id.gentmp (Type.Unit (Info.lex_get lexbuf)) (Info.lex_get lexbuf)) }
 | "create_array" (* [XX] ad hoc *) (*because of such minrt's polymorphism*)
     { CREATE_ARRAY }
+| "Array.make"
+    { CREATE_ARRAY }
 | '.'
     { DOT }
 | "<-"

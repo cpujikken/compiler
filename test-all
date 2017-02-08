@@ -1,0 +1,24 @@
+#!/bin/sh
+
+do_test () {
+	file=$1
+	if [ file != "test/ack" ]; then
+		echo "Test $file.ml"
+		./run $file >/dev/null 2>/dev/null
+		if [ $? -ne 0 ]; then
+			echo "failed"
+		else
+			ocaml "${file}.ml" >build/ocaml_output
+			cat build/example_out
+			echo ""
+			cat build/ocaml_output
+			echo ""
+		fi
+		echo ""
+	fi
+}
+
+for f in test/*.ml
+do
+	do_test ${f%.ml}
+done
