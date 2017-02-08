@@ -9,6 +9,7 @@ input="contest.sld"
 
 program_path=${1}
 input_path=${2}
+nocompile=false
 
 mkdir -p "${build}"
 
@@ -17,11 +18,6 @@ if [ -z $program_path ]; then
 	exit 1
 fi;
 
-if [ ! -f "${program_path}.ml" ]; then
-	echo "File ${program_path}.ml does not exist. Exit"
-	exit 1
-fi
-
 if [ ! -z $input_path ]; then
 	if [ ! -f $input_path ]; then
 		echo "File ${input_path} does not exist. Exit"
@@ -29,78 +25,93 @@ if [ ! -z $input_path ]; then
 	fi
 fi
 
-if [ "$recompile_compiler" = true ]; then
-	echo "Clean compiler..."
-	make clean
-	echo "Compile compiler..."
-	make
-	if [ $? -ne 0 ]; then
-		echo "Compile compiler failed. Exit"
+while getopts ":a" opt; do
+	case $opt in
+		nc)
+			nocompile=true
+	esac
+done
+
+if [ nocompile = false ]; then
+	if [ ! -f "${program_path}.ml" ]; then
+		echo "File ${program_path}.ml does not exist. Exit"
 		exit 1
 	fi
-fi
 
-cp "${program_path}.ml" "${build}/${program}.ml"
+	if [ "$recompile_compiler" = true ]; then
+		echo "Clean compiler..."
+		make clean
+		echo "Compile compiler..."
+		make
+		if [ $? -ne 0 ]; then
+			echo "Compile compiler failed. Exit"
+			exit 1
+		fi
+	fi
 
-echo "Compile ${program_path}.ml..."
-./min-caml "${build}/${program}" 2>"${log}"
-if [ $? -ne 0 ]; then
-	echo "Compile ${program}.ml failed. Exit"
-	exit 1
-fi
+	cp "${program_path}.ml" "${build}/${program}.ml"
 
-if [ ! -d "../assembler" ]; then
-	echo "Assembler is not found. Exit"
-	exit 1
-fi
+	echo "Compile ${program_path}.ml..."
+	./min-caml "${build}/${program}" 2>"${log}"
+	if [ $? -ne 0 ]; then
+		echo "Compile ${program}.ml failed. Exit"
+		exit 1
+	fi
 
-if [ ! -f "../assembler/lib.ml" ]; then
-	echo "Library is not found. Exit"
-	exit 1
-fi
+	if [ ! -d "../assembler" ]; then
+		echo "Assembler is not found. Exit"
+		exit 1
+	fi
 
-echo "Compile library..."
-cp ../assembler/lib.ml "${build}/lib.ml"
-./min-caml "${build}/lib" -lib true 2>>"${log}"
+	if [ ! -f "../assembler/lib.ml" ]; then
+		echo "Library is not found. Exit"
+		exit 1
+	fi
 
-if [ $? -ne 0 ]; then
-	echo "Compile library failed. Exit"
-	cd ../compiler
-	exit 1
-fi
+	echo "Compile library..."
+	cp ../assembler/lib.ml "${build}/lib.ml"
+	./min-caml "${build}/lib" -lib true 2>>"${log}"
 
-echo "Link library..."
-cat "${build}/${program}.s" globals.s "${build}/lib.s" > "${build}/${program}-linked.s"
-if [ $? -ne 0 ]; then
-	echo "Link library failed. Check if ${program}.s, globals.s, lib.s exist. Exit"
-	exit 1
-fi
+	if [ $? -ne 0 ]; then
+		echo "Compile library failed. Exit"
+		cd ../compiler
+		exit 1
+	fi
 
-echo "Compile assembler..."
-make -C ../assembler >>"${log}" 2>>"${log}"
-if [ $? -ne 0 ]; then
-	echo "Compile assembler failed. Exit"
-	exit 1
-fi
+	echo "Link library..."
+	cat "${build}/${program}.s" globals.s "${build}/lib.s" > "${build}/${program}-linked.s"
+	if [ $? -ne 0 ]; then
+		echo "Link library failed. Check if ${program}.s, globals.s, lib.s exist. Exit"
+		exit 1
+	fi
 
-echo "Assemble..."
-cp "${build}/${program}-linked.s" ../assembler/example.s
-make test -C ../assembler >>"${log}" 2>>"${log}"
-if [ $? -ne 0 ]; then
-	echo "Assemble program failed. Exit"
-	exit 1
-fi
+	echo "Compile assembler..."
+	make -C ../assembler >>"${log}" 2>>"${log}"
+	if [ $? -ne 0 ]; then
+		echo "Compile assembler failed. Exit"
+		exit 1
+	fi
 
-if [ ! -d "../Simulator" ]; then
-	echo "simulator is not found. Exit"
-	exit 1
-fi
+	echo "Assemble..."
+	cp "${build}/${program}-linked.s" ../assembler/example.s
+	make test -C ../assembler >>"${log}" 2>>"${log}"
+	if [ $? -ne 0 ]; then
+		echo "Assemble program failed. Exit"
+		exit 1
+	fi
 
-cp ../assembler/example_label "${build}/${program}_label"
-cp ../assembler/example "${build}/${program}"
-if [ $? -ne 0 ]; then
-	echo "Cannot copy file. Exit"
-	exit 1
+	if [ ! -d "../Simulator" ]; then
+		echo "simulator is not found. Exit"
+		exit 1
+	fi
+
+	cp ../assembler/example_label "${build}/${program}_label"
+	cp ../assembler/example "${build}/${program}"
+	if [ $? -ne 0 ]; then
+		echo "Cannot copy file. Exit"
+		exit 1
+	fi
+
 fi
 
 echo "Clean simulator..."
