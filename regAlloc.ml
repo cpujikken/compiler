@@ -159,14 +159,14 @@ map_exp color_map spilled_vars spilled_vars_type restored_vars e ret_op ret_type
                 in
                     AsmReg.Let((dest_reg, ret_type), AsmReg.FIfLT (find_color op1, find_color op2, e1_ret, e2_ret), cont_body, info), S.inter restored_vars1 restored_vars2
             | CallCls (op, l1, l2) ->
-                    call_guard color_map None info
-                    (AsmReg.CallCls (find_color op, List.map find_color l1, List.map find_color l2))
-                    (AsmReg.Let((dest_reg, ret_type), AsmReg.ret_move_st ret_type, cont_body, info)) ,
+                call_guard color_map None info
+                (AsmReg.CallCls (find_color op, List.map find_color l1, List.map find_color l2))
+                (AsmReg.Let((dest_reg, ret_type), AsmReg.ret_move_st ret_type, cont_body, info))
                 restored_vars
             | CallDir (label, l1, l2) ->
-                    call_guard color_map (Some label) info
-                    (AsmReg.CallDir (label, List.map find_color l1, List.map find_color l2))
-                    (AsmReg.Let((dest_reg, ret_type), AsmReg.ret_move_st ret_type, cont_body, info)),
+                call_guard color_map (Some label) info
+                (AsmReg.CallDir (label, List.map find_color l1, List.map find_color l2))
+                (AsmReg.Let((dest_reg, ret_type), AsmReg.ret_move_st ret_type, cont_body, info))
                 restored_vars
         with
             | Spill id ->
@@ -176,7 +176,7 @@ map_exp color_map spilled_vars spilled_vars_type restored_vars e ret_op ret_type
     in
         try_assign restored_vars
 and
-call_guard color_map label_opt info call_exp cont_body =
+call_guard color_map label_opt info call_exp cont_body restored_vars =
     let all_regs = M.fold (fun _ reg set -> StringSet.add reg set) color_map StringSet.empty
     in
     (*get local regs that are used in callee function*)
@@ -217,7 +217,7 @@ call_guard color_map label_opt info call_exp cont_body =
         to_save_regs
         cont_body
     in
-        AsmReg.concat save_sts restore_sts
+        AsmReg.concat save_sts restore_sts, restored_vars
 
 
 (*only replace using, there is no replacement required in define statement*)

@@ -111,6 +111,8 @@ let rec get_live_vars_exp dest_op dest_type int_next_in float_next_in spilled_va
             in
             let float_in = S1.union (S1.diff float_live float_def) float_use
             in
+            S1.iter (fun x -> Printf.printf "%s, " @@ Operand.to_string x) int_live;
+            Printf.printf "\n";
                 [ int_live ], [ float_live ], int_in, float_in
 and
 get_live_vars_if dest_op dest_type int_next_in float_next_in op1 op2 t1 t2 is_float spilled_vars =
@@ -122,13 +124,17 @@ get_live_vars_if dest_op dest_type int_next_in float_next_in op1 op2 t1 t2 is_fl
         S1.diff (S1.union int_in1 int_in2) spilled_vars,
         S1.diff (S1.union float_in1 float_in2) spilled_vars
     in
-    let int_in, float_in =
+    let int_use, float_use =
         if is_float then
-            int_live,
-            S1.union float_live (S1.of_list [op1; op2])
+            S1.empty,
+            S1.of_list [op1; op2]
         else
-            S1.union int_live (S1.of_list [op1; op2]),
-            float_live
+            S1.of_list [op1; op2],
+            S1.empty
+    in
+    let int_in, float_in =
+        S1.union int_live int_use,
+        S1.union float_live float_use
     in
         int_live :: (int_lives1 @ int_lives2), float_live :: (float_lives1 @ float_lives2), int_in, float_in
 and
