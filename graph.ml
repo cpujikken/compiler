@@ -80,32 +80,24 @@ let get_use_vars_exp_easy = function
 
     (*return list of operand sets*)
     (*let dest = exp in cont*)
-let rec get_live_vars_exp ((dest_op, dest_type) as dest) cont spilled_vars = function
-    (*IN = OUT - DEF + USE*)
+let rec get_live_vars_exp dest_op dest_type int_next_in float_next_in spilled_vars = function
+    (*IN = LIVE - DEF + USE*)
     | IfEQ (op1, op2, t1, t2)
     | IfLT (op1, op2, t1, t2)
     ->
-        get_live_vars_if dest cont op1 op2 t1 t2 false spilled_vars
+        get_live_vars_if dest_op dest_type int_next_in float_next_in op1 op2 t1 t2 false spilled_vars
     | FIfEQ (op1, op2, t1, t2)
     | FIfLT (op1, op2, t1, t2)
     ->
-        get_live_vars_if dest  cont op1 op2 t1 t2 true spilled_vars
+        get_live_vars_if dest_op dest_type int_next_in float_next_in op1 op2 t1 t2 true spilled_vars
     | exp ->
-            let int_in_cont, float_in_cont = get_live_vars_no_dest spilled_vars cont
-            in
             (*Printf.printf "int vars\n";*)
             (*List.iter (S1.iter (fun x -> Printf.printf "%s\n" @@ Operand.to_string x)) int_in_cont;*)
             (*Printf.printf "float vars\n";*)
             (*List.iter (S1.iter (fun x -> Printf.printf "%s\n" @@ Operand.to_string x)) float_in_cont;*)
-            let int_out =
-                try
-                S1.diff (List.hd int_in_cont) spilled_vars
-                with _ -> failwith "common1"
+            let int_live = S1.diff int_next_in spilled_vars
             in
-            let float_out =
-                try
-                S1.diff (List.hd float_in_cont) spilled_vars
-                with _ -> failwith "common2"
+            let float_live = S1.diff float_next_in spilled_vars
             in
             let int_use, float_use = get_use_vars_exp_easy exp
             in
@@ -115,93 +107,39 @@ let rec get_live_vars_exp ((dest_op, dest_type) as dest) cont spilled_vars = fun
                 | _ -> S1.singleton dest_op, S1.empty
             )
             in
-            let int_in = S1.union (S1.diff int_out int_def) int_use
+            let int_in = S1.union (S1.diff int_live int_def) int_use
             in
-            let float_in = S1.union (S1.diff float_out float_def) float_use
+            let float_in = S1.union (S1.diff float_live float_def) float_use
             in
-                (int_in :: int_in_cont), (float_in :: float_in_cont)
+                [ int_live ], [ float_live ], int_in, float_in
 and
-get_live_vars_if dest cont op1 op2 t1 t2 is_float spilled_vars =
-    let int_in_vars1, float_in_vars1 = get_live_vars dest cont spilled_vars t1
+get_live_vars_if dest_op dest_type int_next_in float_next_in op1 op2 t1 t2 is_float spilled_vars =
+    let int_lives1, float_lives1, int_in1, float_in1 = get_live_vars dest_op dest_type int_next_in float_next_in spilled_vars t1
     in
-    let int_in_vars2, float_in_vars2 = get_live_vars dest cont spilled_vars t2
+    let int_lives2, float_lives2, int_in2, float_in2 = get_live_vars dest_op dest_type int_next_in float_next_in spilled_vars t2
     in
-    let int_out =
-        try
-        S1.diff(S1.union (List.hd int_in_vars1) (List.hd int_in_vars2)) spilled_vars
-                with _ -> failwith "common3"
-    in
-    let float_out =
-        try
-        S1.diff(S1.union (List.hd float_in_vars1) (List.hd float_in_vars2)) spilled_vars
-                with _ -> failwith "common4"
+    let int_live, float_live  =
+        S1.diff (S1.union int_in1 int_in2) spilled_vars,
+        S1.diff (S1.union float_in1 float_in2) spilled_vars
     in
     let int_in, float_in =
         if is_float then
-            int_out,
-            S1.union float_out (S1.of_list [op1; op2])
+            int_live,
+            S1.union float_live (S1.of_list [op1; op2])
         else
-            S1.union int_out (S1.of_list [op1; op2]),
-            float_out
+            S1.union int_live (S1.of_list [op1; op2]),
+            float_live
     in
-        int_in :: (int_in_vars1 @ int_in_vars2), float_in :: (float_in_vars1 @ float_in_vars2)
+        int_live :: (int_lives1 @ int_lives2), float_live :: (float_lives1 @ float_lives2), int_in, float_in
 and
-get_live_vars dest cont spilled_vars = function
-  | Ans (exp, _) -> get_live_vars_exp dest cont spilled_vars exp
-  | Let ((op, typ) as let_dest, let_exp, body_exp, _) ->
-          let cont1 = concat body_exp dest cont
-          in
-              get_live_vars_exp let_dest cont1 spilled_vars let_exp
-and
-(*get_live_vars_no_dest spilled_vars e =*)
-    (*let info = Asm.get_info e*)
-    (*in*)
-        (*get_live_vars (Operand.Reg Reg.reg_dump, Type.Unit info) (Asm.Ans(Asm.Nop, info)) spilled_vars e*)
-(*and*)
-get_live_vars_no_dest spilled_vars =  function
-  | Ans (exp, _) -> get_live_vars_no_dest_exp spilled_vars exp
-  | Let ((op, typ) as let_dest, let_exp, body_exp, _) ->
-          get_live_vars_exp let_dest body_exp  spilled_vars let_exp
-and
-get_live_vars_no_dest_exp spilled_vars = function
-    (*IN = OUT - DEF + USE*)
-    | IfEQ (op1, op2, t1, t2)
-    | IfLT (op1, op2, t1, t2)
-    ->
-        get_live_vars_no_dest_if op1 op2 t1 t2 false spilled_vars
-    | FIfEQ (op1, op2, t1, t2)
-    | FIfLT (op1, op2, t1, t2)
-    ->
-        get_live_vars_no_dest_if op1 op2 t1 t2 true spilled_vars
-    | exp ->
-            let int_in_vars, float_in_vars = get_use_vars_exp_easy exp
-            in
-                [int_in_vars], [float_in_vars]
-and
-get_live_vars_no_dest_if op1 op2 t1 t2 is_float spilled_vars =
-    let int_in_vars1, float_in_vars1 = get_live_vars_no_dest spilled_vars t1
-    in
-    let int_in_vars2, float_in_vars2 = get_live_vars_no_dest spilled_vars t2
-    in
-    let int_out =
-        try
-            S1.diff (S1.union (List.hd int_in_vars1) (List.hd int_in_vars2)) spilled_vars
-        with _ -> failwith "common5"
-    in
-    let float_out =
-        try
-            S1.diff (S1.union (List.hd float_in_vars1) (List.hd float_in_vars2)) spilled_vars
-        with _ -> failwith "common6"
-    in
-    let int_in, float_in =
-        if is_float then
-            int_out,
-            S1.union float_out (S1.of_list [op1; op2])
-        else
-            S1.union int_out (S1.of_list [op1; op2]),
-            float_out
-    in
-        int_in :: (int_in_vars1 @ int_in_vars2), float_in :: (float_in_vars1 @ float_in_vars2)
+get_live_vars dest_op dest_type int_next_in float_next_in spilled_vars = function
+  | Ans (exp, _) -> get_live_vars_exp dest_op dest_type int_next_in float_next_in spilled_vars exp
+  | Let ((op, typ), let_exp, body_exp, _) ->
+      let int_lives, float_lives, int_next_in, float_next_in = get_live_vars dest_op dest_type int_next_in float_next_in spilled_vars body_exp
+      in
+      let int_live1, float_lives1, int_next_in1, float_next_in1 = get_live_vars_exp op typ int_next_in float_next_in spilled_vars let_exp
+      in
+        int_lives @ int_live1, float_lives @ float_lives1, int_next_in1, float_next_in1
 
 let graph_from_lives lives =
     List.fold_right (fun var_set graph ->
@@ -247,7 +185,7 @@ combine_vars (i1, f1, u1) (i2, f2, u2) =
     S1.union i1 i2, S1.union f1 f2, S.union u1 u2
 and
 get_vars_exp = function
-    (*IN = OUT - DEF + USE*)
+    (*IN = LIVE - DEF + USE*)
     | IfEQ (op1, op2, t1, t2)
     | IfLT (op1, op2, t1, t2)
     ->
@@ -277,8 +215,13 @@ let graph_supply vars graph =
     vars
     graph
 
-let gen_graph e spilled_vars =
-    let int_lives, float_lives = get_live_vars_no_dest spilled_vars e
+let gen_graph dest_type e spilled_vars =
+    let ret_op = match dest_type with
+        | Type.Float _ -> Operand.Reg Reg.freg_ret
+        | Type.Unit _ -> Operand.Reg Reg.reg_dump
+        | _ -> Operand.Reg Reg.reg_ret
+    in
+    let int_lives, float_lives, _, _ = get_live_vars ret_op dest_type spilled_vars S1.empty S1.empty e
     in
     let int_graph, float_graph  = graph_from_lives int_lives , graph_from_lives float_lives
     in
@@ -452,9 +395,9 @@ let coloring_graph graph regs regenv spilled has_subcall =
 
     (*need to separate to int_graph and float_graph because sets of register are difference (Reg.allregs and Reg.allfregs)*)
 
-let rec coloring_loop regenv spilled_vars has_subcall e =
+let rec coloring_loop dest_type regenv spilled_vars_id has_subcall e =
     (*Printf.printf "closure body:\n%s\n" (Asm.to_string e);*)
-    let int_graph, float_graph, unit_vars = gen_graph e (S.fold (fun id set -> S1.add (Operand.ID id) set) spilled_vars S1.empty)
+    let int_graph, float_graph, unit_vars = gen_graph dest_type e (S.fold (fun id set -> S1.add (Operand.ID id) set) spilled_vars_id S1.empty)
     in
     let regenv' = S.fold (fun node current ->
         M.add node Reg.reg_dump current
@@ -464,15 +407,15 @@ let rec coloring_loop regenv spilled_vars has_subcall e =
     in
     (*Printf.printf "%s\n" (to_string int_graph);*)
     try
-        let int_color_map = coloring_graph int_graph (StringSet.remove Reg.reg_cl @@ StringSet.remove Reg.reg_ret @@ StringSet.of_list Reg.allregs) regenv' spilled_vars has_subcall
+        let int_color_map = coloring_graph int_graph (StringSet.remove Reg.reg_cl @@ StringSet.remove Reg.reg_ret @@ StringSet.of_list Reg.allregs) regenv' spilled_vars_id has_subcall
         in
-        let color_map = coloring_graph float_graph (StringSet.remove Reg.freg_ret @@ StringSet.of_list Reg.allfregs) int_color_map spilled_vars has_subcall
+        let color_map = coloring_graph float_graph (StringSet.remove Reg.freg_ret @@ StringSet.of_list Reg.allfregs) int_color_map spilled_vars_id has_subcall
         in
-            color_map, spilled_vars
+            color_map, spilled_vars_id
     with
         Spill id ->
             Printf.printf "Spill %s ...\n" (Id.to_string id);
-            coloring_loop regenv (S.add id spilled_vars) has_subcall e
+            coloring_loop dest_type regenv (S.add id spilled_vars_id) has_subcall e
 
-let coloring e regenv has_subcall =
-    coloring_loop regenv S.empty has_subcall e
+let coloring dest_type e regenv has_subcall =
+    coloring_loop dest_type regenv S.empty has_subcall e

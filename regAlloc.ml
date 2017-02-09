@@ -287,7 +287,7 @@ replace_id_exp id new_id e =
  *)
 let rec alloc ret_type ret_dest e regenv vars_type =
     (* get map of id and set of variables will be spilled*)
-    let color_map, spilled_vars = Graph.coloring e regenv (has_sub_call e)
+    let color_map, spilled_vars = Graph.coloring ret_type e regenv (has_sub_call e)
     in
     let info = Asm.get_info e
     in
@@ -295,11 +295,18 @@ let rec alloc ret_type ret_dest e regenv vars_type =
     let need_to_saved_args_with_type =
         (M.filter (fun id v -> S.mem id spilled_vars) vars_type)
     in
-    let need_to_saved_args = M.fold (fun k _ set -> S.add k set) need_to_saved_args_with_type S.empty
-    in
-    (*pass need_to_saved_args as restored_vars means: there is no need to restore var here before using them*)
     let mapped_exp, _ =
-        map_all ret_type ret_dest color_map spilled_vars vars_type need_to_saved_args e
+        map_all ret_type ret_dest color_map spilled_vars vars_type S.empty e
+    in
+    let mapped_exp =
+    (*there is no more assignment for arguments. Thus, save them before using*)
+        M.fold (fun id typ exp -> match typ with
+            | Type.Float _ -> AsmReg.Let((Reg.freg_dump, typ), AsmReg.Save(M.find id regenv, id), exp, info)
+            | Type.Unit _ -> exp
+            | _ -> AsmReg.Let((Reg.reg_dump, typ), AsmReg.Save(M.find id regenv, id), exp, info)
+        )
+        need_to_saved_args_with_type
+        mapped_exp
     in
     let used_regs = (M.fold (fun _ reg set -> StringSet.add reg set) color_map StringSet.empty)
     in
@@ -309,15 +316,8 @@ let rec alloc ret_type ret_dest e regenv vars_type =
         (*save arg if need*)
         AsmReg.save_and_restore
         to_save_global_regs
-        (
-            M.fold (fun id typ exp -> match typ with
-                | Type.Float _ -> AsmReg.Let((Reg.freg_dump, typ), AsmReg.Save(M.find id regenv, id), exp, info)
-                | Type.Unit _ -> exp
-                | _ -> AsmReg.Let((Reg.reg_dump, typ), AsmReg.Save(M.find id regenv, id), exp, info)
-            )
-            need_to_saved_args_with_type
-            mapped_exp
-        ), used_regs
+        mapped_exp
+        , used_regs
 
 (*assign register for func
  * returned register allocated fun def and set of used registers
@@ -327,15 +327,13 @@ let alloc_def { Asm.name = def_name; Asm.args = int_args; Asm.fargs = float_args
     in
     let (_, arg_regs, regenv) =
         List.fold_left
-            (fun (i, arg_regs, regenv) y ->
+            (fun (i, arg_regs, regenv) id ->
                 let r = reg_no i
                 in
                 (
                     i + 1,
                     arg_regs @ [r],
-                    match y with
-                    | Reg _ -> Info.exit info "parameter can not be allocated before reg alloc"
-                    | ID id -> M.add id r regenv
+                    M.add id r regenv
                     )
                 )
             (1, [], regenv)
@@ -343,14 +341,10 @@ let alloc_def { Asm.name = def_name; Asm.args = int_args; Asm.fargs = float_args
     in
     let (_, farg_regs, regenv) =
         List.fold_left
-        (fun (d, farg_regs, regenv) z ->
+        (fun (d, farg_regs, regenv) id ->
             let fr = freg_no d
             in
-            (d + 1, farg_regs @ [fr], (
-                match z with
-                | Reg _ -> Info.exit info "parameter can not be allocated before reg alloc"
-                | ID id -> M.add id fr regenv
-            ))
+            (d + 1, farg_regs @ [fr], M.add id fr regenv)
         )
         (1, [], regenv)
         float_args
@@ -358,17 +352,11 @@ let alloc_def { Asm.name = def_name; Asm.args = int_args; Asm.fargs = float_args
     (*setup regenv for graph coloring*)
     let info = Asm.get_info body
     in
-    let vars_type = List.fold_left (fun env arg -> match arg with
-        | Operand.ID id -> M.add id (Type.Int info)  env
-        | _ -> env
-    )
+    let vars_type = List.fold_left (fun env id -> M.add id (Type.Int info)  env)
     M.empty
     int_args
     in
-    let vars_type = List.fold_left (fun env arg -> match arg with
-        | Operand.ID id -> M.add id (Type.Float info)  env
-        | _ -> env
-    )
+    let vars_type = List.fold_left (fun env id -> M.add id (Type.Float info)  env)
     vars_type
     int_args
     in
@@ -382,7 +370,7 @@ let alloc_def { Asm.name = def_name; Asm.args = int_args; Asm.fargs = float_args
         alloc return_type return_reg body regenv vars_type
     in
         (*Printf.printf "closure body after regAlloc:\n%s\n" (AsmReg.to_string body');*)
-        { AsmReg.name = def_name; AsmReg.args =  arg_regs; AsmReg.fargs = farg_regs; AsmReg.body = body; AsmReg.ret = return_type; AsmReg.info = info },
+        { AsmReg.name = def_name; AsmReg.args =  int_args; AsmReg.fargs = float_args; AsmReg.body = body; AsmReg.ret = return_type; AsmReg.info = info },
         used_regs
 
 let calling_def_union s1_opt s2_opt = match s1_opt, s2_opt with

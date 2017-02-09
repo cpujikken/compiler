@@ -29,8 +29,8 @@ let separate id_type_list =
   classify
     id_type_list
     ([], [])
-    (fun (ints, floats) x -> (ints, floats @ [ID x]))
-    (fun (ints, floats) x _ -> (ints @ [ID x], floats))
+    (fun (ints, floats) x -> (ints, floats @ [x]))
+    (fun (ints, floats) x _ -> (ints @ [x], floats))
 
 let expand id_type_list init addf addi =
   classify
@@ -180,11 +180,11 @@ let rec generate env = function (* 式の仮想マシンコード生成 (caml2ht
   | Closure.AppCls(cls, params, info) ->
       let (ints, floats) = separate (List.map (fun y -> (y, M.find y env)) params)
       in
-      Ans(CallCls(ID cls, ints, floats), -1, info)
+      Ans(CallCls(ID cls, List.map (fun x -> Operand.ID x) ints, List.map (fun x -> Operand.ID x) floats), -1, info)
   | Closure.AppDir(cls, params, info) ->
       let (ints, floats) = separate (List.map (fun y -> (y, M.find y env)) params)
       in
-      Ans(CallDir(fst cls, ints, floats), -1, info)
+      Ans(CallDir(fst cls, List.map (fun x -> Operand.ID x) ints, List.map (fun x -> Operand.ID x) floats), -1, info)
   | Closure.Tuple(id_list, info) -> (* 組の生成 (caml2html: virtual_tuple) *)
           (*generate a now id*)
           (*this ID should keep position of the tuple*)
