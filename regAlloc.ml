@@ -239,12 +239,12 @@ replace_id_exp id new_id e =
     *)
 
 (*allocate expression e with returned opt and type (ret_dest ret_type)
- * regenv: current allocated (fixed) {id -> reg} map
+ * param_env: current allocated (fixed) {id -> reg} map
  * vars_type: type of some vars (more exactly: parameters) {id -> type} map
  *)
-let rec alloc ret_type ret_dest e regenv vars_type type_env =
+let rec alloc ret_type ret_dest e param_env vars_type type_env =
     (* get map of id and set of variables will be spilled*)
-    let color_map, e = Graph.coloring ret_type e regenv (has_sub_call e) type_env
+    let color_map, e = Graph.coloring ret_type e param_env (has_sub_call e) type_env
     in
     (*Printf.printf "spilled variables: ";*)
     (*S.iter (fun x -> Printf.printf "%s, " @@ Id.to_string x) spilled_vars;*)
@@ -290,34 +290,34 @@ get_type_env_exp type_env = function
  * returned register allocated fun def and set of used registers
  *)
 let alloc_def { Asm.name = def_name; Asm.args = int_args; Asm.fargs = float_args; Asm.body = body; Asm.ret = return_type ; Asm.info = info} = (* 関数のレジスタ割り当て (caml2html: regalloc_h) *)
-    let regenv = M.add (def_name, info) reg_cl M.empty
+    let param_env = M.add (def_name, info) reg_cl M.empty
     in
-    let _, arg_regs, regenv, type_env =
+    let _, arg_regs, param_env, type_env =
         List.fold_left
-            (fun (i, arg_regs, regenv, type_env) id ->
+            (fun (i, arg_regs, param_env, type_env) id ->
                 let r = reg_no i
                 in
                 (
                     i + 1,
                     arg_regs @ [r],
-                    M.add id r regenv,
+                    M.add id r param_env,
                     M.add id (Type.Int info) type_env
                     )
                 )
-            (1, [], regenv, M.empty)
+            (1, [], param_env, M.empty)
         int_args
     in
-    let _, farg_regs, regenv, type_env =
+    let _, farg_regs, param_env, type_env =
         List.fold_left
-        (fun (d, farg_regs, regenv, type_env) id ->
+        (fun (d, farg_regs, param_env, type_env) id ->
             let fr = freg_no d
             in
-            (d + 1, farg_regs @ [fr], M.add id fr regenv, M.add id (Type.Float info) type_env)
+            (d + 1, farg_regs @ [fr], M.add id fr param_env, M.add id (Type.Float info) type_env)
         )
-        (1, [], regenv, type_env)
+        (1, [], param_env, type_env)
         float_args
     in
-    (*setup regenv for graph coloring*)
+    (*setup param_env for graph coloring*)
     let info = Asm.get_info body
     in
     let vars_type = List.fold_left (fun env id -> M.add id (Type.Int info)  env)
@@ -335,7 +335,7 @@ let alloc_def { Asm.name = def_name; Asm.args = int_args; Asm.fargs = float_args
     in
     let body, used_regs  =
         (*Printf.printf "closure body:\n%s\n" (Asm.to_string body);*)
-        alloc return_type return_reg body regenv vars_type (get_type_env type_env body)
+        alloc return_type return_reg body param_env vars_type (get_type_env type_env body)
     in
         (*Printf.printf "closure body after regAlloc:\n%s\n" (AsmReg.to_string body');*)
         { AsmReg.name = def_name; AsmReg.args =  int_args; AsmReg.fargs = float_args; AsmReg.body = body; AsmReg.ret = return_type; AsmReg.info = info },

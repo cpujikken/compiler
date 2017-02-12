@@ -354,12 +354,12 @@ exception Spill of Id.t
     * if all nodes of graph are already spilled
     * -> this graph can not be colored by this algorithm
     *)
-let coloring_graph graph regs regenv spilled has_subcall =
+let coloring_graph graph regs param_env spilled has_subcall =
     let stack, _,  spillable = coloring_make_stack [] graph S.empty (StringSet.size regs)
     in
     (*List.iter (fun x -> Printf.printf "%s\n" (Operand.to_string x)) stack;*)
     (*Printf.printf "%s\n" (to_string graph);*)
-    (*M.iter (fun key x -> Printf.printf "%s: %s\n" (Id.to_string key) x) regenv;*)
+    (*M.iter (fun key x -> Printf.printf "%s: %s\n" (Id.to_string key) x) param_env;*)
     (*failwith "ha";*)
         List.fold_left (fun color_map node ->
             match node with
@@ -434,7 +434,7 @@ let coloring_graph graph regs regenv spilled has_subcall =
 
 
         )
-        regenv
+        param_env
         stack
 
     (*need to separate to int_graph and float_graph because sets of register are difference (Reg.allregs and Reg.allfregs)*)
@@ -444,7 +444,12 @@ let save id typ info body =
     Type.Float _ -> FSave(id)
     | _ -> Save(id)
   in
-    concat (Ans(save_st, info)) body
+  Let(
+    (Operand.Reg Reg.reg_dump, typ),
+    save_st,
+    body,
+    info
+    )
 let rec add_spill id typ = function
   | Ans(exp, info) ->
       let to_restore, exp = add_spill_exp id typ exp
@@ -482,33 +487,40 @@ add_spill_exp id typ= function
     in
       S1.exists (fun x -> x = Operand.ID id) used_int || S1.exists (fun x-> x = Operand.ID id) used_float, e
 
-let rec coloring_loop dest_type regenv spilled_vars_id has_subcall typ_env e =
+let rec coloring_loop dest_type param_env spilled_vars_id has_subcall typ_env e =
     (*Printf.printf "closure body:\n%s\n" (Asm.to_string e);*)
   (*Printf.printf "spilled vars id list";*)
   (*S.iter (fun x -> Printf.printf "%s, " @@ Id.to_string x) spilled_vars_id;*)
     let int_graph, float_graph, unit_vars = gen_graph dest_type e
     in
-    let regenv' = S.fold (fun node current ->
+    let param_env' = S.fold (fun node current ->
         M.add node Reg.reg_dump current
     )
     unit_vars
-    regenv
+    param_env
     in
     (*Printf.printf "%s\n" (to_string int_graph);*)
     try
-        let int_color_map = coloring_graph int_graph (StringSet.remove Reg.reg_cl @@ StringSet.remove Reg.reg_ret @@ StringSet.of_list Reg.allregs) regenv' spilled_vars_id has_subcall
+        let int_color_map = coloring_graph int_graph (StringSet.remove Reg.reg_cl @@ StringSet.remove Reg.reg_ret @@ StringSet.of_list Reg.allregs) param_env' spilled_vars_id has_subcall
         in
-        coloring_graph float_graph (StringSet.remove Reg.freg_ret @@ StringSet.of_list Reg.allfregs) int_color_map spilled_vars_id has_subcall, e
+        coloring_graph float_graph (StringSet.remove Reg.freg_ret @@ StringSet.of_list Reg.allfregs) int_color_map spilled_vars_id has_subcall, e, spilled_vars_id
     with
         Spill id ->
             Printf.printf "Spill %s ...\n" (Id.to_string id);
             let typ = M.find id typ_env
             in
-            let info = get_info e
-            in
-            let e = if M.mem id regenv then save id typ info e else e
-            in
-            coloring_loop dest_type regenv (S.add id spilled_vars_id) has_subcall typ_env (add_spill id typ e)
+            coloring_loop dest_type param_env (S.add id spilled_vars_id) has_subcall typ_env (add_spill id typ e)
 
-let coloring dest_type e regenv has_subcall typ_env =
-    coloring_loop dest_type regenv S.empty has_subcall typ_env e
+let coloring dest_type e param_env has_subcall typ_env =
+  let color_map, e, spilled_vars_id = coloring_loop dest_type param_env S.empty has_subcall typ_env e
+  in
+  let info = get_info e
+  in
+  let e = S.fold (fun spilled_id e ->
+    if M.mem spilled_id param_env then
+      save spilled_id (M.find spilled_id typ_env) info e
+    else
+      e
+  ) spilled_vars_id e
+  in
+    color_map, e
