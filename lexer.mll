@@ -66,6 +66,7 @@ rule token = parse
 | "print_byte"
     {PRINT_BYTE}
 | "fabs"
+| "abs_float"
     {ABS_FLOAT}
 | '='
     { EQUAL }
