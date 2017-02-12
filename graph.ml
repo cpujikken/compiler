@@ -111,8 +111,14 @@ let rec get_live_vars_exp dest_op dest_type int_next_in float_next_in spilled_va
             in
             let float_in = S1.union (S1.diff float_live float_def) float_use
             in
-            S1.iter (fun x -> Printf.printf "%s, " @@ Operand.to_string x) int_live;
-            Printf.printf "\n";
+            (*if S1.inter spilled_vars int_live != S1.empty then*)
+              (*failwith "helloworld";*)
+              (*Printf.printf "spilled var list: ";*)
+              (*S1.iter (fun x -> Printf.printf "%s, " @@ Operand.to_string x) spilled_vars;*)
+              (*Printf.printf "\n";*)
+              (*Printf.printf "int live list: ";*)
+              (*S1.iter (fun x -> Printf.printf "%s, " @@ Operand.to_string x) int_live;*)
+              (*Printf.printf "\n";*)
                 [ int_live ], [ float_live ], int_in, float_in
 and
 get_live_vars_if dest_op dest_type int_next_in float_next_in op1 op2 t1 t2 is_float spilled_vars =
@@ -136,6 +142,8 @@ get_live_vars_if dest_op dest_type int_next_in float_next_in op1 op2 t1 t2 is_fl
         S1.union int_live int_use,
         S1.union float_live float_use
     in
+            if S1.inter spilled_vars int_live != S1.empty then
+              failwith "helloworld";
         int_live :: (int_lives1 @ int_lives2), float_live :: (float_lives1 @ float_lives2), int_in, float_in
 and
 get_live_vars dest_op dest_type int_next_in float_next_in spilled_vars = function
@@ -149,6 +157,9 @@ get_live_vars dest_op dest_type int_next_in float_next_in spilled_vars = functio
 
 let graph_from_lives lives =
     List.fold_right (fun var_set graph ->
+      (*Printf.printf "live set: ";*)
+      (*S1.iter (fun x -> Printf.printf "%s, " @@ Operand.to_string x) var_set;*)
+      (*Printf.printf "\n";*)
         (*for each live variables set of each instruction*)
         S1.fold (fun u graph' ->
             (*for each element of live variables set*)
@@ -222,13 +233,27 @@ let graph_supply vars graph =
     graph
 
 let gen_graph dest_type e spilled_vars =
+    (*Printf.printf "\n";*)
+    (*Printf.printf "\n";*)
+    (*Printf.printf "\n";*)
+    (*Printf.printf "\n";*)
+    (*Printf.printf "\n";*)
+    (*Printf.printf "\n";*)
+    (*Printf.printf "\n";*)
+    (*Printf.printf "spilled list: ";*)
+    (*S1.iter (fun x -> Printf.printf "%s, " @@ Operand.to_string x) spilled_vars;*)
+    (*Printf.printf "\n";*)
     let ret_op = match dest_type with
         | Type.Float _ -> Operand.Reg Reg.freg_ret
         | Type.Unit _ -> Operand.Reg Reg.reg_dump
         | _ -> Operand.Reg Reg.reg_ret
     in
-    let int_lives, float_lives, _, _ = get_live_vars ret_op dest_type spilled_vars S1.empty S1.empty e
+    let int_lives, float_lives, _, _ = get_live_vars ret_op dest_type S1.empty S1.empty spilled_vars e
     in
+    List.iter (fun int_live ->
+            if S1.inter spilled_vars int_live != S1.empty then
+              failwith "helloworld";
+    ) int_lives;
     let int_graph, float_graph  = graph_from_lives int_lives , graph_from_lives float_lives
     in
     let int_vars, float_vars, unit_vars = get_vars e
@@ -238,6 +263,7 @@ let gen_graph dest_type e spilled_vars =
 let graph_get_degree_map graph =
     M2.map (fun set -> S1.size set) graph
 
+    (*return min degree and set of nodes have this min degree value*)
 let graph_get_min_deg_node degree_map =
     M2.fold (fun key deg (min_deg, min_deg_nodes) ->
         if deg < min_deg then
@@ -249,6 +275,7 @@ let graph_get_min_deg_node degree_map =
                 min_deg, min_deg_nodes
     ) degree_map (M2.size degree_map, [])
 
+    (*return max degree over all node's neighbors. Or return 0 if node does not have neighbor*)
 let graph_get_neighbor_max_deg node degree_map graph =
     S1.fold (fun neighbor max_deg ->
         let neighbor_deg = M2.find neighbor degree_map
@@ -259,6 +286,7 @@ let graph_get_neighbor_max_deg node degree_map graph =
     0
 
 
+    (*return node has a neighbor that has max degress*)
 let get_max_neighbor_deg_node min_deg_nodes degree_map graph =
     match
     List.fold_right (fun node (max_neighbor_deg, optimized_node_opt) ->
@@ -309,8 +337,8 @@ let rec coloring_make_stack current_stack graph spillable threshold =
             coloring_make_stack (to_remove_node ::current_stack) (graph_remove_node to_remove_node graph) spillable' threshold
 
 exception Spill of Id.t
-(*strategy:
-    * choose one from spillable set that is not spilled to spill
+(*strategy: how to choose node to spill
+    * choose one from spillable set that is not spilled
     * if spillable set is empty or all elements are already spilled
     * choose current coloring node
     * if current coloring node is already spilled
@@ -371,11 +399,9 @@ let coloring_graph graph regs regenv spilled has_subcall =
                                     in
                                         raise (Spill spill_id)
                                 );
-                            (
-                            if not (S.mem id spilled) then
-                                raise (Spill id)
-                                )
-                                ;
+                              ( if not (S.mem id spilled) then
+                                  raise (Spill id)
+                              ) ;
                             (
                             let neighbors = M2.find node graph
                             in
@@ -392,6 +418,12 @@ let coloring_graph graph regs regenv spilled has_subcall =
                                 )
                                 graph
                             );
+                            (*Printf.printf "id that can not be colored %s\n" @@ Id.to_string id;*)
+                            (*Printf.printf "%s's label list: " @@ Id.to_string id;*)
+                            (*S1.iter (fun x -> Printf.printf "%s, " @@ Operand.to_string x) @@ M2.find (Operand.ID id) graph;*)
+                            (*Printf.printf "\n";*)
+                            (*Printf.printf "spilled list: ";*)
+                            (*S.iter (fun x -> Printf.printf "%s, " @@ Id.to_string x) spilled;*)
                             failwith "graph can not be colored"
 
 
@@ -403,6 +435,8 @@ let coloring_graph graph regs regenv spilled has_subcall =
 
 let rec coloring_loop dest_type regenv spilled_vars_id has_subcall e =
     (*Printf.printf "closure body:\n%s\n" (Asm.to_string e);*)
+  (*Printf.printf "spilled vars id list";*)
+  (*S.iter (fun x -> Printf.printf "%s, " @@ Id.to_string x) spilled_vars_id;*)
     let int_graph, float_graph, unit_vars = gen_graph dest_type e (S.fold (fun id set -> S1.add (Operand.ID id) set) spilled_vars_id S1.empty)
     in
     let regenv' = S.fold (fun node current ->
