@@ -498,7 +498,7 @@ let rec coloring_loop dest_type regenv spilled_vars_id has_subcall typ_env e =
     try
         let int_color_map = coloring_graph int_graph (StringSet.remove Reg.reg_cl @@ StringSet.remove Reg.reg_ret @@ StringSet.of_list Reg.allregs) regenv' spilled_vars_id has_subcall
         in
-        coloring_graph float_graph (StringSet.remove Reg.freg_ret @@ StringSet.of_list Reg.allfregs) int_color_map spilled_vars_id has_subcall
+        coloring_graph float_graph (StringSet.remove Reg.freg_ret @@ StringSet.of_list Reg.allfregs) int_color_map spilled_vars_id has_subcall, e
     with
         Spill id ->
             Printf.printf "Spill %s ...\n" (Id.to_string id);

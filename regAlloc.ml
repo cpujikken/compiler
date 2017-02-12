@@ -244,7 +244,7 @@ replace_id_exp id new_id e =
  *)
 let rec alloc ret_type ret_dest e regenv vars_type type_env =
     (* get map of id and set of variables will be spilled*)
-    let color_map = Graph.coloring ret_type e regenv (has_sub_call e) type_env
+    let color_map, e = Graph.coloring ret_type e regenv (has_sub_call e) type_env
     in
     (*Printf.printf "spilled variables: ";*)
     (*S.iter (fun x -> Printf.printf "%s, " @@ Id.to_string x) spilled_vars;*)
