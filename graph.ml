@@ -5,11 +5,12 @@ let empty = M2.empty
 
 let to_string graph =
     M2.fold (fun node neighbor_set str ->
+      Printf.sprintf "%s\n" @@
         S1.fold (fun neighbor str' ->
-            Printf.sprintf "%s\n%s -> %s" str' (Operand.to_string node) (Operand.to_string neighbor)
+            Printf.sprintf "%s%s, " str' (Operand.to_string neighbor)
         )
         neighbor_set
-        str
+        (Printf.sprintf "%s%s -> " str @@ Operand.to_string node)
     )
     graph
     ""
@@ -250,12 +251,9 @@ let gen_graph dest_type e spilled_vars =
     in
     let int_lives, float_lives, _, _ = get_live_vars ret_op dest_type S1.empty S1.empty spilled_vars e
     in
-    List.iter (fun int_live ->
-            if S1.inter spilled_vars int_live != S1.empty then
-              failwith "helloworld";
-    ) int_lives;
     let int_graph, float_graph  = graph_from_lives int_lives , graph_from_lives float_lives
     in
+    (*Printf.printf "int graph: \n%s\n" @@ to_string int_graph;*)
     let int_vars, float_vars, unit_vars = get_vars e
     in
         graph_supply int_vars int_graph, graph_supply float_vars float_graph, unit_vars
@@ -348,7 +346,7 @@ exception Spill of Id.t
     * if all nodes of graph are already spilled
     * -> this graph can not be colored by this algorithm
     *)
-let coloring_graph graph regs regenv spilled has_subcall =
+let coloring_graph graph regs regenv spilled has_subcall spilled_reg =
     let stack, _,  spillable = coloring_make_stack [] graph S.empty (StringSet.size regs)
     in
     (*List.iter (fun x -> Printf.printf "%s\n" (Operand.to_string x)) stack;*)
@@ -359,6 +357,7 @@ let coloring_graph graph regs regenv spilled has_subcall =
             match node with
                 | Operand.Reg reg -> color_map
                 | Operand.ID id when M.mem id color_map -> color_map
+                | Operand.ID id when S.mem id spilled -> M.add id spilled_reg color_map
                 | Operand.ID id ->
                     let neighbor = M2.find node graph
                     in
@@ -447,9 +446,9 @@ let rec coloring_loop dest_type regenv spilled_vars_id has_subcall e =
     in
     (*Printf.printf "%s\n" (to_string int_graph);*)
     try
-        let int_color_map = coloring_graph int_graph (StringSet.remove Reg.reg_cl @@ StringSet.remove Reg.reg_ret @@ StringSet.of_list Reg.allregs) regenv' spilled_vars_id has_subcall
+        let int_color_map = coloring_graph int_graph (StringSet.remove Reg.reg_spilled @@ StringSet.remove Reg.reg_cl @@ StringSet.remove Reg.reg_ret @@ StringSet.of_list Reg.allregs) regenv' spilled_vars_id has_subcall Reg.reg_spilled
         in
-        let color_map = coloring_graph float_graph (StringSet.remove Reg.freg_ret @@ StringSet.of_list Reg.allfregs) int_color_map spilled_vars_id has_subcall
+        let color_map = coloring_graph float_graph (StringSet.remove Reg.freg_spilled @@ StringSet.remove Reg.freg_ret @@ StringSet.of_list Reg.allfregs) int_color_map spilled_vars_id has_subcall Reg.freg_spilled
         in
             color_map, spilled_vars_id
     with

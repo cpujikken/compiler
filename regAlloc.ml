@@ -289,6 +289,9 @@ let rec alloc ret_type ret_dest e regenv vars_type =
     (* get map of id and set of variables will be spilled*)
     let color_map, spilled_vars = Graph.coloring ret_type e regenv (has_sub_call e)
     in
+    (*Printf.printf "spilled variables: ";*)
+    (*S.iter (fun x -> Printf.printf "%s, " @@ Id.to_string x) spilled_vars;*)
+    (*Printf.printf "\n";*)
     let info = Asm.get_info e
     in
     (*list of parameters that will be spilled*)
