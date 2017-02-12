@@ -122,16 +122,25 @@ let rec generate env = function (* 式の仮想マシンコード生成 (caml2ht
   | Closure.Var(x, info) ->
       (match M.find x env with
       | Type.Unit _ -> Ans(Nop, -1, info)
-      | Type.Float _ -> Ans(FMove(Operand.ID x), -1, info)
-      | _ -> Ans(Move(Operand.ID x), -1, info))
+      | Type.Float _ -> Ans(FMove(ID x), -1, info)
+      | _ -> Ans(Move(ID x), -1, info))
   | Closure.Array (count, info) ->
+      let typ = Type.Int info
+      in
+      let id = Id.genid ("array", info)
+      in
       Let(
-          (Reg reg_hp, Type.Int info),
-          Add (Reg reg_hp, ID count),
-          -1,
-          Ans (Move (Reg reg_hp), -1, info),
-          info
-      )
+        (ID id, typ),
+        Move (Reg reg_hp),
+        -1,
+        Let(
+            (Reg reg_hp, typ),
+            Add (Reg reg_hp, ID count),
+            -1,
+            Ans (Move (ID id), -1, info),
+            info
+          ),
+        info)
 
   | Closure.MakeCls((start, t), { Closure.entry = entry; Closure.actual_fv = external_variable }, let_body, info) ->
           (* クロージャの生成 (caml2html: virtual_makecls) *)
@@ -166,7 +175,7 @@ let rec generate env = function (* 式の仮想マシンコード生成 (caml2ht
                   MoveImm( Label (fst entry)),
                   -1,
                   seq(
-                      Store(new_var, Relative(Operand.ID start, Constant 0)),
+                      Store(new_var, Relative(ID start, Constant 0)),
                       store_fv,
                       info
                       ),
@@ -180,11 +189,11 @@ let rec generate env = function (* 式の仮想マシンコード生成 (caml2ht
   | Closure.AppCls(cls, params, info) ->
       let (ints, floats) = separate (List.map (fun y -> (y, M.find y env)) params)
       in
-      Ans(CallCls(ID cls, List.map (fun x -> Operand.ID x) ints, List.map (fun x -> Operand.ID x) floats), -1, info)
+      Ans(CallCls(ID cls, List.map (fun x -> ID x) ints, List.map (fun x -> ID x) floats), -1, info)
   | Closure.AppDir(cls, params, info) ->
       let (ints, floats) = separate (List.map (fun y -> (y, M.find y env)) params)
       in
-      Ans(CallDir(fst cls, List.map (fun x -> Operand.ID x) ints, List.map (fun x -> Operand.ID x) floats), -1, info)
+      Ans(CallDir(fst cls, List.map (fun x -> ID x) ints, List.map (fun x -> ID x) floats), -1, info)
   | Closure.Tuple(id_list, info) -> (* 組の生成 (caml2html: virtual_tuple) *)
           (*generate a now id*)
           (*this ID should keep position of the tuple*)
