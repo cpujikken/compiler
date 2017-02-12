@@ -24,7 +24,7 @@ let locate x =
 let offset x =
     try
     4 * List.hd (locate x)
-    with _ -> failwith "try to restore variable before saving it"
+    with _ -> failwith (Printf.sprintf "try to restore variable %s before saving it" @@ Id.to_string x)
 let stacksize () = List.length !stackmap * 4
 
 (* 関数呼び出しのために引数を並べ替える(register shuffling) (caml2html: emit_shuffle) *)
