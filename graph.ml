@@ -26,6 +26,7 @@ let get_live_vars_addr = function
 let get_use_vars_exp_easy = function
     | Nop
     | CharRead
+    | Restore _
      -> S1.empty, S1.empty
 
     | Add (t1, t2)
@@ -47,6 +48,11 @@ let get_use_vars_exp_easy = function
     | FAbs t
     | FMove t
     -> S1.empty, S1.singleton t
+
+    | Save id
+    -> S1.singleton (Operand.ID id), S1.empty
+    | FSave id
+    -> S1.empty, S1.singleton (Operand.ID id)
 
     | FAdd (t1, t2)
     | FSub (t1, t2)
@@ -81,31 +87,35 @@ let get_use_vars_exp_easy = function
 
     (*return list of operand sets*)
     (*let dest = exp in cont*)
-let rec get_live_vars_exp dest_op dest_type int_next_in float_next_in spilled_vars = function
+let rec get_live_vars_exp dest_op dest_type int_next_in float_next_in = function
     (*IN = LIVE - DEF + USE*)
     | IfEQ (op1, op2, t1, t2)
     | IfLT (op1, op2, t1, t2)
     ->
-        get_live_vars_if dest_op dest_type int_next_in float_next_in op1 op2 t1 t2 false spilled_vars
+        get_live_vars_if dest_op dest_type int_next_in float_next_in op1 op2 t1 t2 false
     | FIfEQ (op1, op2, t1, t2)
     | FIfLT (op1, op2, t1, t2)
     ->
-        get_live_vars_if dest_op dest_type int_next_in float_next_in op1 op2 t1 t2 true spilled_vars
+        get_live_vars_if dest_op dest_type int_next_in float_next_in op1 op2 t1 t2 true
     | exp ->
             (*Printf.printf "int vars\n";*)
             (*List.iter (S1.iter (fun x -> Printf.printf "%s\n" @@ Operand.to_string x)) int_in_cont;*)
             (*Printf.printf "float vars\n";*)
             (*List.iter (S1.iter (fun x -> Printf.printf "%s\n" @@ Operand.to_string x)) float_in_cont;*)
-            let int_live = S1.diff int_next_in spilled_vars
+            let int_live = int_next_in
             in
-            let float_live = S1.diff float_next_in spilled_vars
+            let float_live = float_next_in
             in
             let int_use, float_use = get_use_vars_exp_easy exp
             in
+            let restore_def = match exp with
+              | Restore id -> S1.singleton (Operand.ID id)
+              | _ -> S1.empty
+            in
             let int_def, float_def = (match dest_type with
-                | Type.Float _ -> S1.empty, S1.singleton dest_op
-                | Type.Unit _ -> S1.empty, S1.empty
-                | _ -> S1.singleton dest_op, S1.empty
+                | Type.Float _ -> restore_def, S1.add dest_op restore_def
+                | Type.Unit _ -> restore_def, restore_def
+                | _ -> S1.add dest_op restore_def, restore_def
             )
             in
             let int_in = S1.union (S1.diff int_live int_def) int_use
@@ -122,14 +132,14 @@ let rec get_live_vars_exp dest_op dest_type int_next_in float_next_in spilled_va
               (*Printf.printf "\n";*)
                 [ int_live ], [ float_live ], int_in, float_in
 and
-get_live_vars_if dest_op dest_type int_next_in float_next_in op1 op2 t1 t2 is_float spilled_vars =
-    let int_lives1, float_lives1, int_in1, float_in1 = get_live_vars dest_op dest_type int_next_in float_next_in spilled_vars t1
+get_live_vars_if dest_op dest_type int_next_in float_next_in op1 op2 t1 t2 is_float =
+    let int_lives1, float_lives1, int_in1, float_in1 = get_live_vars dest_op dest_type int_next_in float_next_in t1
     in
-    let int_lives2, float_lives2, int_in2, float_in2 = get_live_vars dest_op dest_type int_next_in float_next_in spilled_vars t2
+    let int_lives2, float_lives2, int_in2, float_in2 = get_live_vars dest_op dest_type int_next_in float_next_in t2
     in
     let int_live, float_live  =
-        S1.diff (S1.union int_in1 int_in2) spilled_vars,
-        S1.diff (S1.union float_in1 float_in2) spilled_vars
+        S1.union int_in1 int_in2,
+        S1.union float_in1 float_in2
     in
     let int_use, float_use =
         if is_float then
@@ -143,16 +153,14 @@ get_live_vars_if dest_op dest_type int_next_in float_next_in op1 op2 t1 t2 is_fl
         S1.union int_live int_use,
         S1.union float_live float_use
     in
-            if S1.inter spilled_vars int_live != S1.empty then
-              failwith "helloworld";
         int_live :: (int_lives1 @ int_lives2), float_live :: (float_lives1 @ float_lives2), int_in, float_in
 and
-get_live_vars dest_op dest_type int_next_in float_next_in spilled_vars = function
-  | Ans (exp, _) -> get_live_vars_exp dest_op dest_type int_next_in float_next_in spilled_vars exp
+get_live_vars dest_op dest_type int_next_in float_next_in = function
+  | Ans (exp, _) -> get_live_vars_exp dest_op dest_type int_next_in float_next_in exp
   | Let ((op, typ), let_exp, body_exp, _) ->
-      let int_lives, float_lives, int_next_in, float_next_in = get_live_vars dest_op dest_type int_next_in float_next_in spilled_vars body_exp
+      let int_lives, float_lives, int_next_in, float_next_in = get_live_vars dest_op dest_type int_next_in float_next_in body_exp
       in
-      let int_live1, float_lives1, int_next_in1, float_next_in1 = get_live_vars_exp op typ int_next_in float_next_in spilled_vars let_exp
+      let int_live1, float_lives1, int_next_in1, float_next_in1 = get_live_vars_exp op typ int_next_in float_next_in let_exp
       in
         int_lives @ int_live1, float_lives @ float_lives1, int_next_in1, float_next_in1
 
@@ -233,7 +241,7 @@ let graph_supply vars graph =
     vars
     graph
 
-let gen_graph dest_type e spilled_vars =
+let gen_graph dest_type e =
     (*Printf.printf "\n";*)
     (*Printf.printf "\n";*)
     (*Printf.printf "\n";*)
@@ -249,7 +257,7 @@ let gen_graph dest_type e spilled_vars =
         | Type.Unit _ -> Operand.Reg Reg.reg_dump
         | _ -> Operand.Reg Reg.reg_ret
     in
-    let int_lives, float_lives, _, _ = get_live_vars ret_op dest_type S1.empty S1.empty spilled_vars e
+    let int_lives, float_lives, _, _ = get_live_vars ret_op dest_type S1.empty S1.empty e
     in
     let int_graph, float_graph  = graph_from_lives int_lives , graph_from_lives float_lives
     in
@@ -346,7 +354,7 @@ exception Spill of Id.t
     * if all nodes of graph are already spilled
     * -> this graph can not be colored by this algorithm
     *)
-let coloring_graph graph regs regenv spilled has_subcall spilled_reg =
+let coloring_graph graph regs regenv spilled has_subcall =
     let stack, _,  spillable = coloring_make_stack [] graph S.empty (StringSet.size regs)
     in
     (*List.iter (fun x -> Printf.printf "%s\n" (Operand.to_string x)) stack;*)
@@ -357,7 +365,6 @@ let coloring_graph graph regs regenv spilled has_subcall spilled_reg =
             match node with
                 | Operand.Reg reg -> color_map
                 | Operand.ID id when M.mem id color_map -> color_map
-                | Operand.ID id when S.mem id spilled -> M.add id spilled_reg color_map
                 | Operand.ID id ->
                     let neighbor = M2.find node graph
                     in
@@ -432,11 +439,54 @@ let coloring_graph graph regs regenv spilled has_subcall spilled_reg =
 
     (*need to separate to int_graph and float_graph because sets of register are difference (Reg.allregs and Reg.allfregs)*)
 
-let rec coloring_loop dest_type regenv spilled_vars_id has_subcall e =
+let save id typ info body =
+  let save_st = match typ with
+    Type.Float _ -> FSave(id)
+    | _ -> Save(id)
+  in
+    concat (Ans(save_st, info)) body
+let rec add_spill id typ = function
+  | Ans(exp, info) ->
+      let to_restore, exp = add_spill_exp id typ exp
+      in
+      if to_restore then
+        Let((Operand.ID id, typ), Restore id, Ans(exp, info), info)
+      else
+        Ans(exp, info)
+  | Let((Operand.ID op_id, typ) as op_typ, let_exp, body, info) when op_id = id ->
+      Let(op_typ, let_exp,
+        save op_id typ info @@ add_spill id typ body,
+        info
+      )
+  | Let(op_typ, let_exp, body, info) ->
+      let to_restore, exp = add_spill_exp id typ let_exp
+      in
+      let core = Let(op_typ, exp, add_spill id typ body, info)
+      in
+      if to_restore then
+        Let((Operand.ID id, typ), Restore id, core, info)
+      else
+        core
+and
+add_spill_exp id typ= function
+    | IfEQ (op1, op2, t1, t2)
+    -> op1 = Operand.ID id || op2 = Operand.ID id, IfEQ(op1, op2, add_spill id typ t1, add_spill id typ t2)
+    | IfLT (op1, op2, t1, t2)
+    -> op1 = Operand.ID id || op2 = Operand.ID id, IfLT(op1, op2, add_spill id typ t1, add_spill id typ t2)
+    | FIfEQ (op1, op2, t1, t2)
+    -> op1 = Operand.ID id || op2 = Operand.ID id, FIfEQ(op1, op2, add_spill id typ t1, add_spill id typ t2)
+    | FIfLT (op1, op2, t1, t2)
+    -> op1 = Operand.ID id || op2 = Operand.ID id, FIfLT(op1, op2, add_spill id typ t1, add_spill id typ t2)
+    | e ->
+    let used_int, used_float = get_use_vars_exp_easy e
+    in
+      S1.exists (fun x -> x = Operand.ID id) used_int || S1.exists (fun x-> x = Operand.ID id) used_float, e
+
+let rec coloring_loop dest_type regenv spilled_vars_id has_subcall typ_env e =
     (*Printf.printf "closure body:\n%s\n" (Asm.to_string e);*)
   (*Printf.printf "spilled vars id list";*)
   (*S.iter (fun x -> Printf.printf "%s, " @@ Id.to_string x) spilled_vars_id;*)
-    let int_graph, float_graph, unit_vars = gen_graph dest_type e (S.fold (fun id set -> S1.add (Operand.ID id) set) spilled_vars_id S1.empty)
+    let int_graph, float_graph, unit_vars = gen_graph dest_type e
     in
     let regenv' = S.fold (fun node current ->
         M.add node Reg.reg_dump current
@@ -446,15 +496,19 @@ let rec coloring_loop dest_type regenv spilled_vars_id has_subcall e =
     in
     (*Printf.printf "%s\n" (to_string int_graph);*)
     try
-        let int_color_map = coloring_graph int_graph (StringSet.remove Reg.reg_spilled @@ StringSet.remove Reg.reg_cl @@ StringSet.remove Reg.reg_ret @@ StringSet.of_list Reg.allregs) regenv' spilled_vars_id has_subcall Reg.reg_spilled
+        let int_color_map = coloring_graph int_graph (StringSet.remove Reg.reg_cl @@ StringSet.remove Reg.reg_ret @@ StringSet.of_list Reg.allregs) regenv' spilled_vars_id has_subcall
         in
-        let color_map = coloring_graph float_graph (StringSet.remove Reg.freg_spilled @@ StringSet.remove Reg.freg_ret @@ StringSet.of_list Reg.allfregs) int_color_map spilled_vars_id has_subcall Reg.freg_spilled
-        in
-            color_map, spilled_vars_id
+        coloring_graph float_graph (StringSet.remove Reg.freg_ret @@ StringSet.of_list Reg.allfregs) int_color_map spilled_vars_id has_subcall
     with
         Spill id ->
             Printf.printf "Spill %s ...\n" (Id.to_string id);
-            coloring_loop dest_type regenv (S.add id spilled_vars_id) has_subcall e
+            let typ = M.find id typ_env
+            in
+            let info = get_info e
+            in
+            let e = if M.mem id regenv then save id typ info e else e
+            in
+            coloring_loop dest_type regenv (S.add id spilled_vars_id) has_subcall typ_env (add_spill id typ e)
 
-let coloring dest_type e regenv has_subcall =
-    coloring_loop dest_type regenv S.empty has_subcall e
+let coloring dest_type e regenv has_subcall typ_env =
+    coloring_loop dest_type regenv S.empty has_subcall typ_env e
