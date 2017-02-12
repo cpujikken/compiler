@@ -107,6 +107,7 @@ if [ $nocompile = false ]; then
 
 	cp ../assembler/example_label "${build}/${program}_label"
 	cp ../assembler/example "${build}/${program}"
+  cp ../assembler/comment.s "./comment.s"
 	if [ $? -ne 0 ]; then
 		echo "Cannot copy file. Exit"
 		exit 1

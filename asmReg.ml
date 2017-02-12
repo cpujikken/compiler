@@ -64,7 +64,7 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *
     | CallDir of label * Reg.t list * Reg.t list
     | Restore of Id.t
     | Save of Reg.t * Id.t
-type fundef = { name : label; args : Reg.t list; fargs : Reg.t list; body : t; ret : Type.t ; info: Info.t}
+type fundef = { name : label; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t ; info: Info.t}
 (* プログラム全体 = 浮動小数点数テーブル + トップレベル関数 + メインの式 (caml2html: sparcasm_prog) *)
 type prog = Prog of (Id.l * int) list * (Id.l * float) list * fundef list * t
 
@@ -191,10 +191,10 @@ let print_all out (Prog(idata, fdata, fundefs, body ) )=
       List.iter (fun fundef ->
           Printf.fprintf out "closure %s\n" fundef.name ;
           Printf.fprintf out "int args:\n";
-          List.iter (Printf.fprintf out "%s, ") fundef.args;
+          List.iter (fun x ->Printf.fprintf out "%s, " @@ Id.to_string x) fundef.args;
           Printf.fprintf out "\n";
           Printf.fprintf out "float args:\n";
-          List.iter (Printf.fprintf out "%s, ") fundef.fargs;
+          List.iter (fun x -> Printf.fprintf out "%s, " @@ Id.to_string x) fundef.fargs;
           Printf.fprintf out "\n";
           Printf.fprintf out "closure body\n";
           Printf.fprintf out "%s\n" @@ to_string fundef.body

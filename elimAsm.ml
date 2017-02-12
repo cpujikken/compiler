@@ -17,6 +17,9 @@ let rec effect_exp = function
     | Print _
     -> true
 
+  | Save _| FSave _| Restore _
+  -> failwith "cannot alloc before elimAsm"
+
     | Nop
     | Add _
     | ShiftLeft _
@@ -58,6 +61,9 @@ free_vars_exp = function
     | CharRead
     | MoveImm _
     -> S.empty
+
+  | Save _| FSave _| Restore _
+  -> failwith "cannot alloc before elimAsm"
 
     | Add (op1, op2)
     | ShiftLeft (op1, op2)
@@ -164,6 +170,9 @@ elim_exp = function
     | FMove _
     | CallCls _
     | CallDir _
+    | Save _
+    | FSave _
+    | Restore _
     as exp -> exp
 
     | IfEQ (op1, op2, exp1, exp2) -> IfEQ(op1, op2, elim exp1, exp2)
@@ -226,6 +235,9 @@ get_labels_exp = function
     | FStore _
     | Move _
     | FMove _
+    | Save _
+    | FSave _
+    | Restore _
 
     | CallCls _
     -> StringSet.empty

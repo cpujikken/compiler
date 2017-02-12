@@ -51,6 +51,9 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *
     | FLoad of addr
     | FStore of Operand.t * addr
 
+    | Save of Id.t
+    | FSave of Id.t
+    | Restore of Id.t
 
     | MoveImm of Loc.t
     | Move of Operand.t
@@ -62,7 +65,7 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *
     | FIfLT of Operand.t * Operand.t * t * t
     | CallCls of Operand.t * Operand.t list * Operand.t list
     | CallDir of label * Operand.t list * Operand.t list
-type fundef = { name : label; args : Operand.t list; fargs : Operand.t list; body : t; ret : Type.t ; info: Info.t}
+type fundef = { name : label; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t ; info: Info.t}
 (* プログラム全体 = 浮動小数点数テーブル + トップレベル関数 + メインの式 (caml2html: sparcasm_prog) *)
 type prog = Prog of (Id.l * int) list * (Id.l * float) list * fundef list * t
 
@@ -76,10 +79,10 @@ let seq(e1, e2, info) =
         )
 
 (*let xt = e1 then evaluate e2*)
-let rec concat e1 xt e2 =
+let rec concat e1 e2 =
   match e1 with
-  | Ans(exp, info) -> Let(xt, exp, e2, info)
-  | Let(yt, exp, e1', info) -> Let(yt, exp, concat e1' xt e2, info)
+  | Ans(exp, info) -> Let((Operand.Reg Reg.reg_dump, Type.Unit info), exp, e2, info)
+  | Let(yt, exp, e1', info) -> Let(yt, exp, concat e1' e2, info)
 
 let get_info = function
   | Ans (_, info)
@@ -129,6 +132,9 @@ exp_to_string_pre pre exp =
     | FLoad addr -> Printf.sprintf "%sFLoat %s" pre (addr_to_string addr)
     | FStore (op, add) -> Printf.sprintf "%sFStore %s, %s" pre (Operand.to_string op) (addr_to_string add)
 
+    | Save (id) -> Printf.sprintf "%sSave %s" pre (Id.to_string id)
+    | FSave (id) -> Printf.sprintf "%sFSave %s" pre (Id.to_string id)
+    | Restore id -> Printf.sprintf "%sRestore %s" pre @@ Id.to_string id
 
     | MoveImm loc -> Printf.sprintf "%sMoveImm %s" pre (Loc.to_string loc)
     | Move op -> Printf.sprintf "%sMove %s" pre (Operand.to_string op)
@@ -183,6 +189,9 @@ has_sub_call_exp = function
     | MoveImm _
     | Move _
     | FMove _
+    | Save _
+    | FSave _
+    | Restore _
     -> false
 
     | IfEQ (_, _, t1, t2)
@@ -203,10 +212,10 @@ let print_all out (Prog(idata, fdata, fundefs, body ) )=
       List.iter (fun fundef ->
           Printf.fprintf out "closure %s\n" fundef.name ;
           Printf.fprintf out "int args:\n";
-          List.iter (fun x->Printf.fprintf out "%s, " @@ Operand.to_string x) fundef.args;
+          List.iter (fun x->Printf.fprintf out "%s, " @@ Id.to_string x) fundef.args;
           Printf.fprintf out "\n";
           Printf.fprintf out "float args:\n";
-          List.iter (fun x->Printf.fprintf out "%s, " @@ Operand.to_string x) fundef.fargs;
+          List.iter (fun x->Printf.fprintf out "%s, " @@ Id.to_string x) fundef.fargs;
           Printf.fprintf out "\n";
           Printf.fprintf out "closure body\n";
           Printf.fprintf out "%s\n" @@ to_string fundef.body

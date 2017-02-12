@@ -58,7 +58,7 @@ and exp = (* 一つ一つの命令に対応する式 (caml2html: sparcasm_exp) *
     | FIfLT of Operand.t * Operand.t * t * t
     | CallCls of Operand.t * Operand.t list * Operand.t list
     | CallDir of label * Operand.t list * Operand.t list
-type fundef = { name : label; args : Operand.t list; fargs : Operand.t list; body : t; ret : Type.t ; info: Info.t}
+type fundef = { name : label; args : Id.t list; fargs : Id.t list; body : t; ret : Type.t ; info: Info.t}
 (* プログラム全体 = 浮動小数点数テーブル + トップレベル関数 + メインの式 (caml2html: sparcasm_prog) *)
 type prog = fundef list * t
 
@@ -78,8 +78,8 @@ env = {
     id: int;
     dest: Operand.t;
     funname: string;
-    int_params: Operand.t list;
-    float_params: Operand.t list;
+    int_params: Id.t list;
+    float_params: Id.t list;
     graph: IntSet.t IntMap.t;
     last_blocks: block list;
     block_map: block IntMap.t;
@@ -421,7 +421,7 @@ let env_new_command command env =
 let env_tail_call int_args float_args env =
     let env = {env with calculable = false }
     in
-    let params = env.int_params @ env.float_params
+    let params = List.map (fun x -> Operand.ID x) (env.int_params @ env.float_params)
     in
     let args = int_args @ float_args
     in
@@ -1318,7 +1318,7 @@ const_fold tmp {name = name; args = int_args; fargs = float_args; body = body; r
 
         )
         (env, [])
-        (int_args @ float_args)
+        (List.map (fun x -> Operand.ID x) (int_args @ float_args))
     in
     let env = env_new_block (entry_block, entry_block_id) env
     in
@@ -1353,7 +1353,7 @@ const_fold tmp {name = name; args = int_args; fargs = float_args; body = body; r
                     let m, _ = List.fold_left (fun (map, no) int_op ->
                             (
                             try
-                                M2.add int_op (IntMap.find no int_const_args) map
+                                M2.add (Operand.ID int_op) (IntMap.find no int_const_args) map
                             with Not_found -> map
                             ), no + 1
                         )
@@ -1363,7 +1363,7 @@ const_fold tmp {name = name; args = int_args; fargs = float_args; body = body; r
                     let m, _ = List.fold_left (fun (map, no) int_op ->
                             (
                             try
-                                M2.add int_op (IntMap.find no float_const_args) map
+                                M2.add (Operand.ID int_op) (IntMap.find no float_const_args) map
                             with Not_found -> map
                             ), no + 1
                         )
@@ -1536,7 +1536,7 @@ let gen_fundefs tmp fundefs =
     fun_by_name, List.fold_right (fun fundef (data, ret) ->
         let data, converted_def =  convert_def tmp fun_by_name data fundef no_side_effect_defs
         in
-        let fundef = { Asm.name = fundef.name; args = fundef.args; fargs = fundef.fargs; body = converted_def; ret = fundef.ret ; info = fundef.info}
+        let fundef = { Asm.name = fundef.name; Asm.args = fundef.args; fargs = fundef.fargs; body = converted_def; ret = fundef.ret ; info = fundef.info}
         in
             data, (fundef :: ret)
     )
@@ -1563,10 +1563,10 @@ let print_all out (fundefs, body )=
       List.iter (fun fundef ->
           Printf.fprintf out "closure %s\n" fundef.name ;
           Printf.fprintf out "int args:\n";
-          List.iter (fun x->Printf.fprintf out "%s, " @@ Operand.to_string x) fundef.args;
+          List.iter (fun x->Printf.fprintf out "%s, " @@ Id.to_string x) fundef.args;
           Printf.fprintf out "\n";
           Printf.fprintf out "float args:\n";
-          List.iter (fun x->Printf.fprintf out "%s, " @@ Operand.to_string x) fundef.fargs;
+          List.iter (fun x->Printf.fprintf out "%s, " @@ Id.to_string x) fundef.fargs;
           Printf.fprintf out "\n";
           Printf.fprintf out "closure body\n";
           Printf.fprintf out "%s\n" @@ to_string fundef.body
