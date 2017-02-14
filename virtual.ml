@@ -287,6 +287,14 @@ let fun_converter { Closure.name = (x , t); Closure.args = args; Closure.formal_
       (fun z offset load -> Let((ID z, Type.Float info), FLoad(Relative(Reg reg_cl, Constant offset)), -1, load, info))
       (fun z t offset load -> Let((ID z, t), Load(Relative(Reg reg_cl, Constant offset)), -1, load, info))
   in
+  let load = Let(
+      (ID x, Type.Int info),
+      Move (Reg reg_cl),
+      -1,
+      load,
+      info
+      )
+  in
   match t with
   | Type.Fun(_, t2, _) ->
           { name = fst x; args = ints; fargs = floats; body = load; ret = t2 ; info = info}

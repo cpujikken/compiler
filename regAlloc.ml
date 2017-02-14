@@ -290,7 +290,7 @@ get_type_env_exp type_env = function
  * returned register allocated fun def and set of used registers
  *)
 let alloc_def { Asm.name = def_name; Asm.args = int_args; Asm.fargs = float_args; Asm.body = body; Asm.ret = return_type ; Asm.info = info} = (* 関数のレジスタ割り当て (caml2html: regalloc_h) *)
-    let param_env = M.add (def_name, info) reg_cl M.empty
+    let param_env = M.empty
     in
     let _, arg_regs, param_env, type_env =
         List.fold_left
