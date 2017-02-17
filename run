@@ -93,12 +93,18 @@ if [ $nocompile = false ]; then
 	fi
 
 	echo "Assemble..."
+  rm -rf ../assembler/error.s
 	cp "${build}/${program}-linked.s" ../assembler/example.s
 	make test -C ../assembler >>"${log}" 2>>"${log}"
 	if [ $? -ne 0 ]; then
 		echo "Assemble program failed. Exit"
 		exit 1
 	fi
+  if [ -f ../assembler/error.s ]; then
+    echo "Undefined variables have been found"
+    cat ../assembler/error.s
+    exit 1
+  fi
 
 	if [ ! -d "../Simulator" ]; then
 		echo "simulator is not found. Exit"
