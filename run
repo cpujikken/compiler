@@ -10,6 +10,7 @@ input="contest.sld"
 program_path=${1}
 input_path=${2}
 nocompile=false
+suspend_output=true
 
 mkdir -p "${build}"
 
@@ -144,5 +145,8 @@ if [ $? -ne 0 ]; then
 fi
 
 cp "${build}/${program}_out" "${output}"
-echo "Show running result..."
-cat "${output}"
+
+if [ ! $suspend_output=true]; then
+  echo "Show running result..."
+  cat "${output}"
+fi;
