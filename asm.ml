@@ -148,7 +148,7 @@ exp_to_string_pre pre exp =
     | CallDir (label, op_list1, op_list2) -> Printf.sprintf "%sCallDir %s%s%s" pre label (op_list_to_string op_list1 npre) (op_list_to_string op_list2 npre)
 and
 op_list_to_string ll pre = List.fold_left
-    (fun current op  -> Printf.sprintf "\n%s%s" pre (Operand.to_string op))
+    (fun current op  -> Printf.sprintf "%s\n%s%s" current pre (Operand.to_string op))
     ""
     ll
 and

@@ -22,14 +22,14 @@ let genlabel info =
     to_L (genid("l", info))
 
 let rec id_of_typ = function
-  | Type.Unit _-> "u"
-  | Type.Bool _-> "b"
-  | Type.Int _-> "i"
-  | Type.Float _-> "d"
-  | Type.Fun _ -> "f"
-  | Type.Tuple _ -> "t"
-  | Type.Array _ -> "a" 
-  | Type.Var _ -> "v"
+  | Type.Unit _-> "unit"
+  | Type.Bool _-> "bool"
+  | Type.Int _-> "int"
+  | Type.Float _-> "float"
+  | Type.Fun _ -> "fun"
+  | Type.Tuple _ -> "tuple"
+  | Type.Array _ -> "array"
+  | Type.Var _ -> "var"
 let gentmp typ info=
   incr counter;
   Printf.sprintf "T%s%d" (id_of_typ typ) !counter, info

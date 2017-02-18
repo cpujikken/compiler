@@ -193,6 +193,10 @@ let rec generate env = function (* 式の仮想マシンコード生成 (caml2ht
   | Closure.AppDir(cls, params, info) ->
       let (ints, floats) = separate (List.map (fun y -> (y, M.find y env)) params)
       in
+      (*Printf.printf "\n\n\nvirtual.ml: App dir%s\nwith params\n" @@ Id.to_string cls;*)
+      (*List.iter (fun x -> Printf.printf "%s\n" (Id.to_string x)) ints;*)
+      (*Printf.printf "\n\n\nvirtual.ml: App dir%s\nwith params\n" @@ Id.to_string cls;*)
+      (*List.iter (fun x -> Printf.printf "%s\n" (Id.to_string x)) floats;*)
       Ans(CallDir(fst cls, List.map (fun x -> ID x) ints, List.map (fun x -> ID x) floats), -1, info)
   | Closure.Tuple(id_list, info) -> (* 組の生成 (caml2html: virtual_tuple) *)
           (*generate a now id*)
@@ -271,6 +275,7 @@ let rec generate env = function (* 式の仮想マシンコード生成 (caml2ht
 
 (* 関数の仮想マシンコード生成 (caml2html: virtual_h) *)
 let fun_converter { Closure.name = (x , t); Closure.args = args; Closure.formal_fv = free_args; Closure.body = e; Closure.info = info } =
+  (*Printf.printf "virtual.ml fun_converter closure %s\n" @@ Id.to_string x;*)
   let info = Closure.get_info e
   in
   let (ints, floats) = separate args

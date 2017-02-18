@@ -9,7 +9,7 @@ let rec list_compare list1 list2 compare = match list1, list2 with
             list_compare list1' list2' compare
 
 let is_lib = ref false
-let default_heap = 1 lsl 20
+let default_heap = 1 lsl 24
 let default_stack = 1 lsl 25
 let lib_funs = [
     "cos";
