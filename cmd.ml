@@ -56,7 +56,7 @@ let rec f output =
 
         | Label(label, comment_o) ->
                 if !Common.is_lib then
-                    Printf.fprintf output "min_caml_%s:" label
+                    Printf.fprintf output "%s%s:" Common.library_prefix label
                 else
                     Printf.fprintf output "%s:" label;
                 (match comment_o with
@@ -77,7 +77,7 @@ let rec f output =
 let start_directive = "start"
 let data_directive = "data"
 let align_directive = "align"
-let entry_label = "min_caml_start"
+let entry_label = Common.entry_label
 let align_length = 8
 let text_directive = "text"
 
@@ -140,7 +140,7 @@ let append_cmd opcode operand_list info =
 
 let label_to_string label =
     if !Common.is_lib then
-        "$" ^ "min_caml_" ^ label
+        "$" ^ Common.library_prefix ^ label
     else
         "$" ^ label
 let int_to_string i = "$" ^ string_of_int i

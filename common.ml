@@ -36,3 +36,10 @@ let lib_funs = [
     "read_float";
 ]
 let indent = " "
+let fixed_type_funs = [
+  "create_int_array";
+  "create_float_array";
+]
+
+let library_prefix = "min_caml_"
+let entry_label = "min_caml_start"

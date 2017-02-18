@@ -982,39 +982,39 @@ let rec get_const_exp const_env env = function
             | _ -> None
         ), const_env
 
-    | CallDir (label, _, [op]) when M2.mem op const_env.const_map && label = "min_caml_cos"
+    | CallDir (label, _, [op]) when M2.mem op const_env.const_map && label = Common.library_prefix ^ "cos"
     -> (match M2.find op const_env.const_map with
         CFloat f -> Some (CFloat ( Pervasives.cos f))
         | _ -> None
     ), const_env
-    | CallDir (label, _, [op]) when M2.mem op const_env.const_map && label = "min_caml_sin"
+    | CallDir (label, _, [op]) when M2.mem op const_env.const_map && label = Common.library_prefix ^ "sin"
     ->
         (match M2.find op const_env.const_map with
         CFloat f -> Some (CFloat ( Pervasives.sin f))
         | _ -> None
     ), const_env
-    | CallDir (label, _, [op]) when M2.mem op const_env.const_map && label = "min_caml_sqrt"
+    | CallDir (label, _, [op]) when M2.mem op const_env.const_map && label = Common.library_prefix ^ "sqrt"
     -> (match M2.find op const_env.const_map with
         CFloat f -> Some (CFloat ( Pervasives.sqrt f))
         | _ -> None
     ), const_env
-    | CallDir (label, _, [op]) when M2.mem op const_env.const_map && label = "min_caml_atan"
+    | CallDir (label, _, [op]) when M2.mem op const_env.const_map && label = Common.library_prefix ^ "atan"
     -> (match M2.find op const_env.const_map with
         CFloat f -> Some (CFloat ( Pervasives.atan f))
         | _ -> None
     ), const_env
-    | CallDir (label, _, [op]) when M2.mem op const_env.const_map && label = "min_caml_floor"
+    | CallDir (label, _, [op]) when M2.mem op const_env.const_map && label = Common.library_prefix ^ "floor"
     -> (match M2.find op const_env.const_map with
         CFloat f -> Some (CFloat ( Pervasives.floor f))
         | _ -> None
     ), const_env
-    | CallDir (label, _, [op]) when M2.mem op const_env.const_map && label = "min_caml_int_of_float"
+    | CallDir (label, _, [op]) when M2.mem op const_env.const_map && label = Common.library_prefix ^ "int_of_float"
     ->
         (match M2.find op const_env.const_map with
         CFloat f -> Some (CInt ( Pervasives.int_of_float f))
         | _ -> None
     ), const_env
-    | CallDir (label, [op], _) when M2.mem op const_env.const_map && label = "min_caml_float_of_int"
+    | CallDir (label, [op], _) when M2.mem op const_env.const_map && label = Common.library_prefix ^ "float_of_int"
     ->
         (match M2.find op const_env.const_map with
         CInt i -> Some (CFloat ( Pervasives.float_of_int i))
@@ -1509,7 +1509,7 @@ let generate tmp data fun_by_name body no_side_effect_defs =
     let info = get_info body
     in
     let fundef =
-        {name = "min_caml_start"; args = []; fargs = []; body = body; ret = Type.Unit info; info = info}
+        {name = Common.entry_label; args = []; fargs = []; body = body; ret = Type.Unit info; info = info}
     in
         convert_def tmp fun_by_name data fundef no_side_effect_defs
 

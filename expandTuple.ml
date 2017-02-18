@@ -61,16 +61,27 @@ let rec expand_tuple idMap = function
             AppCls(x, new_xlist, info)
     | AppDir (x, xlist, info)
     ->
-            let new_xlist = List.fold_right (fun x new_xlist ->
+      (*NOTE NOTE NOTE: this is an exception. If x is create_int_array. Don't expand the list
+       * In general, there is some case, tuple is type casted as int
+       * *)
+      (*Printf.printf "expland tuple Apply dir %s\n" @@ Id.to_string x;*)
+            let new_xlist =
+              if List.mem (fst x) (List.map (fun x-> Common.library_prefix ^ x) Common.fixed_type_funs) then(
+                xlist
+              )
+              else
+              List.fold_right (fun x new_xlist ->
                 try
                     M.find x idMap @ new_xlist
                 with Not_found -> x::new_xlist
-            )
-            xlist
-            []
+              )
+              xlist
+              []
             in
       (*Printf.printf "\n\n\nexpand tuple.ml: App dir%s\nwith params\n" @@ Id.to_string x;*)
       (*List.iter (fun x -> Printf.printf "%s\n" (Id.to_string x)) new_xlist;*)
+      (*Printf.printf "\nexpand tuple.ml: App dir%s\nwith params\n" @@ Id.to_string x;*)
+      (*List.iter (fun x -> Printf.printf "%s\n" (Id.to_string x)) xlist;*)
             AppDir(x, new_xlist, info)
     | Unit _
     | CharRead _
