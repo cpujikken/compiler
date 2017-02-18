@@ -1,4 +1,3 @@
-let global_reg_threshold = 14
 let nreg = 32
 let nfreg = 32
 
@@ -21,9 +20,9 @@ let compare = Pervasives.compare
 (*note: keep reg_cl in global set
  * and manually remove it from graph coloring
  * *)
-let local_regs_list = Array.to_list (Array.init  global_reg_threshold reg_no)
+let local_regs_list = Array.to_list (Array.init  (Common.reg_nfree + 1) reg_no)
 
-let local_fregs_list = Array.to_list (Array.init  global_reg_threshold freg_no)
+let local_fregs_list = Array.to_list (Array.init  (Common.freg_nfree + 1) freg_no)
 let local_regs = StringSet.union (StringSet.of_list local_regs_list) (StringSet.of_list local_fregs_list)
 let global_regs = StringSet.diff (StringSet.union (StringSet.of_list allfregs) @@ StringSet.of_list allregs) local_regs
 

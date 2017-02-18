@@ -43,3 +43,5 @@ let fixed_type_funs = [
 
 let library_prefix = "min_caml_"
 let entry_label = "min_caml_start"
+let reg_nfree = 15
+let freg_nfree = 15

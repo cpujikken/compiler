@@ -3,6 +3,9 @@ open Loc
 open Cmd
 open Reg
 
+let max_nparams = ref 0
+let max_nfparams = ref 0
+
 let stackset = ref S.empty (* すでにSaveされた変数の集合 (caml2html: emit_stackset) *)
 let stackmap = ref [] (* Saveされた変数の、スタックにおける位置 (caml2html: emit_stackmap) *)
 let save x =
@@ -408,6 +411,19 @@ and generate' info = function (* 各命令のアセンブリ生成 (caml2html: e
                 if List.mem rd allfregs then
                     generate' info (NonTail rd, FMove freg_ret)
 and generate_args params fparams info closure_name_opt =
+  if List.length params > Common.reg_nfree then
+    failwith (Printf.sprintf "Require %d but there are only %d of integer params when applying %s" (List.length params) (Common.reg_nfree) (match closure_name_opt with
+      None -> "closure"
+    | Some name -> name
+    ));
+  if List.length fparams > Common.freg_nfree then
+    failwith (Printf.sprintf "Require %d but there are only %d of float params when applying %s" (List.length fparams) (Common.freg_nfree) (match closure_name_opt with
+      None -> "closure"
+    | Some name -> name
+    ));
+  max_nparams := Pervasives.max !max_nparams @@ List.length params;
+  max_nfparams := Pervasives.max !max_nfparams @@ List.length params;
+
   let stacksize_backup = stacksize()
   in
   (*let sw = Printf.sprintf "%d(%s)" (stacksize ()) (Id.to_string_core reg_sp)*)
@@ -505,4 +521,6 @@ let f out (Prog(idata, fdata, fundefs, e)) =
         generate (NonTail reg_ret, e);
         append_cmd_noinfo cmd_finish [];
       );
-    Cmd.f out;
+  Printf.printf "number of requiment free int args: %d\n" !max_nparams;
+  Printf.printf "number of requiment free float args: %d\n" !max_nfparams;
+  Cmd.f out;

@@ -124,7 +124,7 @@ try
     @@ Typing.f syntax_out
     @@
     Parser.exp Lexer.token l ;
-    List.iter close_out outs;
+  List.iter close_out outs;
 with e -> (List.iter close_out outs; raise e)
 in
 
