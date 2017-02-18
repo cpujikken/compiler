@@ -69,6 +69,8 @@ let rec expand_tuple idMap = function
             xlist
             []
             in
+      (*Printf.printf "\n\n\nexpand tuple.ml: App dir%s\nwith params\n" @@ Id.to_string x;*)
+      (*List.iter (fun x -> Printf.printf "%s\n" (Id.to_string x)) new_xlist;*)
             AppDir(x, new_xlist, info)
     | Unit _
     | CharRead _

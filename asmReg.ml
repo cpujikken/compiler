@@ -146,7 +146,7 @@ exp_to_string_pre pre exp =
     | Save (reg, t) -> Printf.sprintf "%sSave %s, %s" pre (Reg.to_string reg) (Id.to_string t)
 and
 op_list_to_string ll pre = List.fold_left
-    (fun current op  -> Printf.sprintf "\n%s%s" pre (Reg.to_string op))
+    (fun current op  -> Printf.sprintf "%s\n%s%s" current pre (Reg.to_string op))
     ""
     ll
 and
