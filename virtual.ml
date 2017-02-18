@@ -269,7 +269,7 @@ let rec generate env = function (* 式の仮想マシンコード生成 (caml2ht
       )
   | Closure.ExtArray((x, _), info) ->
           Ans(
-              MoveImm(Label ("min_caml_" ^ x)),
+              MoveImm(Label (Common.library_prefix ^ x)),
               -1, info
           )
 
