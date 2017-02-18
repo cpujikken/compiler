@@ -118,18 +118,12 @@ try
         assoc_out
         beta_out
         !limit
+    @@ DuplicateLet.f duplicate_let_out
+    @@ Alpha.f alpha_out
+    @@ KNormal.f knormal_out
+    @@ Typing.f syntax_out
     @@
-    DuplicateLet.f duplicate_let_out
-    @@
-    Alpha.f alpha_out
-    @@
-    KNormal.f knormal_out
-    @@
-    Typing.f syntax_out
-    @@
-    Parser.exp
-    Lexer.token l
-    ;
+    Parser.exp Lexer.token l ;
     List.iter close_out outs;
 with e -> (List.iter close_out outs; raise e)
 in
