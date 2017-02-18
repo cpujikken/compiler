@@ -146,7 +146,7 @@ fi
 
 cp "${build}/${program}_out" "${output}"
 
-if [ ! $suspend_output=true]; then
+if [ ! $suspend_output=true ]; then
   echo "Show running result..."
   cat "${output}"
 fi;
