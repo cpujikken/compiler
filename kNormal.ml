@@ -362,6 +362,8 @@ let rec compare x y = match x, y with
     | ExtArray(a, _), ExtArray(b, _)
     | Print(a, _), Print(b, _)
     | FAbs(a, _), FAbs(b, _)
+    | Four(a, _), Four(b, _)
+    | Half(a, _), Half(b, _)
     -> Id.compare a b
 
     | Add (a1, b1, _), Add (a2, b2, _)

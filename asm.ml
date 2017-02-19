@@ -87,11 +87,6 @@ let rec concat e1 e2 =
 let get_info = function
   | Ans (_, info)
   | Let (_, _, _, info) -> info
-
-let int_size = 4
-let float_size = 4
-let imm_length = 21
-
 let rec to_string_pre pre e =
     let npre = pre ^ "  "
     in

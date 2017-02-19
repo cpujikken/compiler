@@ -90,9 +90,11 @@ and generate' info = function (* 各命令のアセンブリ生成 (caml2html: e
     | NonTail rd, Sub (ra, rb) when ra = reg_dump || rb = reg_dump || rd = reg_dump -> ()
     | NonTail rd, Sub (ra, rb) ->
         append_cmd cmd_sub [rd; ra; rb] info
-    | NonTail rd, Addi (ra, loc) when ra = reg_dump || rd = reg_dump ->
-            (*Printf.printf "hello %s, %s %s" rd (Loc.to_string loc);*)
-            ()
+    | NonTail rd, Addi _ when rd = reg_dump -> ()
+    | NonTail _, Addi (ra, _) when ra = reg_dump ->
+        failwith "cannot Addi from dump reg"
+    | NonTail rd, Addi (ra, Constant c) when c >= Common.addi_imm_limit
+    -> failwith "Addi constant is over limit"
     | NonTail rd, Addi (ra, Constant c) when rd = ra && c = 1->
             append_cmd cmd_inc [rd] info
     | NonTail rd, Addi (ra, Constant c) when rd = ra && c = -1->
@@ -105,7 +107,9 @@ and generate' info = function (* 各命令のアセンブリ生成 (caml2html: e
     | NonTail rd, Move (rs) when rd = rs-> ()
     | NonTail rd, Move (rs) ->
             append_cmd cmd_move [rd; rs] info
-    | NonTail rd, MoveImm loc when rd = reg_dump  ->()
+    | NonTail rd, MoveImm _ when rd = reg_dump  ->()
+    | NonTail rd, MoveImm (Constant c) when c >= Common.movei_imm_limit
+    -> failwith "MoveImm constant is over limit"
     | NonTail rd, MoveImm loc ->
             append_cmd cmd_moveImm [rd; Loc.to_string loc] info
     | NonTail rd, Neg(ra) when rd = reg_dump || ra = reg_dump -> ()

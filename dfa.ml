@@ -1380,7 +1380,7 @@ const_fold tmp {name = name; args = int_args; fargs = float_args; body = body; r
 let const_to_exp data info = function
     Unit -> data, Asm.Nop
     | CInt i ->
-          if Pervasives.abs i < (1 lsl (Asm.imm_length - 1)) then
+          if Pervasives.abs i < Common.movei_imm_limit then
               data, Asm.MoveImm(Loc.Constant i)
           else
           let data, label =
