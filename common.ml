@@ -27,7 +27,6 @@ let lib_funs = [
     "print_char";
     "fiszero";
     "fispos";
-    "fneg";
     "fsqr";
     "fhalf";
     "fless";
