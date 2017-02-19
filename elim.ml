@@ -21,6 +21,7 @@ let rec effect = function (* 副作用の有無 (caml2html: elim_effect) *)
   | Get _
   | ExtArray _
   | Four _
+  | Addi _
   | Half _
   | FAbs _
   | ShiftLeft _

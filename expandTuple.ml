@@ -91,6 +91,7 @@ let rec expand_tuple idMap = function
     | Print _
     | Four _
     | Half _
+    | Addi _
     | Add _
     | ShiftLeft _
     | ShiftRight _

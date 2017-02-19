@@ -7,6 +7,7 @@ type t = (* クロージャ変換後の式 (caml2html: closure_t) *)
   | Neg of Id.t * Info.t
   | Print of Id.t * Info.t
   | Four of Id.t * Info.t
+  | Addi of Id.t * int * Info.t
   | Half of Id.t * Info.t
   | Add of Id.t * Id.t * Info.t
   | ShiftLeft of Id.t * Id.t * Info.t
@@ -48,6 +49,7 @@ let rec fv = function
   | Neg(x, info)
   | Print(x, info)
   | Four(x, info)
+  | Addi(x, _, info)
   | Half(x, info)
   | FNeg(x, info)
   | Array(x, info)
@@ -81,6 +83,7 @@ let rec generate env known = function (* クロージャ変換ルーチン本体
   | KNormal.Neg(x, info) -> Neg(x, info)
   | KNormal.Print(x, info) -> Print(x, info)
   | KNormal.Four(x, info) -> Four(x, info)
+  | KNormal.Addi(x, i, info) -> Addi(x, i, info)
   | KNormal.Half(x, info) -> Half(x, info)
   | KNormal.Add(x, y, info) -> Add(x, y, info)
   | KNormal.ShiftLeft(x, y, info) -> ShiftLeft(x, y, info)
@@ -215,6 +218,7 @@ let get_info = function
   | Neg(_, info)
   | Print(_, info)
   | Four(_, info)
+  | Addi(_, _, info)
   | Half(_, info)
   | Add (_, _, info)
   | Sub (_, _, info)
@@ -255,6 +259,7 @@ let to_string x =
         | Neg(t, info) -> Printf.sprintf "%sNEG\t %s\n%s" pre (Info.to_string info) (Id.to_string_pre npre t)
         | Print(t, info) -> Printf.sprintf "%sPrint\t %s\n%s" pre (Info.to_string info) (Id.to_string_pre npre t)
         | Four(t, info) -> Printf.sprintf "%sFOUR\t %s\n%s" pre (Info.to_string info) (Id.to_string_pre npre t)
+        | Addi(t, i, info) -> Printf.sprintf "%sAddi\t %s\n%s\n%s%d" pre (Info.to_string info) (Id.to_string_pre npre t) npre i
         | Half(t, info) -> Printf.sprintf "%sHALF\t %s\n%s" pre (Info.to_string info) (Id.to_string_pre npre t)
         | Add (x, y, info) -> Printf.sprintf "%sADD\t %s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
         | ShiftLeft (x, y, info) -> Printf.sprintf "%sSHIFT_LEFT\t %s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)

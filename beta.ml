@@ -9,6 +9,7 @@ let rec generate env = function (* β簡約ルーチン本体 (caml2html: beta_g
   | Float(d, info) -> Float(d, info)
   | Neg(x, info) -> Neg(find x env, info)
   | Four(x, info) -> Four(find x env, info)
+  | Addi(x, i, info) -> Addi(find x env, i, info)
   | Print(x, info) -> Print(find x env, info)
   | Half(x, info) -> Half(find x env, info)
   | Add(x, y, info) -> Add(find x env, find y env, info)

@@ -35,6 +35,7 @@ let rec generate env = function
   | KNormal.Float _
   | KNormal.Neg _
   | KNormal.Four _
+  | KNormal.Addi _
   | KNormal.Half _
   | KNormal.Add _
   | KNormal.Sub _

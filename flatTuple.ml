@@ -105,6 +105,7 @@ let rec flat env = function
     | Neg _
     | Print _
     | Four _
+    | Addi _
     | Half _
     | Add _
     | ShiftLeft _

@@ -24,6 +24,7 @@ type t = (* K正規化後の式 (caml2html: knormal_t) *)
   | Put of Id.t * Id.t * Id.t * Info.t
   | ExtArray of Id.t * Info.t
   | Four of Id.t * Info.t
+  | Addi of Id.t * int * Info.t
   | Half of Id.t * Info.t
   | ExtFunApp of Id.t * Id.t list * Info.t
   | FAbs of Id.t * Info.t
@@ -49,6 +50,7 @@ let to_string x =
         | Float( f , info)-> Printf.sprintf "%sFLOAT %f\t %s" pre f (Info.to_string info)
         | Neg(t, info) -> Printf.sprintf "%sNEG\t %s\n%s" pre (Info.to_string info) (Id.to_string_pre npre t)
         | Four(t, info) -> Printf.sprintf "%sFOUR\t %s\n%s" pre (Info.to_string info) (Id.to_string_pre npre t)
+        | Addi(t, i, info) -> Printf.sprintf "%sADDI\t %s\n%s\n%s%d" pre (Info.to_string info) (Id.to_string_pre npre t) npre i
         | Half(t, info) -> Printf.sprintf "%sHALF\t %s\n%s" pre (Info.to_string info) (Id.to_string_pre npre t)
         | Add (x, y, info) -> Printf.sprintf "%sADD\t %s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
         | Sub (x, y, info) -> Printf.sprintf "%sSUB\t %s\n%s\n%s" pre (Info.to_string info) (Id.to_string_pre npre x) (Id.to_string_pre npre y)
@@ -96,7 +98,7 @@ let rec fv = function (* 式に出現する（自由な）変数 (caml2html: kno
   | CharRead _
   -> S.empty
   | Neg(x, _) | FNeg(x, _)
-  | Four(x, _) | Half(x, _)
+  | Four(x, _) | Half(x, _) | Addi(x, _, _)
   | FAbs(x, _)
   | Print(x, _)
   | Array(x, _, _)
@@ -159,10 +161,21 @@ let rec generate env = function (* K正規化ルーチン本体 (caml2html: knor
   | Syntax.Neg(e, info) ->
       insert_let (generate env e)
 	(fun x -> Neg(x, info), Type.Int info) info
+  | Syntax.Add(e1, Syntax.Int(i, _), info) when Pervasives.abs i < Common.addi_imm_limit -> (* 足し算のK正規化 (caml2html: knormal_add) *)
+      insert_let
+        (generate env e1)
+        (fun x -> Addi(x, i, info), Type.Int info)
+        info
+  | Syntax.Add(Syntax.Int(i, _), e1, info) when Pervasives.abs i < Common.addi_imm_limit -> (* 足し算のK正規化 (caml2html: knormal_add) *)
+      insert_let
+        (generate env e1)
+        (fun x -> Addi(x, i, info), Type.Int info)
+        info
   | Syntax.Add(e1, e2, info) -> (* 足し算のK正規化 (caml2html: knormal_add) *)
-      insert_let (generate env e1)
-	(fun x -> insert_let (generate env e2)
-	    (fun y -> Add(x, y, info), Type.Int info) info) info
+      insert_let
+        (generate env e1)
+        (fun x -> insert_let (generate env e2)
+        (fun y -> Add(x, y, info), Type.Int info) info) info
   | Syntax.Mul(e1, Syntax.Int(i, _), info) when i = 4
   ->
       insert_let
@@ -194,6 +207,11 @@ let rec generate env = function (* K正規化ルーチン本体 (caml2html: knor
       insert_let (generate env e1)
 	(fun x -> insert_let (generate env e2)
 	    (fun y -> ShiftRight(x, y, info), Type.Int info) info) info
+  | Syntax.Sub(e1, Syntax.Int(i, _), info) when Pervasives.abs i < Common.addi_imm_limit -> (* 足し算のK正規化 (caml2html: knormal_add) *)
+      insert_let
+        (generate env e1)
+        (fun x -> Addi(x, -i, info), Type.Int info)
+        info
   | Syntax.Sub(e1, e2, info) ->
       insert_let (generate env e1)
 	(fun x -> insert_let (generate env e2)
@@ -339,6 +357,7 @@ let get_constructor_code = function
   | Div _ -> 30
   | CharRead _ -> 31
   | Array _ -> 32
+  | Addi _ -> 33
 
 
 let id_type_compare (id1, type1) (id2, type2) =
@@ -419,6 +438,13 @@ let rec compare x y = match x, y with
             if cmp1 != 0 then cmp1 else
                 compare e1 e2
 
+    | Addi(a1, i1, _), Addi(a2, i2, _)
+    ->
+      let t = Id.compare a1 a2
+      in
+      if t = 0 then Pervasives.compare i1 i2
+      else
+        t
     | _, _ ->
             let code_x = get_constructor_code x
             in

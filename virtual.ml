@@ -76,6 +76,7 @@ let rec generate env = function (* 式の仮想マシンコード生成 (caml2ht
   | Closure.Neg(x, info) -> Ans(Neg(ID x), -1, info)
   | Closure.Print(x, info) -> Ans(Print(ID x), -1, info)
   | Closure.Four(x, info) -> Ans(Four(ID x), -1, info)
+  | Closure.Addi(x, i, info) -> Ans(Addi(ID x, Loc.Constant i), -1, info)
   | Closure.Half(x, info) -> Ans(Half(ID x), -1, info)
   | Closure.CharRead info -> Ans(CharRead, -1, info)
   | Closure.Add(x, y, info) ->
