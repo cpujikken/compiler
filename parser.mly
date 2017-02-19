@@ -148,19 +148,13 @@ exp: /* (* 一般の式 (caml2html: parser_exp) *) */
     { FMul($1, $3, (Info.parsing_get())  )}
 | exp AST INT
     {
-        if $3 = 4 then
-            Four($1, Info.parsing_get ())
-        else
-            Mul($1, Int ($3, Info.parsing_get()), Info.parsing_get())
+      Mul($1, Int ($3, Info.parsing_get()), Info.parsing_get())
     }
 | exp SLASH_DOT exp
     { FDiv($1, $3, (Info.parsing_get())  )}
 | exp SLASH INT
     {
-        if $3 = 2 then
-            Half ($1, Info.parsing_get())
-        else
-            Div($1, Int ($3, Info.parsing_get()), Info.parsing_get())
+        Div($1, Int ($3, Info.parsing_get()), Info.parsing_get())
     }
     | exp AST exp
     {

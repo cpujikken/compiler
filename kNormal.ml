@@ -120,13 +120,13 @@ let rec fv = function (* 式に出現する（自由な）変数 (caml2html: kno
   | Put(x, y, z, _) -> S.of_list [x; y; z]
   | LetTuple(xs, y, e, _) -> S.add y (S.diff (fv e) (S.of_list (List.map fst xs)))
 
-let insert_let (e, t) k info = (* letを挿入する補助関数 (caml2html: knormal_insert) *)
-  match e with
-  | Var(x, _) -> k x
+let insert_let (exp, typ) body_fun info = (* letを挿入する補助関数 (caml2html: knormal_insert) *)
+  match exp with
+  | Var(var, _) -> body_fun var
   | _ ->
-      let x = Id.gentmp t info in
-      let e', t' = k x in
-      Let((x, t), e, e', info), t'
+      let temp_var = Id.gentmp typ info in
+      let exp', typ' = body_fun temp_var in
+      Let((temp_var, typ), exp, exp', info), typ'
 
 let rec generate env = function (* K正規化ルーチン本体 (caml2html: knormal_g) *)
   | Syntax.Unit info -> Unit info, Type.Unit info
@@ -163,10 +163,25 @@ let rec generate env = function (* K正規化ルーチン本体 (caml2html: knor
       insert_let (generate env e1)
 	(fun x -> insert_let (generate env e2)
 	    (fun y -> Add(x, y, info), Type.Int info) info) info
+  | Syntax.Mul(e1, Syntax.Int(i, _), info) when i = 4
+  ->
+      insert_let
+        (generate env e1)
+        (fun x -> Four (x, info), Type.Int info)
+        info
+  | Syntax.Mul(Syntax.Int(i, _), e1, info) when i = 4
+  ->
+      insert_let
+        (generate env e1)
+        (fun x -> Four (x, info), Type.Int info)
+        info
   | Syntax.Mul(e1, e2, info) -> (* 足し算のK正規化 (caml2html: knormal_add) *)
-      insert_let (generate env e1)
-	(fun x -> insert_let (generate env e2)
-	    (fun y -> Mul(x, y, info), Type.Int info) info) info
+      insert_let
+        (generate env e1)
+        (fun x -> insert_let (generate env e2)
+        (fun y -> Mul(x, y, info), Type.Int info) info) info
+  | Syntax.Div(e, Syntax.Int(i, _), info) when i = 2 -> (* 足し算のK正規化 (caml2html: knormal_add) *)
+        insert_let (generate env e) (fun x -> Half(x, info), Type.Int info) info
   | Syntax.Div(e1, e2, info) -> (* 足し算のK正規化 (caml2html: knormal_add) *)
       insert_let (generate env e1)
 	(fun x -> insert_let (generate env e2)
