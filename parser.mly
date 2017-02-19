@@ -16,6 +16,7 @@ let addtyp x info = (x, Type.gentyp info)
 %token NOT
 %token MINUS
 %token PLUS
+%token FNEG
 %token MINUS_DOT
 %token MINUS_LT
 %token PLUS_DOT
@@ -105,6 +106,8 @@ exp: /* (* 一般の式 (caml2html: parser_exp) *) */
     | Float(f, _) -> Float(-.f, (Info.parsing_get()))  (* -1.23などは型エラーではないので別扱い *)
     | Int(i, _) -> Int(-i, Info.parsing_get())
     | e -> Neg(e, (Info.parsing_get()) ) }
+| FNEG exp
+  { FNeg ($2, Info.parsing_get ())}
 | MINUS_DOT exp
     %prec prec_unary_minus
     { match $2 with
