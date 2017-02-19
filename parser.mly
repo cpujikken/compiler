@@ -64,7 +64,7 @@ let addtyp x info = (x, Type.gentyp info)
 %right prec_unary_minus
 %left prec_app
 %left DOT
-%left LTLT GTGT ABS_FLOAT
+%left LTLT GTGT ABS_FLOAT FNEG
 
 /* (* 開始記号の定義 *) */
 %type <Syntax.t> exp
@@ -106,8 +106,6 @@ exp: /* (* 一般の式 (caml2html: parser_exp) *) */
     | Float(f, _) -> Float(-.f, (Info.parsing_get()))  (* -1.23などは型エラーではないので別扱い *)
     | Int(i, _) -> Int(-i, Info.parsing_get())
     | e -> Neg(e, (Info.parsing_get()) ) }
-| FNEG exp
-  { FNeg ($2, Info.parsing_get ())}
 | MINUS_DOT exp
     %prec prec_unary_minus
     { match $2 with
@@ -126,6 +124,8 @@ exp: /* (* 一般の式 (caml2html: parser_exp) *) */
 | PRINT_BYTE exp
     %prec prec_app
     {Print ($2, Info.parsing_get())}
+| FNEG exp
+  { FNeg ($2, Info.parsing_get ())}
 | ABS_FLOAT exp
     {FAbs($2, Info.parsing_get())}
 | exp EQUAL exp
