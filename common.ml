@@ -34,6 +34,23 @@ let lib_funs = [
     "read_int";
     "read_float";
 ]
+
+let no_effect_external_funs = [
+    "cos";
+    "sin";
+    "sqrt";
+    "atan";
+    "floor";
+    "int_of_float";
+    "float_of_int";
+    "fiszero";
+    "fispos";
+    "fsqr";
+    "fhalf";
+    "fless";
+    "fisneg";
+]
+
 let indent = " "
 
 let library_prefix = "min_caml_"
@@ -43,3 +60,4 @@ let freg_nfree = 15
 let addi_imm_limit = 1 lsl 15
 let movei_imm_limit = 1 lsl 21
 let optimize_level_default = 1000
+let eps = 0.00001

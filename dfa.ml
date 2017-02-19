@@ -817,6 +817,13 @@ and
 to_string exp =
     to_string_pre "" exp
 and
+const_equal a b = match a, b with
+  CInt x, CInt y -> x = y
+  | CFloat x, CFloat y ->
+      (*Printf.printf "eureca %.2f %.2f\n" x y;*)
+      Pervasives.abs_float (x -. y) < Common.eps
+  | _, _ -> failwith "logic error. see dfa.ml"
+and
 exp_to_string_pre pre exp =
     let npre = pre ^ Common.indent
     in
@@ -996,7 +1003,7 @@ let rec get_const_exp const_env env = function
     | CallDir (label, _, [op]) when M2.mem op const_env.const_map && label = Common.library_prefix ^ "fiszero"
     ->
         (match M2.find op const_env.const_map with
-        CFloat f -> Some (CInt ( if Pervasives.abs_float f < 0.00001 then 1 else 0))
+        CFloat f -> Some (CInt ( if Pervasives.abs_float f < Common.eps then 1 else 0))
         | _ -> None
         ), const_env
     | CallDir (label, _, [op]) when M2.mem op const_env.const_map && label = Common.library_prefix ^ "fispos"
@@ -1097,14 +1104,16 @@ let rec get_const_exp const_env env = function
                 in
                 (*Printf.printf "any from %s %d\n" label any;*)
                 (*List.iter (Printf.printf "%s\n") const_env.call_stack;*)
+                (*Printf.printf "\n";*)
                 let _, const = IntMap.find any const_env'.const_commands
                 in
                 (*check if there is any diff*)
+                (*Printf.printf "value = %s\n" (to_string_const const);*)
                 if IntSet.exists (fun command_id ->
                         try
                             let _, c = IntMap.find command_id const_env'.const_commands
                             in
-                                c != const
+                              not (const_equal c const)
                         with Not_found -> true
                     )
                     ret_assignments
@@ -1162,9 +1171,12 @@ let rec get_const_exp const_env env = function
     | FIfLT _
     | CallCls _
     | CallDir _
-    (*as exp*)
+    as exp
     ->
         (*Printf.printf "Pattern not machted\n%s\n" (exp_to_string_pre "" exp);*)
+    (*M2.iter (fun op va ->*)
+      (*Printf.printf "%s -> %s\n" (Operand.to_string op) (to_string_const va)*)
+    (* ) const_env.const_map; *)
         None, const_env
 
 and
@@ -1222,7 +1234,7 @@ find_const_commands_loop const_env use reach env =
                             let _, sibling_value =
                                 IntMap.find sibling_id const_env.const_commands
                             in
-                                sibling_value != value
+                              not (const_equal sibling_value value)
                         with Not_found -> true
                     )
                     (try
@@ -1566,7 +1578,7 @@ let rec gen_no_side_effect_defs fundefs set =
 let gen_fundefs tmp fundefs =
     let fun_by_name = List.fold_left (fun map fundef -> StringMap.add (fundef.name) fundef map) StringMap.empty fundefs
     in
-    let no_side_effect_defs = gen_no_side_effect_defs fundefs StringSet.empty
+    let no_side_effect_defs = gen_no_side_effect_defs fundefs (StringSet.of_list (List.map (fun x -> Common.library_prefix ^ x) Common.no_effect_external_funs))
     in
     no_side_effect_defs,
     fun_by_name, List.fold_right (fun fundef (data, ret) ->
