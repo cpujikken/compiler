@@ -822,7 +822,7 @@ const_equal a b = match a, b with
   | CFloat x, CFloat y ->
       (*Printf.printf "eureca %.2f %.2f\n" x y;*)
       Pervasives.abs_float (x -. y) < Common.eps
-  | _, _ -> failwith "logic error. see dfa.ml"
+  | _, _ -> false
 and
 exp_to_string_pre pre exp =
     let npre = pre ^ Common.indent
@@ -1171,7 +1171,7 @@ let rec get_const_exp const_env env = function
     | FIfLT _
     | CallCls _
     | CallDir _
-    as exp
+    (*as exp*)
     ->
         (*Printf.printf "Pattern not machted\n%s\n" (exp_to_string_pre "" exp);*)
     (*M2.iter (fun op va ->*)
