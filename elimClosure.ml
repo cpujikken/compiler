@@ -6,6 +6,7 @@ let rec effect = function
         | Int _
         | Float _
         | Neg _
+        | Addi _
         | Four _
         | Half _
         | Add _
@@ -50,6 +51,7 @@ let rec elim = function
         | Neg _
         | Print _
         | Four _
+        | Addi _
         | Half _
         | FNeg _
         | FAbs _

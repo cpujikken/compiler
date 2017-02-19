@@ -9,7 +9,7 @@ let rec list_compare list1 list2 compare = match list1, list2 with
             list_compare list1' list2' compare
 
 let is_lib = ref false
-let default_heap = 1 lsl 27
+let default_heap = 1 lsl 17
 let default_stack = 1 lsl 28
 let lib_funs = [
     "cos";
@@ -27,7 +27,6 @@ let lib_funs = [
     "print_char";
     "fiszero";
     "fispos";
-    "fneg";
     "fsqr";
     "fhalf";
     "fless";
@@ -36,10 +35,11 @@ let lib_funs = [
     "read_float";
 ]
 let indent = " "
-let fixed_type_funs = [
-  "create_int_array";
-  "create_float_array";
-]
 
 let library_prefix = "min_caml_"
 let entry_label = "min_caml_start"
+let reg_nfree = 15
+let freg_nfree = 15
+let addi_imm_limit = 1 lsl 15
+let movei_imm_limit = 1 lsl 21
+let optimize_level_default = 1000

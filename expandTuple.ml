@@ -66,7 +66,7 @@ let rec expand_tuple idMap = function
        * *)
       (*Printf.printf "expland tuple Apply dir %s\n" @@ Id.to_string x;*)
             let new_xlist =
-              if List.mem (fst x) (List.map (fun x-> Common.library_prefix ^ x) Common.fixed_type_funs) then(
+              if List.mem (fst x) (List.map (fun x-> Common.library_prefix ^ x) Common.lib_funs) then(
                 xlist
               )
               else
@@ -91,6 +91,7 @@ let rec expand_tuple idMap = function
     | Print _
     | Four _
     | Half _
+    | Addi _
     | Add _
     | ShiftLeft _
     | ShiftRight _

@@ -16,6 +16,7 @@ let addtyp x info = (x, Type.gentyp info)
 %token NOT
 %token MINUS
 %token PLUS
+%token FNEG
 %token MINUS_DOT
 %token MINUS_LT
 %token PLUS_DOT
@@ -63,7 +64,7 @@ let addtyp x info = (x, Type.gentyp info)
 %right prec_unary_minus
 %left prec_app
 %left DOT
-%left LTLT GTGT ABS_FLOAT
+%left LTLT GTGT ABS_FLOAT FNEG
 
 /* (* 開始記号の定義 *) */
 %type <Syntax.t> exp
@@ -123,6 +124,8 @@ exp: /* (* 一般の式 (caml2html: parser_exp) *) */
 | PRINT_BYTE exp
     %prec prec_app
     {Print ($2, Info.parsing_get())}
+| FNEG exp
+  { FNeg ($2, Info.parsing_get ())}
 | ABS_FLOAT exp
     {FAbs($2, Info.parsing_get())}
 | exp EQUAL exp
@@ -148,19 +151,13 @@ exp: /* (* 一般の式 (caml2html: parser_exp) *) */
     { FMul($1, $3, (Info.parsing_get())  )}
 | exp AST INT
     {
-        if $3 = 4 then
-            Four($1, Info.parsing_get ())
-        else
-            Mul($1, Int ($3, Info.parsing_get()), Info.parsing_get())
+      Mul($1, Int ($3, Info.parsing_get()), Info.parsing_get())
     }
 | exp SLASH_DOT exp
     { FDiv($1, $3, (Info.parsing_get())  )}
 | exp SLASH INT
     {
-        if $3 = 2 then
-            Half ($1, Info.parsing_get())
-        else
-            Div($1, Int ($3, Info.parsing_get()), Info.parsing_get())
+        Div($1, Int ($3, Info.parsing_get()), Info.parsing_get())
     }
     | exp AST exp
     {

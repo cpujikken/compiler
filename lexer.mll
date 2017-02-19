@@ -35,6 +35,8 @@ rule token = parse
     { BOOL(false) }
 | "fun"
     {FUN}
+| "fneg"
+  {FNEG}
 | digit+ (* 整数を字句解析するルール (caml2html: lexer_int) *)
     { INT(int_of_string (Lexing.lexeme lexbuf)) }
 | digit+ ('.' digit*)? (['e' 'E'] ['+' '-']? digit+)?

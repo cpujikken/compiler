@@ -993,6 +993,42 @@ let rec get_const_exp const_env env = function
         CFloat f -> Some (CFloat ( Pervasives.sin f))
         | _ -> None
     ), const_env
+    | CallDir (label, _, [op]) when M2.mem op const_env.const_map && label = Common.library_prefix ^ "fiszero"
+    ->
+        (match M2.find op const_env.const_map with
+        CFloat f -> Some (CInt ( if Pervasives.abs_float f < 0.00001 then 1 else 0))
+        | _ -> None
+        ), const_env
+    | CallDir (label, _, [op]) when M2.mem op const_env.const_map && label = Common.library_prefix ^ "fispos"
+    ->
+        (match M2.find op const_env.const_map with
+        CFloat f -> Some (CInt ( if f > 0.0 then 1 else 0))
+        | _ -> None
+        ), const_env
+    | CallDir (label, _, [op]) when M2.mem op const_env.const_map && label = Common.library_prefix ^ "fisneg"
+    ->
+        (match M2.find op const_env.const_map with
+        CFloat f -> Some (CInt ( if f < 0.0 then 1 else 0))
+        | _ -> None
+        ), const_env
+    | CallDir (label, _, [op]) when M2.mem op const_env.const_map && label = Common.library_prefix ^ "fsqr"
+    ->
+        (match M2.find op const_env.const_map with
+        CFloat f -> Some (CFloat (f *. f))
+        | _ -> None
+        ), const_env
+    | CallDir (label, _, [op]) when M2.mem op const_env.const_map && label = Common.library_prefix ^ "fhalf"
+    ->
+        (match M2.find op const_env.const_map with
+        CFloat f -> Some (CFloat (f /. 2.0))
+        | _ -> None
+        ), const_env
+        | CallDir (label, _, [op1; op2]) when M2.mem op1 const_env.const_map && M2.mem op2 const_env.const_map && label = Common.library_prefix ^ "fless"
+    ->
+        (match M2.find op1 const_env.const_map, M2.find op2 const_env.const_map with
+        CFloat f1, CFloat f2 -> Some (CInt (if f1 < f2 then 1 else 0))
+        | _ -> None
+        ), const_env
     | CallDir (label, _, [op]) when M2.mem op const_env.const_map && label = Common.library_prefix ^ "sqrt"
     -> (match M2.find op const_env.const_map with
         CFloat f -> Some (CFloat ( Pervasives.sqrt f))
@@ -1380,7 +1416,7 @@ const_fold tmp {name = name; args = int_args; fargs = float_args; body = body; r
 let const_to_exp data info = function
     Unit -> data, Asm.Nop
     | CInt i ->
-          if Pervasives.abs i < (1 lsl (Asm.imm_length - 1)) then
+          if Pervasives.abs i < Common.movei_imm_limit then
               data, Asm.MoveImm(Loc.Constant i)
           else
           let data, label =

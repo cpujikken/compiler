@@ -528,5 +528,5 @@ let f out e =
 
       with
         | Error(e, t1, t2) ->
-                Format.eprintf "expect type\n%s\nbut type\n%s\nis passed while evaluating\n%s" (Type.to_string t2) (Type.to_string t1) (Syntax.to_string e);
+                Format.eprintf "expect type\n%s\nbut type\n%s\nis passed while evaluating\n%s"  (Type.to_string t1) (Type.to_string t2) (Syntax.to_string e);
               exit 1
