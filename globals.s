@@ -84,8 +84,9 @@ min_caml_intersection_point:
 min_caml_startp:
 	.SPACE 24
 min_caml_intersected_object_id:
+	.SPACE 24
 min_caml_reflections:
-	.SPACE 4
+	.SPACE 800
 min_caml_n_reflections:
 	.SPACE 4
 min_caml_diffuse_ray:
@@ -100,3 +101,5 @@ min_caml_ptrace_dirvec:
 	.SPACE 24
 min_caml_light_dirvec:
 	.SPACE 8
+min_caml_free_objs:
+	.SPACE 64

@@ -31,7 +31,7 @@ let rec expand_tuple idMap = function
         Let((var, var_type), expand_tuple idMap value, expand_tuple idMap body, info)
 
   | MakeCls ((id, typ), cls, exp, info)
-    -> MakeCls((id, typ), cls, expand_tuple idMap exp, info)
+    -> MakeCls((id, typ), expand_closure cls idMap , expand_tuple idMap exp, info)
 
   | LetTuple (id_type_list, id, exp, info) when M.mem id idMap
     ->
@@ -116,10 +116,23 @@ let rec expand_tuple idMap = function
 
         (*eliminate all let x with x's type is Type.Tuple but expression is not tuple*)
         (*expand all x's usage in Var(_) and AppCls, AppDir*)
+and
+expand_closure { entry = entry; actual_fv = free_variables} idMap =
+  let new_free_variables =
+    List.fold_right (fun x new_xlist ->
+      try
+          M.find x idMap @ new_xlist
+      with Not_found -> x::new_xlist
+    )
+    free_variables
+    []
+  in
+    {entry = entry; actual_fv = new_free_variables}
 
 let fun_converter { name = fname; args = args_id_types; formal_fv = free_args_id_types; body = body; info = info } =
     (*Printf.printf "fun name: %s\n" @@ fst @@ fst  fname;*)
     (*Printf.printf "Before expansion\n%s\n" (to_string body);*)
+  let arg_expander args_types body =
     let new_args_id_types, replacements = List.fold_right (fun (id,typ) (id_types, replacements) ->
         match typ with
         | Type.Tuple (typelist, info) ->
@@ -128,22 +141,31 @@ let fun_converter { name = fname; args = args_id_types; formal_fv = free_args_id
                 sub_idtypes @ id_types, (id, List.map fst sub_idtypes, typelist)::replacements
         | _ -> (id,typ)::id_types, replacements
     )
-    args_id_types
+    args_types
     ([], [])
     in
-    let new_body = List.fold_right (fun (id, ids, types) exp ->
+    let new_body =
+    List.fold_right (fun (id, ids, types) exp ->
         Let((id, Type.Tuple(types, info)), Tuple(ids, info), exp, info)
         )
         replacements
         body
-    in
+        in
+        new_body, new_args_id_types
+  in
+  let new_body, new_args_id_types =
+    arg_expander args_id_types body
+  in
+  let new_body, new_free_args_id_types =
+    arg_expander free_args_id_types new_body
+  in
     let new_body = expand_tuple M.empty new_body
     in
     (*Printf.printf "After expansion\n%s\n" (to_string new_body);*)
     {
         name = fname;
         args = new_args_id_types;
-        formal_fv = free_args_id_types;
+        formal_fv = new_free_args_id_types;
         body = new_body;
         info = info
     }
