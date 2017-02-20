@@ -294,7 +294,7 @@ let fun_converter { Closure.name = (x , t); Closure.args = args; Closure.formal_
       (fun z t offset load -> Let((ID z, t), Load(Relative(Reg reg_cl, Constant offset)), -1, load, info))
   in
   let load = Let(
-      (ID x, Type.Int info),
+      (ID x, t),
       Move (Reg reg_cl),
       -1,
       load,

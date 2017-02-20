@@ -301,12 +301,15 @@ let to_string x =
 let print_all out (Prog(fundefs, body)) =
     Printf.fprintf out "body:\n";
     Printf.fprintf out "%s\n" @@ to_string body;
-    List.iter (fun fundef -> Printf.fprintf out "closure %s\n" @@ Id.to_string @@ fst fundef.name;
-    Printf.fprintf out "int args:\n";
-    List.iter (fun (id, typ) -> Printf.fprintf out "%s\nof type\n%s\n" (Id.to_string id) @@ Type.to_string typ) fundef.args;
-    Printf.fprintf out "float args:\n";
-    List.iter (fun (id, typ) -> Printf.fprintf out "%s\nof type\n%s\n" (Id.to_string id) @@ Type.to_string typ) fundef.formal_fv;
-    Printf.fprintf out "closre body: \n%s\n" @@ to_string fundef.body;
+    List.iter ( fun fundef ->
+      Printf.fprintf out "closure %s\n" @@ Id.to_string @@ fst fundef.name;
+      Printf.fprintf out "int args:\n";
+      List.iter
+        (fun (id, typ) -> Printf.fprintf out "%s\nof type\n%s\n" (Id.to_string id) @@ Type.to_string typ)
+        fundef.args;
+      Printf.fprintf out "free args:\n";
+      List.iter (fun (id, typ) -> Printf.fprintf out "%s\nof type\n%s\n" (Id.to_string id) @@ Type.to_string typ) fundef.formal_fv;
+      Printf.fprintf out "closure body: \n%s\n" @@ to_string fundef.body;
     ) fundefs
 
 let f out e =
