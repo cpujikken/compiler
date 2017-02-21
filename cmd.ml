@@ -133,8 +133,6 @@ let cmd_div = "DIV"
 let cmd_mul = "MUL"
 let cmd_finish = "FIN"
 
-let append_cmd_noinfo opcode operand_list =
-    append (Command (opcode, operand_list, None))
 let append_cmd opcode operand_list info =
     append (Command (opcode, operand_list, Some info))
 
