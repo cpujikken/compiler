@@ -17,7 +17,7 @@ let rec iter
           Elim.f elim_out
           @@ DuplicateLet.f duplicate_let_out
           @@ ConstFold.f const_fold_out
-          @@ Inline.f inline_out
+          (*@@ Inline.f inline_out*)
           @@ Assoc.f assoc_out
           @@ Beta.f beta_out
           @@ e
