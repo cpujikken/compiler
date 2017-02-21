@@ -100,3 +100,7 @@ min_caml_ptrace_dirvec:
 	.SPACE 24
 min_caml_light_dirvec:
 	.SPACE 8
+min_caml_light_dirvec_arr:
+	.SPACE 240
+min_caml_light_dirvec_v3:
+	.SPACE 24
