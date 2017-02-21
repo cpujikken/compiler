@@ -519,7 +519,12 @@ let f out (Prog(idata, fdata, fundefs, e)) =
       (
       append (Label (entry_label, None));
 
-        (*backup all regs*)
+      (*init*)
+      append_cmd_noinfo cmd_moveImm ["%r1"; "$min_caml_light_dirvec"];
+      append_cmd_noinfo cmd_moveImm ["%r2"; "$min_caml_light_dirvec_v3"];
+      append_cmd_noinfo cmd_storeRelative ["%r2"; "%r1"; "$0"];
+      append_cmd_noinfo cmd_moveImm ["%r2"; "$min_caml_light_dirvec_arr"];
+      append_cmd_noinfo cmd_storeRelative ["%r2"; "%r1"; "$4"];
         stackset := S.empty;
         stackmap := [];
         generate (NonTail reg_ret, e);

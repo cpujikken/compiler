@@ -107,8 +107,8 @@ try
     @@ Simm.f simm_out
     @@ Virtual.f virtual_out
     @@ ElimClosure.f elim_closure_out
-    @@ ExpandTuple.f expand_tuple_out
-    @@ FlatTuple.f flat_tuple_out
+    (*@@ ExpandTuple.f expand_tuple_out*)
+    (*@@ FlatTuple.f flat_tuple_out*)
     @@ Closure.f closure_out
     @@ iter
         elim_out
