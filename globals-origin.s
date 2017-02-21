@@ -84,8 +84,9 @@ min_caml_intersection_point:
 min_caml_startp:
 	.SPACE 24
 min_caml_intersected_object_id:
+	.SPACE 8
 min_caml_reflections:
-	.SPACE 4
+	.SPACE 720
 min_caml_n_reflections:
 	.SPACE 4
 min_caml_diffuse_ray:
