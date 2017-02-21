@@ -480,6 +480,8 @@ let print_fun { name = x; args = _; fargs = _; body = e; ret = _ } =
 
 (* type prog = Prog of (Id.l * float) list * fundef list * t *)
 let f out (Prog(idata, fdata, fundefs, e)) =
+  let info = get_info e
+  in
   Format.eprintf "generating assembly...@.";
 
     (*.start label: starting point*)
@@ -520,15 +522,15 @@ let f out (Prog(idata, fdata, fundefs, e)) =
       append (Label (entry_label, None));
 
       (*init*)
-      append_cmd_noinfo cmd_moveImm ["%r1"; "$min_caml_light_dirvec"];
-      append_cmd_noinfo cmd_moveImm ["%r2"; "$min_caml_light_dirvec_v3"];
-      append_cmd_noinfo cmd_storeRelative ["%r2"; "%r1"; "$0"];
-      append_cmd_noinfo cmd_moveImm ["%r2"; "$min_caml_light_dirvec_arr"];
-      append_cmd_noinfo cmd_storeRelative ["%r2"; "%r1"; "$4"];
+      append_cmd cmd_moveImm ["%r1"; "$min_caml_light_dirvec"] info;
+      append_cmd cmd_moveImm ["%r2"; "$min_caml_light_dirvec_v3"] info;
+      append_cmd cmd_storeRelative ["%r2"; "%r1"; "$0"] info;
+      append_cmd cmd_moveImm ["%r2"; "$min_caml_light_dirvec_arr"] info;
+      append_cmd cmd_storeRelative ["%r2"; "%r1"; "$4"] info;
         stackset := S.empty;
         stackmap := [];
         generate (NonTail reg_ret, e);
-        append_cmd_noinfo cmd_finish [];
+        append_cmd cmd_finish [] info;
       );
   Printf.printf "number of requiment free int args: %d\n" !max_nparams;
   Printf.printf "number of requiment free float args: %d\n" !max_nfparams;
