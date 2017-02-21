@@ -55,8 +55,8 @@ let indent = " "
 
 let library_prefix = "min_caml_"
 let entry_label = "min_caml_start"
-let reg_nfree = 15
-let freg_nfree = 15
+let reg_nfree = 7
+let freg_nfree = 7
 let addi_imm_limit = 1 lsl 15
 let movei_imm_limit = 1 lsl 21
 let optimize_level_default = 1000

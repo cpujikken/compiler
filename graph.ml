@@ -118,6 +118,11 @@ let rec get_live_vars_exp dest_op dest_type int_next_in float_next_in = function
                 | _ -> S1.add dest_op restore_def, restore_def
             )
             in
+            (*omg: def should be included in current live*)
+            let int_live = S1.union int_live int_def
+            in
+            let float_live = S1.union float_live float_def
+            in
             let int_in = S1.union (S1.diff int_live int_def) int_use
             in
             let float_in = S1.union (S1.diff float_live float_def) float_use

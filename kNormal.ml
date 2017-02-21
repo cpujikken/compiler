@@ -270,6 +270,7 @@ let rec generate env = function (* K正規化ルーチン本体 (caml2html: knor
       let e1', t1 = generate (M.add_list yts env') e1 in
       LetRec({ name = (x, t); args = yts; body = e1' }, e2', info), t2
   | Syntax.App(Syntax.Var(f, _) as f_with_info, e2s, info) when not (M.mem f env) -> (* 外部関数の呼び出し (caml2html: knormal_extfunapp) *)
+      (
       (match M.find f !Typing.extenv with
       | Type.Fun(_, t, _) ->
 	  let rec bind xs = function (* "xs" are identifiers for the arguments *)
@@ -279,6 +280,7 @@ let rec generate env = function (* K正規化ルーチン本体 (caml2html: knor
 		  (fun x -> bind (xs @ [x]) e2s) info in
 	  bind [] e2s (* left-to-right evaluation *)
       | _ -> Info.exit info (Printf.sprintf "%s is not a function" (Syntax.to_string f_with_info))
+      )
       )
   | Syntax.App(e1, e2s, info) ->
       (match generate env e1 with
