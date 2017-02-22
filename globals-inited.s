@@ -1,3 +1,4 @@
+.data
 min_caml_n_objects:
 	.long	00000000
 min_caml_objects:
@@ -17,57 +18,58 @@ min_caml_light:
 min_caml_beam:
 	.long 437f0000
 min_caml_and_net:
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+	.long $min_caml_and_net_arr
+min_caml_and_net_arr:
 	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-	.long ffffffff
-min_caml_or_net:
 	.SPACE 4
 min_caml_solver_dist:
 	.long	00000000
@@ -132,7 +134,8 @@ min_caml_ptrace_dirvec:
 min_caml_dirvecs:
 	.SPACE 20
 min_caml_light_dirvec:
-	.SPACE 8
+	.long $min_caml_light_dirvec_v3
+	.long $min_caml_light_dirvec_arr
 min_caml_light_dirvec_arr:
 	.SPACE 240
 min_caml_light_dirvec_v3:

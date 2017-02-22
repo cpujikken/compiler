@@ -15,8 +15,8 @@ let rec iter
   if n = 0 then e else
       let e' =
           Elim.f elim_out
-          @@ DuplicateLet.f duplicate_let_out
-          @@ ConstFold.f const_fold_out
+          (*@@ DuplicateLet.f duplicate_let_out*)
+          (*@@ ConstFold.f const_fold_out*)
           (*@@ Inline.f inline_out*)
           @@ Assoc.f assoc_out
           @@ Beta.f beta_out
@@ -106,7 +106,7 @@ try
     @@ Dfa.f dfa_out
     @@ Simm.f simm_out
     @@ Virtual.f virtual_out
-    @@ ElimClosure.f elim_closure_out
+    (*@@ ElimClosure.f elim_closure_out*)
     (*@@ ExpandTuple.f expand_tuple_out*)
     (*@@ FlatTuple.f flat_tuple_out*)
     @@ Closure.f closure_out
@@ -118,7 +118,7 @@ try
         assoc_out
         beta_out
         !limit
-    @@ DuplicateLet.f duplicate_let_out
+    (*@@ DuplicateLet.f duplicate_let_out*)
     @@ Alpha.f alpha_out
     @@ KNormal.f knormal_out
     @@ Typing.f syntax_out

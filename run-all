@@ -1,0 +1,31 @@
+#!/bin/sh
+
+echo "test sld/base.sld"
+./run example sld/base.sld
+if [ $? -ne 0 ]; then
+  echo "failed"
+else
+  mkdir -p build/sld
+  cp build/example_out "build/ppm/base.ppm"
+  echo "done"
+fi
+
+do_test () {
+	file=$1
+	if [ file != "sld/base.sld" ]; then
+    echo "Test $file"
+    ../Simulator/bsim build/example $file
+    if [ $? -ne 0 ]; then
+      echo "failed"
+    else
+      cp build/example_out "build/${file%.sld}.ppm"
+      echo "done"
+    fi
+  fi
+  echo ""
+}
+
+for f in sld/*.sld
+do
+	do_test ${f}
+done

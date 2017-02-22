@@ -9,6 +9,9 @@
 (*                                                              *)
 (****************************************************************)
 
+(**************** グローバル変数の宣言 ****************)
+
+(* オブジェクトの個数 *)
 (*NOMINCAML open MiniMLRuntime;;*)
 (*NOMINCAML open Globals;;*)
 (*MINCAML*) let true = 1 in
@@ -20,23 +23,6 @@
  *****************************************************************************)
 
 (* 符号 *)
-let rec init_y y index =
-  if index = 0 then () else(
-    y.(index - 1) <- (create_array 3 0.0);
-    init_y y (index - 1)
-  )
-in
-let light_dirvec =
-  let x = create_array 3 0.0
-  in
-  let z = create_array 3 0.0
-  in
-  let y = create_array 1000 z
-  in(
-  init_y y 1000;
-  (x, y)
-  )
-in
 let rec sgn x =
   if fiszero x then 0.0
   else if fispos x then 1.0
@@ -1365,12 +1351,12 @@ in
 (* Vscan から、交点 crashed_point と衝突したオブジェクト         *)
 (* crashed_object を返す。関数自体の返り値は交点の有無の真偽値。 *)
 let rec judge_intersection dirvec = (
-  tmin.(0) <- (100000000.0);
+  tmin.(0) <- (1000000000.0);
   trace_or_matrix 0 (or_net.(0)) dirvec;
   let t = tmin.(0) in
 
   if (fless (-0.1) t) then
-    (fless t 10000000.0)
+    (fless t 100000000.0)
   else false
  )
 in
@@ -1456,12 +1442,12 @@ in
 (**** トレース本体 ****)
 let rec judge_intersection_fast dirvec =
 (
-  tmin.(0) <- (100000000.0);
+  tmin.(0) <- (1000000000.0);
   trace_or_matrix_fast 0 (or_net.(0)) dirvec;
   let t = tmin.(0) in
 
   if (fless (-0.1) t) then
-    (fless t 10000000.0)
+    (fless t 100000000.0)
   else false
 )
 in
@@ -2300,9 +2286,92 @@ in
    全体の制御
  *****************************************************************************)
 
+let rec init_and index =
+  if index < 0 then ()
+  else
+    (and_net.(0) <- create_array 1 (-1);
+    init_and (index - 1)
+    )
+in
+
+let rec myinit _ =
+  n_objects.(0) <- 0;
+  screen.(0) <- 0.0;
+  screen.(1) <- 0.0;
+  screen.(2) <- 0.0;
+  viewpoint.(0) <- 0.0;
+  viewpoint.(1) <- 0.0;
+  viewpoint.(2) <- 0.0;
+  light.(0) <- 0.0;
+  light.(1) <- 0.0;
+  light.(2) <- 0.0;
+  beam.(0) <- 255.0;
+  init_and 49;
+  or_net.(0) <- create_array 1 (and_net.(0));
+  solver_dist.(0) <- 0.0;
+  intsec_rectside.(0) <- 0;
+  tmin.(0) <- 1000000000.0;
+  intersection_point.(0) <- 0.0;
+  intersection_point.(1) <- 0.0;
+  intersection_point.(2) <- 0.0;
+  intersected_object_id.(0) <- 0;
+  nvector.(0) <- 0.0;
+  nvector.(1) <- 0.0;
+  nvector.(2) <- 0.0;
+  texture_color.(0) <- 0.0;
+  texture_color.(1) <- 0.0;
+  texture_color.(2) <- 0.0;
+  diffuse_ray.(0) <- 0.0;
+  diffuse_ray.(1) <- 0.0;
+  diffuse_ray.(2) <- 0.0;
+  rgb.(0) <- 0.0;
+  rgb.(1) <- 0.0;
+  rgb.(2) <- 0.0;
+  image_size.(0) <- 0;
+  image_size.(1) <- 0;
+  image_center.(0) <- 0;
+  image_center.(1) <- 0;
+  scan_pitch.(0) <- 0.0;
+  startp.(0) <- 0.0;
+  startp.(1) <- 0.0;
+  startp.(2) <- 0.0;
+  startp_fast.(0) <- 0.0;
+  startp_fast.(1) <- 0.0;
+  startp_fast.(2) <- 0.0;
+  screenx_dir.(0) <- 0.0;
+  screenx_dir.(1) <- 0.0;
+  screenx_dir.(2) <- 0.0;
+  screeny_dir.(0) <- 0.0;
+  screeny_dir.(1) <- 0.0;
+  screeny_dir.(2) <- 0.0;
+  screenz_dir.(0) <- 0.0;
+  screenz_dir.(1) <- 0.0;
+  screenz_dir.(2) <- 0.0;
+  ptrace_dirvec.(0) <- 0.0;
+  ptrace_dirvec.(1) <- 0.0;
+  ptrace_dirvec.(2) <- 0.0;
+  light_dirvec_v3.(0) <- 0.0;
+  light_dirvec_v3.(1) <- 0.0;
+  light_dirvec_v3.(2) <- 0.0;
+  let (x, y) = light_dirvec
+  in
+  let rec init_y y index =
+    if index < 0 then ()
+    else(
+      y.(index) <- create_array 0 0.0;
+      init_y y (index - 1)
+    )
+  in(
+    x.(0) <- 0.0;
+    x.(1) <- 0.0;
+    x.(2) <- 0.0;
+    init_y y 59
+  )
+  in
 (* レイトレの各ステップを行う関数を順次呼び出す *)
 let rec rt size_x size_y =
 (
+  myinit();
  image_size.(0) <- size_x;
  image_size.(1) <- size_y;
  image_center.(0) <- size_x / 2;
@@ -2322,6 +2391,6 @@ let rec rt size_x size_y =
 )
 in
 
-let _ = rt 64 64
+let _ = rt 128 128
 
 in 0
