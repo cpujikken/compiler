@@ -1,3 +1,4 @@
+.data
 min_caml_n_objects:
 	.long	00000000
 min_caml_objects:
