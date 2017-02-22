@@ -70,6 +70,7 @@ min_caml_and_net:
 	.long $min_caml_and_net_arr
 min_caml_and_net_arr:
 	.long ffffffff
+min_caml_or_net:
 	.SPACE 4
 min_caml_solver_dist:
 	.long	00000000
