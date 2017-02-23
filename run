@@ -3,14 +3,15 @@
 recompile_compiler=false
 program=example
 build="build"
-log="${build}/log"
-output="${build}/output.ppm"
+log="compile.log"
+output="output.ppm"
 input="contest.sld"
 
 program_path=${1}
 input_path=${2}
 nocompile=false
 suspend_output=true
+use_new_assembler=true
 
 mkdir -p "${build}"
 
@@ -53,7 +54,7 @@ if [ $nocompile = false ]; then
 	cp "${program_path}.ml" "${build}/${program}.ml"
 
 	echo "Compile ${program_path}.ml..."
-	./min-caml "${build}/${program}" >"${log}" 2>>"${log}"
+	./min-caml "${build}/${program}" >"${build}/${log}" 2>>"${build}/${log}"
 	if [ $? -ne 0 ]; then
 		echo "Compile ${program}.ml failed. Exit"
 		exit 1
@@ -71,11 +72,10 @@ if [ $nocompile = false ]; then
 
 	echo "Compile library..."
 	cp ../assembler/lib.ml "${build}/lib.ml"
-	./min-caml "${build}/lib" -lib true 2>>"${log}"
+	./min-caml "${build}/lib" -lib true 2>>"${build}/${log}" >"${build}/${log}"
 
 	if [ $? -ne 0 ]; then
 		echo "Compile library failed. Exit"
-		cd ../compiler
 		exit 1
 	fi
 
@@ -87,24 +87,40 @@ if [ $nocompile = false ]; then
 	fi
 
 	echo "Compile assembler..."
-	make -C ../assembler >>"${log}" 2>>"${log}"
+	make -C ../assembler >>"${build}/${log}" 2>>"${build}/${log}"
 	if [ $? -ne 0 ]; then
 		echo "Compile assembler failed. Exit"
 		exit 1
 	fi
 
 	echo "Assemble..."
-  rm -rf ../assembler/error.s
-	cp "${build}/${program}-linked.s" ../assembler/example.s
-	make test -C ../assembler >>"${log}" 2>>"${log}"
-	if [ $? -ne 0 ]; then
-		echo "Assemble program failed. Exit"
-		exit 1
-	fi
-  if [ -f ../assembler/error.s ]; then
-    echo "Undefined variables have been found"
-    cat ../assembler/error.s
-    exit 1
+  if [ $use_new_assembler = true ]; then
+    type mono >/dev/null 2>/dev/null
+    if [ $? -ne 0 ]; then
+      echo "mono is not installed. Please install mono and try again"
+      exit 1
+    fi
+    rm -rf ../assembler/error.s
+    (cd ../assembler && mono ../assembler/assembler.exe ../compiler/build/${program}-linked)
+    if [ -f error.s ]; then
+      echo "Undefined variables have been found"
+      cat error.s
+      exit 1
+    fi
+  else
+    rm -rf ../assembler/error.s
+    cp "${build}/${program}-linked.s" ../assembler/example.s
+    make -C ../assembler >> "${build}/${log}" 2>>"${build}/${log}"
+    make test -C ../assembler >>"${build}/${log}" 2>>"${build}/${log}"
+    if [ $? -ne 0 ]; then
+      echo "Assemble program failed. Exit"
+      exit 1
+    fi
+    if [ -f ../assembler/error.s ]; then
+      echo "Undefined variables have been found"
+      cat ../assembler/error.s
+      exit 1
+    fi
   fi
 
 	if [ ! -d "../Simulator" ]; then
@@ -114,7 +130,7 @@ if [ $nocompile = false ]; then
 
 	cp ../assembler/example_label "${build}/${program}_label"
 	cp ../assembler/example "${build}/${program}"
-  cp ../assembler/comment.s "./comment.s"
+  cp ../assembler/comment.s "${build}/comment.s"
 	if [ $? -ne 0 ]; then
 		echo "Cannot copy file. Exit"
 		exit 1
@@ -123,30 +139,46 @@ if [ $nocompile = false ]; then
 fi
 
 echo "Clean simulator..."
-make clean -C ../Simulator >>"${log}" 2>>"${log}"
+make clean -C ../Simulator >>"${build}/${log}" 2>>"${build}/${log}"
 
 echo "Compile simulator..."
-make -C ../Simulator >>"${log}" 2>>"${log}"
+make -C ../Simulator >>"${build}/${log}" 2>>"${build}/${log}"
 if [ $? -ne 0 ]; then
 	echo "Compile simulator failed. Exit"
 	exit 1
 fi
 
 if [ -f "${input_path}" ]; then
-	cp "${input_path}" "${input}"
+	cp "${input_path}" "${build}/${input}"
 else
-	rm -f "${input}"
+	rm -f "${build}/${input}"
+  touch "${build}/${input}"
 fi
 echo "Run program..."
-../Simulator/bsim "${build}/${program}"
+(cd "${build}" && ../../Simulator/bsim "${program}")
 if [ $? -ne 0 ]; then
 	echo "Simulate program failed. Exit"
 	exit 1
 fi
 
-cp "${build}/${program}_out" "${output}"
+cp "${build}/${program}_out" "${build}/${output}"
 
-if [ ! $suspend_output=true ]; then
+if [ ! $suspend_output = true ]; then
   echo "Show running result..."
-  cat "${output}"
+  cat "${build}/${output}"
 fi;
+
+echo ""
+echo ""
+echo "========================"
+echo ""
+echo "Last compile log: ${build}/${log}"
+echo "Compiler debug files for compiler: ${build}/${program}-*.out"
+echo ""
+echo "Assembler file for assembler: ${build}/${program}-linked.s"
+echo ""
+echo "Comment file for simulator: ${build}/comment.s"
+echo "Input file for simulator: ${build}/${input}"
+echo "Binary file path for simulator: ${build}/${program}"
+echo ""
+echo "Final result: ${build}/${program}_output"
