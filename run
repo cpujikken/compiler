@@ -107,6 +107,8 @@ if [ $nocompile = false ]; then
       cat error.s
       exit 1
     fi
+    cp ../assembler/comment.s comment.s
+    cp ../assembler/binary build/example
   else
     rm -rf ../assembler/error.s
     cp "${build}/${program}-linked.s" ../assembler/example.s
@@ -121,21 +123,15 @@ if [ $nocompile = false ]; then
       cat ../assembler/error.s
       exit 1
     fi
+    cp ../assembler/example_label "${build}/${program}_label"
+    cp ../assembler/example "${build}/${program}"
+    cp ../assembler/comment.s "comment.s"
   fi
 
 	if [ ! -d "../Simulator" ]; then
 		echo "simulator is not found. Exit"
 		exit 1
 	fi
-
-	cp ../assembler/example_label "${build}/${program}_label"
-	cp ../assembler/example "${build}/${program}"
-  cp ../assembler/comment.s "${build}/comment.s"
-	if [ $? -ne 0 ]; then
-		echo "Cannot copy file. Exit"
-		exit 1
-	fi
-
 fi
 
 echo "Clean simulator..."
@@ -149,13 +145,13 @@ if [ $? -ne 0 ]; then
 fi
 
 if [ -f "${input_path}" ]; then
-	cp "${input_path}" "${build}/${input}"
+	cp "${input_path}" "${input}"
 else
-	rm -f "${build}/${input}"
-  touch "${build}/${input}"
+	rm -f "${input}"
+  touch "${input}"
 fi
 echo "Run program..."
-(cd "${build}" && ../../Simulator/bsim "${program}")
+../Simulator/bsim "build/example"
 if [ $? -ne 0 ]; then
 	echo "Simulate program failed. Exit"
 	exit 1
@@ -177,8 +173,9 @@ echo "Compiler debug files for compiler: ${build}/${program}-*.out"
 echo ""
 echo "Assembler file for assembler: ${build}/${program}-linked.s"
 echo ""
-echo "Comment file for simulator: ${build}/comment.s"
-echo "Input file for simulator: ${build}/${input}"
-echo "Binary file path for simulator: ${build}/${program}"
+echo "Comment file for simulator: comment.s"
+echo "Input file for simulator: ${input}"
+echo "Binary file for simulator: ${build}/${program}"
+echo "Label file for simulator: ${build}/${program}_label"
 echo ""
 echo "Final result: ${build}/output.ppm"
