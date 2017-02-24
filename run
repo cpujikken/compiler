@@ -86,15 +86,8 @@ if [ $nocompile = false ]; then
 		exit 1
 	fi
 
-	echo "Compile assembler..."
-	make -C ../assembler >>"${build}/${log}" 2>>"${build}/${log}"
-	if [ $? -ne 0 ]; then
-		echo "Compile assembler failed. Exit"
-		exit 1
-	fi
-
-	echo "Assemble..."
   if [ $use_new_assembler = true ]; then
+    echo "Assemble..."
     type mono >/dev/null 2>/dev/null
     if [ $? -ne 0 ]; then
       echo "mono is not installed. Please install mono and try again"
@@ -111,6 +104,14 @@ if [ $nocompile = false ]; then
     cp ../assembler/binary build/example
     cp ../assembler/label "${build}/${program}_label"
   else
+    echo "Compile assembler..."
+    make -C ../assembler >>"${build}/${log}" 2>>"${build}/${log}"
+    if [ $? -ne 0 ]; then
+      echo "Compile assembler failed. Exit"
+      exit 1
+    fi
+
+    echo "Assemble..."
     rm -rf ../assembler/error.s
     cp "${build}/${program}-linked.s" ../assembler/example.s
     make -C ../assembler >> "${build}/${log}" 2>>"${build}/${log}"
