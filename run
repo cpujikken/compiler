@@ -95,7 +95,7 @@ if [ $nocompile = false ]; then
     fi
     rm -rf ../assembler/error.s
     (cd ../assembler && mono ../assembler/assembler.exe ../compiler/build/${program}-linked)
-    if [ -f error.s ]; then
+    if [ -f ../assembler/error.s ]; then
       echo "Undefined variables have been found"
       cat error.s
       exit 1
