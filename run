@@ -109,6 +109,7 @@ if [ $nocompile = false ]; then
     fi
     cp ../assembler/comment.s comment.s
     cp ../assembler/binary build/example
+    cp ../assembler/label "${build}/${program}_label"
   else
     rm -rf ../assembler/error.s
     cp "${build}/${program}-linked.s" ../assembler/example.s
