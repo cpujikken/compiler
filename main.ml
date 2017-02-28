@@ -15,9 +15,9 @@ let rec iter
   if n = 0 then e else
       let e' =
           Elim.f elim_out
-          (*@@ DuplicateLet.f duplicate_let_out*)
-          (*@@ ConstFold.f const_fold_out*)
-          (*@@ Inline.f inline_out*)
+          @@ DuplicateLet.f duplicate_let_out
+          @@ ConstFold.f const_fold_out
+          @@ Inline.f inline_out
           @@ Assoc.f assoc_out
           @@ Beta.f beta_out
           @@ e
@@ -118,7 +118,7 @@ try
         assoc_out
         beta_out
         !limit
-    (*@@ DuplicateLet.f duplicate_let_out*)
+    @@ DuplicateLet.f duplicate_let_out
     @@ Alpha.f alpha_out
     @@ KNormal.f knormal_out
     @@ Typing.f syntax_out
