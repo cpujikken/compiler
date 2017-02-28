@@ -58,6 +58,6 @@ let entry_label = "min_caml_start"
 let reg_nfree = 7
 let freg_nfree = 7
 let addi_imm_limit = 1 lsl 15
-let movei_imm_limit = 1 lsl 21
+let movei_imm_limit = 1 lsl 20
 let optimize_level_default = 1000
 let eps = 0.00001

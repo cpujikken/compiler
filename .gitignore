@@ -18,3 +18,8 @@
 /contest.sld
 !/build/.gitkeep
 /comment.s
+/binary
+/error.s
+/intermediatecode1.s
+/intermediatecode2.s
+/label
