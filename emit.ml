@@ -366,12 +366,15 @@ and generate' info = function (* 各命令のアセンブリ生成 (caml2html: e
                     in
                     stackset := S.inter stackset1 stackset2;
     | Tail, CallCls(closure_name, params, fparams) ->
+        (*Printf.printf "fun name %s\n" closure_name;*)
             generate_args params fparams info @@ Some closure_name;
             append_cmd cmd_jumpCls [] info
     | Tail, CallDir(l, params, fparams) ->
+        (*Printf.printf "cardir name %s\n" l;*)
             generate_args  params fparams info None;
             append_cmd cmd_jump [Cmd.label_to_string l] info
     | NonTail rd, CallCls(closure_name, params, fparams) ->
+        (*Printf.printf "fun name %s\n" closure_name;*)
             (*set param*)
             generate_args  params fparams info @@ Some closure_name;
             let ss = stacksize ()
@@ -394,6 +397,7 @@ and generate' info = function (* 各命令のアセンブリ生成 (caml2html: e
                 if List.mem rd allfregs  then
                     generate' info (NonTail rd, FMove freg_ret)
     | NonTail rd, CallDir(l, params, fparams) ->
+        (*Printf.printf "cardir name %s\n" l;*)
             (*set param*)
             generate_args  params fparams info None;
             let ss = stacksize()
@@ -425,8 +429,12 @@ and generate_args params fparams info closure_name_opt =
       None -> "closure"
     | Some name -> name
     ));
+    (*Printf.printf "number of params for %s %d %d\n" (match closure_name_opt with*)
+    (*| None -> "closure"*)
+    (*| Some name -> name*)
+    (* ) (List.length params) @@ List.length fparams;*)
   max_nparams := Pervasives.max !max_nparams @@ List.length params;
-  max_nfparams := Pervasives.max !max_nfparams @@ List.length params;
+  max_nfparams := Pervasives.max !max_nfparams @@ List.length fparams;
 
   let stacksize_backup = stacksize()
   in
@@ -463,7 +471,7 @@ and generate_args params fparams info closure_name_opt =
     (fun (y, fr) ->
         match y, fr with
         | Some reg, None ->
-                generate' info (Tail , FStore(reg, Relative (reg_sp, Constant stacksize_backup)))
+                generate' info (NonTail freg_dump, FStore(reg, Relative (reg_sp, Constant stacksize_backup)))
         | None, Some reg ->
                 generate' info (NonTail reg, FLoad (Relative(reg_sp, Constant stacksize_backup)))
         | Some r1, Some r2 ->
